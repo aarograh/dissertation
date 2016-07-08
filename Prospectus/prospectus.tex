@@ -1,0 +1,54 @@
+\documentclass[12pt]{thesis-umich}
+
+%\input{listingsConfig}
+\usepackage{titletoc}
+\dottedcontents{subsection}[6.7em]{}{3.2em}{1pc}
+\dottedcontents{subsubsection}[8.7em]{}{3.2em}{1pc}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{appendix}
+\usepackage{titletoc}
+\usepackage{amsmath}
+\usepackage[format=hang,font={bf}]{caption}
+\hypersetup{
+    colorlinks,
+    citecolor=red,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+
+\newcommand*{\bfrac}[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
+\dottedcontents{subsection}[6.0em]{}{2.8em}{1pc}
+\dottedcontents{subsubsection}[9.0em]{}{3.5em}{1pc}
+% \renewcommand{\thefigure}{\textbf{Figure \arabic{section}}}
+% \renewcommand \thesection{\Roman{section}.}
+
+
+\begin{document}
+
+%\titlepage
+
+\pagenumbering{arabic}
+
+\chapter{Introduction}
+    \input{01-introduction.tex}
+ 
+ \chapter{Conclusions}
+    \input{final-conclusions.tex}
+
+% bibliography
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{chapter}{References}
+% TODO: Add bibliography
+
+%appendices
+\begin{appendices}
+
+
+
+\end{appendices}
+
+\end{document}
