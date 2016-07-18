@@ -10,6 +10,7 @@
 \usepackage{titletoc}
 \usepackage{amsmath}
 \usepackage[format=hang,font={bf}]{caption}
+\usepackage{bm}
 \hypersetup{
     colorlinks,
     citecolor=red,
@@ -34,10 +35,19 @@
 \pagenumbering{arabic}
 
 \chapter{Introduction}
-    \input{01-introduction.tex}
+\input{01-introduction.tex}
+
+\chapter{Neutron Transport Methodology}
+\input{02-transport-methodology.tex}
+
+\chapter{2D/1D Scheme}
+\input{03-2d1d.tex}
+
+\chapter{Rod Cusping}
+\input{04-rod-cusping.tex}
  
- \chapter{Conclusions}
-    \input{final-conclusions.tex}
+\chapter{Conclusions}
+\input{05-conclusions.tex}
 
 % bibliography
 \renewcommand{\bibname}{References}

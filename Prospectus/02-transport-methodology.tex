@@ -1,0 +1,68 @@
+\section{Boltzmann Equation}
+
+The Boltzmann equation for neutron transport is shown below: \hl{Some kind of background or derivation of this?}
+
+\begin{gather}\label{e:boltzmann}
+\frac{1}{v} \frac{\partial \psi}{\partial t} + \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E,t\right)\psi\left(x,E,\bm \Omega,t\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega, t\right) \psi\left(x,E',\bm \Omega',t\right) d\bm \Omega + \nonumber\\
+\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E,t\right) \psi\left(x,E,\bm \Omega,t\right) dE + Q\left(x,E,\bm \Omega,t\right)
+\end{gather}
+
+For many problems, the time dependence of the Boltzmann equation can be neglected.  Doing do eliminates the first term of the equation above.  In order to ensure neutron balance, this equation is normally formulated as an eigenvalue problem.  The eigenvalue $\lambda = \frac{1}{k}$ allows the two sides of the equation to balance.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, which is the only meaningful solution for steady-state problems.  The eigenvalue form of the Boltzmann equation is shown below:
+
+\begin{gather}\label{e:ssboltzmann}
+\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega + \nonumber\\
+\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E\right) \psi\left(x,E,\bm \Omega\right) dE + Q\left(x,E,\bm \Omega\right)
+\end{gather}
+
+\subsection{Multi-group Approximation}
+
+One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (or \ref{e:boltzmann}) is operated on by $\intop_{E_n}^{E_n-1}\left(\cdot\right)dE$ for each energy group:
+
+\begin{gather}\label{e:multigroupboltzmann}
+\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(x\right)\psi_g\left(x,\bm \Omega\right) = \intop_{4\pi} \Sigma_{s,g'\rightarrow}\left(x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(x,\bm \Omega'\right) d\bm \Omega + \nonumber\\
+\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \nu \Sigma_{f,g'}\left(x,t\right) \psi_{g'}\left(x,\bm \Omega\right) + Q_g\left(x,\bm \Omega\right)
+\end{gather}
+
+The angular 
+
+\subsection{Spherical Harmonics Approximation}
+
+One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections (and thus the angular flux).  To simplify the equation while preserving accuracy of the transport equation, the spherical harmonics approximation is applied to the scattering cross-sections.  This approximation assumes that the angle dependence of the scattering cross-sections can be represented in terms of a summation of Legendre polynomials with corresponding coefficients, shown in equation \hl{need an equation}.
+
+\begin{equation}\label{e:sphericalHarmonicsXSExpansion}
+\end{equation}
+
+\subsection{Diffusion Approximation}
+
+\hl{All over this, but need to finish up the Pn stuff first}
+
+\subsection{Transport Correction}
+
+\hl{Not 100\% sure if this even needs to exist at all}
+
+\section{Numerical Methods}
+
+
+
+\subsection{Method of Characteristics}
+
+One method that is commonly used to solve the transport equation is the Method of Characteristics (MOC).  This method can be derived \hl{by doing some things}
+% Derive it!
+% Things to talk about:
+%   Flat/linear sources
+
+\subsection{Source Iteration}
+
+Using MOC, fixed source transport problems can be solved.  However, in realistic calculations it is rare that the scattering or fission sources are known.  In order to solve the transport equation for problems with an unknown source distribution, the equation can be re-formulated as follows:
+
+\hl{Insert source iteration form of the equation}
+
+Now making some initial guess for \hl{$\phi^-1$} allows us to solve for \hl{$\phi^0$}.  This process can be repeated for all \hl{$\phi^n$} using the previous iterate \hl{variable$\phi^{n-1}$}.  This method is known as Source Iteration (SI).
+
+Source iteration also has a convenient physical interpretation.  Selecting zero as the initial guess means that the first iterate \hl{$\phi^0$} is simply equal to the sum of sources of new neutrons.  Plugging the expression for \hl{$\phi^0$} into the equation for \hl{$\phi^1$}, we find that the \hl{$\phi^1$} is 
+
+\subsection{Coarse-Mesh Finite Difference}
+
+
+
+\subsection{Simplified Pn}
