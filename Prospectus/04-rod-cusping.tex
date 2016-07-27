@@ -19,6 +19,44 @@
 
 \subsection{Embedded Solvers}
 
+The CMFD homogenized flux can be calculated as follows:
 
+\begin{equation}\label{e:CMFDsubplaneFlux}
+\phi^k_{g,c} = \frac{\sum_{i=1}^{N_{FSR}} \phi^{k=1}_{g,i} V_i}{\sum_{i=1}^{N_{FSR}} V_i} c_{g,c}
+\end{equation}
+
+The subscripts $i$, $g$, and $c$ are fine mesh cell indexes, energy group indexes, and CMFD cell indexes, respectively.  The factor $c_{g,c}$ is a group- and cell-dependent scaling factor for the subplane method.  This factor provides an axial shape to the MOC flux using the previous iterate.  It is defined as follows:
+
+\begin{equation}\label{e:CMFDsubplaneFactor}
+c_{g,c} = \frac{\phi^{k-1}_{g,c}}{\overline{\phi^k_{g,c}}}
+\end{equation}
+
+where the average flux in the denominator is defined by
+
+\begin{equation}\label{e:CMFDaverageFlux}
+\phi^k_{g,c} = \frac{\sum_{i=1}^{N_{FSR}} \phi^{k=1}_{g,i} V_i}{\sum_{i=1}^{N_{FSR}} V_i}
+\end{equation}
+
+This definition of the subplane factor provides axial shape while still preserving the volume-averaged flux and reaction rates in each pin cell in the MOC plane.
+
+The CMFD homogenized cross-sections can be calculated using the MOC flux:
+
+\begin{equation}\label{e:CMFDhomXS}
+\Sigma_{x,c} = \frac{\sum_{i=1}^{N_{FSR}} \phi_{g,i}\Sigma_{x,g,i}V_i}{\sum_{i=1}^{N_{FSR}} \phi_{g,i}V_i}
+\end{equation}
+
+Multiplying equations \ref{e:CMFDsubplaneFlux} and \ref{e:CMFDhomXS} gives the reaction rate in the pin cell.
+
+When using the embedded solver, a radial flux profile is obtained from the solver.  The process described above is followed for the nodes around the partially inserted rod.  However, instead of the MOC flux, the radial flux from the embedded solver is used.  This allows subplanes with partially inserted control rods to have different cross-sections based on the radial flux profile around the tip of the control rod.
+
+\hl{The flux coming out of the embedded solver is treated as a shape function and scaled to preserve the MOC flux.}
+
+\hl{Need to make sure reaction rates are preserved I think}.
+
+\hl{A constant current is used for all subplanes.  This does not provide the most accurate solution, but ensures stability and neutron balance.}
+
+\hl{When projecting, the subplane fluxes scale MOC fluxes.  Reference equation.}
+
+\hl{The cross-sections can be modified by mixing the rodded and unrodded cross-sections.  Equation from Han Joo cusping paper.}
 
 \section{Future Work}
