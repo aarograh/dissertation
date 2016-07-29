@@ -46,7 +46,58 @@ One of the biggest challenges to solving the transport equation is angle depende
 
 \subsection{Method of Characteristics}
 
-One method that is commonly used to solve the transport equation is the Method of Characteristics (MOC).  This method can be derived \hl{by doing some things}
+One method that is commonly used to solve the transport equation is the Method of Characteristics (MOC).  This method allows the transport equation to be solved along a characteristic direction without any approximations, making it useful for complicated geometries, such as those found in nuclear reactors.  To derive this method, the right-hand side of equation \ref{e:ssboltzmann} is replaced by the variable $q$:
+
+\begin{subequations}
+\begin{equation}
+\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = q\left(x,E.\bm \Omega\right)
+\end{equation}
+\begin{gather}\label{e:MOCqboltzmann}
+q\left(x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega +\nonumber\\
+\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E\right) \psi\left(x,E,\bm \Omega\right) dE + Q\left(x,E,\bm \Omega\right)
+\end{gather}
+\end{subequations}
+
+Now the characteristic direction is introduced:
+
+\begin{equation}
+\bm r = \bm {r_0} + s \bm \Omega \Rightarrow \begin{cases} x\left(s\right) = x_0 + s\Omega_x \\ y\left(s\right) = y_0 + s\Omega_y \\ z\left(s\right) = z_0 + s\Omega_z\end{cases}
+\end{equation}
+
+Substituting this variable into equation \ref{e:MOCqboltzmann} gives the characteristic form of this equation:
+
+\begin{subequations}
+\begin{equation}
+\frac{\partial \psi}{\partial s} + \Sigma_t\left(\bm r0_0 + s\bm\Omega,E\right)\psi\left(\bm r0_0 + s\bm\Omega,E,\bm \Omega\right) = q\left(\bm r0_0 + s\bm\Omega,E.\bm \Omega\right)
+\end{equation}
+\begin{gather}\label{e:characteristicboltzmann}
+q\left(\bm r0_0 + s\bm\Omega,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(\bm {r_0} + s \bm\Omega',E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm {r_0} + s\bm\Omega',E',\bm \Omega'\right) d\bm \Omega' +\nonumber\\
+\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(\bm r0_0 + s\bm\Omega,E\right) \psi\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right) dE + Q\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right)
+\end{gather}
+\end{subequations}
+\hl{fix the d omega in other equations by adding a prime}
+
+This equation is easily solved using an integrating factor
+
+\begin{equation}
+\exp{-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'}
+\end{equation}
+
+giving the following solution:
+
+\begin{gather}\label{e:MOCexact}
+\psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'} + \nonumber\\
+\intop_0^s q\left(\bm {r_0} + s'\bm\Omega,\bm\Omega, E\right)\exp{-\intop_0^s \Sigma_t\left(\bm {r_0} + s''\bm\Omega,E\right)ds''}ds'
+\end{gather}
+
+Now if $\bm {r_0}$ is on the boundary of the region of interest, the incoming flux $\psi\left(\bm {r_0},\bm \Omega, E\right)$ is known.  This allows the angular flux to be calculated at any point $s$ to be calculated along the characteristic direction $\bm r$.
+
+Up to this point, no approximations have been made in deriving the method of characteristics.  One approximation that is necessary to use MOC for practical problems is to assume some spatial shape for the source term $q$.  The simplest of these is the flat source approximation.  In this approximation, $q$ is assumed to be flat along $\bm r$.  This simplifies equation \ref{e:MOCexact} to the following:
+
+\begin{gather}\label{e:MOCflatsource}
+\psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'} + ...
+\end{gather}
+\hl{Fix the exponential terms}
 % Derive it!
 % Things to talk about:
 %   Flat/linear sources
