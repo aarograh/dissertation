@@ -16,14 +16,34 @@ For many problems, the time dependence of the Boltzmann equation can be neglecte
 
 \subsection{Multi-group Approximation}
 
-One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (or \ref{e:boltzmann}) is operated on by $\intop_{E_n}^{E_n-1}\left(\cdot\right)dE$ for each energy group:
+One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (\hl{or} \ref{e:boltzmann}) is operated on by 
+
+\begin{equation}
+\frac{1}{E_{n-1} - E_n}\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE
+\end{equation}
+
+for each energy group, giving the following result:
 
 \begin{gather}\label{e:multigroupboltzmann}
 \bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(x\right)\psi_g\left(x,\bm \Omega\right) = \intop_{4\pi} \Sigma_{s,g'\rightarrow}\left(x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(x,\bm \Omega'\right) d\bm \Omega + \nonumber\\
 \frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \nu \Sigma_{f,g'}\left(x,t\right) \psi_{g'}\left(x,\bm \Omega\right) + Q_g\left(x,\bm \Omega\right)
 \end{gather}
 
-The angular 
+In equation \ref{e:multigroupboltzmann}, $\psi_g$ denotes the average angular flux for group $g$, defined as
+
+\begin{equation}\label{e:multigroupangflux}
+\psi_g\left(x,\bm \Omega\right)=\frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(x,E,\bm\Omega\right) dE
+\end{equation}
+
+The quantities that we want to preserve through the use of the multi-group approximation are the total reaction rates.  To do this, we must define the multi-group cross-sections as follows:
+
+\begin{equation}\label{e:multigroupXS}
+\Sigma_x,g \psi_g = \frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE \Rightarrow \Sigma_x,g = \frac{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE}{\intop_{E_n}^{E_{n-1}} \psi\left(x,E,\bm\Omega\right) dE}
+\end{equation}
+
+This definition of the multi-group flux and multi-group cross-sections guarantees that the total reaction rates in each group will be preserved.
+
+\hl{Talk about the dependence of the XS on the solution?}
 
 \subsection{Spherical Harmonics Approximation}
 
