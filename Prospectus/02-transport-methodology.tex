@@ -83,7 +83,9 @@ Before proceeding, an important simplification must be made to the scattering so
 
 \section{Numerical Methods}
 
+A wide variety of numerical methods exist to solve the transport equation, but all of them can be categorized in one of two ways: stochastic (Monte Carlo) or deterministic methods.  Monte Carlo methods use random numbers to directly sample probability distribution functions based on the material cross-sections.  These methods can produce highly accurate, detailed results and make no assumptions about the materials or geometry of the problem.  However, because of the random nature of the method, there is always some uncertainty in the answer.  For large problems, the number of particles that must be simulated to achieve acceptable levels of uncertainty is often \hl{need a better word here} too burdensome for practical calculations.
 
+All the work discussed in the following sections makes use of deterministic methods.  There are many different deterministic methods, but only the ones relevant to this work will be discussed in the coming sections.
 
 \subsection{Method of Characteristics}
 
