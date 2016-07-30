@@ -114,6 +114,41 @@ Source iteration also has a convenient physical interpretation.  Selecting zero 
 
 \subsection{Coarse-Mesh Finite Difference}
 
+The source iteration method provides a convenient way of solving transport problems that guarantees a positive, correct solution.  However, because the source iteration can take hundreds of iterations to converge for typical reactor problems, it is important to accelerate the convergence.  The most common way of doing this is the Coarse-Mesh Finite Difference (CMFD) method.  This method involves solving a diffusion problem on a coarse grid to get the average magnitude of the flux in each coarse cell.  This is then used to scale the flux solution on the fine mesh cells.  In order to ensure consistency between the transport solution and the lower order diffusion solution, coupling coefficients are calculated on the boundaries of the coarse mesh cells to correct the leakage between the cells.
 
+To derive this method, we begin with equation \hl{diffusion equation} and apply the multigroup approximation:
+\hl{multi-group diffusion equation}
+
+\begin{equation}
+\end{equation}
+
+Integrating this equation over some volume $V$ and dividing by the total volume creates and equation for the average scalar flux $\overline{\phi}$ in that cell.
+\hl{discretized equation}
+
+\begin{equation}
+\end{equation}
+
+The boundary conditions for each cell are the currents at the interface between two cells:
+\hl{boundary condition equation}
+
+\begin{equation}
+\end{equation}
+
+This equation can be determined for each cell in the problem to set up a linear system.  This system can then be solved using one of a variety of standard linear solvers.
+
+Because the currents in the matrix are calculated from the diffusion equation, an inconsistency between the diffusion and transport solutions will arise.  To account for this, current correction factors are calculated at the cell boundaries using the fine mesh transport calculations.  These correction factors are calculated as follows:
+\hl{dhat equation}
+
+\begin{equation}
+\end{equation}
+
+This defines a relationship between the scalar fluxes on each sides of the interface and the current at the interface.  This relationship allows us to correct the diffusion current that is used in the CMFD matrix:\hl{corrected diffusion current}
+
+\begin{equation}
+\end{equation}
 
 \subsection{Simplified Pn}
+
+\hl{I can actually probably get rid of this section completely by just referring to the axial solver as $P_3$ instead of $SP_3$}
+
+\subsection{Power Iteration}
