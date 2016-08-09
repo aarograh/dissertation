@@ -155,7 +155,7 @@ Source iteration also has a convenient physical interpretation.  Selecting zero 
 
 \hl{make sure to talk about how ridiculously slowly it can converge.  Find some references for the math if possible}
 
-\subsection{Coarse-Mesh Finite Difference}
+\subsection{Coarse-Mesh Finite Difference}\label{ss:CMFD}
 
 The source iteration method provides a convenient way of solving transport problems that guarantees a positive, correct solution.  However, because the source iteration can take hundreds of iterations to converge for typical reactor problems, it is important to accelerate the convergence.  The most common way of doing this is the Coarse-Mesh Finite Difference (CMFD) method.  This method involves solving a diffusion problem on a coarse grid to get the average magnitude of the flux in each coarse cell.  This is then used to scale the flux solution on the fine mesh cells.  In order to ensure consistency between the transport solution and the lower order diffusion solution, coupling coefficients are calculated on the boundaries of the coarse mesh cells to correct the leakage between the cells.
 
@@ -196,3 +196,6 @@ This defines a relationship between the scalar fluxes on each sides of the inter
 
 \subsection{Power Iteration}
 
+
+
+\subsection{Collision Probabilities Method}
