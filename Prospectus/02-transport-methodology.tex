@@ -68,7 +68,7 @@ All Legendre polynomials are orthonormal, meaning that each $n$-th polynomial ha
 Before proceeding, an important simplification must be made to the scattering source.  The differential scattering cross-section depends on the term $\bm \Omega' \cdot \bm \Omega$, the scalar product between the incoming and outgoing directions.  However, this product is simply the cosine of the angle between the two directions $\mu$.  Using this fact, we can rewrite the scattering source in equation \ref{e:ssboltzmann} as follows:
 
 \begin{equation}
-\intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E,\bm \Omega' \rightarrow \bm \Omega\right)\psi\left(x,E',\bm\Omega'\right)d\bm\Omega = \intop_0^{2\pi} \intop_{-1}^1 \Sigma_s\left(x,E' \rightarrow E,\mu'\right) \psi\left(x,E',\bm\Omega'\right) d\mu' d\gamma'
+\intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E,\bm \Omega' \rightarrow \bm \Omega\right)\psi\left(x,E',\bm\Omega'\right)d\bm\Omega' = \intop_0^{2\pi} \intop_{-1}^1 \Sigma_s\left(x,E' \rightarrow E,\mu'\right) \psi\left(x,E',\bm\Omega'\right) d\mu' d\gamma'
 \end{equation}
 
 \hl{Look at Larsen's notes to remember the exact mathematical details of this}
@@ -96,7 +96,7 @@ One method that is commonly used to solve the transport equation is the Method o
 \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = q\left(x,E.\bm \Omega\right)
 \end{equation}
 \begin{gather}\label{e:MOCqboltzmann}
-q\left(x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega +\nonumber\\
+q\left(x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' +\nonumber\\
 \frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E\right) \psi\left(x,E,\bm \Omega\right) dE + Q\left(x,E,\bm \Omega\right)
 \end{gather}
 \end{subequations}
@@ -118,7 +118,6 @@ q\left(\bm r0_0 + s\bm\Omega,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(\
 \frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(\bm r0_0 + s\bm\Omega,E\right) \psi\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right) dE + Q\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right)
 \end{gather}
 \end{subequations}
-\hl{fix the d omega in other equations by adding a prime}
 
 This equation is easily solved using an integrating factor
 
@@ -129,8 +128,8 @@ This equation is easily solved using an integrating factor
 giving the following solution:
 
 \begin{gather}\label{e:MOCexact}
-\psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'} + \nonumber\\
-\intop_0^s q\left(\bm {r_0} + s'\bm\Omega,\bm\Omega, E\right)\exp{-\intop_0^s \Sigma_t\left(\bm {r_0} + s''\bm\Omega,E\right)ds''}ds'
+\psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{\left(-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'\right)} + \nonumber\\
+\intop_0^s q\left(\bm {r_0} + s'\bm\Omega,\bm\Omega, E\right)\exp{\left(-\intop_0^s \Sigma_t\left(\bm {r_0} + s''\bm\Omega,E\right)ds''\right)}ds'
 \end{gather}
 
 Now if $\bm {r_0}$ is on the boundary of the region of interest, the incoming flux $\psi\left(\bm {r_0},\bm \Omega, E\right)$ is known.  This allows the angular flux to be calculated at any point $s$ to be calculated along the characteristic direction $\bm r$.
@@ -138,9 +137,8 @@ Now if $\bm {r_0}$ is on the boundary of the region of interest, the incoming fl
 Up to this point, no approximations have been made in deriving the method of characteristics.  One approximation that is necessary to use MOC for practical problems is to assume some spatial shape for the source term $q$.  The simplest of these is the flat source approximation.  In this approximation, $q$ is assumed to be flat along $\bm r$.  This simplifies equation \ref{e:MOCexact} to the following:
 
 \begin{gather}\label{e:MOCflatsource}
-\psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'} + ...
+\psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{\left(-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'\right)} + ...
 \end{gather}
-\hl{Fix the exponential terms}
 % Derive it!
 % Things to talk about:
 %   Flat/linear sources
