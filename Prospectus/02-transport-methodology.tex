@@ -1,6 +1,6 @@
 \section{Boltzmann Equation}
 
-The Boltzmann equation for neutron transport is shown below: \hl{Some kind of background or derivation of this?}
+The Boltzmann equation for neutron transport is shown below: \ifdraft{\todo{Some kind of background or derivation of this?}}{}
 
 \begin{gather}\label{e:boltzmann}
 \frac{1}{v} \frac{\partial \psi}{\partial t} + \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E,t\right)\psi\left(x,E,\bm \Omega,t\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega, t\right) \psi\left(x,E',\bm \Omega',t\right) d\bm \Omega' + \nonumber\\
@@ -16,7 +16,7 @@ For many problems, the time dependence of the Boltzmann equation can be neglecte
 
 \subsection{Multi-group Approximation}
 
-One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (\hl{or} \ref{e:boltzmann}) is operated on by 
+One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (or \ref{e:boltzmann}\todo{Fix equation \#}) is operated on by 
 
 \begin{equation}
 \frac{1}{E_{n-1} - E_n}\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE
@@ -43,11 +43,11 @@ The quantities that we want to preserve through the use of the multi-group appro
 
 This definition of the multi-group flux and multi-group cross-sections guarantees that the total reaction rates in each group will be preserved.
 
-\hl{Talk about the dependence of the XS on the solution?}
+\ifdraft{\hl{Talk about the dependence of the XS on the solution?}}{}
 
 \subsection{Spherical Harmonics Approximation}
 
-One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.  To simplify the equation while preserving accuracy of the transport equation, the spherical harmonics approximation is applied to the scattering cross-sections.  This approximation assumes that the angle dependence of the scattering cross-sections can be represented as a series of Legendre polynomials with corresponding coefficients, shown in equation \hl{need an equation}:
+One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.  To simplify the equation while preserving accuracy of the transport equation, the spherical harmonics approximation is applied to the scattering cross-sections.  This approximation assumes that the angle dependence of the scattering cross-sections can be represented as a series of Legendre polynomials with corresponding coefficients, shown in equation \todo{equation \#}:
 
 \begin{equation}\label{e:sphericalHarmonicsXSExpansion}
 \end{equation}
@@ -71,23 +71,23 @@ Before proceeding, an important simplification must be made to the scattering so
 \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E,\bm \Omega' \rightarrow \bm \Omega\right)\psi\left(x,E',\bm\Omega'\right)d\bm\Omega' = \intop_0^{2\pi} \intop_{-1}^1 \Sigma_s\left(x,E' \rightarrow E,\mu'\right) \psi\left(x,E',\bm\Omega'\right) d\mu' d\gamma'
 \end{equation}
 
-\hl{Look at Larsen's notes to remember the exact mathematical details of this}
+\ifdraft{\hl{Look at Larsen's notes to remember the exact mathematical details of this}}{}
 
 \subsection{Diffusion Approximation}
 
-\hl{All over this, but need to finish up the Pn stuff first}
+\ifdraft{\hl{All over this, but need to finish up the Pn stuff first}}{}
 
 \subsection{Transport Correction}
 
-\hl{Not 100\% sure if this even needs to exist at all}
+\ifdraft{\hl{Not 100\% sure if this even needs to exist at all}}{}
 
 \section{Numerical Methods}
 
-A wide variety of numerical methods exist to solve the transport equation, but all of them can be categorized in one of two ways: stochastic (Monte Carlo) or deterministic methods.  Monte Carlo methods use random numbers to directly sample probability distribution functions based on the material cross-sections.  These methods can produce highly accurate, detailed results and make no assumptions about the materials or geometry of the problem.  However, because of the random nature of the method, there is always some uncertainty in the answer.  For large problems, the number of particles that must be simulated to achieve acceptable levels of uncertainty is often \hl{need a better word here} too burdensome for practical calculations.
+A wide variety of numerical methods exist to solve the transport equation, but all of them can be categorized in one of two ways: stochastic (Monte Carlo) or deterministic methods.  Monte Carlo methods use random numbers to directly sample probability distribution functions based on the material cross-sections.  These methods can produce highly accurate, detailed results and make no assumptions about the materials or geometry of the problem.  However, because of the random nature of the method, there is always some uncertainty in the answer.  For large problems, the number of particles that must be simulated to achieve acceptable levels of uncertainty is often too burdensome \ifdraft{\todo{Need a better word}}{} for practical calculations.
 
 All the work discussed in the following sections makes use of deterministic methods.  There are many different deterministic methods, but only the ones relevant to this work will be discussed in the coming sections.
 
-\subsection{Method of Characteristics}
+\ifdraft{\subsection{Method of Characteristics}
 
 One method that is commonly used to solve the transport equation is the Method of Characteristics (MOC).  This method allows the transport equation to be solved along a characteristic direction without any approximations, making it useful for complicated geometries, such as those found in nuclear reactors.  To derive this method, the right-hand side of equation \ref{e:ssboltzmann} is replaced by the variable $q$:
 
@@ -146,20 +146,19 @@ Up to this point, no approximations have been made in deriving the method of cha
 \subsection{Source Iteration}
 
 Using MOC, fixed source transport problems can be solved.  However, in realistic calculations it is rare that the scattering or fission sources are known.  In order to solve the transport equation for problems with an unknown source distribution, the equation can be re-formulated as follows:
-
 \hl{Insert source iteration form of the equation}
 
 Now making some initial guess for \hl{$\phi^-1$} allows us to solve for \hl{$\phi^0$}.  This process can be repeated for all \hl{$\phi^n$} using the previous iterate \hl{variable$\phi^{n-1}$}.  This method is known as Source Iteration (SI).
 
 Source iteration also has a convenient physical interpretation.  Selecting zero as the initial guess means that the first iterate \hl{$\phi^0$} is simply equal to the sum of sources of new neutrons.  Plugging the expression for \hl{$\phi^0$} into the equation for \hl{$\phi^1$}, we find that the \hl{$\phi^1$} is 
 
-\hl{make sure to talk about how ridiculously slowly it can converge.  Find some references for the math if possible}
+\hl{make sure to talk about how ridiculously slowly it can converge.  Find some references for the math if possible}}{}
 
 \subsection{Coarse-Mesh Finite Difference}\label{ss:CMFD}
 
 The source iteration method provides a convenient way of solving transport problems that guarantees a positive, correct solution.  However, because the source iteration can take hundreds of iterations to converge for typical reactor problems, it is important to accelerate the convergence.  The most common way of doing this is the Coarse-Mesh Finite Difference (CMFD) method.  This method involves solving a diffusion problem on a coarse grid to get the average magnitude of the flux in each coarse cell.  This is then used to scale the flux solution on the fine mesh cells.  In order to ensure consistency between the transport solution and the lower order diffusion solution, coupling coefficients are calculated on the boundaries of the coarse mesh cells to correct the leakage between the cells.
 
-To derive this method, we begin with equation \hl{diffusion equation} and apply the multigroup approximation:
+\ifdraft{To derive this method, we begin with equation \hl{diffusion equation} and apply the multigroup approximation:
 \hl{multi-group diffusion equation}
 
 \begin{equation}
@@ -198,4 +197,4 @@ This defines a relationship between the scalar fluxes on each sides of the inter
 
 
 
-\subsection{Collision Probabilities Method}
+\subsection{Collision Probabilities Method}}{}

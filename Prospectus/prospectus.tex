@@ -1,4 +1,4 @@
-\documentclass[12pt]{thesis-umich}
+\documentclass[12pt,draft]{thesis-umich}
 
 %\input{listingsConfig}
 \usepackage{titletoc}
@@ -12,6 +12,10 @@
 \usepackage[format=hang,font={bf}]{caption}
 \usepackage{bm}
 \usepackage{multirow}
+\usepackage{ifdraft}
+\usepackage{todonotes}
+
+% Set up refs
 \hypersetup{
     colorlinks,
     citecolor=red,
@@ -27,7 +31,6 @@
 \dottedcontents{subsubsection}[9.0em]{}{3.5em}{1pc}
 % \renewcommand{\thefigure}{\textbf{Figure \arabic{section}}}
 % \renewcommand \thesection{\Roman{section}.}
-
 
 \begin{document}
 
