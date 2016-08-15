@@ -1,4 +1,4 @@
-close all, clear all, clc;
+close all; clear variables; clc;
 
 %% Material IDs
 nmats = 8;
