@@ -1,6 +1,7 @@
 close all, clear all, clc;
 
 %% Material IDs
+nmats = 8;
 id_mod = 1;
 id_fuel = 2;
 id_control = 3;
@@ -37,6 +38,11 @@ nmesh_gap = 1;
 nmesh_clad = 1;
 nmesh_gtube = nmesh_clad;
 
+% Cross-sections
+igroup = 8;
+xstr_list = ones(nmats,8); %(ngroups,nmats)
+source_list = ones(nmats,8); %(ngroups,nmats)
+
 %% Setup Problem
 % Geometry
 mesh_list = [nmesh_mod; nmesh_fuel; nmesh_control; nmesh_clad; nmesh_gap; nmesh_gtube; nmesh_mod; nmesh_gap];
@@ -53,12 +59,6 @@ widths(id_gtube,1) = gtuberad(2) - gtuberad(1);
 widths(id_controlmod,1) = tmp - gtuberad(2);
 widths(id_controlgap,1) = gtuberad(1) - controlrad;
 widths = widths./mesh_list;
-
-% Cross-sections
-xstr_list = [1.0; 1.0; 1.0; 1.0; 1.0; 1.0; 1.0; 1.0];
-
-% Source
-source_list = [1.0; 1.0; 1.0; 1.0; 1.0; 1.0; 1.0; 1.0];
 
 % Ray Parameters
 if (npol == 1)
@@ -99,8 +99,8 @@ end
 sourcemesh(1:ncells) = 0.0;
 xstrmesh(1:ncells) = 0.0;
 for i=1:ncells
-    sourcemesh(i) = source_list(matmesh(i));
-    xstrmesh(i) = xstr_list(matmesh(i));
+    sourcemesh(i) = source_list(matmesh(i),igroup);
+    xstrmesh(i) = xstr_list(matmesh(i),igroup);
 end
 
 % Set up solution variables
@@ -148,9 +148,8 @@ angflux_plot(1:2:2*ncells+1,:,:) = angflux_edge;
 angflux_plot(2:2:2*ncells,:,:) = angflux_avg;
 
 figure(1);
-plot(position_all,angflux_plot(:,:,1),'b',position_all,angflux_plot(:,:,2),'r')
-%plot(position_edge,angflux_edge(:,1,1),'b',position_center,angflux_avg(:,1,1),'b', ...
-%    position_edge,angflux_edge(:,1,2),'r',position_center,angflux_avg(:,1,2),'r');
+ipol=1;
+plot(position_all,angflux_plot(:,ipol,1),'b',position_all,angflux_plot(:,ipol,2),'r')
 xlabel('Position (cm)')
 ylabel('Angular Flux')
 
