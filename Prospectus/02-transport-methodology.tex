@@ -45,21 +45,45 @@ This definition of the multi-group flux and multi-group cross-sections guarantee
 
 \ifdraft{\hl{Talk about the dependence of the XS on the solution?}}{}
 
+\subsection{Discrete Ordinates Approximation}
+
+\ifdraft{
+\begin{itemize}
+\item \hl{Make sure scalar flux is defined in terms of angular flux somewhere}
+\item \hl{Show discretization}
+\item \hl{Mention quadratures}
+\end{itemize}
+}{}
+
 \subsection{Spherical Harmonics Approximation}
 
-One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.  To simplify the equation while preserving accuracy of the transport equation, the spherical harmonics approximation is applied to the scattering cross-sections.  This approximation assumes that the angle dependence of the scattering cross-sections can be represented as a series of Legendre polynomials with corresponding coefficients, shown in equation \todo{equation \#}:
+One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.\ifdraft{\hl{Rearrange this: Simplify scattering source, introduce Legendre polynomials, then show how that simplifies the scattering source/XS}}{}  To simplify the equation while preserving accuracy of the transport equation, the spherical harmonics approximation is applied to the scattering cross-sections.  This approximation assumes that the angle dependence of the scattering cross-sections can be represented as a series of Legendre polynomials with corresponding coefficients, shown in equation \todo{equation}:
 
 \begin{equation}\label{e:sphericalHarmonicsXSExpansion}
 \end{equation}
 
-All Legendre polynomials are orthonormal, meaning that each $n$-th polynomial has the following properties:
+Legendre polynomials can be defined via the following recurrence relation:
 
 \begin{subequations}
 \begin{equation}
-\intop_{-1}^1 P_n\left(x\right) dx =
+P_{n+1}\left(x\right) = \frac{\left(2n+1\right)xP_n\left(x\right) - nP_{n-1}\left(x\right)}{n+1}
 \end{equation}
 \begin{equation}
-\intop_{-1}^1 P_n\left(x\right) P_m\left(x\right) dx = \delta_{n,m} = \begin{cases} 1, & n = m \\
+P_0\left(x\right) = 1
+\end{equation}
+\begin{equation}
+P_1\left(x\right) = x
+\end{equation}
+\end{subequations}
+
+Furthermore, all Legendre polynomials are orthonormal, meaning that they obey the following property:
+
+\begin{subequations}
+\begin{equation}
+\intop_{-1}^1 P_n\left(x\right) P_m\left(x\right) dx = \frac{2}{2n+1}\delta_{n,m}
+\end{equation}
+\begin{equation}
+\delta_{n,m} = \begin{cases} 1, & n = m \\
 0, & n \neq m
 \end{cases}
 \end{equation}
