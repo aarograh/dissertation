@@ -1,5 +1,4 @@
 function [ matmesh, finemesh, coarsemesh ] = mesh(pinmap, cells, rad, cellmesh, hpitch)
-%function [ matmesh, finemesh, coarsemesh ] = mesh(pintypes, pinmap, cells, mesh_list, widths)
 %MESH Summary of this function goes here
 %   pinmap   - map of pintypes used in the problem
 %   cells    - list of materials in each region of each pin
