@@ -1,10 +1,11 @@
-function [ matmesh, finemesh, coarsemesh ] = mesh(pinmap, cells, rad, cellmesh, hpitch)
+function [ matmesh, finemesh, coarsemesh ] = mesh(pinmap, cells, rad, cellmesh, pitch, diag)
 %MESH Summary of this function goes here
 %   pinmap   - map of pintypes used in the problem
 %   cells    - list of materials in each region of each pin
 %   rad      - list of radii for each region of each pin
 %   cellmesh - List of FSR per region of each pin
-%   hpitch    - The halfpitch of the problem
+%   pitch    - The pitch of the problem
+%   diag     - Flag to indicate if pin is being traced horizontally or diagonally
 
 % Initialize information
 npins = size(pinmap,2);
@@ -13,6 +14,10 @@ nfinecells = 0;
 ncoarsecells = 0;
 finemesh(nfinecells+1) = 0.0;
 coarsemesh(ncoarsecells+1) = 0.0;
+hpitch = pitch/2.0;
+if diag
+    hpitch = sqrt(2)*hpitch;
+end
 
 % Loop over pins
 for i=1:npins
