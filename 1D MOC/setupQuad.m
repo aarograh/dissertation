@@ -1,5 +1,5 @@
 function [ mu, mucos, weights ] = setupQuad( npol )
-%setupQuad Summary of this function goes here
+%SETUPQUAD Summary of this function goes here
 %   npol - number of polar angles requested by user
 
 if (npol == 1)
