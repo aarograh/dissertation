@@ -61,17 +61,8 @@ source_list(id_gtube:id_control,47) = [7.58E-04; 1.50E-06; 2.44E-02; 8.44399E-05
 source_list(id_controlgap,:) = source_list(id_gap,:);
 source_list(id_mod:id_fuel,47) = [0.136409169; 4.03E-03; 1.50E-06; 6.74E-03];
 
-%% Setup Problem
-% Ray Parameters
-if (npol == 1)
-    mu = pi/4;
-    mucos = cos(mu);
-    weights = 2*pi;
-elseif (npol == 2)
-elseif (npol == 4)
-elseif (npol == 8)
-elseif (npol == 16)
-end
+%% Quadrature
+[mu, mucos, weights] = setupQuad(npol);
 
 %% Mesh
 halfpitch = pitch/2.0;
