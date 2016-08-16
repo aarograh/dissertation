@@ -101,13 +101,13 @@ for i=1:npins
         end
     end
     regions = cells(j,1:k)';
-    for j=1:size(regions)
+    for j=1:size(regions) 
         for k=1:mesh_list(regions(j))
             matmesh(nfinecells) = regions(j);
-            finemesh(nfinecells+1) = finemesh(nfinecells) + widths(matmesh(nfinecells));
+            finemesh(nfinecells+1,1) = finemesh(nfinecells) + widths(matmesh(nfinecells));
             nfinecells = nfinecells+1;
         end
-         coarsemesh(ncoarsecells+1) = coarsemesh(ncoarsecells) + widths(regions(j))*mesh_list(regions(j));
+         coarsemesh(ncoarsecells+1,1) = coarsemesh(ncoarsecells) + widths(regions(j))*mesh_list(regions(j));
          ncoarsecells = ncoarsecells+1;
     end
 end
@@ -115,8 +115,8 @@ nfinecells = nfinecells - 1;
 ncoarsecells = ncoarsecells - 1;
 
 % Setup source and cross-sections
-sourcemesh(1:nfinecells) = 0.0;
-xstrmesh(1:nfinecells) = 0.0;
+sourcemesh(1:nfinecells,1) = 0.0;
+xstrmesh(1:nfinecells,1) = 0.0;
 for i=1:nfinecells
     sourcemesh(i) = source_list(matmesh(i),igroup);
     xstrmesh(i) = xstr_list(matmesh(i),igroup);
@@ -132,24 +132,7 @@ scalflux(1:nfinecells) = 0.0;
 
 %% Solve Problem
 
-for i=1:nfinecells
-    k = nfinecells-i+1;
-    for j=1:npol
-        % Forward Sweep
-        dx = finemesh(i+1)-finemesh(i);
-        tmp = exp(-xstrmesh(i)*dx/mucos(j));
-        angflux_edge(i+1,j,1) = angflux_edge(i,j,1)*tmp + sourcemesh(i)*(1.0-tmp);
-        angflux_avg(i,j,1) = 0.5*(angflux_edge(i,j,1) + angflux_edge(i+1,j,1));
-        scalflux(i) = scalflux(i) + angflux_avg(i,j,1)*weights(j);
-        
-        % Backward Sweep
-        dx = finemesh(k+1)-finemesh(k);
-        tmp = exp(-xstrmesh(k)*dx/mucos(j));
-        angflux_edge(k,j,2) = angflux_edge(k+1,j,2)*tmp + sourcemesh(k)*(1.0-tmp);
-        angflux_avg(k,j,2) = 0.5*(angflux_edge(k,j,2) + angflux_edge(k+1,j,2));
-        scalflux(k) = scalflux(k) + angflux_avg(k,j,2)*weights(j);
-    end
-end
+[angflux_edge, angflux_avg, scalflux] = sweep(finemesh, xstrmesh, sourcemesh, 0.0, mucos, weights);
 
 %% Generate Plots
 % Setup
