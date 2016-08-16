@@ -14,6 +14,13 @@ For many problems, the time dependence of the Boltzmann equation can be neglecte
 \frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E\right) \psi\left(x,E,\bm \Omega\right) dE + Q\left(x,E,\bm \Omega\right)
 \end{gather}
 
+\ifdraft{
+\begin{itemize}
+\item \hl{Add description of each term}
+\item \hl{Change the scattering source to use the dot product}
+\end{itemize}
+}{}
+
 \subsection{Multi-group Approximation}
 
 One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (or \ref{e:boltzmann}\todo{Fix equation \#}) is operated on by 
@@ -46,6 +53,12 @@ This definition of the multi-group flux and multi-group cross-sections guarantee
 \ifdraft{\hl{Talk about the dependence of the XS on the solution?}}{}
 
 \subsection{Discrete Ordinates Approximation}
+
+To discretize the transport equation in the angular variable, the discrete ordinates (S$_n$) method can be applied.  To apply this method, we integrate the transport equation over a portion of the angular domain:
+
+\begin{dmath}
+\intop_{\mu_{i-\frac{1}{2}}}^{\mu_{i+\frac{1}{2}}}\intop_{\gamma_{j-\frac{1}{2}}}^{\gamma_{j+\frac{1}{2}}} \left[ \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) {\psi\left(x,E',\bm \Omega'\right)} d\bm \Omega' + \frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E\right) \psi\left(x,E,\bm \Omega\right) dE + Q\left(x,E,\bm \Omega\right) \right] d\gamma d\mu
+\end{dmath}
 
 \ifdraft{
 \begin{itemize}
