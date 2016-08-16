@@ -16,6 +16,9 @@ classdef quadrature
                 obj.angles = pi/4;
                 obj.weights = 2*pi;
                 obj.cosines = cos(obj.angles);
+            else
+                fprintf('ERROR: Number of polar angles must be 1.')
+                exit(npol)
             end
         end
     end
