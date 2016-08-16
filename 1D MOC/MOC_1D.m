@@ -83,36 +83,9 @@ elseif (npol == 16)
 end
 
 % Mesh
-ncoarsecells = 0;
-nfinecells = 0;
-coarsemesh(ncoarsecells+1) = 0.0;
-finemesh(nfinecells+1) = 0.0;
-nfinecells = nfinecells+1;
-ncoarsecells = ncoarsecells+1;
-for i=1:npins
-    for j=1:size(pintypes,1)
-        if strcmp(pinmap(i,:),pintypes(j,:))
-            for k=size(cells,2):-1:1
-                if (cells(j,k) ~= 0)
-                    break
-                end
-            end
-            break
-        end
-    end
-    regions = cells(j,1:k)';
-    for j=1:size(regions) 
-        for k=1:mesh_list(regions(j))
-            matmesh(nfinecells) = regions(j);
-            finemesh(nfinecells+1,1) = finemesh(nfinecells) + widths(matmesh(nfinecells));
-            nfinecells = nfinecells+1;
-        end
-         coarsemesh(ncoarsecells+1,1) = coarsemesh(ncoarsecells) + widths(regions(j))*mesh_list(regions(j));
-         ncoarsecells = ncoarsecells+1;
-    end
-end
-nfinecells = nfinecells - 1;
-ncoarsecells = ncoarsecells - 1;
+[matmesh, finemesh, coarsemesh] = mesh(pintypes, pinmap, cells, mesh_list, widths);
+nfinecells = size(finemesh,1)-1;
+ncoarsecells = size(coarsemesh,1)-1;
 
 % Setup source and cross-sections
 sourcemesh(1:nfinecells,1) = 0.0;
@@ -122,16 +95,7 @@ for i=1:nfinecells
     xstrmesh(i) = xstr_list(matmesh(i),igroup);
 end
 
-% Set up solution variables
-% Angular flux at cell boundaries (nfinecells+1, npol, 2); third index is forward and backward directions
-angflux_edge(1:nfinecells+1,1:npol,1:2) = 0.0;
-% Average angular flux at cell center (nfinecells, npol, 2); third index is forward and backward directions
-angflux_avg(1:nfinecells,1:npol,1:2) = 0.0;
-% Scalar flux at cell center
-scalflux(1:nfinecells) = 0.0;
-
 %% Solve Problem
-
 [angflux_edge, angflux_avg, scalflux] = sweep(finemesh, xstrmesh, sourcemesh, 0.0, mucos, weights);
 
 %% Generate Plots
