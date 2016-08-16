@@ -27,6 +27,15 @@ cladrad = [fuelrad, 0.475];
 gtuberad = [controlrad, cladrad(2)];
 modsize = 1; % 1: narrow water; 2: wide water
 
+% New Input Processing
+newpinmap = [1, 2, 1];
+newcells = [4, 2, 1;
+    8, 5, 7];
+cellrad = [ 0.4096, 0.475;
+    0.4, 0.475];
+cellmesh = [ 20 2 10;
+    20 3 10];
+
 % Quadrature
 npol = 1;
 
@@ -43,11 +52,9 @@ nmesh_control = 30;
 % Cross-sections
 ngroups = 47;
 igroup = 47;
-xstr_list = ones(nmats,ngroups);
-xstr_list(id_mod:id_fuel,47) = [4.394922836; 0.299908964; 3.44E-05; 1.489061075];
-xstr_list(id_gtube:id_control,47) = [0.299908964; 3.44E-05; 4.39E+00; 19.13440383];
-xstr_list(id_controlmod,:) = xstr_list(id_mod,:);
-xstr_list(id_controlgap,:) = xstr_list(id_controlgap,:);
+% TODO: Get rid of this, add real cross-sections
+xstr_list = genXSData(nmats, ngroups, id_mod, id_clad, id_gap, id_fuel, id_gtube, id_controlgap, ...
+    id_controlmod, id_control);
 source_list = ones(nmats,ngroups);
 source_list(id_controlmod,:) = source_list(id_mod,:);
 source_list(id_gtube:id_control,47) = [7.58E-04; 1.50E-06; 2.44E-02; 8.44399E-05];
@@ -55,22 +62,6 @@ source_list(id_controlgap,:) = source_list(id_gap,:);
 source_list(id_mod:id_fuel,47) = [0.136409169; 4.03E-03; 1.50E-06; 6.74E-03];
 
 %% Setup Problem
-% Geometry
-mesh_list = [nmesh_mod; nmesh_clad; nmesh_gap; nmesh_fuel; nmesh_gtube; nmesh_controlgap; nmesh_controlmod; nmesh_control];
-tmp = pitch/2.0;
-if (modsize == 2)
-    tmp = sqrt(2)*tmp;
-end
-widths(id_mod,1) = tmp - cladrad(2);
-widths(id_fuel,1) = fuelrad*2.0;
-widths(id_control,1) = controlrad*2.0;
-widths(id_clad,1) = cladrad(2) - cladrad(1);
-widths(id_gap,1) = cladrad(1) - fuelrad;
-widths(id_gtube,1) = gtuberad(2) - gtuberad(1);
-widths(id_controlmod,1) = tmp - gtuberad(2);
-widths(id_controlgap,1) = gtuberad(1) - controlrad;
-widths = widths./mesh_list;
-
 % Ray Parameters
 if (npol == 1)
     mu = pi/4;
@@ -82,20 +73,17 @@ elseif (npol == 8)
 elseif (npol == 16)
 end
 
-% Mesh
-[matmesh, finemesh, coarsemesh] = mesh(pintypes, pinmap, cells, mesh_list, widths);
+%% Mesh
+halfpitch = pitch/2.0;
+if (modsize == 2)
+    halfpitch = sqrt(2)*halfpitch;
+end
+[matmesh, finemesh, coarsemesh] = mesh(newpinmap, newcells, cellrad, cellmesh, halfpitch);
 nfinecells = size(finemesh,1)-1;
 ncoarsecells = size(coarsemesh,1)-1;
 
-% Setup source and cross-sections
-sourcemesh(1:nfinecells,1) = 0.0;
-xstrmesh(1:nfinecells,1) = 0.0;
-for i=1:nfinecells
-    sourcemesh(i) = source_list(matmesh(i),igroup);
-    xstrmesh(i) = xstr_list(matmesh(i),igroup);
-end
-
-%% Solve Problem
+%% Perform Sweep
+[sourcemesh, xstrmesh] = setupFSP(source_list, xstr_list, matmesh, igroup);
 [angflux_edge, angflux_avg, scalflux] = sweep(finemesh, xstrmesh, sourcemesh, 0.0, mucos, weights);
 
 %% Generate Plots
