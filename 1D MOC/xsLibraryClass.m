@@ -33,7 +33,7 @@ classdef xsLibraryClass
                 % Loop until we actually hit the XS set
                 nextline = obj.getLine();
                 k = strfind(nextline,'XSMACRO');
-                while isempty(k)
+                while isempty(k) || nextline(1) == '!'
                     nextline = obj.getLine();
                     k = strfind(nextline,'XSMACRO');
                 end
