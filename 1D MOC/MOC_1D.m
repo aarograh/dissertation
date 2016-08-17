@@ -13,19 +13,9 @@ function [ solution, mesh ] = ...
 %   scattype - Transport Scattering option.  Currently accepted values are P0.
 %   BCond    - Boundary condition for MOC sweeps
 
-%% Material IDs
-nmats = 5;
-id_mod = 1;
-id_clad = 2;
-id_gap = 3;
-id_fuel = 4;
-id_control = 5;
-
 %% Cross-sections
 display('Setting up XS Library...')
 xsLib = xsLibraryClass( filename, scattype );
-source_list = ones(nmats);
-source_list(id_mod:id_control) = [0.136409169; 4.03E-03; 1.50E-06; 6.74E-03; 8.44399E-05];
 
 %% Quadrature
 display('Setting up Quadrature...')
@@ -41,11 +31,11 @@ display('Initializing Solution...')
 solution = solutionClass(mesh.nfsrcells,npol,xsLib.ngroups,BCond);
 
 % Solve
-solution = solution.update();
 for igroup=1:xsLib.ngroups
     display(sprintf('Sweeping Energy Group %i',igroup))
-    mesh = setupFSP(solution, source_list, xsLib, mesh, igroup);
+    mesh = setupFSP(solution, xsLib, mesh, igroup);
     solution = sweep(igroup, solution, mesh, quad);
+    solution = solution.update();
 end
 
 end

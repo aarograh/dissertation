@@ -38,7 +38,7 @@ pinmap_unrodded = [1, 3, 1, 1, 1];
 %% Generate Plots
 hold on
 ipol=1;
-igroup = 1;
+igroup = 7;
 
 % Angular Flux Plots
 figure(1);
@@ -49,10 +49,10 @@ ax.XAxis.TickValues = mesh.xsedges;
 ax.XAxis.MinorTickValues = mesh.fsredges;
 ax.XTickLabelRotation = 45;
 tmp = 0;
-for i=1:size(solution)
-    tmp = max(tmp,solution(i).angflux(:,ipol,1,igroup));
+for i=1:length(solution)
+    tmp = max(tmp,max(solution(i).angflux(:,ipol,1,igroup)));
 end
-axis([min(mesh.xsedges), max(mesh.xsedges), 0.0, 1.05*max(solution(2).angflux(:,ipol,1,igroup))]);
+axis([min(mesh.xsedges), max(mesh.xsedges), 0.0, 1.05*tmp]);
 xlabel('Position (cm)')
 ylabel('Angular Flux')
 title('Right-going Angular Flux vs. position')
