@@ -1,6 +1,7 @@
 classdef quadratureClass
-    %QUADRATURE Summary of this class goes here
-    %   Contains polar quadrature data for 1D MOC
+    %QUADRATURECLASS Contains quadrature information
+    %   Contains the angles, their cosines, and weights
+    %   for a polar quadrature for 1D MOC
     
     properties
         npol
@@ -11,6 +12,9 @@ classdef quadratureClass
     
     methods
         function obj = quadratureClass(npol)
+            %QUADRATURECLASS Sets up a quadrature class
+            %   npol - Number of polar angles.  Currently, only values of
+            %          1 are accepted.
             obj.npol = npol;
             if npol == 1
                 obj.angles = pi/4;

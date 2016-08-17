@@ -1,9 +1,9 @@
 function [ mesh ] = setupFSP( source_list, xsLib, mesh, igroup )
-%SETUPFSP Summary of this function goes here
+%SETUPFSP Sets up source and XS mesh for fixed source MOC problem
 %   source_list - multigroup source array
 %   xsLib       - Cross-section library object
-%   matmesh     - materials mesh (FSR)
-%   igroup      - group index
+%   mesh        - The mesh for this problem
+%   igroup      - Group index
 
 nfinecells = size(mesh.materials,1);
 mesh.source(1:nfinecells,1) = 0.0;

@@ -1,6 +1,7 @@
 classdef xsClass
-    %XSCLASS Summary of this class goes here
-    %   Detailed explanation goes here
+    %XSCLASS Class which hold cross-section data
+    %   This class holds the multi-group XS data for
+    %   a single type of material.
     
     properties
         name
@@ -16,15 +17,18 @@ classdef xsClass
     
     methods
         function obj = xsClass( name, order )
+            %XSCLASS Consructor for xsClass
+            %   name  - name of the XS set
+            %   order - Scattering order for the xsSet
             obj.name = name;
             obj.scatOrder = order;
         end
         
-        function obj = xsClass2( ngroups )
-            obj.transport(1:ngroups,1) = 0.0;
-        end
-        
         function obj = calcTXS( obj, transOpt )
+            %CALCTXS Calculates transport and total cross-sections
+            %   obj - the XS set object
+            %   transOpt - Transport correction option.  Currently only values
+            %              of P0 are allowed.
             obj.total = obj.absorption + obj.fission + sum(obj.scatter,1);
             switch(transOpt)
                 case('P0')

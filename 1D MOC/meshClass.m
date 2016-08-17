@@ -1,5 +1,5 @@
 classdef meshClass
-    %MESH Object to store FSR and XS meshes and materials
+    %MESHCLASS Object to store FSR and XS meshes and materials
     %   This object store three different types of meshes.
     %   The first is matmesh.  This contains the materials
     %   for each region.  Currently these materials are
@@ -22,10 +22,10 @@ classdef meshClass
     
     methods
         function obj = meshClass(pinmap, cells, rad, cellmesh, pitch, diag)
-            %MESH Generates mesh object given geometry information
-            %   pinmap   - map of pintypes used in the problem
-            %   cells    - list of materials in each region of each pin
-            %   rad      - list of radii for each region of each pin
+            %MESHCLASS Generates mesh object given geometry information
+            %   pinmap   - Map of pintypes used in the problem
+            %   cells    - List of materials in each region of each pin
+            %   rad      - List of radii for each region of each pin
             %   cellmesh - List of FSR per region of each pin
             %   pitch    - The pitch of the problem
             %   diag     - Flag to indicate if pin is being traced horizontally or diagonally

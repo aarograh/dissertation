@@ -15,6 +15,9 @@ classdef xsLibraryClass
     
     methods
         function obj = xsLibraryClass( filename )
+            %XSLIBRARYCLASS Constructor for xsLibraryClass
+            %   filename - Name of the XS Library file
+            
             obj = obj.openfile(filename);
             
             % Get library name
@@ -72,15 +75,27 @@ classdef xsLibraryClass
         end
         
         function obj = openfile( obj, filename )
+            %OPENFILE Opens the XS Library file
+            %   obj      - The xsLibraryClass object
+            %   filename - The XS Library filename
+            
             obj.fileid = fopen(filename);
+            
         end
         
         function obj = closefile( obj )
+            %CLOSEFILE Closes the XS Library file
+            %   obj      - The xsLibraryClass object
+            
             fclose(obj.fileid);
             obj.fileid = 0;
+            
         end
         
         function [ nextline, EOF ] = getLine( obj )
+            %GETLINE Gets the next line from the XS Library file
+            %   obj      - The xsLibraryClass object
+            
             nextline = fgets(obj.fileid);
             if ischar(nextline)
                 nextline = strrep(nextline,sprintf('\n'),'');
@@ -88,6 +103,7 @@ classdef xsLibraryClass
             else
                 EOF = 1;
             end
+            
         end
     end
     
