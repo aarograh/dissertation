@@ -1,5 +1,5 @@
 function [ angflux, scalflux, mesh ] = ...
-    MOC_1D( pinmap, pitch, diag, pinmats, radii, pinmesh, npol, filename )
+    MOC_1D( pinmap, pitch, diag, pinmats, radii, pinmesh, npol, filename, scattype )
 %MOC_1D Solves 1D MOC given geometry and quadrature inputs
 %   pinmap   - Map of pins in problem (vector, integer)
 %   pitch    - Pitch for each pin (scalar, double)
@@ -10,6 +10,7 @@ function [ angflux, scalflux, mesh ] = ...
 %              (2D array, integer, one row per pin, one column per material)
 %   npol     - Number of polar angles to use for the ray (scalar, integer, range[1,1])
 %   filename - Name of the XS Library file
+%   scattype - Transport Scattering option.  Currently accepted values are P0.
 
 %% Material IDs
 nmats = 5;
@@ -21,7 +22,7 @@ id_control = 5;
 
 %% Cross-sections
 ngroups = 47;
-xsLib = xsLibraryClass( filename );
+xsLib = xsLibraryClass( filename, scattype );
 source_list = ones(nmats,ngroups);
 source_list(id_mod:id_control,47) = [0.136409169; 4.03E-03; 1.50E-06; 6.74E-03; 8.44399E-05];
 

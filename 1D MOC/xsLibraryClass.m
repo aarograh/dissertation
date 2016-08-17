@@ -14,9 +14,11 @@ classdef xsLibraryClass
     end
     
     methods
-        function obj = xsLibraryClass( filename )
+        function obj = xsLibraryClass( filename, scattype )
             %XSLIBRARYCLASS Constructor for xsLibraryClass
             %   filename - Name of the XS Library file
+            %   scattype - Scatter type requested by user.  Currently
+            %              supported options are P0.
             
             obj = obj.openfile(filename);
             
@@ -68,7 +70,7 @@ classdef xsLibraryClass
                     end
                 end
                 % Calculate total cross-section and transport cross-section
-                obj.xsSets(i) = obj.xsSets(i).calcTXS( 'P0' );
+                obj.xsSets(i) = obj.xsSets(i).calcTXS( scattype );
             end
             
             obj = obj.closefile( );

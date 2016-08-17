@@ -18,11 +18,12 @@ pinmesh = [ 20 2 10;
 npol = 1;
 % XS Library Info
 xsfilename = '1group.xsl';
+scattype = 'P0';
 igroup = 47;
 
 % Solve
 [angflux, scalflux, mesh] = ...
-    MOC_1D(pinmap, pitch, diag, pinmats, radii, pinmesh, npol, xsfilename);
+    MOC_1D(pinmap, pitch, diag, pinmats, radii, pinmesh, npol, xsfilename, scattype);
 
 %% Generate Plots
 hold on
