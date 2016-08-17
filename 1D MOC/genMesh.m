@@ -1,5 +1,5 @@
-function [ matmesh, finemesh, coarsemesh ] = mesh(pinmap, cells, rad, cellmesh, pitch, diag)
-%MESH Summary of this function goes here
+function [ mesh ] = genMesh(pinmap, cells, rad, cellmesh, pitch, diag)
+%MESH Generates mesh object given geometry information
 %   pinmap   - map of pintypes used in the problem
 %   cells    - list of materials in each region of each pin
 %   rad      - list of radii for each region of each pin
@@ -12,8 +12,8 @@ npins = size(pinmap,2);
 nmats = size(cells,2);
 nfinecells = 0;
 ncoarsecells = 0;
-finemesh(nfinecells+1) = 0.0;
-coarsemesh(ncoarsecells+1) = 0.0;
+mesh.fsredges(nfinecells+1) = 0.0;
+mesh.xsedges(ncoarsecells+1) = 0.0;
 hpitch = pitch/2.0;
 if diag
     hpitch = sqrt(2)*hpitch;
@@ -41,14 +41,14 @@ for i=1:npins
             width = (rad(pinmap(i),j) - rad(pinmap(i),j-1));
         end
         % Set coarse mesh
-        coarsemesh(ncoarsecells+1,1) = coarsemesh(ncoarsecells) + width;
+        mesh.xsedges(ncoarsecells+1,1) = mesh.xsedges(ncoarsecells) + width;
         % Set material
         oldnfinecells = nfinecells;
         nfinecells = nfinecells + cellmesh(pinmap(i),j);
-        matmesh(oldnfinecells+1:nfinecells,1) = cells(pinmap(i),j);
+        mesh.materials(oldnfinecells+1:nfinecells,1) = cells(pinmap(i),j);
         % Set fine mesh
-        finemesh(oldnfinecells+1:nfinecells+1,1) = coarsemesh(ncoarsecells):width/cellmesh(pinmap(i),j):...
-            coarsemesh(ncoarsecells+1);
+        mesh.fsredges(oldnfinecells+1:nfinecells+1,1) = mesh.xsedges(ncoarsecells):width/cellmesh(pinmap(i),j):...
+            mesh.xsedges(ncoarsecells+1);
     end
     % Loop in -> out over cell descriptions
     for j=1:nreg
@@ -62,14 +62,14 @@ for i=1:npins
             width = (rad(pinmap(i),j) - rad(pinmap(i),j-1));
         end
         % Set coarse mesh
-        coarsemesh(ncoarsecells+1,1) = coarsemesh(ncoarsecells) + width;
+        mesh.xsedges(ncoarsecells+1,1) = mesh.xsedges(ncoarsecells) + width;
         % Set material
         oldnfinecells = nfinecells;
         nfinecells = nfinecells + cellmesh(pinmap(i),j);
-        matmesh(oldnfinecells+1:nfinecells,1) = cells(pinmap(i),j);
+        mesh.materials(oldnfinecells+1:nfinecells,1) = cells(pinmap(i),j);
         % Set fine mesh
-        finemesh(oldnfinecells+1:nfinecells+1,1) = coarsemesh(ncoarsecells):width/cellmesh(pinmap(i),j):...
-            coarsemesh(ncoarsecells+1);
+        mesh.fsredges(oldnfinecells+1:nfinecells+1,1) = mesh.xsedges(ncoarsecells):width/cellmesh(pinmap(i),j):...
+            mesh.xsedges(ncoarsecells+1);
     end
 end
 

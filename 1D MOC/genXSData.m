@@ -1,9 +1,7 @@
 function [ xstr_list ] = genXSData( nmats, ngroups, id_mod, id_clad, id_gap, id_fuel, id_gtube, ...
     id_controlgap, id_controlmod, id_control )
-%GENXSDATA Summary of this function goes here
-%   nmats       - Number of materials
-%   ngroups     - Number of energy groups
-%     Remaining variables are material IDs, and will be removed eventually
+%GENXSDATA Generates the cross-section data needed for MOC_1D
+%   TODO: Take in an XS file name
 
 xstr_list = ones(nmats,ngroups);
 xstr_list(id_mod:id_fuel,47) = [4.394922836; 0.299908964; 3.44E-05; 1.489061075];

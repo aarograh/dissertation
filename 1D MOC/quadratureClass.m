@@ -1,4 +1,4 @@
-classdef quadrature
+classdef quadratureClass
     %QUADRATURE Summary of this class goes here
     %   Contains polar quadrature data for 1D MOC
     
@@ -10,7 +10,7 @@ classdef quadrature
     end
     
     methods
-        function obj = quadrature(npol)
+        function obj = quadratureClass(npol)
             obj.npol = npol;
             if npol == 1
                 obj.angles = pi/4;
