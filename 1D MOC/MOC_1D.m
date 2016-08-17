@@ -34,9 +34,13 @@ quad = quadratureClass(npol);
 mesh = meshClass(pinmap, pinmats, radii, pinmesh, pitch, diag);
 
 %% Initialize Solution and Perform Sweeps
+% Initialize solution
 solution = solutionClass(mesh.nfsrcells,npol,xsLib.ngroups,BCond);
+
+% Solve
+solution = solution.update();
 for igroup=1:xsLib.ngroups
-    mesh = setupFSP(source_list, xsLib, mesh, igroup);
+    mesh = setupFSP(solution, source_list, xsLib, mesh, igroup);
     solution = sweep(solution, mesh, quad);
 end
 

@@ -4,14 +4,8 @@ function solution = sweep( solution, mesh, quad )
 %   mesh     - The mesh object to solve
 %   quad     - Quadrature to use for the MOC sweep
 
-nfinecells = size(mesh.fsredges,1)-1;
-solution = solution.update( );
-solution.angflux_cellavg(1:nfinecells,1:quad.npol,1:2) = 0.0;
-solution.scalflux(:,:,2) = solution.scalflux(:,:,1)
-solution.scalflux(1:nfinecells) = 0.0;
-
-for i=1:nfinecells
-    k = nfinecells-i+1;
+for i=1:mesh.nfsrcells
+    k = mesh.nfsrcells-i+1;
     for j=1:quad.npol
         % Forward Sweep
         dx = mesh.fsredges(i+1)-mesh.fsredges(i);
