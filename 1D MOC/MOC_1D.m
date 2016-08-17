@@ -12,7 +12,7 @@ function [ angflux, scalflux, mesh ] = ...
 %   filename - Name of the XS Library file
 
 %% Material IDs
-nmats = 8;
+nmats = 5;
 id_mod = 1;
 id_clad = 2;
 id_gap = 3;

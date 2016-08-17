@@ -10,8 +10,6 @@ mesh.source(1:nfinecells,1) = 0.0;
 for i=1:nfinecells
     mesh.source(i) = source_list(mesh.materials(i),47);
     mesh.xs.transport(i) = xsLib.xsSets(mesh.materials(i)).transport(igroup);
-    mesh.xs.transport(i)
-    mesh.materials(i)
 end
 
 end
