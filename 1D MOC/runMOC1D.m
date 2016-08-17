@@ -1,24 +1,28 @@
 close all; clear variables; clc;
 
 %% Rodded Case
-% Core Data
+% 1: Fuel Pin
+% 2: Control Pin
 pinmap = [1, 2, 1];
 pitch = 1.26;
 diag = 0; % flat to indicate whether pin moves through narrow (0) or wide (1) water
 % Pin information
 pinmats = [4, 2, 1;
-    8, 5, 7];
+    5, 2, 1];
+
 radii = [ 0.4096, 0.475;
     0.4, 0.475];
 pinmesh = [ 20 2 10;
     20 3 10];
 % Quadrature
 npol = 1;
-% Energy Group Info
+% XS Library Info
+xsfilename = '1group.xsl';
 igroup = 47;
+
 % Solve
 [angflux, scalflux, mesh] = ...
-    MOC_1D(pinmap, pitch, diag, pinmats, radii, pinmesh, npol, igroup);
+    MOC_1D(pinmap, pitch, diag, pinmats, radii, pinmesh, npol, xsfilename);
 
 %% Generate Plots
 hold on
