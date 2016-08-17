@@ -9,8 +9,8 @@ ORNL 47-Group Library, Group 47
 !
 !In the third line the energy group bounds are made up.
 !
-! Template for XS set
-! XSMACRO <name> <scattering order>
+! Template for XS set.  Keyword is "xsmacro" in ALL CAPS
+! <keyword> <name> <scattering order>
 ! xs_absorption xs_nufission xs_fission chi ! repeat for each group
 ! Scattering matrix for scatters from column to row
 ! Repeat scattering matrix for each scattering order (starting with 0)
