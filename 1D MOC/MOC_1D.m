@@ -1,5 +1,5 @@
-function [ angflux, scalflux, mesh ] = ...
-    MOC_1D( pinmap, pitch, diag, pinmats, radii, pinmesh, npol, filename, scattype )
+function [ solution, mesh ] = ...
+    MOC_1D( pinmap, pitch, diag, pinmats, radii, pinmesh, npol, filename, scattype, BCond )
 %MOC_1D Solves 1D MOC given geometry and quadrature inputs
 %   pinmap   - Map of pins in problem (vector, integer)
 %   pitch    - Pitch for each pin (scalar, double)
@@ -11,6 +11,7 @@ function [ angflux, scalflux, mesh ] = ...
 %   npol     - Number of polar angles to use for the ray (scalar, integer, range[1,1])
 %   filename - Name of the XS Library file
 %   scattype - Transport Scattering option.  Currently accepted values are P0.
+%   BCond    - Boundary condition for MOC sweeps
 
 %% Material IDs
 nmats = 5;
@@ -32,10 +33,11 @@ quad = quadratureClass(npol);
 %% Mesh
 mesh = meshClass(pinmap, pinmats, radii, pinmesh, pitch, diag);
 
-%% Perform Sweeps
+%% Initialize Solution and Perform Sweeps
+solution = solutionClass(mesh.nfsrcells,npol,xsLib.ngroups,BCond);
 for igroup=1:xsLib.ngroups
     mesh = setupFSP(source_list, xsLib, mesh, igroup);
-    [angflux, ~, scalflux] = sweep(mesh, 0.0, quad);
+    solution = sweep(solution, mesh, quad);
 end
 
 end

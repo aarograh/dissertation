@@ -13,6 +13,8 @@ classdef meshClass
     %   is a subset of the XS mesh.
     
     properties
+        nxscells
+        nfsrcells
         materials
         xsedges
         fsredges
@@ -95,6 +97,8 @@ classdef meshClass
                         obj.xsedges(ncoarsecells):width/cellmesh(pinmap(i),j):obj.xsedges(ncoarsecells+1);
                 end
             end
+            obj.nxscells = ncoarsecells;
+            obj.nfsrcells = nfinecells;
             
         end
     end
