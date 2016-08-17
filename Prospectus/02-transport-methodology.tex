@@ -2,24 +2,45 @@
 
 The Boltzmann equation for neutron transport is shown below: \ifdraft{\todo{Some kind of background or derivation of this?}}{}
 
-\begin{gather}\label{e:boltzmann}
-\frac{1}{v} \frac{\partial \psi}{\partial t} + \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E,t\right)\psi\left(x,E,\bm \Omega,t\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega, t\right) \psi\left(x,E',\bm \Omega',t\right) d\bm \Omega' + \nonumber\\
-\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E,t\right) \psi\left(x,E,\bm \Omega,t\right) dE + Q\left(x,E,\bm \Omega,t\right)
-\end{gather}
+\begin{dmath}\label{e:boltzmann}
+{\frac{1}{v} \frac{\partial \psi}{\partial t} + \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E,t\right)\psi\left(x,E,\bm \Omega,t\right)} = {\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(x,E,t\right) \psi\left(x,E,\bm \Omega,t\right) d\bm\Omega dE + Q\left(x,E,\bm \Omega,t\right)}
+\end{dmath}
 
 For many problems, the time dependence of the Boltzmann equation can be neglected.  Doing do eliminates the first term of the equation above.  In order to ensure neutron balance, this equation is normally formulated as an eigenvalue problem.  The eigenvalue $\lambda = \frac{1}{k}$ allows the two sides of the equation to balance.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, which is the only meaningful solution for steady-state problems.  The eigenvalue form of the Boltzmann equation is shown below:
 
-\begin{gather}\label{e:ssboltzmann}
-\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' + \nonumber\\
-\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E\right) \psi\left(x,E,\bm \Omega\right) dE + Q\left(x,E,\bm \Omega\right)
-\end{gather}
+\begin{dmath}\label{e:ssboltzmann}
+{\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = \intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(x,E,t\right) \psi\left(x,E,\bm \Omega,t\right) d\bm\Omega dE + Q\left(x,E,\bm \Omega\right)}
+\end{dmath}
 
-\ifdraft{
-\begin{itemize}
-\item \hl{Add description of each term}
-\item \hl{Change the scattering source to use the dot product}
-\end{itemize}
-}{}
+Before addressing the methods used to solve equation \ref{e:ssboltzmann}, we will briefly define each of the terms in the equation.  The first term (equation \ref{e:BTEtermsStreaming} is the streaming term.  This term is made up of the scalar product of the flight direction $\bm \Omega$ and the gradient of the angular flux $\bm \nabla \psi$.  This describes the loss of neutrons from each point in space due to their movement to other points in space.
+
+\begin{equation}\label{e:BTEtermsStreaming}
+\bm \Omega \cdot \bm \nabla \psi
+\end{equation}
+
+The second term is the total reaction rate (equation \ref{e:BTEtermsTotalRR}).  The angular flux $\psi\left(x,E\bm\Omega\right)$ multiplied by the total macroscopic cross-section $\Sigma_t\left(x,E\right)$ gives the total reaction rate for neutrons in $\left(x,E,\bm\Omega\right)$.  This, together with the streaming term, gives the total loss of neutrons for a steady-state problem.
+
+\begin{equation}\label{e:BTEtermsTotalRR}
+\Sigma_t\left(x,E\right)\psi\left(x,E\bm\Omega\right)
+\end{equation}
+
+The first term on the right-hand side is the scattering source of neutrons from all energies and angles $E'$ and $\bm\Omega'$ into $E$ and $\bm\Omega$, shown in equation \ref{e:BTEtermsScatteringSource}.  Normally the differential scattering cross-section would be written as $\Sigma_s\left(x,E'\rightarrow E,\bm\Omega'\rightarrow\bm\Omega\right)$.  Because the scattering is symmetric about the incoming direction $\bm\Omega'$, the results of the scattering are only dependent on the cosine of the angle between the directions, allowing the cross-section to be written as a function of the dot product between the angles instead.
+
+\begin{equation}\label{e:BTEtermsScatteringSource}
+\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' dE'
+\end{equation}
+
+The second term on the right-hand side is the source of neutrons from fission, shown in equation \ref{e:BTEtermsFissionSource}.  The integrals over energy and angle gives the total fission source, while the distribution $\chi\left(E\right)$ gives the amount of the fission source that is deposited into energy $E$.  Fission is isotropic, requiring the total fission source to be divided by $4\pi$.  Finally, in order to ensure balance between the left- and right-hand sides of the equation, the fission source is usually multiplied by the eigenvalue $\frac{1}{k}$.  This allows for a mathematical solution to the equation even if the loss and production terms are not equal.  When these terms are equal, the eigenvalue is 1, which means that a solution to the steady-state equation is physically possible.
+
+\begin{equation}\label{e:BTEtermsFissionSource}
+\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(x,E,t\right) \psi\left(x,E,\bm \Omega,t\right) d\bm\Omega dE
+\end{equation}
+
+Equation \ref{e:BTEtermsExtSource} shows the final term in the transport equation.  This term is the external source.  This includes all other neutrons which are emitted from means other than in-scatter and fission.
+
+\begin{equation}\label{e:BTEtermsExtSource}
+Q\left(x,E,\bm\Omega\right)
+\end{equation}
 
 \subsection{Multi-group Approximation}
 
@@ -31,10 +52,9 @@ One important approximation that is commonly made to the transport equation is t
 
 for each energy group, giving the following result:
 
-\begin{gather}
-\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(x\right)\psi_g\left(x,\bm \Omega\right) = \intop_{4\pi} \Sigma_{s,g'\rightarrow}\left(x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(x,\bm \Omega'\right) d\bm \Omega' + \nonumber\\
-\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \nu \Sigma_{f,g'}\left(x,t\right) \psi_{g'}\left(x,\bm \Omega\right) + Q_g\left(x,\bm \Omega\right)\label{e:multigroupboltzmann}
-\end{gather}
+\begin{dmath}\label{e:multigroupboltzmann}
+{\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(x\right)\psi_g\left(x,\bm \Omega\right) = \intop_{4\pi} \Sigma_{s,g'\rightarrow}\left(x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(x,\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \nu \Sigma_{f,g'}\left(x,t\right) \psi_{g'}\left(x,\bm \Omega\right) + Q_g\left(x,\bm \Omega\right)}
+\end{dmath}
 
 In equation \ref{e:multigroupboltzmann}, $\psi_g$ denotes the average angular flux for group $g$, defined as
 
@@ -104,9 +124,9 @@ Furthermore, all Legendre polynomials are orthonormal, meaning that they obey th
 
 Before proceeding, an important simplification must be made to the scattering source.  The differential scattering cross-section depends on the term $\bm \Omega' \cdot \bm \Omega$, the scalar product between the incoming and outgoing directions.  However, this product is simply the cosine of the angle between the two directions $\mu$.  Using this fact, we can rewrite the scattering source in equation \ref{e:ssboltzmann} as follows:
 
-\begin{equation}
-\intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E,\bm \Omega' \rightarrow \bm \Omega\right)\psi\left(x,E',\bm\Omega'\right)d\bm\Omega' = \intop_0^{2\pi} \intop_{-1}^1 \Sigma_s\left(x,E' \rightarrow E,\mu'\right) \psi\left(x,E',\bm\Omega'\right) d\mu' d\gamma'
-\end{equation}
+\begin{dmath}
+{\intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E,\bm \Omega' \rightarrow \bm \Omega\right)\psi\left(x,E',\bm\Omega'\right)d\bm\Omega'} = {\intop_0^{2\pi} \intop_{-1}^1 \Sigma_s\left(x,E' \rightarrow E,\mu'\right) \psi\left(x,E',\bm\Omega'\right) d\mu' d\gamma'}
+\end{dmath}
 
 \ifdraft{\hl{Look at Larsen's notes to remember the exact mathematical details of this}}{}
 
@@ -132,10 +152,9 @@ One method that is commonly used to solve the transport equation is the Method o
 \begin{equation}
 \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = q\left(x,E.\bm \Omega\right)
 \end{equation}
-\begin{gather}\label{e:MOCqboltzmann}
-q\left(x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' +\nonumber\\
-\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E\right) \psi\left(x,E,\bm \Omega\right) dE + Q\left(x,E,\bm \Omega\right)
-\end{gather}
+\begin{dmath}\label{e:MOCqboltzmann}
+{q\left(x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E\right) \psi\left(x,E,\bm \Omega\right) dE + Q\left(x,E,\bm \Omega\right)}
+\end{dmath}
 \end{subequations}
 
 Now the characteristic direction is introduced:
@@ -150,10 +169,9 @@ Substituting this variable into equation \ref{e:MOCqboltzmann} gives the charact
 \begin{equation}
 \frac{\partial \psi}{\partial s} + \Sigma_t\left(\bm r0_0 + s\bm\Omega,E\right)\psi\left(\bm r0_0 + s\bm\Omega,E,\bm \Omega\right) = q\left(\bm r0_0 + s\bm\Omega,E.\bm \Omega\right)
 \end{equation}
-\begin{gather}\label{e:characteristicboltzmann}
-q\left(\bm r0_0 + s\bm\Omega,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(\bm {r_0} + s \bm\Omega',E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm {r_0} + s\bm\Omega',E',\bm \Omega'\right) d\bm \Omega' +\nonumber\\
-\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(\bm r0_0 + s\bm\Omega,E\right) \psi\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right) dE + Q\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right)
-\end{gather}
+\begin{dmath}\label{e:characteristicboltzmann}
+{q\left(\bm r0_0 + s\bm\Omega,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(\bm {r_0} + s \bm\Omega',E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm {r_0} + s\bm\Omega',E',\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(\bm r0_0 + s\bm\Omega,E\right) \psi\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right) dE + Q\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right)}
+\end{dmath}
 \end{subequations}
 
 This equation is easily solved using an integrating factor
@@ -164,18 +182,17 @@ This equation is easily solved using an integrating factor
 
 giving the following solution:
 
-\begin{gather}\label{e:MOCexact}
-\psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{\left(-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'\right)} + \nonumber\\
-\intop_0^s q\left(\bm {r_0} + s'\bm\Omega,\bm\Omega, E\right)\exp{\left(-\intop_0^s \Sigma_t\left(\bm {r_0} + s''\bm\Omega,E\right)ds''\right)}ds'
-\end{gather}
+\begin{dmath}\label{e:MOCexact}
+{\psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{\left(-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'\right)}} + {\intop_0^s q\left(\bm {r_0} + s'\bm\Omega,\bm\Omega, E\right)\exp{\left(-\intop_0^s \Sigma_t\left(\bm {r_0} + s''\bm\Omega,E\right)ds''\right)}ds'}
+\end{dmath}
 
 Now if $\bm {r_0}$ is on the boundary of the region of interest, the incoming flux $\psi\left(\bm {r_0},\bm \Omega, E\right)$ is known.  This allows the angular flux to be calculated at any point $s$ to be calculated along the characteristic direction $\bm r$.
 
 Up to this point, no approximations have been made in deriving the method of characteristics.  One approximation that is necessary to use MOC for practical problems is to assume some spatial shape for the source term $q$.  The simplest of these is the flat source approximation.  In this approximation, $q$ is assumed to be flat along $\bm r$.  This simplifies equation \ref{e:MOCexact} to the following:
 
-\begin{gather}\label{e:MOCflatsource}
-\psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{\left(-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'\right)} + ...
-\end{gather}
+\begin{dmath}\label{e:MOCflatsource}
+\psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{\left(-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'\right)} + \cdots
+\end{dmath}
 % Derive it!
 % Things to talk about:
 %   Flat/linear sources
