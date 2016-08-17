@@ -11,7 +11,7 @@ classdef xsClass
         nufission
         fission
         chi
-        scatter
+        scatter % Scatter from column into row
     end
     
     methods
@@ -20,8 +20,16 @@ classdef xsClass
             obj.scatOrder = order;
         end
         
-        function obj = xsClass( ngroups )
+        function obj = xsClass1( ngroups )
             obj.transport(1:ngroups,1) = 0.0;
+        end
+        
+        function obj = calcTXS( obj, transOpt )
+            obj.total = obj.absorption + obj.fission + sum(obj.scatter,1);
+            switch(transOpt)
+                case('P0')
+                    obj.transport = obj.total;
+            end
         end
     end
     

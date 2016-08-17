@@ -64,9 +64,11 @@ classdef xsLibraryClass
                         obj.xsSets(i).scatter(k,1:obj.ngroups,j) = strread(nextline);
                     end
                 end
+                % Calculate total cross-section and transport cross-section
+                obj.xsSets(i) = obj.xsSets(i).calcTXS( 'P0' );
             end
             
-            obj = obj.closefile();
+            obj = obj.closefile( );
         end
         
         function obj = openfile( obj, filename )
