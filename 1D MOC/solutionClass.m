@@ -22,7 +22,7 @@ classdef solutionClass
             
             obj.keff(1:2) = 1.0;
             obj.angflux(1:ncells+1,1:npol,1:2,1:ngroups) = 0.0;
-            obj.scalflux(1:ncells,1:ngroups,1:2) = 0.0;
+            obj.scalflux(1:ncells,1:ngroups,1:2) = 1.0;
             obj.BCond = BCond;
         end
         

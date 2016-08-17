@@ -23,10 +23,9 @@ id_control = 5;
 
 %% Cross-sections
 display('Setting up XS Library...')
-ngroups = 47;
 xsLib = xsLibraryClass( filename, scattype );
-source_list = ones(nmats,ngroups);
-source_list(id_mod:id_control,47) = [0.136409169; 4.03E-03; 1.50E-06; 6.74E-03; 8.44399E-05];
+source_list = ones(nmats);
+source_list(id_mod:id_control) = [0.136409169; 4.03E-03; 1.50E-06; 6.74E-03; 8.44399E-05];
 
 %% Quadrature
 display('Setting up Quadrature...')
@@ -46,7 +45,7 @@ solution = solution.update();
 for igroup=1:xsLib.ngroups
     display(sprintf('Sweeping Energy Group %i',igroup))
     mesh = setupFSP(solution, source_list, xsLib, mesh, igroup);
-    solution = sweep(solution, mesh, quad);
+    solution = sweep(igroup, solution, mesh, quad);
 end
 
 end
