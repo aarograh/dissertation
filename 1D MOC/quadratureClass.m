@@ -17,7 +17,7 @@ classdef quadratureClass
             %          1 are accepted.
             obj.npol = npol;
             if npol == 1
-                obj.angles = pi/4;
+                obj.angles = 0;
                 obj.weights = 2*pi;
                 obj.cosines = cos(obj.angles);
             else

@@ -10,7 +10,7 @@ for i=1:mesh.nfsrcells
     for j=1:quad.npol
         % Forward Sweep
         dx = mesh.fsredges(i+1)-mesh.fsredges(i);
-        tmp = exp(-mesh.xs.transport(i)*dx/quad.cosines(j));
+        tmp = exp(-mesh.xstr(i)*dx/quad.cosines(j));
         solution.angflux(i+1,j,1,igroup) = solution.angflux(i,j,1,igroup)*tmp + mesh.source(i)*(1.0-tmp);
         solution.angflux_cellavg(i,j,1,igroup) = ...
             0.5*(solution.angflux(i,j,1,igroup) + solution.angflux(i+1,j,1,igroup));
@@ -19,7 +19,7 @@ for i=1:mesh.nfsrcells
         
         % Backward Sweep
         dx = mesh.fsredges(k+1)-mesh.fsredges(k);
-        tmp = exp(-mesh.xs.transport(k)*dx/quad.cosines(j));
+        tmp = exp(-mesh.xstr(k)*dx/quad.cosines(j));
         solution.angflux(k,j,2,igroup) = solution.angflux(k+1,j,2,igroup)*tmp + mesh.source(k)*(1.0-tmp);
         solution.angflux_cellavg(k,j,2,igroup) = ...
             0.5*(solution.angflux(k,j,2,igroup) + solution.angflux(k+1,j,2,igroup));

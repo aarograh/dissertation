@@ -19,24 +19,24 @@ ORNL 47-Group Library, Group 47
 ! Material 1: Moderator
 XSMACRO MOD 0
 4.394922836 0.0 0.0 0.0
-0.0
+1.0
 
 ! Material 2: Clad
 XSMACRO CLAD 0
 0.299908964 0.0 0.0 0.0
-0.0
+1.0
 
 ! Material 3: Gap
 XSMACRO GAP 0
 3.44E-05 0.0 0.0 0.0
-0.0
+1.0
 
 ! Material 4: Fuel
 XSMACRO FUEL 0
-1.489061075 0.0 0.0 0.0
-0.0
+0.989061075 1.2 0.5 1.0
+1.0
 
 ! Material 5: Control rod
 XSMACRO CONTROL 0
 19.13440383 0.0 0.0 0.0
-0.0
+1.0

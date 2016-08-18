@@ -18,7 +18,7 @@ classdef meshClass
         materials
         xsedges
         fsredges
-        xs
+        xstr
         source
     end
     

@@ -24,7 +24,7 @@ classdef solutionClass
             
             obj.keff(1:2) = 1.0;
             obj.angflux(1:ncells+1,1:npol,1:2,1:ngroups) = 0.0;
-            obj.scalflux(1:ncells,1:ngroups,1:2) = 1.0;
+            obj.scalflux(1:ncells,1:ngroups,1:2) = 1000000000000.0;
             obj.BCond = BCond;
             obj.fisssrc(1:ncells) = 0.0;
             obj.fluxnorm = 0.0;
@@ -103,7 +103,8 @@ classdef solutionClass
             conv_flux = 0.0;
             for j=1:xsLib.ngroups
                 for i=1:mesh.nfsrcells
-                    conv_flux = max(conv_flux,abs(obj.scalflux(i,j,1) - obj.scalflux(i,j,2)));
+                    conv_flux = max(conv_flux,abs((obj.scalflux(i,j,1) - obj.scalflux(i,j,2))/...
+                        obj.scalflux(i,j,2)));
 %                     display(sprintf('Engery group %i: %g %g',j,obj.scalflux(i,j,1),obj.scalflux(i,j,2)));
                 end
             end
@@ -123,7 +124,6 @@ classdef solutionClass
                 obj.fisssrc(i) = sum(obj.scalflux(i,:,1).*xsLib.xsSets(matID).nufission)/...
                     obj.keff(1);
             end
-            obj.fisssrc
         end
         
         function [ obj ] = normalize( obj )
