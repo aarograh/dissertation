@@ -8,8 +8,7 @@ function [ mesh ] = setupFSP( solution, xsLib, mesh, igroup )
 mesh.source(1:mesh.nfsrcells,1) = 0.0;
 for i=1:mesh.nfsrcells
     % Use old scalar flux to do Jacobi style iteration
-    mesh.source(i) = sum(solution.scalflux(i,:,2).*xsLib.xsSets(mesh.materials(i)).nufission)*...
-        xsLib.xsSets(mesh.materials(i)).chi(igroup) + ...
+    mesh.source(i) = solution.fisssrc(i)*xsLib.xsSets(mesh.materials(i)).chi(igroup) + ...
         sum(solution.scalflux(i,1:igroup,2).*xsLib.xsSets(mesh.materials(i)).scatter(igroup,1:igroup));
     mesh.xs.transport(i) = xsLib.xsSets(mesh.materials(i)).transport(igroup);
 end

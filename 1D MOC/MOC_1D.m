@@ -1,5 +1,5 @@
 function [ solution, mesh ] = ...
-    MOC_1D( pinmap, pitch, diag, pinmats, radii, pinmesh, npol, filename, scattype, BCond )
+    MOC_1D( pinmap, pitch, diag, pinmats, radii, pinmesh, npol, filename, scattype, BCond, nouters )
 %MOC_1D Solves 1D MOC given geometry and quadrature inputs
 %   pinmap   - Map of pins in problem (vector, integer)
 %   pitch    - Pitch for each pin (scalar, double)
@@ -12,6 +12,7 @@ function [ solution, mesh ] = ...
 %   filename - Name of the XS Library file
 %   scattype - Transport Scattering option.  Currently accepted values are P0.
 %   BCond    - Boundary condition for MOC sweeps
+%   nouters  - Maximum number of outer iterations for an eigenvalue calculation
 
 %% Cross-sections
 display('Setting up XS Library...')
@@ -29,13 +30,23 @@ mesh = meshClass(pinmap, pinmats, radii, pinmesh, pitch, diag);
 % Initialize solution
 display('Initializing Solution...')
 solution = solutionClass(mesh.nfsrcells,npol,xsLib.ngroups,BCond);
+solution = solution.calcFissSrc( mesh, xsLib );
 
 % Solve
-for igroup=1:xsLib.ngroups
-    display(sprintf('Sweeping Energy Group %i',igroup))
-    mesh = setupFSP(solution, xsLib, mesh, igroup);
-    solution = sweep(igroup, solution, mesh, quad);
+for iouter=1:nouters
+    display(sprintf('Eigenvalue iteration %i',iouter));
     solution = solution.update();
+    for igroup=1:xsLib.ngroups
+        mesh = setupFSP(solution, xsLib, mesh, igroup);
+        solution = sweep(igroup, solution, mesh, quad);
+    end
+    solution = solution.calcFissSrc( mesh, xsLib );
+    solution = solution.updateEig( quad, mesh, xsLib );
+    solution = solution.normalize( );
+    [conv_flux, conv_keff] = solution.calcResidual( mesh, xsLib );
+    display(sprintf('Flux norm : %g',conv_flux));
+    display(sprintf('k-eff norm: %g',conv_keff));
+    display(sprintf('k-eff     : %g',solution.keff(1)));
 end
 
 end
