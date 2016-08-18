@@ -9,8 +9,8 @@ mesh.source(1:mesh.nfsrcells,1) = 0.0;
 for i=1:mesh.nfsrcells
     % Use old scalar flux to do Jacobi style iteration
     matID = mesh.materials(i);
-    mesh.source(i) = solution.fisssrc(i)*xsLib.xsSets(matID).chi(igroup) + ...
-        sum(solution.scalflux(i,:,2).*xsLib.xsSets(matID).scatter(igroup,:));
+    mesh.source(i) = (solution.fisssrc(i)*xsLib.xsSets(matID).chi(igroup) + ...
+        sum(solution.scalflux(i,:,2).*xsLib.xsSets(matID).scatter(igroup,:)))*0.5;
     mesh.xstr(i) = xsLib.xsSets(matID).transport(igroup);
 end
 

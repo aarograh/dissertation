@@ -26,7 +26,7 @@ scattype = 'P0';
 % Boundary Conditions
 BCond = ['vacuum';'vacuum'];
 % Convergence
-nouters = 193;
+nouters = 1000;
 
 %% Case 1 - Control Rod Case
 % pinmap_rodded = 1;
@@ -69,8 +69,10 @@ end
 
 
 % Scalar Flux Plots
-% cellcenter = 0.5*(mesh.fsredges(1:nfinecells) + mesh.fsredges(2:nfinecells+1));
-% figure(2);
-% plot(cellcenter,solution.scalflux)
-% xlabel('Position (cm)')
-% ylabel('Scalar Flux (cm^-2)')
+figure(8);
+hold on;
+cellcenter = 0.5*(mesh.fsredges(1:end-1) + mesh.fsredges(2:end));
+plot(cellcenter,solution(1).scalflux(:,7,1));
+plot(cellcenter,solution(2).scalflux(:,7,1));
+xlabel('Position (cm)')
+ylabel('Scalar Flux (cm^-2)')
