@@ -20,8 +20,10 @@ classdef xsClass
             %XSCLASS Consructor for xsClass
             %   name  - name of the XS set
             %   order - Scattering order for the xsSet
+            
             obj.name = name;
             obj.scatOrder = order;
+            
         end
         
         function obj = calcTXS( obj, transOpt )
@@ -29,11 +31,13 @@ classdef xsClass
             %   obj - the XS set object
             %   transOpt - Transport correction option.  Currently only values
             %              of P0 are allowed.
+            
             obj.total = obj.absorption + obj.fission + sum(obj.scatter,1);
             switch(transOpt)
                 case('P0')
                     obj.transport = obj.total;
             end
+            
         end
     end
     

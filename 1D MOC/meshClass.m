@@ -58,7 +58,9 @@ classdef meshClass
                 for j=nreg:-1:1
                     ncoarsecells = ncoarsecells+1;
                     % Outermost region needs to use pin hpitch
-                    if j == nreg
+                    if isempty(rad)
+                        width = hpitch;
+                    elseif j == nreg
                         width = (hpitch - rad(pinmap(i),j-1));
                     elseif j == 1
                         width = rad(pinmap(i),j);
@@ -79,7 +81,9 @@ classdef meshClass
                 for j=1:nreg
                     ncoarsecells = ncoarsecells+1;
                     % Outermost region needs to use pin hpitch
-                    if j == nreg
+                    if isempty(rad)
+                        width = hpitch;
+                    elseif j == nreg
                         width = (hpitch - rad(pinmap(i),j-1));
                     elseif j == 1
                         width = rad(pinmap(i),j);

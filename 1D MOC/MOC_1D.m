@@ -35,14 +35,13 @@ solution = solution.calcFissSrc( mesh, xsLib );
 % Solve
 for iouter=1:nouters
     display(sprintf('Eigenvalue iteration %i',iouter));
-    solution = solution.update();
+    solution = solution.update( iouter );
     for igroup=1:xsLib.ngroups
         mesh = setupFSP(solution, xsLib, mesh, igroup);
         solution = sweep(igroup, solution, mesh, quad);
     end
     solution = solution.calcFissSrc( mesh, xsLib );
-    solution = solution.updateEig( quad, mesh, xsLib );
-    solution = solution.normalize( );
+    solution = solution.updateEig( );
     [conv_flux, conv_keff] = solution.calcResidual( mesh, xsLib );
     display(sprintf('Flux norm : %g',conv_flux));
     display(sprintf('k-eff norm: %g',conv_keff));
