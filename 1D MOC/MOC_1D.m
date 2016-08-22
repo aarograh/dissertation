@@ -31,6 +31,7 @@ mesh = meshClass(pinmap, pinmats, radii, pinmesh, pitch, diag);
 display('Initializing Solution...')
 solution = solutionClass(mesh.nfsrcells,npol,xsLib.ngroups,BCond);
 solution = solution.calcFissSrc( mesh, xsLib );
+solution.fisssrc(:,1) = 1.0;
 
 % Solve
 for iouter=1:nouters

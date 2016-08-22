@@ -33,7 +33,7 @@ XSMACRO GAP 0
 
 ! Material 4: Fuel
 XSMACRO FUEL 0
-0.3 1.2 0.5 1.0
+0.8 1.2 0.5 1.0
 0.5
 
 ! Material 5: Control rod

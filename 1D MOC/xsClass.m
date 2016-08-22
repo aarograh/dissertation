@@ -32,7 +32,7 @@ classdef xsClass
             %   transOpt - Transport correction option.  Currently only values
             %              of P0 are allowed.
             
-            obj.total = obj.absorption + obj.fission + sum(obj.scatter,1);
+            obj.total = obj.absorption + sum(obj.scatter,1);
             switch(transOpt)
                 case('P0')
                     obj.transport = obj.total;
