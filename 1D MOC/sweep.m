@@ -13,7 +13,7 @@ for i=1:mesh.nfsrcells
         exparg = exp(-mesh.xstr(i)*dx);
         solution.angflux(i+1,j,1,igroup) = solution.angflux(i,j,1,igroup)*exparg + ...
             mesh.source(i)/mesh.xstr(i)*(1 - exparg);
-        solution.scalflux(i,igroup) = solution.scalflux(i,igroup) + ...
+        solution.scalflux(i,igroup,1) = solution.scalflux(i,igroup,1) + ...
             0.5*sum(solution.angflux(i:i+1,j,1,igroup));
         
         % Backward Sweep
@@ -21,8 +21,8 @@ for i=1:mesh.nfsrcells
         exparg = exp(-mesh.xstr(k)*dx);
         solution.angflux(k,j,2,igroup) = solution.angflux(k+1,j,2,igroup)*exparg + ...
             mesh.source(k)/mesh.xstr(k)*(1 - exparg);
-        solution.scalflux(k,igroup) = solution.scalflux(k,igroup) + ...
-            0.5*sum(solution.angflux(k:k+1,j,1,igroup));
+        solution.scalflux(k,igroup,1) = solution.scalflux(k,igroup,1) + ...
+            0.5*sum(solution.angflux(k:k+1,j,2,igroup));
     end
 end
 
