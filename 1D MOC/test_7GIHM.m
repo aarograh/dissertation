@@ -20,7 +20,7 @@ scattype = 'P0';
 BCond = ['reflecting';'reflecting'];
 % BCond = ['vacuum';'vacuum'];
 % Convergence
-nouters = 1;
+nouters = 10000;
 
 %% Solve Problem
 pinmap_rodded = 1;
@@ -78,8 +78,8 @@ ref = xsnF'*phi;
 
 %% Test Solution
 
-if abs(solution.keff(1) - ref) < 2.0e-6
-    display('Test Passed!');
+if abs(solution.keff(1) - ref) < 5.0e-6
+    display(sprintf('Test Passed! Ref: %g, Test: %g',ref,solution.keff(1)));
 else
     display(sprintf('Test Failed! Ref: %g, Test: %g',ref,solution.keff(1)));
 end

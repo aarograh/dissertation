@@ -20,7 +20,7 @@ scattype = 'P0';
 BCond = ['reflecting';'reflecting'];
 % BCond = ['vacuum';'vacuum'];
 % Convergence
-nouters = 1000;
+nouters = 10000;
 
 %% Test Case
 pinmap_rodded = 1;
@@ -44,15 +44,15 @@ xsF = [7.21206E-03
 8.30348E-02
 2.16004E-01];
 
-chi = [0.6
-0.4
+chi = [1.0
+0.0
 0.0000E+00
 0.0000E+00];
 
 xsS = [1.27537E-01 0.00000E+00 0.00000E+00 0.00000E+00
-       4.23780E-02 3.24456E-01 0.00000E+00 0.00000E+00
-       0.00000E+00 0.00000E+00 2.65802E-01 8.54580E-03
-       0.00000E+00 0.00000E+00 1.68090E-02 2.73080E-01];
+4.23780E-02 3.24456E-01 0.00000E+00 0.00000E+00
+0.00000E+00 1.00000E-02 2.65802E-01 8.54580E-03
+0.00000E+00 1.00000E-03 1.68090E-02 2.73080E-01];
 
 xsT = diag(xsA + sum(xsS,1)');
 
@@ -63,8 +63,8 @@ ref = xsnF'*phi;
 
 %% Test Solution
 
-if abs(solution.keff(1) - ref) < 2.0e-6
-    display('Test Passed!');
+if abs(solution.keff(1) - ref) < 1.0e-6
+    display(sprintf('Test Passed! Ref: %g, Test: %g',ref,solution.keff(1)));
 else
     display(sprintf('Test Failed! Ref: %g, Test: %g',ref,solution.keff(1)));
 end

@@ -31,7 +31,7 @@ pinmap_rodded = 1;
 
 ref = 1.2/0.8;
 if abs(solution.keff(1) - ref) < 2.0e-6
-    display('Test Passed!');
+    display(sprintf('Test Passed! Ref: %g, Test: %g',ref,solution.keff(1)));
 else
     display(sprintf('Test Failed! Ref: %g, Test: %g',ref,solution.keff(1)));
 end
