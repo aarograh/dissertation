@@ -13,7 +13,5 @@ for i=1:mesh.nfsrcells
         solution.scalflux(i,:,2)*xsLib.xsSets(matID).scatter(igroup,:)')*0.5;
     mesh.xstr(i,1) = xsLib.xsSets(matID).transport(igroup);
 end
-mesh.source
-mesh.xstr
 
 end
