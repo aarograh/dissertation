@@ -47,7 +47,7 @@ for iouter=1:nouters
     display(sprintf('Flux norm : %g',conv_flux));
     display(sprintf('k-eff norm: %g',conv_keff));
     display(sprintf('k-eff     : %g',solution.keff(1)));
-    if abs(conv_flux) < 1.0e-6 && abs(conv_keff) < 1.0e-6
+    if abs(conv_flux) < 1.0e-7 && abs(conv_keff) < 1.0e-8
         display(sprintf('Converged after %i iterations...',iouter));
         break
     end
