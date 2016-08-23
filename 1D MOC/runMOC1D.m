@@ -18,25 +18,26 @@ pinmesh = [ 20 3 20;
     20 3 20;
     20 3 20];
 % Quadrature
-npol = 1;
+npol = 2;
 % XS Library Info
 xsfilename = 'c5g7.xsl';
 % xsfilename = '2group.xsl';
 scattype = 'P0';
 % Boundary Conditions
+% BCond = ['reflecting';'reflecting'];
 BCond = ['vacuum';'vacuum'];
 % Convergence
 nouters = 1000;
 
 %% Case 1 - Control Rod Case
 % pinmap_rodded = 1;
-pinmap_rodded = [1, 2, 1, 1, 1];
+pinmap_rodded = [1, 2, 1, 1, 1, 1, 1, 1, 1, 1];
 [solution(1), mesh] = ...
     MOC_1D(pinmap_rodded, pitch, diag, pinmats, radii, pinmesh, npol, xsfilename, scattype, BCond, nouters);
 names = {sprintf('Rodded    - %g',solution(1).keff(1))};
 
 %% Case 2 - Guide Tube Case
- pinmap_unrodded = [1, 3, 1, 1, 1];
+ pinmap_unrodded = [1, 3, 1, 1, 1, 1, 1, 1, 1, 1];
  [solution(2), ~] = ...
      MOC_1D(pinmap_unrodded, pitch, diag, pinmats, radii, pinmesh, npol, xsfilename, scattype, BCond, nouters);
 names(2) = {sprintf('Unrodded - %g',solution(2).keff(1))};

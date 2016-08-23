@@ -12,7 +12,7 @@ pinmats = 4;
 radii = [ ];
 pinmesh = 10;
 % Quadrature
-npol = 1;
+npol = 2;
 % XS Library Info
 xsfilename = '2group.xsl';
 scattype = 'P0';
