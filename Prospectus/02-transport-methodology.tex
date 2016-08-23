@@ -44,7 +44,7 @@ Q\left(x,E,\bm\Omega\right)
 
 \subsection{Multi-group Approximation}
 
-One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (or \ref{e:boltzmann}\todo{Fix equation \#}) is operated on by 
+One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (or \ref{e:boltzmann}) is operated on by 
 
 \begin{equation}
 \frac{1}{E_{n-1} - E_n}\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE
@@ -90,12 +90,7 @@ To discretize the transport equation in the angular variable, the discrete ordin
 
 \subsection{Spherical Harmonics Approximation}
 
-One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.\ifdraft{\hl{Rearrange this: Simplify scattering source, introduce Legendre polynomials, then show how that simplifies the scattering source/XS}}{}  To simplify the equation while preserving accuracy of the transport equation, the spherical harmonics approximation is applied to the scattering cross-sections.  This approximation assumes that the angle dependence of the scattering cross-sections can be represented as a series of Legendre polynomials with corresponding coefficients, shown in equation \todo{equation}:
-
-\begin{equation}\label{e:sphericalHarmonicsXSExpansion}
-\end{equation}
-
-Legendre polynomials can be defined via the following recurrence relation:
+One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.\ifdraft{\hl{Rearrange this: Introduce Legendre polynomials, then show how that simplifies the scattering source/XS}}{}  To simplify the equation while preserving accuracy of the transport equation, the spherical harmonics approximation is applied to the scattering cross-sections.  This approximation makes use of Legendre polynomials, which can be defined via the following recurrence relation:
 
 \begin{subequations}
 \begin{equation}
@@ -122,11 +117,10 @@ Furthermore, all Legendre polynomials are orthonormal, meaning that they obey th
 \end{equation}
 \end{subequations}
 
-Before proceeding, an important simplification must be made to the scattering source.  The differential scattering cross-section depends on the term $\bm \Omega' \cdot \bm \Omega$, the scalar product between the incoming and outgoing directions.  However, this product is simply the cosine of the angle between the two directions $\mu$.  Using this fact, we can rewrite the scattering source in equation \ref{e:ssboltzmann} as follows:
+These polynomials can be used to express the differential scattering cross-section as a summation of the Legendre polynomials, as shown in equaiton \ref{e:sphericalHarmonicsXSExpansion}.
 
-\begin{dmath}
-{\intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E,\bm \Omega' \rightarrow \bm \Omega\right)\psi\left(x,E',\bm\Omega'\right)d\bm\Omega'} = {\intop_0^{2\pi} \intop_{-1}^1 \Sigma_s\left(x,E' \rightarrow E,\mu'\right) \psi\left(x,E',\bm\Omega'\right) d\mu' d\gamma'}
-\end{dmath}
+\begin{equation}\label{e:sphericalHarmonicsXSExpansion}
+\end{equation}
 
 \ifdraft{\hl{Look at Larsen's notes to remember the exact mathematical details of this}}{}
 
@@ -193,7 +187,6 @@ Up to this point, no approximations have been made in deriving the method of cha
 \begin{dmath}\label{e:MOCflatsource}
 \psi\left(\bm {r_0} + s\bm\Omega,\bm\Omega,E\right) = \psi\left(\bm {r_0},\bm\Omega,E\right)\exp{\left(-\intop_0^s \Sigma_t\left(\bm {r_0} + s'\bm\Omega,E\right)ds'\right)} + \cdots
 \end{dmath}
-% Derive it!
 % Things to talk about:
 %   Flat/linear sources
 
