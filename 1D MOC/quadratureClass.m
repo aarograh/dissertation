@@ -17,8 +17,8 @@ classdef quadratureClass
             %          1 are accepted.
             
             obj.npol = npol/2;
-            [obj.angles, obj.weights] = createQuadrature(npol);
-            obj.cosines = cos(obj.angles);
+            [obj.cosines, obj.weights] = createQuadrature(npol);
+            obj.angles = acos(obj.cosines);
         end
     end
     
@@ -64,9 +64,5 @@ function [mu w] = createQuadrature(N)
    assert(length(mu) == length(w));
    assert(abs(sum(w) - 1.0) < 2*eps);
    assert(all(mu > 0.0) && all(mu < 1.0));
-   
-   mu = [-fliplr(mu) mu];
-   w  = [fliplr(w) w];
-   
    assert(all(w > 0));
 end
