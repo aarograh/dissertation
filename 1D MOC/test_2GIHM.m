@@ -12,7 +12,7 @@ pinmats = 4;
 radii = [ ];
 pinmesh = 1;
 % Quadrature
-npol = 2;
+npol = 32;
 % XS Library Info
 xsfilename = '2group.xsl';
 scattype = 'P0';
@@ -20,7 +20,7 @@ scattype = 'P0';
 BCond = ['reflecting';'reflecting'];
 % BCond = ['vacuum';'vacuum'];
 % Convergence
-nouters = 100;
+nouters = 59;
 
 %% Test Case
 pinmap_rodded = 1;
@@ -54,7 +54,7 @@ ref = xsnF'*phi;
 %% Test Solution
 
 if abs(solution.keff(1) - ref) < 5.0e-6
-    display(sprintf('Test Passed! Ref: %g, test: %g',ref,solution.keff(1)));
+    display(sprintf('Test Passed! Ref: %0.7f, test: %0.7f',ref,solution.keff(1)));
 else
-    display(sprintf('Test Failed! Ref: %g, Test: %g',ref,solution.keff(1)));
+    display(sprintf('Test Failed! Ref: %0.7f, Test: %0.7f',ref,solution.keff(1)));
 end
