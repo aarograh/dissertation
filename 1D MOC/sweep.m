@@ -9,20 +9,20 @@ for i=1:mesh.nfsrcells
     k = mesh.nfsrcells-i+1;
     for j=1:quad.npol
         % Forward Sweep
-        dx = mesh.fsredges(i+1) - mesh.fsredges(i);
+        dx = (mesh.fsredges(i+1) - mesh.fsredges(i))/quad.cosines(j);
         exparg = exp(-mesh.xstr(i)*dx);
         solution.angflux(i+1,j,1,igroup) = solution.angflux(i,j,1,igroup)*exparg + ...
             mesh.source(i)/mesh.xstr(i)*(1 - exparg);
         solution.scalflux(i,igroup,1) = solution.scalflux(i,igroup,1) + ...
-            0.5*sum(solution.angflux(i:i+1,j,1,igroup));
+            0.5*sum(solution.angflux(i:i+1,j,1,igroup))*quad.weights(j);
         
         % Backward Sweep
-        dx = mesh.fsredges(k+1) - mesh.fsredges(k);
+        dx = (mesh.fsredges(k+1) - mesh.fsredges(k))/quad.cosines(j);
         exparg = exp(-mesh.xstr(k)*dx);
         solution.angflux(k,j,2,igroup) = solution.angflux(k+1,j,2,igroup)*exparg + ...
             mesh.source(k)/mesh.xstr(k)*(1 - exparg);
         solution.scalflux(k,igroup,1) = solution.scalflux(k,igroup,1) + ...
-            0.5*sum(solution.angflux(k:k+1,j,2,igroup));
+            0.5*sum(solution.angflux(k:k+1,j,2,igroup))*quad.weights(j);
     end
 end
 
