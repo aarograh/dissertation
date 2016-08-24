@@ -29,7 +29,7 @@ mesh = meshClass(pinmap, pinmats, radii, pinmesh, pitch, diag);
 %% Initialize Solution and Perform Sweeps
 % Initialize solution
 display('Initializing Solution...')
-solution = solutionClass(mesh.nfsrcells,npol,xsLib.ngroups,BCond);
+solution = solutionClass(mesh.nfsrcells,quad.npol,xsLib.ngroups,BCond);
 solution = solution.calcFissSrc( mesh, xsLib );
 
 % Solve
