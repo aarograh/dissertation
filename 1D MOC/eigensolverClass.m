@@ -67,7 +67,7 @@ classdef eigensolverClass
             %   obj - The eigensolver object to solve
             
             for igroup=1:obj.xsLib.ngroups
-                obj.mesh = setupFSP(obj.solution, obj.xsLib, obj.mesh, igroup);
+                obj = obj.setupFSP(igroup);
                 obj = obj.sweep(igroup);
             end
             
@@ -85,6 +85,24 @@ classdef eigensolverClass
             display(sprintf('k-eff     : %0.7f\n',obj.solution.keff(1)));
             if abs(conv_flux) < 1.0e-7 && abs(conv_keff) < 1.0e-8
                 obj.converged = true;
+            end
+            
+        end
+        
+        function obj = setupFSP( obj, igroup )
+            %SETUPFSP Sets up source and XS mesh for fixed source MOC problem
+            %   solution    - The solution data to use to determine the source
+            %   xsLib       - Cross-section library object
+            %   mesh        - The mesh for this problem
+            %   igroup      - Group index
+            
+            obj.mesh.source(1:obj.mesh.nfsrcells,1) = 0.0;
+            for i=1:obj.mesh.nfsrcells
+                % Use old scalar flux to do Jacobi style iteration
+                matID = obj.mesh.materials(i);
+                obj.mesh.source(i,1) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(igroup)/obj.solution.keff(1) + ...
+                    obj.solution.scalflux(i,:,2)*obj.xsLib.xsSets(matID).scatter(igroup,:)')*0.5;
+                obj.mesh.xstr(i,1) = obj.xsLib.xsSets(matID).transport(igroup);
             end
             
         end
