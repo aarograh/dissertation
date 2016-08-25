@@ -24,7 +24,7 @@ nouters = 855;
 
 %% Test Case
 pinmap_rodded = 1;
-[solution, mesh] = ...
+solver = ...
     MOC_1D(pinmap_rodded, pitch, diag, pinmats, radii, pinmesh, npol, xsfilename, scattype, BCond, nouters);
 
 %% Setup Reference
@@ -62,9 +62,8 @@ phi = M\chi;
 ref = xsnF'*phi;
 
 %% Test Solution
-
-if abs(solution.keff(1) - ref) < 1.0e-6
-    display(sprintf('Test Passed! Ref: %0.7f, Test: %0.7f',ref,solution.keff(1)));
+if abs(solver.solution.keff(1) - ref) < 1.0e-6 && solver.converged
+    display(sprintf('Test Passed! Ref: %0.7f, Test: %0.7f',ref,solver.solution.keff(1)));
 else
-    display(sprintf('Test Failed! Ref: %0.7f, Test: %0.7f',ref,solution.keff(1)));
+    display(sprintf('Test Failed! Ref: %0.7f, Test: %0.7f',ref,solver.solution.keff(1)));
 end
