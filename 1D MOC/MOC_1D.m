@@ -1,4 +1,4 @@
-function [ solution, mesh ] = ...
+function solver = ...
     MOC_1D( pinmap, pitch, diag, pinmats, radii, pinmesh, npol, filename, scattype, BCond, nouters )
 %MOC_1D Solves 1D MOC given geometry and quadrature inputs
 %   pinmap   - Map of pins in problem (vector, integer)
@@ -37,7 +37,5 @@ solver = eigensolverClass(xsLib, mesh, quad, solution, nouters); %, critera);
 %% Solve
 solver = solver.setup();
 solver = solver.solve();
-solution = solver.solution;
-mesh = solver.mesh;
 
 end
