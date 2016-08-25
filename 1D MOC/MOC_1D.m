@@ -30,9 +30,12 @@ mesh = meshClass(pinmap, pinmats, radii, pinmesh, pitch, diag);
 % Initialize solution
 display('Initializing Solution...')
 solution = solutionClass(mesh.nfsrcells,quad.npol,xsLib.ngroups,BCond);
-solution = solution.calcFissSrc( mesh, xsLib );
 
-% Solve
+%% Initialize Eigensolver
+solver = eigensolverClass(xsLib, mesh, quad, solution, nouters); %, critera);
+
+%% Solve
+solution = solution.calcFissSrc( mesh, xsLib );
 for iouter=1:nouters
     display(sprintf('Eigenvalue iteration %i',iouter));
     solution = solution.update( iouter );
