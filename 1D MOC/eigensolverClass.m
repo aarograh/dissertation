@@ -51,10 +51,11 @@ classdef eigensolverClass
                 display(sprintf('Eigenvalue iteration %i',iouter));
                 obj.solution = obj.solution.update(iouter);
                 obj = obj.step();
+                obj = obj.update();
                if obj.converged
                    display(sprintf('Converged after %i iterations...',iouter));
                    break
-               elseif iotuer == obj.nouters
+               elseif iouter == obj.nouters
                    display(sprintf('Reached maximum number of iterations...'));
                end
             end
@@ -81,10 +82,9 @@ classdef eigensolverClass
             [conv_flux, conv_keff] = obj.solution.calcResidual( obj.mesh, obj.xsLib);
             display(sprintf('Flux norm : %0.7f',conv_flux));
             display(sprintf('k-eff norm: %0.7f',conv_keff));
-            display(sprintf('k-eff     : %0.7f',obj.solution.keff(1)));
-            display('\n');
+            display(sprintf('k-eff     : %0.7f\n',obj.solution.keff(1)));
             if abs(conv_flux) < 1.0e-7 && abs(conv_keff) < 1.0e-8
-                obj.solution.converged = true;
+                obj.converged = true;
             end
             
         end
