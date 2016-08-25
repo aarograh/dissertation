@@ -68,7 +68,7 @@ classdef eigensolverClass
             
             for igroup=1:obj.xsLib.ngroups
                 obj.mesh = setupFSP(obj.solution, obj.xsLib, obj.mesh, igroup);
-                obj.solution = sweep(igroup, obj.solution, obj.mesh, obj.quad);
+                obj = obj.sweep(igroup);
             end
             
         end
@@ -87,6 +87,33 @@ classdef eigensolverClass
                 obj.converged = true;
             end
             
+        end
+        
+        function obj = sweep( obj, igroup )
+            %SWEEP Performs 1D MOC sweep for a single ray with multiple polars
+            %   obj    - The eigensolver object to sweep
+            %   igroup - The energy group being swept
+            
+            for i=1:obj.mesh.nfsrcells
+                k = obj.mesh.nfsrcells-i+1;
+                for j=1:obj.quad.npol
+                    % Forward Sweep
+                    dx = (obj.mesh.fsredges(i+1) - obj.mesh.fsredges(i))/obj.quad.cosines(j);
+                    exparg = exp(-obj.mesh.xstr(i)*dx);
+                    obj.solution.angflux(i+1,j,1,igroup) = obj.solution.angflux(i,j,1,igroup)*exparg + ...
+                        obj.mesh.source(i)/obj.mesh.xstr(i)*(1 - exparg);
+                    obj.solution.scalflux(i,igroup,1) = obj.solution.scalflux(i,igroup,1) + ...
+                        0.5*sum(obj.solution.angflux(i:i+1,j,1,igroup))*obj.quad.weights(j);
+                    
+                    % Backward Sweep
+                    dx = (obj.mesh.fsredges(k+1) - obj.mesh.fsredges(k))/obj.quad.cosines(j);
+                    exparg = exp(-obj.mesh.xstr(k)*dx);
+                    obj.solution.angflux(k,j,2,igroup) = obj.solution.angflux(k+1,j,2,igroup)*exparg + ...
+                        obj.mesh.source(k)/obj.mesh.xstr(k)*(1 - exparg);
+                    obj.solution.scalflux(k,igroup,1) = obj.solution.scalflux(k,igroup,1) + ...
+                        0.5*sum(obj.solution.angflux(k:k+1,j,2,igroup))*obj.quad.weights(j);
+                end
+            end            
         end
     end
     
