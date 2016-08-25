@@ -35,25 +35,9 @@ solution = solutionClass(mesh.nfsrcells,quad.npol,xsLib.ngroups,BCond);
 solver = eigensolverClass(xsLib, mesh, quad, solution, nouters); %, critera);
 
 %% Solve
-solution = solution.calcFissSrc( mesh, xsLib );
-for iouter=1:nouters
-    display(sprintf('Eigenvalue iteration %i',iouter));
-    solution = solution.update( iouter );
-    for igroup=1:xsLib.ngroups
-        mesh = setupFSP(solution, xsLib, mesh, igroup);
-        solution = sweep(igroup, solution, mesh, quad);
-    end
-    solution = solution.calcFissSrc( mesh, xsLib );
-    solution = solution.updateEig( );
-    [conv_flux, conv_keff] = solution.calcResidual( mesh, xsLib );
-    display(sprintf('Flux norm : %g',conv_flux));
-    display(sprintf('k-eff norm: %g',conv_keff));
-    display(sprintf('k-eff     : %g',solution.keff(1)));
-    if abs(conv_flux) < 1.0e-7 && abs(conv_keff) < 1.0e-8
-        display(sprintf('Converged after %i iterations...',iouter));
-        break
-    end
-    display('  ');
-end
+solver = solver.setup();
+solver = solver.solve();
+solution = solver.solution;
+mesh = solver.mesh;
 
 end
