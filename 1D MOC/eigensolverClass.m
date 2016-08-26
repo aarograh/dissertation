@@ -14,6 +14,7 @@ classdef eigensolverClass
         input
         nouters=1000
         converged
+        verbose=true
     end
     
     methods
@@ -26,13 +27,16 @@ classdef eigensolverClass
             obj.quad = quadratureClass(input);
             obj.solution = solutionClass(obj.mesh.nfsrcells,obj.xsLib.ngroups,input);
             if input.conv_crit(1) > 0
-              obj.conv_crit(1) = input.conv_crit(1);
+                obj.conv_crit(1) = input.conv_crit(1);
             end
             if input.conv_crit(2) > 0
-              obj.conv_crit(2) = input.conv_crit(2);
+                obj.conv_crit(2) = input.conv_crit(2);
             end
             obj.nouters = input.nouters;
             obj.converged = false;
+            if ~isempty(input.verbose)
+                obj.verbose = input.verbose;
+            end
             
         end
         
@@ -49,16 +53,22 @@ classdef eigensolverClass
             %   obj - The eigensolver object to solve
             
             for iouter=1:obj.nouters
-                display(sprintf('Eigenvalue iteration %i',iouter));
+                if obj.verbose
+                    display(sprintf('Eigenvalue iteration %i',iouter));
+                end
                 obj.solution = obj.solution.update(iouter);
                 obj = obj.step();
                 obj = obj.update();
-               if obj.converged
-                   display(sprintf('Converged after %i iterations...',iouter));
-                   break
-               elseif iouter == obj.nouters
-                   display(sprintf('Reached maximum number of iterations...'));
-               end
+                if obj.converged
+                    if obj.verbose
+                        display(sprintf('Converged after %i iterations...',iouter));
+                    end
+                    break
+                elseif iouter == obj.nouters
+                    if obj.verbose
+                        display(sprintf('Reached maximum number of iterations...'));
+                    end
+                end
             end
             
         end
@@ -81,9 +91,11 @@ classdef eigensolverClass
             obj.solution = obj.solution.calcFissSrc( obj.mesh, obj.xsLib );
             obj.solution = obj.solution.updateEig( );
             [conv_flux, conv_keff] = obj.solution.calcResidual( obj.mesh, obj.xsLib);
-            display(sprintf('Flux norm : %0.7f',conv_flux));
-            display(sprintf('k-eff norm: %0.7f',conv_keff));
-            display(sprintf('k-eff     : %0.7f\n',obj.solution.keff(1)));
+            if obj.verbose
+                display(sprintf('Flux norm : %0.7f',conv_flux));
+                display(sprintf('k-eff norm: %0.7f',conv_keff));
+                display(sprintf('k-eff     : %0.7f\n',obj.solution.keff(1)));
+            end
             if abs(conv_flux) < obj.conv_crit(2) && abs(conv_keff) < obj.conv_crit(1)
                 obj.converged = true;
             end
@@ -132,7 +144,7 @@ classdef eigensolverClass
                     obj.solution.scalflux(k,igroup,1) = obj.solution.scalflux(k,igroup,1) + ...
                         0.5*sum(obj.solution.angflux(k:k+1,j,2,igroup))*obj.quad.weights(j);
                 end
-            end            
+            end
         end
     end
     

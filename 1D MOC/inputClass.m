@@ -17,6 +17,7 @@ classdef inputClass
         BCond
         nouters
         conv_crit=[0, 0]
+        verbose
     end
     
     methods
