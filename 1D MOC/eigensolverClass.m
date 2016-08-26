@@ -17,20 +17,16 @@ classdef eigensolverClass
     end
     
     methods
-        function obj = eigensolverClass(xsLib, mesh, quad, solution, nouters) %, criteria)
+        function obj = eigensolverClass( input )
             %EIGENSOLVERCLASS Sets up the eigensolver
-            %   xsLib    - The XS Library to use for the calculation
-            %   mesh     - The mesh to solve the problem on
-            %   quad     - The quadrature to use for the calculation
-            %   solution - The solution object that contains solution data
-            %   criteria - The convergence criteria object
+            %   input - The inputClass container from which to initialize
             
-            obj.xsLib = xsLib;
-            obj.mesh = mesh;
-            obj.quad = quad;
-            obj.solution = solution;
+            obj.xsLib = xsLibraryClass(input);
+            obj.mesh = meshClass(input);
+            obj.quad = quadratureClass(input);
+            obj.solution = solutionClass(obj.mesh.nfsrcells,obj.xsLib.ngroups,input);
 %             obj.criteria = criteria;
-            obj.nouters = nouters;
+            obj.nouters = input.nouters;
             obj.converged = false;
             
         end

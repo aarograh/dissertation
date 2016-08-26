@@ -14,17 +14,16 @@ classdef solutionClass
     end
     
     methods
-        function obj = solutionClass( ncells,npol,ngroups,BCond )
+        function obj = solutionClass( ncells,ngroups,input )
             %SOLUTIONCLASS Constructor for solutionClass
             %   ncells  - The number of cells in the problem
-            %   npol    - The number of polar angles in the problem
             %   ngroups - The number of energy groups in the problem
-            %   BCond   - The boundary condition for the angular flux
+            %   input   - The iput Class container from which to initialize
             
             obj.keff(1:2) = 1.0;
-            obj.angflux(1:ncells+1,1:npol,1:2,1:ngroups) = 0.0;
+            obj.angflux(1:ncells+1,1:input.npol,1:2,1:ngroups) = 0.0;
             obj.scalflux(1:ncells,1:ngroups,1:2) = 1.0;
-            obj.BCond = BCond;
+            obj.BCond = input.BCond;
             obj.fisssrc(1:ncells,1:2) = 0.0;
             obj.fluxnorm = 0.0;
         end

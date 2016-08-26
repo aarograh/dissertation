@@ -11,20 +11,19 @@ classdef quadratureClass
     end
     
     methods
-        function obj = quadratureClass(npol)
+        function obj = quadratureClass(input)
             %QUADRATURECLASS Sets up a quadrature class
-            %   npol - Number of polar angles.  Currently, only values of
-            %          1 are accepted.
+            %   input - The inputClass container from which to intiialize
             
-            obj.npol = npol/2;
-            [obj.cosines, obj.weights] = createQuadrature(npol);
+            obj.npol = input.npol/2;
+            [obj.cosines, obj.weights] = createQuadrature(input.npol);
             obj.angles = acos(obj.cosines);
         end
     end
     
 end
 
-function [mu w] = createQuadrature(N)
+function [mu, w] = createQuadrature(N)
    %N is ordinate set: 2, 4, 8, ...
    %Return symmetric gauss-legendre quadrature set
    % syntax: [mu w] = createQuadrature( 4 )
