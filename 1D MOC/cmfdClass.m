@@ -66,6 +66,7 @@ classdef cmfdClass
                 obj = obj.step();
                 converged = 1;
             end
+            solution = obj.project(solution, mesh);
             
         end
         

@@ -91,7 +91,7 @@ classdef eigensolverClass
                 source_in=false;
             end
             for igroup=1:obj.xsLib.ngroups
-                if ~source_in
+                if ~source_in && ~obj.accel
                     obj = obj.setupFSP(igroup);
                 end
                 obj = obj.sweep(igroup);
@@ -104,7 +104,9 @@ classdef eigensolverClass
             %   obj - The eigensolver object to update
             
             obj.solution = obj.solution.calcFissSrc( obj.mesh, obj.xsLib );
-            obj.solution = obj.solution.updateEig( );
+            if ~obj.accel
+                obj.solution = obj.solution.updateEig( );
+            end
             [conv_flux, conv_keff] = obj.solution.calcResidual( obj.mesh, obj.xsLib);
             if obj.verbose
                 display(sprintf('Flux norm : %0.7f',conv_flux));
