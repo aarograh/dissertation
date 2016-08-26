@@ -21,19 +21,16 @@ classdef solutionClass
             %   input   - The iput Class container from which to initialize
             
             obj.keff(1:2) = 1.0;
-            obj.angflux(1:ncells+1,1:input.npol,1:2,1:ngroups) = 0.0;
+            obj.angflux(1:ncells+1,1:input.npol,1:2,1:ngroups) = 1.0;
             obj.scalflux(1:ncells,1:ngroups,1:2) = 1.0;
             obj.BCond = input.BCond;
             obj.fisssrc(1:ncells,1:2) = 0.0;
             obj.fluxnorm = 0.0;
         end
         
-        function obj = update( obj, iouter )
+        function obj = update( obj )
             %UPDATEBC Updates the solution to prepare for the next iteration
-            %   Resets the rest of the angular flux array to 0.0
-            %   Applies the appropriate boundary conditions to the angular flux
-            %   Saves the scalar flux before zeroing it
-            %   TODO: update eigenvalue
+            %   obj - The solutionClass object to update
             
             obj.scalflux(:,:,2) = obj.scalflux(:,:,1);
             obj.scalflux(:,:,1) = 0.0;
@@ -45,22 +42,14 @@ classdef solutionClass
                 if strcmp(strtrim(obj.BCond(1,:)),'vacuum')
                     obj.angflux(1,:,1,:) = 0.0;
                 elseif strcmp(strtrim(obj.BCond(1,:)),'reflecting')
-                    if iouter == 1
-                        obj.angflux(1,:,1,:) = 1.0;
-                    else
-                        obj.angflux(1,:,1,:) = obj.angflux(1,:,2,:);
-                    end
+                    obj.angflux(1,:,1,:) = obj.angflux(1,:,2,:);
                 end
             end
             if ischar(obj.BCond(2))
                 if strcmp(strtrim(obj.BCond(2,:)),'vacuum')
                     obj.angflux(end,:,2,:) = 0.0;
                 elseif strcmp(strtrim(obj.BCond(2,:)),'reflecting')
-                    if iouter == 1
-                        obj.angflux(end,:,2,:) = 1.0;
-                    else
-                        obj.angflux(end,:,2,:) = obj.angflux(end,:,1,:);
-                    end
+                    obj.angflux(end,:,2,:) = obj.angflux(end,:,1,:);
                 end
             end
             
