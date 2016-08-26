@@ -10,9 +10,9 @@ classdef eigensolverClass
         mesh
         quad
         solution
-        criteria
+        conv_crit=[1.0e-8, 1.0e-7];
         input
-        nouters
+        nouters=1000
         converged
     end
     
@@ -25,7 +25,12 @@ classdef eigensolverClass
             obj.mesh = meshClass(input);
             obj.quad = quadratureClass(input);
             obj.solution = solutionClass(obj.mesh.nfsrcells,obj.xsLib.ngroups,input);
-%             obj.criteria = criteria;
+            if input.conv_crit(1) > 0
+              obj.conv_crit(1) = input.conv_crit(1);
+            end
+            if input.conv_crit(2) > 0
+              obj.conv_crit(2) = input.conv_crit(2);
+            end
             obj.nouters = input.nouters;
             obj.converged = false;
             
@@ -79,7 +84,7 @@ classdef eigensolverClass
             display(sprintf('Flux norm : %0.7f',conv_flux));
             display(sprintf('k-eff norm: %0.7f',conv_keff));
             display(sprintf('k-eff     : %0.7f\n',obj.solution.keff(1)));
-            if abs(conv_flux) < 1.0e-7 && abs(conv_keff) < 1.0e-8
+            if abs(conv_flux) < obj.conv_crit(2) && abs(conv_keff) < obj.conv_crit(1)
                 obj.converged = true;
             end
             

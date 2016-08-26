@@ -16,7 +16,7 @@ classdef inputClass
         scattype
         BCond
         nouters
-        conv_crit
+        conv_crit=[0, 0]
     end
     
     methods
