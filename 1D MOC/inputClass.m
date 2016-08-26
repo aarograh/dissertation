@@ -11,6 +11,7 @@ classdef inputClass
         pinmats
         radii
         pinmesh
+        voleql=false
         npol
         xsfilename
         scattype
