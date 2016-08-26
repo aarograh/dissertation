@@ -1,4 +1,6 @@
-close all; clear variables; %clc;
+function result = test1G( verbose )
+%TEST1GIHM Performs a 1-group test with vacuum boundaries
+%   verbose - Flag to enable/disable output
 
 %% General Input Data
 % 1: Fuel Pin
@@ -22,6 +24,7 @@ input.scattype = 'P0';
 input.BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 101;
+input.verbose = false;
 
 %% Test Case
 solver = MOC_1D(input);
@@ -30,6 +33,10 @@ solver = MOC_1D(input);
 ref = 1.4541858;
 if abs(solver.solution.keff(1) - ref) < 1.0e-6 && solver.converged
     display(sprintf('Test Passed! Ref: %0.7f, Test: %0.7f',ref,solver.solution.keff(1)));
+    result = 1;
 else
     display(sprintf('Test Failed! Ref: %0.7f, Test: %0.7f',ref,solver.solution.keff(1)));
+    result = 0;
+end
+
 end

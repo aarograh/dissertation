@@ -1,4 +1,6 @@
-close all; clear variables; %clc;
+function result = test7GIHM( verbose )
+%TEST1GIHM Performs a 7-group IHM tests
+%   verbose - Flag to enable/disable output
 
 %% General Input Data
 % 1: Fuel Pin
@@ -23,6 +25,7 @@ input.BCond = ['reflecting';'reflecting'];
 % BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 1984;
+input.verbose = false;
 
 %% Solve Problem
 solver = ...
@@ -80,6 +83,10 @@ ref = xsnF'*phi;
 %% Test Solution
 if abs(solver.solution.keff(1) - ref) < 5.0e-6 && solver.converged
     display(sprintf('Test Passed! Ref: %0.7f, Test: %0.7f',ref,solver.solution.keff(1)));
+    result = 1;
 else
     display(sprintf('Test Failed! Ref: %0.7f, Test: %0.7f',ref,solver.solution.keff(1)));
+    result = 0;
+end
+
 end
