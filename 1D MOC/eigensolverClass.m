@@ -56,7 +56,6 @@ classdef eigensolverClass
                 if obj.verbose
                     display(sprintf('Eigenvalue iteration %i',iouter));
                 end
-                obj.solution = obj.solution.update(iouter);
                 obj = obj.step();
                 obj = obj.update();
                 if obj.converged
@@ -73,12 +72,20 @@ classdef eigensolverClass
             
         end
         
-        function obj = step(obj)
+        function obj = step(obj, source_in)
             %STEP Performs a single iteration of the eigenvalue solve
-            %   obj - The eigensolver object to solve
+            %   obj       - The eigensolver object to solve
+            %   source_in - Flag to indicate if a user-specified source is present (true) or not (false).
+            %               This is an optional argument
             
+            obj.solution = obj.solution.update();
+            if ~exist('source_in','var')
+                source_in=false;
+            end
             for igroup=1:obj.xsLib.ngroups
-                obj = obj.setupFSP(igroup);
+                if ~source_in
+                    obj = obj.setupFSP(igroup);
+                end
                 obj = obj.sweep(igroup);
             end
             
@@ -109,13 +116,13 @@ classdef eigensolverClass
             %   mesh        - The mesh for this problem
             %   igroup      - Group index
             
-            obj.mesh.source(1:obj.mesh.nfsrcells,1) = 0.0;
+            obj.mesh.source(1:obj.mesh.nfsrcells,igroup) = 0.0;
             for i=1:obj.mesh.nfsrcells
                 % Use old scalar flux to do Jacobi style iteration
                 matID = obj.mesh.materials(i);
-                obj.mesh.source(i,1) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(igroup)/obj.solution.keff(1) + ...
+                obj.mesh.source(i,igroup) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(igroup)/obj.solution.keff(1) + ...
                     obj.solution.scalflux(i,:,2)*obj.xsLib.xsSets(matID).scatter(igroup,:)')*0.5;
-                obj.mesh.xstr(i,1) = obj.xsLib.xsSets(matID).transport(igroup);
+                obj.mesh.xstr(i,igroup) = obj.xsLib.xsSets(matID).transport(igroup);
             end
             
         end
@@ -130,17 +137,17 @@ classdef eigensolverClass
                 for j=1:obj.quad.npol
                     % Forward Sweep
                     dx = (obj.mesh.fsredges(i+1) - obj.mesh.fsredges(i))/obj.quad.cosines(j);
-                    exparg = exp(-obj.mesh.xstr(i)*dx);
+                    exparg = exp(-obj.mesh.xstr(i,igroup)*dx);
                     obj.solution.angflux(i+1,j,1,igroup) = obj.solution.angflux(i,j,1,igroup)*exparg + ...
-                        obj.mesh.source(i)/obj.mesh.xstr(i)*(1 - exparg);
+                        obj.mesh.source(i,igroup)/obj.mesh.xstr(i,igroup)*(1 - exparg);
                     obj.solution.scalflux(i,igroup,1) = obj.solution.scalflux(i,igroup,1) + ...
                         0.5*sum(obj.solution.angflux(i:i+1,j,1,igroup))*obj.quad.weights(j);
                     
                     % Backward Sweep
                     dx = (obj.mesh.fsredges(k+1) - obj.mesh.fsredges(k))/obj.quad.cosines(j);
-                    exparg = exp(-obj.mesh.xstr(k)*dx);
+                    exparg = exp(-obj.mesh.xstr(k,igroup)*dx);
                     obj.solution.angflux(k,j,2,igroup) = obj.solution.angflux(k+1,j,2,igroup)*exparg + ...
-                        obj.mesh.source(k)/obj.mesh.xstr(k)*(1 - exparg);
+                        obj.mesh.source(k,igroup)/obj.mesh.xstr(k,igroup)*(1 - exparg);
                     obj.solution.scalflux(k,igroup,1) = obj.solution.scalflux(k,igroup,1) + ...
                         0.5*sum(obj.solution.angflux(k:k+1,j,2,igroup))*obj.quad.weights(j);
                 end
