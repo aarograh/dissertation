@@ -1,4 +1,4 @@
-function result = test1G( verbose )
+function result = test_1G( verbose )
 %TEST1GIHM Performs a 1-group test with vacuum boundaries
 %   verbose - Flag to enable/disable output
 
@@ -24,7 +24,7 @@ input.scattype = 'P0';
 input.BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 101;
-input.verbose = false;
+input.verbose = verbose;
 
 %% Test Case
 solver = MOC_1D(input);

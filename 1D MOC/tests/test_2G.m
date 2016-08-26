@@ -1,4 +1,4 @@
-function result = test2G( verbose )
+function result = test_2G( verbose )
 %TEST1GIHM Performs a 2-group test with vacuum boundaries
 
 %% General Input Data
@@ -23,7 +23,7 @@ input.scattype = 'P0';
 input.BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 119;
-input.verbose = false;
+input.verbose = verbose;
 
 %% Test Case
 solver = MOC_1D(input);

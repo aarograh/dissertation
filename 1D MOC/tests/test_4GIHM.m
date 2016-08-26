@@ -1,4 +1,4 @@
-function result = test4GIHM( verbose )
+function result = test_4GIHM( verbose )
 %TEST1GIHM Performs a 4-group IHM tests
 %   verbose - Flag to enable/disable output
 
@@ -25,7 +25,7 @@ input.BCond = ['reflecting';'reflecting'];
 % BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 855;
-input.verbose = false;
+input.verbose = verbose;
 
 %% Test Case
 solver = ...
