@@ -31,7 +31,7 @@ solver = MOC_1D(input);
 %% Test Solution
 ref = 0.2926313;
 if abs(solver.solution.keff(1) - ref) < 1.0e-6 && solver.converged
-    display(sprintf('Test Passed! Ref: %0.7f, Test: %0.7f',ref,solver.solution.keff(1)));
+    display(sprintf('Test Passed!'));
     result = 1;
 elseif abs(solver.solution.keff(1) - ref)
     display(sprintf('Result is correct, but did not converge quickly enough!'));
