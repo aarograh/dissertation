@@ -3,10 +3,9 @@ function solver = MOC_1D( input )
 %   input - The inputClass object to use while setting up the problem
 
 %% Initialize Eigensolver
-solver = eigensolverClass(input); %, critera);
+solver = eigensolverClass(input);
 
 %% Solve
-solver = solver.setup();
 solver = solver.solve();
 
 end

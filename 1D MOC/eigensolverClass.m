@@ -10,6 +10,8 @@ classdef eigensolverClass
         mesh
         quad
         solution
+        accel
+        cmfd
         conv_crit=[1.0e-8, 1.0e-7];
         input
         nouters=1000
@@ -26,6 +28,16 @@ classdef eigensolverClass
             obj.mesh = meshClass(input);
             obj.quad = quadratureClass(input);
             obj.solution = solutionClass(obj.mesh.nfsrcells,obj.xsLib.ngroups,input);
+            if ~isempty(input.cmfd)
+                if input.cmfd
+                    obj.cmfd = cmfdClass(input, obj.xsLib.ngroups);
+                    obj.accel = true;
+                else
+                    obj.accel = false;
+                end
+            else
+                obj.accel = false;
+            end
             if input.conv_crit(1) > 0
                 obj.conv_crit(1) = input.conv_crit(1);
             end
@@ -40,21 +52,17 @@ classdef eigensolverClass
             
         end
         
-        function obj = setup(obj)
-            %SETUP Prepares the solver for the next iteration
-            %   obj - The eigensolver object to set up
-            
-            obj.solution = obj.solution.calcFissSrc( obj.mesh, obj.xsLib );
-            
-        end
-        
         function obj = solve(obj)
             %SOLVE Solves the eigenvalue problem
             %   obj - The eigensolver object to solve
             
+            obj.solution = obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
             for iouter=1:obj.nouters
                 if obj.verbose
                     display(sprintf('Eigenvalue iteration %i',iouter));
+                end
+                if obj.accel
+                    obj.solution = obj.cmfd.solve(obj.solution, obj.mesh);
                 end
                 obj = obj.step();
                 obj = obj.update();

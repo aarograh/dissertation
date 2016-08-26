@@ -19,6 +19,7 @@ classdef inputClass
         nouters
         conv_crit=[0, 0]
         verbose
+        cmfd
     end
     
     methods

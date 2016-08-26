@@ -29,6 +29,8 @@ input.scattype = 'P0';
 input.BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 1000;
+% Acceleration
+input.cmfd = true;
 
 %% Case 1 - Control Rod Case
 % pinmap_rodded = 1;

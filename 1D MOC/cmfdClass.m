@@ -1,0 +1,88 @@
+classdef cmfdClass
+    %CMFDCLASS CMFD Accelerator class
+    %   This class contains the data and methods required to perform
+    %   1D CMFD acceleration
+    
+    properties
+        dtils
+        dhats
+        A
+        x
+        b
+        keff
+        ncells
+        regPerCell
+        firstIteration = true
+    end
+    
+    methods
+        function obj = cmfdClass( input, ngroups )
+            %CMFDCLASS Constructor for cmfdClass object
+            %   input   - inputClass object from which to initialize
+            %   ngroups - Number of energy groups in the calculation
+            
+            npins = length(input.pinmap);
+            nmats = size(input.pinmats,2);
+            obj.ncells = 0;
+            for ipin=1:npins
+                for imat=nmats:-1:1
+                    if input.pinmats(input.pinmap(ipin),imat)
+                        break
+                    end
+                end
+                obj.regPerCell(obj.ncells+1:obj.ncells+imat) = input.pinmesh(input.pinmap(ipin),imat:-1:1);
+                obj.ncells = obj.ncells + imat;
+                obj.regPerCell(obj.ncells+1:obj.ncells+imat) = input.pinmesh(input.pinmap(ipin),1:imat);
+                obj.ncells = obj.ncells + imat;
+            end
+            
+            obj.dtils(1:obj.ncells+1,1:ngroups) = 0.0;
+            obj.dhats(1:obj.ncells+1,1:ngroups) = 0.0;
+            obj.A(1:obj.ncells*ngroups,1:obj.ncells*ngroups) = 0.0;
+            obj.x(1:obj.ncells*ngroups,1) = 0.0;
+            obj.b(1:obj.ncells*ngroups,1) = 0.0;
+            
+        end
+        
+        function obj = setup( obj, solution, mesh )
+            %SETUP Sets up matrix and source for CMFD problem
+            %   obj      - The cmfdClass object to set up
+            %   solution - The solutionClass object to use for the setup
+            %   mesh     - The meshClass object on which to solve
+            
+        end
+        
+        function solution = solve( obj, solution, mesh )
+            %SOLVE Performs power iteration to solve the CMFD system
+            %   obj      - The cmfdClass object to set up
+            %   solution - The solutionClass object to use for the setup
+            %   mesh     - The meshClass object on which to solve
+            
+            obj.keff = solution.keff(1);
+            converged = 0;
+            
+            while ~converged
+                obj = obj.setup(solution, mesh);
+                obj = obj.step();
+                converged = 1;
+            end
+            
+        end
+        
+        function obj = step( obj )
+            %STEP Performs a single CMFD iteration
+            %   obj      - The cmfdClass object to set up
+            
+        end
+        
+        function obj = project( obj, solution, mesh )
+            %PROJECT Projects the CMFD solution onto the MOC mesh
+            %   obj      - The cmfdClass object to set up
+            %   solution - The solutionClass object to use for the setup
+            %   mesh     - The meshClass object on which to solve
+            
+        end
+    end
+    
+end
+
