@@ -13,7 +13,7 @@ while ~EOF
         fh = str2func(testname);
         tests = tests + 1;
         display(sprintf('Starting test %i: %15s',tests,testname))
-        result = fh();
+        result = fh(false);
         if ~result
             failed = failed + 1;
         end
