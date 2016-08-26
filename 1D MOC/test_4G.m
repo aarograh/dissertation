@@ -4,27 +4,27 @@ close all; clear variables; %clc;
 % 1: Fuel Pin
 % 2: Control Pin
 % 3: Guide Tube Pin
-pitch = 10.0;
-diag = 0; % flat to indicate whether pin moves through narrow (0) or wide (1) water
+input = inputClass();
+input.pinmap = 1;
+input.pitch = 10.0;
+input.diag = 0; % flat to indicate whether pin moves through narrow (0) or wide (1) water
 % Pin information
-pinmats = 1;
+input.pinmats = 1;
 
-radii = [ ];
-pinmesh = 10;
+input.radii = [ ];
+input.pinmesh = 10;
 % Quadrature
-npol = 32;
+input.npol = 32;
 % XS Library Info
-xsfilename = '4group.xsl';
-scattype = 'P0';
+input.xsfilename = '4group.xsl';
+input.scattype = 'P0';
 % Boundary Conditions
-BCond = ['vacuum';'vacuum'];
+input.BCond = ['vacuum';'vacuum'];
 % Convergence
-nouters = 89;
+input.nouters = 89;
 
 %% Test Case
-pinmap_rodded = 1;
-solver = ...
-    MOC_1D(pinmap_rodded, pitch, diag, pinmats, radii, pinmesh, npol, xsfilename, scattype, BCond, nouters);
+solver = MOC_1D(input);
 
 %% Test Solution
 ref = 0.2926313;
