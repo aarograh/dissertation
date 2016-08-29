@@ -1,4 +1,4 @@
-classdef solutionClass
+classdef solutionClass < handle
     %SOLUTIONCLASS Stores angular and scalar flux solution variables
     %   This is mainly to make it easier to pass information around.
     %   It will also be used to check convergence for eigenvalue

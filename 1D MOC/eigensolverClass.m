@@ -56,13 +56,13 @@ classdef eigensolverClass
             %SOLVE Solves the eigenvalue problem
             %   obj - The eigensolver object to solve
             
-            obj.solution = obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
+            obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
             for iouter=1:obj.nouters
                 if obj.verbose
                     display(sprintf('Eigenvalue iteration %i',iouter));
                 end
                 if obj.accel
-                    obj.solution = obj.cmfd.solve(obj.solution, obj.mesh);
+                    obj.cmfd.solve(obj.solution, obj.mesh);
                 end
                 obj = obj.step();
                 obj = obj.update();
@@ -86,7 +86,7 @@ classdef eigensolverClass
             %   source_in - Flag to indicate if a user-specified source is present (true) or not (false).
             %               This is an optional argument
             
-            obj.solution = obj.solution.update();
+            obj.solution.update();
             if ~exist('source_in','var')
                 source_in=false;
             end
@@ -103,9 +103,9 @@ classdef eigensolverClass
             %UPDATE Updates eigenvalue object after each iteration
             %   obj - The eigensolver object to update
             
-            obj.solution = obj.solution.calcFissSrc( obj.mesh, obj.xsLib );
+            obj.solution.calcFissSrc( obj.mesh, obj.xsLib );
             if ~obj.accel
-                obj.solution = obj.solution.updateEig( );
+                obj.solution.updateEig( );
             end
             [conv_flux, conv_keff] = obj.solution.calcResidual( obj.mesh, obj.xsLib);
             if obj.verbose
