@@ -1,4 +1,4 @@
-classdef inputClass
+classdef inputClass < handle
     %INPUTCLASS Container class to hold input data
     %   Contains all data for pin geometry and materials,
     %   XS Library filename, and ray tracing and meshing
