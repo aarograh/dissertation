@@ -1,4 +1,4 @@
-classdef meshClass
+classdef meshClass < handle
     %MESHCLASS Object to store FSR and XS meshes and materials
     %   This object store three different types of meshes.
     %   The first is matmesh.  This contains the materials
