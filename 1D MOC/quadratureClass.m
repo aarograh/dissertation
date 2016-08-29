@@ -1,4 +1,4 @@
-classdef quadratureClass
+classdef quadratureClass < handle
     %QUADRATURECLASS Contains quadrature information
     %   Contains the angles, their cosines, and weights
     %   for a polar quadrature for 1D MOC
