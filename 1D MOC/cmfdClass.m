@@ -1,4 +1,4 @@
-classdef cmfdClass
+classdef cmfdClass < handle
     %CMFDCLASS CMFD Accelerator class
     %   This class contains the data and methods required to perform
     %   1D CMFD acceleration
@@ -62,11 +62,11 @@ classdef cmfdClass
             converged = 0;
             
             while ~converged
-                obj = obj.setup(solution, mesh);
-                obj = obj.step();
+                obj.setup(solution, mesh);
+                obj.step();
                 converged = 1;
             end
-            solution = obj.project(solution, mesh);
+            obj.project(solution, mesh);
             
         end
         
