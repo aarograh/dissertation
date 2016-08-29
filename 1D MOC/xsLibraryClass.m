@@ -1,4 +1,4 @@
-classdef xsLibraryClass
+classdef xsLibraryClass < handle
     %XSLIBRARYCLASS Stores cross-section data and reads XS library file
     %   Cross-section libraries must be in the same format as the
     %   MPACT user libraries.  One cross-section set will be stored for
@@ -18,7 +18,7 @@ classdef xsLibraryClass
             %XSLIBRARYCLASS Constructor for xsLibraryClass
             %   input - The inputClass container from which to initialize
             
-            obj = obj.openfile(input.xsfilename);
+            obj.openfile(input.xsfilename);
             
             % Get library name
             nextline = obj.getLine();
@@ -68,10 +68,10 @@ classdef xsLibraryClass
                     end
                 end
                 % Calculate total cross-section and transport cross-section
-                obj.xsSets(i) = obj.xsSets(i).calcTXS( input.scattype );
+                obj.xsSets(i).calcTXS( input.scattype );
             end
             
-            obj = obj.closefile( );
+            obj.closefile( );
         end
         
         function obj = openfile( obj, filename )

@@ -1,4 +1,4 @@
-classdef xsClass
+classdef xsClass < handle
     %XSCLASS Class which hold cross-section data
     %   This class holds the multi-group XS data for
     %   a single type of material.
