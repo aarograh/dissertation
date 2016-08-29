@@ -1,4 +1,4 @@
-classdef eigensolverClass
+classdef eigensolverClass < handle
     %EIGENSOLVERCLASS Solves an eigenvalue problem
     %   This class contains the mesh, cross-section library,
     %   and quadrature required to solve a 1D MOC problem.
@@ -64,8 +64,8 @@ classdef eigensolverClass
                 if obj.accel
                     obj.cmfd.solve(obj.solution, obj.mesh);
                 end
-                obj = obj.step();
-                obj = obj.update();
+                obj.step();
+                obj.update();
                 if obj.converged
                     if obj.verbose
                         display(sprintf('Converged after %i iterations...',iouter));
@@ -92,9 +92,9 @@ classdef eigensolverClass
             end
             for igroup=1:obj.xsLib.ngroups
                 if ~source_in && ~obj.accel
-                    obj = obj.setupFSP(igroup);
+                    obj.setupFSP(igroup);
                 end
-                obj = obj.sweep(igroup);
+                obj.sweep(igroup);
             end
             
         end

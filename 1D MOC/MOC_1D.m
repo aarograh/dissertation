@@ -6,6 +6,6 @@ function solver = MOC_1D( input )
 solver = eigensolverClass(input);
 
 %% Solve
-solver = solver.solve();
+solver.solve();
 
 end
