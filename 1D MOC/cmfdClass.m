@@ -10,19 +10,25 @@ classdef cmfdClass < handle
         x
         b
         keff
+        xsLib
+        mesh
         ncells
         regPerCell
         firstIteration = true
     end
     
     methods
-        function obj = cmfdClass( input, ngroups )
+        function obj = cmfdClass( input, mesh, xsLib)
             %CMFDCLASS Constructor for cmfdClass object
-            %   input   - inputClass object from which to initialize
-            %   ngroups - Number of energy groups in the calculation
+            %   input - The inputClass object from which to initialize
+            %   mesh  - The meshClass object to solve
+            %   xsLib - The xsLibraryClass object with XS data
             
             npins = length(input.pinmap);
             nmats = size(input.pinmats,2);
+            ngroups = xsLib.ngroups;
+            obj.xsLib = xsLib;
+            obj.mesh = mesh;
             obj.ncells = 0;
             for ipin=1:npins
                 for imat=nmats:-1:1
@@ -64,6 +70,7 @@ classdef cmfdClass < handle
             while ~converged
                 obj.setup(solution, mesh);
                 obj.step();
+                solution.updateEig();
                 converged = 1;
             end
             obj.project(solution, mesh);
@@ -73,6 +80,7 @@ classdef cmfdClass < handle
         function obj = step( obj )
             %STEP Performs a single CMFD iteration
             %   obj      - The cmfdClass object to set up
+            
             
         end
         
