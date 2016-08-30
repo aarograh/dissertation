@@ -30,7 +30,7 @@ classdef eigensolverClass < handle
             obj.solution = solutionClass(obj.mesh.nfsrcells,obj.xsLib.ngroups,input);
             if ~isempty(input.cmfd)
                 if input.cmfd
-                    obj.cmfd = cmfdClass(input, obj.xsLib.ngroups);
+                    obj.cmfd = cmfdClass(input, obj.mesh, obj.xsLib);
                     obj.accel = true;
                 else
                     obj.accel = false;
@@ -61,6 +61,7 @@ classdef eigensolverClass < handle
                 if obj.verbose
                     display(sprintf('Eigenvalue iteration %i',iouter));
                 end
+                obj.solution.update();
                 if obj.accel
                     obj.cmfd.solve(obj.solution, obj.mesh);
                 end
@@ -86,12 +87,11 @@ classdef eigensolverClass < handle
             %   source_in - Flag to indicate if a user-specified source is present (true) or not (false).
             %               This is an optional argument
             
-            obj.solution.update();
             if ~exist('source_in','var')
                 source_in=false;
             end
             for igroup=1:obj.xsLib.ngroups
-                if ~source_in && ~obj.accel
+                if ~source_in
                     obj.setupFSP(igroup);
                 end
                 obj.sweep(igroup);
