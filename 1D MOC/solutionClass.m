@@ -11,7 +11,6 @@ classdef solutionClass < handle
         current
         scalflux % First index is current, second is previous iteration
         fisssrc
-        fluxnorm
     end
     
     methods
@@ -26,8 +25,7 @@ classdef solutionClass < handle
             obj.current(1:ncells+1,1:ngroups,1:2) = 0.0;
             obj.scalflux(1:ncells,1:ngroups,1:2) = 1.0;
             obj.BCond = input.BCond;
-            obj.fisssrc(1:ncells,1:2) = 0.0;
-            obj.fluxnorm = 0.0;
+            obj.fisssrc(1:ncells,1:2) = 1.0;
         end
         
         function obj = update( obj )
@@ -39,7 +37,6 @@ classdef solutionClass < handle
             obj.current(:,:,2) = obj.current(:,:,1);
             obj.current(:,:,1) = 0.0;
             obj.keff(2) = obj.keff(1);
-            obj.fisssrc(:,2) = obj.fisssrc(:,1);
             
             % Set angular flux BC
             if ischar(obj.BCond(1))
@@ -90,6 +87,7 @@ classdef solutionClass < handle
             %   mesh  - The mesh to calculate the FS on
             %   xsLib - The XS Library to use for the calculation
             
+            obj.fisssrc(:,2) = obj.fisssrc(:,1);
             obj.fisssrc(:,1) = 0.0;
             for i=1:mesh.nfsrcells
                 matID = mesh.materials(i);
