@@ -4,6 +4,7 @@ classdef cmfdClass < handle
     %   1D CMFD acceleration
     
     properties
+        flux
         xstr
         xst
         xsrm
@@ -50,6 +51,7 @@ classdef cmfdClass < handle
 %                 obj.ncells = obj.ncells + imat;
 %             end
             
+            obj.flux(1:obj.ncells,1:obj.ngroups,1:2) = 0.0;
             obj.xstr(1:obj.ncells,1:obj.ngroups) = 0.0;
             obj.xst(1:obj.ncells,1:obj.ngroups) = 0.0;
             obj.xsrm(1:obj.ncells,1:obj.ngroups) = 0.0;
@@ -90,6 +92,7 @@ classdef cmfdClass < handle
             %STEP Performs a single CMFD iteration
             %   obj      - The cmfdClass object to set up
             
+            obj.flux(:,:,2) = obj.flux(:,:,1);
             
         end
         
@@ -131,6 +134,9 @@ classdef cmfdClass < handle
                         obj.xsch(i,g) = obj.xsch(i,g) + ...
                             flxvolpsi*obj.xsLib.xsSets(imat).chi(g);
                     end
+                    
+                    % Calculate Homogenized cross-sections and flux
+                    obj.flux(i,g,1) = flxvolsum/volsum;
                     obj.xstr(i,g) = obj.xstr(i,g)/flxvolsum;
                     obj.xst(i,g) = obj.xst(i,g)/flxvolsum;
                     obj.xsnf(i,g) = obj.xsnf(i,g)/flxvolsum;
@@ -139,6 +145,29 @@ classdef cmfdClass < handle
                         obj.xssc(i,g2,g) = obj.xssc(i,g2,g)/flxvolsum;
                     end
                     obj.xsrm(i,g) = obj.xst(i,g) - obj.xssc(i,g,g);
+                    
+                    % Calculate coupling coefficients
+                    %   Interior surface
+                    if i > 1
+                        obj.dtils(i-1,g) = 2.0/(3.0*(volsum*obj.xstr(i,g) + oldvolsum*obj.xstr(i-1,g)));
+                        obj.dhats(i-1,g) = (solution.current(icell-obj.regPerCell(i),g,1) + ...
+                            obj.dtils(i-1,g)*(obj.flux(i,g,1) - obj.flux(i-1,g,1)))/ ...
+                            (obj.flux(i,g,1) + obj.flux(i-1,g,1));
+                    else
+                        % TODO: alpha = 0.5, vacuum; = 0.0, reflective
+                        alpha = 0.0;
+                        obj.dtils(1,g) = alpha/(1.0 + 3.0*(volsum/2.0)*alpha*obj.xstr(1,g));
+                        obj.dhats(1,g) = (solution.current(1,g,1) + obj.dtils(1,g)*obj.flux(1,g,1))/ ...
+                            obj.flux(1,g,1);
+                    end
+                    if i == obj.ncells
+                        % TODO: alpha = 0.5, vacuum; = 0.0, reflective
+                        alpha = 0.0;
+                        obj.dtils(end,g) = alpha/(1.0 + 3.0*(volsum/2.0)*alpha*obj.xstr(end,g));
+                        obj.dhats(end,g) = (solution.current(end,g,1) - obj.dtils(end,g)*obj.flux(end,g,1))/ ...
+                            obj.flux(end,g,1);
+                    end
+                    oldvolsum = volsum;
                 end
             end
             
