@@ -64,16 +64,18 @@ classdef cmfdClass < handle
             %   solution - The solutionClass object to use for the setup
             %   mesh     - The meshClass object on which to solve
             
-            obj.keff = solution.keff(1);
+            obj.keff(1:2) = solution.keff(1);
             converged = 0;
             
+            obj.homogenize(solution, mesh);
             while ~converged
-                obj.setup(solution, mesh);
                 obj.step();
-                solution.updateEig();
                 converged = 1;
             end
             obj.project(solution, mesh);
+            
+            solution.keff(2) = solution.keff(1);
+            solution.keff(1) = obj.keff(1);
             
         end
         
@@ -81,6 +83,12 @@ classdef cmfdClass < handle
             %STEP Performs a single CMFD iteration
             %   obj      - The cmfdClass object to set up
             
+            
+        end
+        
+        function obj = updateEig( obj )
+            %UPDATEEIG Performs update of CMFD eigenvalue
+            %   obj - cmfdClass object to update
             
         end
         
