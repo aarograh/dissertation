@@ -5,6 +5,7 @@ classdef cmfdClass < handle
     
     properties
         flux
+        fisssrc
         xstr
         xst
         xsrm
@@ -22,6 +23,7 @@ classdef cmfdClass < handle
         ngroups
         ncells
         regPerCell
+        cellwidths
         firstIteration = true
     end
     
@@ -37,7 +39,8 @@ classdef cmfdClass < handle
             obj.xsLib = xsLib;
             obj.mesh = mesh;
             for ipin=1:obj.ncells
-                obj.regPerCell(ipin) = sum(input.pinmesh(input.pinmap(ipin),:),2);
+                % Multiply by 2 since only half the pin is being described
+                obj.regPerCell(ipin) = 2*sum(input.pinmesh(input.pinmap(ipin),:),2);
             end
 %             for ipin=1:npins
 %                 for imat=nmats:-1:1
@@ -52,6 +55,7 @@ classdef cmfdClass < handle
 %             end
             
             obj.flux(1:obj.ncells,1:obj.ngroups,1:2) = 0.0;
+            obj.fisssrc(1:obj.ncells,1:2) = 0.0;
             obj.xstr(1:obj.ncells,1:obj.ngroups) = 0.0;
             obj.xst(1:obj.ncells,1:obj.ngroups) = 0.0;
             obj.xsrm(1:obj.ncells,1:obj.ngroups) = 0.0;
@@ -76,10 +80,22 @@ classdef cmfdClass < handle
             converged = 0;
             
             obj.homogenize(solution, mesh);
-            obj.setup();
+            obj.setupMatrix();
+            iters = 0;
             while ~converged
+                iters = iters + 1;
+                obj.setupSource();
                 obj.step();
-                converged = 1;
+                [conv_flux, conv_keff] = obj.calcResidual( );
+                if conv_flux < 1.0e-8 && conv_keff < 1.0e-8
+                    converged = 1;
+                elseif iters == 20
+                    display(sprintf('Too many iterations.  Giving up.'));
+                    break
+                else
+                    display(sprintf('  CMFD keff, residuals (k-eff, flux): %0.8f, %0.8f, %0.8f',...
+                        obj.keff(1),conv_keff,conv_flux));
+                end
             end
             obj.project(solution, mesh);
             
@@ -92,7 +108,38 @@ classdef cmfdClass < handle
             %STEP Performs a single CMFD iteration
             %   obj      - The cmfdClass object to set up
             
-            obj.flux(:,:,2) = obj.flux(:,:,1);
+            % Solve linear system
+            obj.x = obj.A\obj.b;
+            
+            % Update flux and fission source
+            obj.fisssrc(:,2) = obj.fisssrc(:,1);
+            obj.fisssrc(:,1) = 0.0;
+            irow = 0;
+            for i=1:obj.ncells
+                for g=1:obj.ngroups
+                    irow = irow + 1;
+                    obj.flux(i,g,1) = obj.x(irow);
+                    obj.fisssrc(i,1) = obj.fisssrc(i,1) + ...
+                        obj.flux(i,g,1)*obj.xsnf(i,g,1)*obj.cellwidths(i);
+                end
+            end
+            
+            % Update eigenvalue
+            obj.keff(2) = obj.keff(1);
+            obj.keff(1) = obj.keff(2)*sum(obj.fisssrc(:,1))/sum(obj.fisssrc(:,2));
+            
+        end
+        
+        function [conv_flux, conv_keff] = calcResidual(obj)
+            %CALCRESIDUAL Calculates the scalar flux and k-eff residuals
+            %   obj - cmfdClass object whose convergence needs to be calculated
+            
+            conv_flux = 0.0;
+            for i=1:obj.ncells
+                conv_flux = max(conv_flux,abs((obj.fisssrc(i,1) - obj.fisssrc(i,2))/...
+                    obj.fisssrc(i,2)));
+            end
+            conv_keff = obj.keff(1) - obj.keff(2);
             
         end
         
@@ -108,6 +155,7 @@ classdef cmfdClass < handle
             obj.xssc(:) = 0.0;
             obj.xsnf(:) = 0.0;
             obj.xsch(:) = 0.0;
+            display(solution.scalflux)
             
             for g=1:obj.ngroups
                 icell = 0;
@@ -121,7 +169,7 @@ classdef cmfdClass < handle
                         dx = (mesh.fsredges(icell+1)-mesh.fsredges(icell));
                         volsum = volsum + dx;
                         flxvol = solution.scalflux(icell,g,1)*dx;
-                        flxvolpsi = fisssrc(icell,1)*dx;
+                        flxvolpsi = solution.fisssrc(icell,1)*dx;
                         flxvolsum = flxvolsum + flxvol;
                         fisssrcsum = fisssrcsum + flxvolpsi;
                         obj.xstr(i,g) = obj.xstr(i,g) + obj.xsLib.xsSets(imat).transport(g)*flxvol;
@@ -136,11 +184,14 @@ classdef cmfdClass < handle
                     end
                     
                     % Calculate Homogenized cross-sections and flux
-                    obj.flux(i,g,1) = flxvolsum/volsum;
+                    obj.flux(i,g,1:2) = flxvolsum/volsum;
                     obj.xstr(i,g) = obj.xstr(i,g)/flxvolsum;
                     obj.xst(i,g) = obj.xst(i,g)/flxvolsum;
                     obj.xsnf(i,g) = obj.xsnf(i,g)/flxvolsum;
                     obj.xsch(i,g) = obj.xsch(i,g)/fisssrcsum;
+                    if g == 1
+                        obj.fisssrc(i,1:2) = obj.flux(i,g,1)*obj.xsnf(i,g);
+                    end
                     for g2=1:obj.ngroups
                         obj.xssc(i,g2,g) = obj.xssc(i,g2,g)/flxvolsum;
                     end
@@ -153,36 +204,93 @@ classdef cmfdClass < handle
                         obj.dhats(i-1,g) = (solution.current(icell-obj.regPerCell(i),g,1) + ...
                             obj.dtils(i-1,g)*(obj.flux(i,g,1) - obj.flux(i-1,g,1)))/ ...
                             (obj.flux(i,g,1) + obj.flux(i-1,g,1));
+                    %   Left boundary
                     else
-                        % TODO: alpha = 0.5, vacuum; = 0.0, reflective
-                        alpha = 0.0;
+                        if strcmp(strtrim(solution.BCond(1,:)),'vacuum')
+                            alpha = 0.5;
+                        else
+                            alpha = 0.0;
+                        end
                         obj.dtils(1,g) = alpha/(1.0 + 3.0*(volsum/2.0)*alpha*obj.xstr(1,g));
-                        obj.dhats(1,g) = (solution.current(1,g,1) + obj.dtils(1,g)*obj.flux(1,g,1))/ ...
-                            obj.flux(1,g,1);
+                        if strcmp(strtrim(solution.BCond(1,:)),'reflecting')
+                            obj.dhats(1,g) = 0.0;
+                        else
+                            obj.dhats(1,g) = (solution.current(1,g,1) + obj.dtils(1,g)*obj.flux(1,g,1))/ ...
+                                obj.flux(1,g,1);
+                        end
                     end
+                    %   Right boundary
                     if i == obj.ncells
-                        % TODO: alpha = 0.5, vacuum; = 0.0, reflective
-                        alpha = 0.0;
+                        if strcmp(strtrim(solution.BCond(2,:)),'vacuum')
+                            alpha = 0.5;
+                        else
+                            alpha = 0.0;
+                        end
                         obj.dtils(end,g) = alpha/(1.0 + 3.0*(volsum/2.0)*alpha*obj.xstr(end,g));
-                        obj.dhats(end,g) = (solution.current(end,g,1) - obj.dtils(end,g)*obj.flux(end,g,1))/ ...
-                            obj.flux(end,g,1);
+                        if strcmp(strtrim(solution.BCond(2,:)),'reflecting')
+                            obj.dhats(end,g) = 0.0;
+                        else
+                            obj.dhats(end,g) = (solution.current(end,g,1) - obj.dtils(end,g)*obj.flux(end,g,1))/ ...
+                                obj.flux(end,g,1);
+                        end
                     end
+                    obj.cellwidths(i) = volsum;
                     oldvolsum = volsum;
+                end
+            end
+            display(obj.flux)
+        end
+        
+        function obj = setupMatrix( obj )
+            %SETUPMATRIX Sets up the matrix for the CMFD linear system
+            %   obj - cmfdClass to set up
+            
+            irow = 0;
+            obj.A(:) = 0.0;
+            obj.x(:) = 0.0;
+            for i=1:obj.ncells
+                for g=1:obj.ngroups
+                    irow = irow + 1;
+                    % Sum of coupling coefficients goes on diagonal
+                    obj.A(irow,irow) = obj.dtils(i+1,g) + obj.dhats(i+1,g) + ...
+                        obj.dtils(i,g) - obj.dhats(i,g);
+                    % Add coupling coefficients for east neighbor
+                    if i < obj.ncells
+                        obj.A(irow,irow+obj.ngroups) = -obj.dtils(i+1,g) + obj.dhats(i+1,g);
+                    end
+                    % Add coupling coefficients for west neighbor
+                    if i > 1
+                        obj.A(irow,irow-obj.ngroups) = -obj.dtils(i,g) - obj.dhats(i,g);
+                    end
+                    
+                    % Add total reaction rate
+                    obj.A(irow,irow) = obj.A(irow,irow) + obj.xsrm(i,g)*obj.cellwidths(i);
+                    
+                    % Add scattering terms
+                    for g2=1:obj.ngroups
+                        if g ~= g2
+                            obj.A(irow,irow-g+g2) = obj.A(irow,irow-g+g2) + ...
+                                obj.xssc(i,g,g2)*obj.cellwidths(i);
+                        end
+                    end
                 end
             end
             
         end
         
-        function obj = setup( obj )
-            %SETUP Sets up the linear system for the CMFD solve
+        function obj = setupSource( obj )
+            %SETUPSOURCE Sets up the source for the CMFD linear system
             %   obj - cmfdClass to set up
             
-        end
-        
-        function obj = updateEig( obj )
-            %UPDATEEIG Performs update of CMFD eigenvalue
-            %   obj - cmfdClass object to update
-            
+            irow = 0;
+            obj.b(:) = 0.0;
+            for i=1:obj.ncells
+                for g=1:obj.ngroups
+                    irow = irow + 1;
+                    % Add source
+                    obj.b(irow,1) = obj.fisssrc(i,1)/obj.keff(1);
+                end
+            end
         end
         
         function obj = project( obj, solution, mesh )
@@ -190,6 +298,17 @@ classdef cmfdClass < handle
             %   obj      - The cmfdClass object to set up
             %   solution - The solutionClass object to use for the setup
             %   mesh     - The meshClass object on which to solve
+            
+            icell=0;
+            for i=1:obj.ncells
+                regcells = obj.regPerCell(i);
+                for g=1:obj.ngroups
+                    scale = obj.flux(i,g,1)/obj.flux(i,g,2);
+                    solution.scalflux(icell+1:icell+regcells,g,1) = ...
+                        solution.scalflux(icell+1:icell+regcells,g,1)*scale;
+                end
+                icell = icell + regcells;
+            end
             
         end
     end
