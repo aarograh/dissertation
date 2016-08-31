@@ -110,8 +110,6 @@ classdef eigensolverClass < handle
             obj.solution.calcFissSrc( obj.mesh, obj.xsLib );
             if ~obj.accel
                 obj.solution.updateEig( );
-            else
-                obj.solution.updateEig( );
             end
             [conv_flux, conv_keff] = obj.solution.calcResidual( obj.mesh, obj.xsLib);
             if obj.verbose
