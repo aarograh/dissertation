@@ -7,3 +7,6 @@ test_2G
 test_4G
 test_7G
 test_3pin7G
+test_1GIHM_cmfd
+test_2GIHM_cmfd
+test_7GIHM_cmfd
