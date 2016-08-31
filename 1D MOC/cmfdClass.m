@@ -69,6 +69,10 @@ classdef cmfdClass < handle
             converged = 0;
             
             obj.homogenize(solution, mesh);
+            if obj.firstIteration
+                obj.dhats(:) = 0.0;
+                obj.firstIteration=false;
+            end
             obj.setupMatrix();
             iters = 0;
             maxiters = 20;
