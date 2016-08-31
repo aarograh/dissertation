@@ -61,10 +61,10 @@ classdef eigensolverClass < handle
                 if obj.verbose
                     display(sprintf('Eigenvalue iteration %i',iouter));
                 end
-                obj.solution.update();
                 if obj.accel
                     obj.cmfd.solve(obj.solution, obj.mesh);
                 end
+                obj.solution.update();
                 obj.step();
                 obj.update();
                 if obj.converged
@@ -109,6 +109,8 @@ classdef eigensolverClass < handle
             
             obj.solution.calcFissSrc( obj.mesh, obj.xsLib );
             if ~obj.accel
+                obj.solution.updateEig( );
+            else
                 obj.solution.updateEig( );
             end
             [conv_flux, conv_keff] = obj.solution.calcResidual( obj.mesh, obj.xsLib);
