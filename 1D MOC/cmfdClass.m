@@ -42,17 +42,6 @@ classdef cmfdClass < handle
                 % Multiply by 2 since only half the pin is being described
                 obj.regPerCell(ipin) = 2*sum(input.pinmesh(input.pinmap(ipin),:),2);
             end
-%             for ipin=1:npins
-%                 for imat=nmats:-1:1
-%                     if input.pinmats(input.pinmap(ipin),imat)
-%                         break
-%                     end
-%                 end
-%                 obj.regPerCell(obj.ncells+1:obj.ncells+imat) = input.pinmesh(input.pinmap(ipin),imat:-1:1);
-%                 obj.ncells = obj.ncells + imat;
-%                 obj.regPerCell(obj.ncells+1:obj.ncells+imat) = input.pinmesh(input.pinmap(ipin),1:imat);
-%                 obj.ncells = obj.ncells + imat;
-%             end
             
             obj.flux(1:obj.ncells,1:obj.ngroups,1:2) = 0.0;
             obj.fisssrc(1:obj.ncells,1:2) = 0.0;
@@ -82,19 +71,22 @@ classdef cmfdClass < handle
             obj.homogenize(solution, mesh);
             obj.setupMatrix();
             iters = 0;
+            maxiters = 20;
+            display('Performing CMFD Acceleration...');
+            display('  k-eff      norm_keff  norm_fissrc');
             while ~converged
                 iters = iters + 1;
                 obj.setupSource();
                 obj.step();
                 [conv_flux, conv_keff] = obj.calcResidual( );
+                display(sprintf('  %0.8f %0.8f %0.8f',...
+                    obj.keff(1),abs(conv_keff),conv_flux));
                 if conv_flux < 1.0e-8 && conv_keff < 1.0e-8
+                    display(sprintf('  CMFD converged after %i iterations...',iters));
                     converged = 1;
-                elseif iters == 20
-                    display(sprintf('Too many iterations.  Giving up.'));
+                elseif iters == maxiters
+                    display(sprintf('  Reached maximum of %i iterations...',maxiters));
                     break
-                else
-                    display(sprintf('  CMFD keff, residuals (k-eff, flux): %0.8f, %0.8f, %0.8f',...
-                        obj.keff(1),conv_keff,conv_flux));
                 end
             end
             obj.project(solution, mesh);
@@ -155,7 +147,6 @@ classdef cmfdClass < handle
             obj.xssc(:) = 0.0;
             obj.xsnf(:) = 0.0;
             obj.xsch(:) = 0.0;
-            display(solution.scalflux)
             
             for g=1:obj.ngroups
                 icell = 0;
@@ -189,9 +180,6 @@ classdef cmfdClass < handle
                     obj.xst(i,g) = obj.xst(i,g)/flxvolsum;
                     obj.xsnf(i,g) = obj.xsnf(i,g)/flxvolsum;
                     obj.xsch(i,g) = obj.xsch(i,g)/fisssrcsum;
-                    if g == 1
-                        obj.fisssrc(i,1:2) = obj.flux(i,g,1)*obj.xsnf(i,g);
-                    end
                     for g2=1:obj.ngroups
                         obj.xssc(i,g2,g) = obj.xssc(i,g2,g)/flxvolsum;
                     end
@@ -234,11 +222,13 @@ classdef cmfdClass < handle
                                 obj.flux(end,g,1);
                         end
                     end
-                    obj.cellwidths(i) = volsum;
+                    if g == 1
+                        obj.fisssrc(i,1:2) = fisssrcsum;
+                        obj.cellwidths(i) = volsum;
+                    end
                     oldvolsum = volsum;
                 end
             end
-            display(obj.flux)
         end
         
         function obj = setupMatrix( obj )
@@ -269,8 +259,7 @@ classdef cmfdClass < handle
                     % Add scattering terms
                     for g2=1:obj.ngroups
                         if g ~= g2
-                            obj.A(irow,irow-g+g2) = obj.A(irow,irow-g+g2) + ...
-                                obj.xssc(i,g,g2)*obj.cellwidths(i);
+                            obj.A(irow,irow-g+g2) = -obj.xssc(i,g,g2)*obj.cellwidths(i);
                         end
                     end
                 end
@@ -288,7 +277,7 @@ classdef cmfdClass < handle
                 for g=1:obj.ngroups
                     irow = irow + 1;
                     % Add source
-                    obj.b(irow,1) = obj.fisssrc(i,1)/obj.keff(1);
+                    obj.b(irow,1) = obj.fisssrc(i,1)*obj.xsch(i,g)/obj.keff(1);
                 end
             end
         end
