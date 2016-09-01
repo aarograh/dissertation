@@ -146,6 +146,7 @@ classdef eigensolverClass < handle
             %   obj    - The eigensolver object to sweep
             %   igroup - The energy group being swept
             
+            obj.solution.scalflux(:,igroup,1) = 0.0;
             for i=1:obj.mesh.nfsrcells
                 k = obj.mesh.nfsrcells-i+1;
                 for j=1:obj.quad.npol
@@ -178,6 +179,7 @@ classdef eigensolverClass < handle
             %   obj    - The eigensolver object to sweep
             %   igroup - The energy group being swept
             
+            obj.solution.scalflux(:,igroup,1) = 0.0;
             for j = 1:obj.quad.npol
                 obj.solution.current(1,igroup,1) = obj.solution.current(1,igroup,1) + ...
                     obj.solution.angflux(1,j,1,igroup)*obj.quad.cosines(j)*obj.quad.weights(j);
