@@ -56,17 +56,30 @@ classdef eigensolverClass < handle
             %SOLVE Solves the eigenvalue problem
             %   obj - The eigensolver object to solve
             
-            obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
+            obj.mesh.source(1:20,1) = 0.0;
             for iouter=1:obj.nouters
                 if obj.verbose
                     display(sprintf('Eigenvalue iteration %i',iouter));
                 end
-                if obj.accel
-                    obj.cmfd.solve(obj.solution, obj.mesh);
+                if iouter == 1
+                    tmp = obj.mesh.source(:,1);
                 end
+%                 display([obj.solution.fisssrc(:,1),obj.solution.fisssrc(:,2), ...
+%                     obj.mesh.source(:,1),obj.solution.scalflux(:,1,1),obj.solution.scalflux(:,1,2),...
+%                     tmp]);
+                if obj.accel && iouter < 180
+                    obj.cmfd.solve(obj.solution, obj.mesh);
+                else
+                    obj.solution.calcFissSrc( obj.mesh, obj.xsLib );
+                    obj.solution.updateEig( );
+                end
+                obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
                 obj.solution.update();
                 obj.step();
-                obj.update();
+                display([obj.solution.fisssrc(:,1),obj.solution.fisssrc(:,2), ...
+                    obj.mesh.source(:,1),obj.solution.scalflux(:,1,1),obj.solution.scalflux(:,1,2),...
+                    tmp]);
+                tmp = obj.mesh.source(:,1);
                 if obj.converged
                     if obj.verbose
                         display(sprintf('Converged after %i iterations...',iouter));
@@ -90,15 +103,18 @@ classdef eigensolverClass < handle
             if ~exist('source_in','var')
                 source_in=false;
             end
-            for igroup=1:obj.xsLib.ngroups
-                if ~source_in
-                    obj.setupFSP(igroup);
+            for inners=1:1
+                for igroup=1:obj.xsLib.ngroups
+                    if ~source_in
+                        obj.setupFSP(igroup);
+                    end
+                    if obj.accel
+                        obj.sweep_wCur(igroup);
+                    else
+                        obj.sweep(igroup);
+                    end
                 end
-                if obj.accel
-                    obj.sweep_wCur(igroup);
-                else
-                    obj.sweep(igroup);
-                end
+                obj.update();
             end
             
         end
@@ -107,8 +123,8 @@ classdef eigensolverClass < handle
             %UPDATE Updates eigenvalue object after each iteration
             %   obj - The eigensolver object to update
             
-            obj.solution.calcFissSrc( obj.mesh, obj.xsLib );
             if ~obj.accel
+                obj.solution.calcFissSrc( obj.mesh, obj.xsLib );
                 obj.solution.updateEig( );
             end
             [conv_flux, conv_keff] = obj.solution.calcResidual( obj.mesh, obj.xsLib);
@@ -120,6 +136,7 @@ classdef eigensolverClass < handle
             if abs(conv_flux) < obj.conv_crit(2) && abs(conv_keff) < obj.conv_crit(1)
                 obj.converged = true;
             end
+            obj.solution.update();
             
         end
         
@@ -135,7 +152,7 @@ classdef eigensolverClass < handle
                 % Use old scalar flux to do Jacobi style iteration
                 matID = obj.mesh.materials(i);
                 obj.mesh.source(i,igroup) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(igroup)/obj.solution.keff(1) + ...
-                    obj.solution.scalflux(i,:,2)*obj.xsLib.xsSets(matID).scatter(igroup,:)')*0.5;
+                    obj.solution.scalflux(i,:,1)*obj.xsLib.xsSets(matID).scatter(igroup,:)')*0.5;
                 obj.mesh.xstr(i,igroup) = obj.xsLib.xsSets(matID).transport(igroup);
             end
             
@@ -146,6 +163,7 @@ classdef eigensolverClass < handle
             %   obj    - The eigensolver object to sweep
             %   igroup - The energy group being swept
             
+            obj.solution.scalflux(:,igroup,2) = obj.solution.scalflux(:,igroup,1);
             obj.solution.scalflux(:,igroup,1) = 0.0;
             for i=1:obj.mesh.nfsrcells
                 k = obj.mesh.nfsrcells-i+1;
@@ -179,7 +197,10 @@ classdef eigensolverClass < handle
             %   obj    - The eigensolver object to sweep
             %   igroup - The energy group being swept
             
+            obj.solution.scalflux(:,igroup,2) = obj.solution.scalflux(:,igroup,1);
+            obj.solution.current(:,igroup,2) = obj.solution.current(:,igroup,1);
             obj.solution.scalflux(:,igroup,1) = 0.0;
+            obj.solution.current(:,igroup,1) = 0.0;
             for j = 1:obj.quad.npol
                 obj.solution.current(1,igroup,1) = obj.solution.current(1,igroup,1) + ...
                     obj.solution.angflux(1,j,1,igroup)*obj.quad.cosines(j)*obj.quad.weights(j);

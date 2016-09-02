@@ -16,14 +16,14 @@ input.pinmats = 4;
 input.radii = [ ];
 input.pinmesh = 10;
 % Quadrature
-input.npol = 32;
+input.npol = 2;
 % XS Library Info
 input.xsfilename = '1group.xsl';
 input.scattype = 'P0';
 % Boundary Conditions
 input.BCond = ['vacuum';'vacuum'];
 % Convergence
-input.nouters = 1000;
+input.nouters = 200;
 if exist('verbose','var')
     input.verbose = verbose;
 else

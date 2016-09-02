@@ -32,12 +32,6 @@ classdef solutionClass < handle
             %UPDATEBC Updates the solution to prepare for the next iteration
             %   obj - The solutionClass object to update
             
-            obj.scalflux(:,:,2) = obj.scalflux(:,:,1);
-            obj.scalflux(:,:,1) = 0.0;
-            obj.current(:,:,2) = obj.current(:,:,1);
-            obj.current(:,:,1) = 0.0;
-            obj.keff(2) = obj.keff(1);
-            
             % Set angular flux BC
             if ischar(obj.BCond(1))
                 if strcmp(strtrim(obj.BCond(1,:)),'vacuum')
@@ -60,6 +54,7 @@ classdef solutionClass < handle
             %UPDATEEIG Calculates the new k-eff eigenvalue
             %   obj   - The solutionClass object to update
             
+            obj.keff(2) = obj.keff(1);
             obj.keff(1) = obj.keff(2)*sum(obj.fisssrc(:,1))/sum(obj.fisssrc(:,2));
             
         end
@@ -71,12 +66,11 @@ classdef solutionClass < handle
             %   xsLib - The XS Library used by the calculation
             
             conv_flux = 0.0;
-            for j=1:xsLib.ngroups
+%             for j=1:xsLib.ngroups
                 for i=1:mesh.nfsrcells
-                    conv_flux = max(conv_flux,abs((obj.scalflux(i,j,1) - obj.scalflux(i,j,2))/...
-                        obj.scalflux(i,j,2)));
+                    conv_flux = max(conv_flux,abs((obj.fisssrc(i,1) - obj.fisssrc(i,2))));
                 end
-            end
+%             end
             conv_keff = obj.keff(1) - obj.keff(2);
             
         end

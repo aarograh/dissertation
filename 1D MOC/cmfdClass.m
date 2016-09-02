@@ -78,6 +78,7 @@ classdef cmfdClass < handle
             maxiters = 20;
             display('Performing CMFD Acceleration...');
             display('  k-eff      norm_keff  norm_fissrc');
+            display(sprintf('  %0.8f %0.8f %0.8f',obj.keff(1),1.0e-8,1.0e-8));
             while ~converged
                 iters = iters + 1;
                 obj.setupSource();
@@ -93,7 +94,7 @@ classdef cmfdClass < handle
                     break
                 end
             end
-            obj.project(solution, mesh);
+            obj.project(solution);
             
             solution.keff(2) = solution.keff(1);
             solution.keff(1) = obj.keff(1);
@@ -164,7 +165,7 @@ classdef cmfdClass < handle
                         dx = (mesh.fsredges(icell+1)-mesh.fsredges(icell));
                         volsum = volsum + dx;
                         flxvol = solution.scalflux(icell,g,1)*dx;
-                        flxvolpsi = solution.fisssrc(icell,1)*dx;
+                        flxvolpsi = flxvol*obj.xsLib.xsSets(imat).nufission(g);
                         flxvolsum = flxvolsum + flxvol;
                         fisssrcsum = fisssrcsum + flxvolpsi;
                         obj.xstr(i,g) = obj.xstr(i,g) + obj.xsLib.xsSets(imat).transport(g)*flxvol;
@@ -190,7 +191,7 @@ classdef cmfdClass < handle
                     obj.xsrm(i,g) = obj.xst(i,g) - obj.xssc(i,g,g);
                     
                     % Calculate coupling coefficients
-                    %   Interior surface
+                    %   Interior surface, left edge of cell
                     if i > 1
                         obj.dtils(i-1,g) = 2.0/(3.0*(volsum*obj.xstr(i,g) + oldvolsum*obj.xstr(i-1,g)));
                         obj.dhats(i-1,g) = (solution.current(icell-obj.regPerCell(i),g,1) + ...
@@ -254,7 +255,7 @@ classdef cmfdClass < handle
                     end
                     % Add coupling coefficients for west neighbor
                     if i > 1
-                        obj.A(irow,irow-obj.ngroups) = -obj.dtils(i,g) - obj.dhats(i,g);
+                        obj.A(irow,irow-obj.ngroups) = -obj.dtils(i,g) + obj.dhats(i,g);
                     end
                     
                     % Add total reaction rate
@@ -286,7 +287,7 @@ classdef cmfdClass < handle
             end
         end
         
-        function obj = project( obj, solution, mesh )
+        function obj = project( obj, solution )
             %PROJECT Projects the CMFD solution onto the MOC mesh
             %   obj      - The cmfdClass object to set up
             %   solution - The solutionClass object to use for the setup
@@ -297,12 +298,16 @@ classdef cmfdClass < handle
                 regcells = obj.regPerCell(i);
                 for g=1:obj.ngroups
                     scale = obj.flux(i,g,1)/obj.flux(i,g,2);
+                    display(scale)
+%                     scale=29.083714665855677/sum(solution.scalflux(:,:,1));
                     solution.scalflux(icell+1:icell+regcells,g,1) = ...
                         solution.scalflux(icell+1:icell+regcells,g,1)*scale;
                 end
                 icell = icell + regcells;
             end
-            
+%             display(obj.keff)
+%             display(obj.flux)
+%             display(solution.scalflux)
         end
     end
     
