@@ -88,9 +88,13 @@ To discretize the transport equation in the angular variable, the discrete ordin
 \end{itemize}
 }{}
 
-\subsection{Spherical Harmonics Approximation}
+\subsection{Scattering Approximations}
 
-One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.\ifdraft{\hl{Rearrange this: Introduce Legendre polynomials, then show how that simplifies the scattering source/XS}}{}  To simplify the equation while preserving accuracy of the transport equation, the spherical harmonics approximation is applied to the scattering cross-sections.  This approximation makes use of Legendre polynomials, which can be defined via the following recurrence relation:
+One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.
+
+\subsubsection{P$_N$ Scattering}
+
+\ifdraft{\hl{Rearrange this: Introduce Legendre polynomials, then show how that simplifies the scattering source/XS}}{}  To simplify the equation while preserving accuracy of the transport equation, the spherical harmonics approximation is applied to the scattering cross-sections.  This approximation makes use of Legendre polynomials, which can be defined via the following recurrence relation:
 
 \begin{subequations}
 \begin{equation}
@@ -117,12 +121,16 @@ Furthermore, all Legendre polynomials are orthonormal, meaning that they obey th
 \end{equation}
 \end{subequations}
 
-These polynomials can be used to express the differential scattering cross-section as a summation of the Legendre polynomials, as shown in equaiton \ref{e:sphericalHarmonicsXSExpansion}.
+These polynomials can be used to express the differential scattering cross-section as a summation of the Legendre polynomials, shown in equations \ref{e:sphericalHarmonicsXSExpansion}:
 
-\begin{equation}\label{e:sphericalHarmonicsXSExpansion}
+\begin{subequations}\label{e:sphericalHarmonicsXSExpansion}
+\begin{equation}
+\Sigma_s\left(\mu\right) = \sum_{n=0}^\infty \frac{2n+1}{4\pi} P_n\left(\mu\right) \Sigma_{s,n}
 \end{equation}
-
-\ifdraft{\hl{Look at Larsen's notes to remember the exact mathematical details of this}}{}
+\begin{equation}
+\Sigma_{s,n} = \intop_{-1}^1 \Sigma\left(\mu\right) P_n\left(\mu\right) d\mu
+\end{equation}
+\end{subequations}
 
 \subsection{Diffusion Approximation}
 
