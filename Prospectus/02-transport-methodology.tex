@@ -1,15 +1,15 @@
 \section{Boltzmann Equation}
 
-The Boltzmann equation for neutron transport is shown below: \ifdraft{\todo{Some kind of background or derivation of this?}}{}
+The Boltzmann equation for neutron transport is shown below:
 
 \begin{dmath}\label{e:boltzmann}
-{\frac{1}{v} \frac{\partial \psi}{\partial t} + \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E,t\right)\psi\left(x,E,\bm \Omega,t\right)} = {\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(x,E,t\right) \psi\left(x,E,\bm \Omega,t\right) d\bm\Omega dE + Q\left(x,E,\bm \Omega,t\right)}
+{\frac{1}{v} \frac{\partial \psi}{\partial t} + \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E,t\right)\psi\left(x,E,\bm \Omega,t\right)} = {\frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(x,E',t\right) \psi\left(x,E',\bm \Omega,t\right) d\bm\Omega dE' + \frac{Q\left(x,E,\bm \Omega,t\right)}{4\pi}}
 \end{dmath}
 
 For many problems, the time dependence of the Boltzmann equation can be neglected.  Doing do eliminates the first term of the equation above.  In order to ensure neutron balance, this equation is normally formulated as an eigenvalue problem.  The eigenvalue $\lambda = \frac{1}{k}$ allows the two sides of the equation to balance.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, which is the only meaningful solution for steady-state problems.  The eigenvalue form of the Boltzmann equation is shown below:
 
 \begin{dmath}\label{e:ssboltzmann}
-{\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = \intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(x,E,t\right) \psi\left(x,E,\bm \Omega,t\right) d\bm\Omega dE + Q\left(x,E,\bm \Omega\right)}
+{\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = \frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(x,E'\right) \psi\left(x,E',\bm \Omega\right) d\bm\Omega dE' + \frac{Q\left(x,E,\bm \Omega\right)}{4\pi}}
 \end{dmath}
 
 Before addressing the methods used to solve equation \ref{e:ssboltzmann}, we will briefly define each of the terms in the equation.  The first term (equation \ref{e:BTEtermsStreaming} is the streaming term.  This term is made up of the scalar product of the flight direction $\bm \Omega$ and the gradient of the angular flux $\bm \nabla \psi$.  This describes the loss of neutrons from each point in space due to their movement to other points in space.
@@ -41,6 +41,24 @@ Equation \ref{e:BTEtermsExtSource} shows the final term in the transport equatio
 \begin{equation}\label{e:BTEtermsExtSource}
 Q\left(x,E,\bm\Omega\right)
 \end{equation}
+
+\subsection{Diffusion Approximation}
+
+To simplify the transport equation, approximations must be made to simplify the dependence on the angle and energy variables.  One of the most common simplifications is the diffusion approximation.  To make this approximation, we first assume that the angular flux is only linearly dependent on angle:
+
+\begin{equation}\label{e:linearAnisotropicAngFlux}
+\psi\left(x,E,\bm\Omega,t\right) \approx \frac{1}{4\pi}\left(\phi\left(x,E,t\right) + 3J\left(x,E,t\right)\right),
+\end{equation}
+
+where $\phi$ and $J$ are the scalar flux (0th angular moment) and current (1st angular moment) of the angular flux, respectively.  Now we can substitute \ref{e:linearAnisotropicAngFlux} into \ref{e:ssboltzmann} and operate on the resulting equation by $\intop_{4\pi} \left(\cdot\right) d\bm\Omega$ and $\intop_{4\pi} \left(\cdot\right) \bm\Omega d\bm\Omega$ to obtain the following set of coupled equations:\todo{Expand scattering XS?}
+
+\begin{subequations}
+\begin{dmath}
+\bm\nabla J\left(x,E\right) + \Sigma_t\left(x,E\right)\phi\left(x,E\right) = {\intop_0^\infty \left[\Sigma_{s,0}\left(x,E'\rightarrow E,\right)\phi\left(x,E'\right) + \Sigma_{s,1}\left(x,E'\rightarrow E\right)J\left(x,E')\right)\right]dE'} + {\chi\left(E\right)\intop_0^\infty \nu\Sigma_f\left(x,E'\right)\phi\left(x,E'\right)dE'} + Q\left(x,E\right)
+\end{dmath}
+\begin{dmath}
+\bm\nabla \phi + \Sigma_t\left(x,E\right)J\left(x,E\right) = {
+\end{subequations}
 
 \subsection{Multi-group Approximation}
 
@@ -131,10 +149,6 @@ These polynomials can be used to express the differential scattering cross-secti
 \Sigma_{s,n} = \intop_{-1}^1 \Sigma\left(\mu\right) P_n\left(\mu\right) d\mu
 \end{equation}
 \end{subequations}
-
-\subsection{Diffusion Approximation}
-
-\ifdraft{\hl{All over this, but need to finish up the Pn stuff first}}{}
 
 \subsection{Transport Correction}
 
