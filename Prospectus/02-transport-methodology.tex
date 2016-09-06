@@ -42,69 +42,111 @@ Equation \ref{e:BTEtermsExtSource} shows the final term in the transport equatio
 Q\left(x,E,\bm\Omega\right)
 \end{equation}
 
-\subsection{Diffusion Approximation}
-
-To simplify the transport equation, approximations must be made to simplify the dependence on the angle and energy variables.  One of the most common simplifications is the diffusion approximation.  To make this approximation, we first assume that the angular flux is only linearly dependent on angle:
-
-\begin{equation}\label{e:linearAnisotropicAngFlux}
-\psi\left(x,E,\bm\Omega,t\right) \approx \frac{1}{4\pi}\left(\phi\left(x,E,t\right) + 3J\left(x,E,t\right)\right),
-\end{equation}
-
-where $\phi$ and $J$ are the scalar flux (0th angular moment) and current (1st angular moment) of the angular flux, respectively.  Now we can substitute \ref{e:linearAnisotropicAngFlux} into \ref{e:ssboltzmann} and operate on the resulting equation by $\intop_{4\pi} \left(\cdot\right) d\bm\Omega$ and $\intop_{4\pi} \left(\cdot\right) \bm\Omega d\bm\Omega$ to obtain the following set of coupled equations:\todo{Expand scattering XS?}
-
-\begin{subequations}
-\begin{dmath}
-\bm\nabla J\left(x,E\right) + \Sigma_t\left(x,E\right)\phi\left(x,E\right) = {\intop_0^\infty \left[\Sigma_{s,0}\left(x,E'\rightarrow E,\right)\phi\left(x,E'\right) + \Sigma_{s,1}\left(x,E'\rightarrow E\right)J\left(x,E')\right)\right]dE'} + {\chi\left(E\right)\intop_0^\infty \nu\Sigma_f\left(x,E'\right)\phi\left(x,E'\right)dE'} + Q\left(x,E\right)
-\end{dmath}
-\begin{dmath}
-\bm\nabla \phi + \Sigma_t\left(x,E\right)J\left(x,E\right) = {
-\end{subequations}
-
 \subsection{Multi-group Approximation}
 
-One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (or \ref{e:boltzmann}) is operated on by 
+One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (or \ref{e:boltzmann} for time-dependent problems) is operated on by 
 
 \begin{equation}
-\frac{1}{E_{n-1} - E_n}\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE
+\frac{1}{E_{n-1} - E_n}\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE.
 \end{equation}
 
-for each energy group, giving the following result:
+Doing this for each energy group $g$ gives a coupled set of multi-group transport equations:
 
 \begin{dmath}\label{e:multigroupboltzmann}
-{\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(x\right)\psi_g\left(x,\bm \Omega\right) = \intop_{4\pi} \Sigma_{s,g'\rightarrow}\left(x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(x,\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \nu \Sigma_{f,g'}\left(x,t\right) \psi_{g'}\left(x,\bm \Omega\right) + Q_g\left(x,\bm \Omega\right)}
+{\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(x\right)\psi_g\left(x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(x,\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \nu \Sigma_{f,g'}\left(x\right) \intop_{4\pi} \psi_{g'}\left(x,\bm \Omega'\right)d\bm\Omega' + \frac{Q_g\left(x,E\right)}{4\pi}},
 \end{dmath}
 
-In equation \ref{e:multigroupboltzmann}, $\psi_g$ denotes the average angular flux for group $g$, defined as
+where the multi-group angular flux and cross-sections are defined by equations \ref{e:multigroupDefinitions}.  These definitions ensure that the total reaction rates for each energy group are preserved from the continuous to discretized forms of the transport equation.
 
+\begin{subequations}\label{e:multigroupDefinitions}
 \begin{equation}\label{e:multigroupangflux}
 \psi_g\left(x,\bm \Omega\right)=\frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(x,E,\bm\Omega\right) dE
 \end{equation}
-
-The quantities that we want to preserve through the use of the multi-group approximation are the total reaction rates.  To do this, we must define the multi-group cross-sections as follows:
-
 \begin{equation}\label{e:multigroupXS}
-\Sigma_x,g \psi_g = \frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE \Rightarrow \Sigma_x,g = \frac{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE}{\intop_{E_n}^{E_{n-1}} \psi\left(x,E,\bm\Omega\right) dE}
+\Sigma_{x,g} \psi_g = \frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE \Rightarrow \Sigma_x,g = \frac{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE}{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) dE}
 \end{equation}
-
-This definition of the multi-group flux and multi-group cross-sections guarantees that the total reaction rates in each group will be preserved.
-
-\ifdraft{\hl{Talk about the dependence of the XS on the solution?}}{}
+\end{subequations}
 
 \subsection{Discrete Ordinates Approximation}
 
-To discretize the transport equation in the angular variable, the discrete ordinates (S$_n$) method can be applied.  To apply this method, we integrate the transport equation over a portion of the angular domain:
+In addition to energy discretization, it is also useful to discretize the transport equation in angle.  To do this, we use an angular quadrature with angles $\Omega_n$ and weights $w_n$:
+
+\begin{subequations}
+\begin{equation}
+\sum_{n=1}^N w_n = 4\pi
+\end{equation}
+\begin{equation}
+\sum_{n=1}^N \Omega_n w_n = 0
+\end{equation}
+\begin{equation}
+\intop_{4\pi} f\left(\bm\Omega\right)d\bm\Omega \approx \sum_{n=1}^N f_n w_n
+\end{equation}
+\end{subequations}
+
+Applying this discretization to the multi-group transport equation \ref{e:multigroupboltzmann}, we obtain the following discrete ordinates (S$_N$) equations:
 
 \begin{dmath}
-\intop_{\mu_{i-\frac{1}{2}}}^{\mu_{i+\frac{1}{2}}}\intop_{\gamma_{j-\frac{1}{2}}}^{\gamma_{j+\frac{1}{2}}} \left[ \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) {\psi\left(x,E',\bm \Omega'\right)} d\bm \Omega' + \frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E\right) \psi\left(x,E,\bm \Omega\right) dE + Q\left(x,E,\bm \Omega\right) \right] d\gamma d\mu
+\bm\Omega_n\cdot\bm\nabla\psi_{g,n} + \Sigma_{t,g}\left(x\right)\psi_{g,n}\left(x\right) = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{g'\rightarrow g,n'\rightarrow n}\left(x\right)\psi_{g',n'}\left(x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(x\right)\sum_{n'=1}^N \psi_{g,n}\left(x\right)} + \frac{Q_{g,n}\left(x\right)}{4\pi}
 \end{dmath}
 
-\ifdraft{
-\begin{itemize}
-\item \hl{Make sure scalar flux is defined in terms of angular flux somewhere}
-\item \hl{Show discretization}
-\item \hl{Mention quadratures}
-\end{itemize}
-}{}
+\subsection{Diffusion Approximation}
+
+Another approximation that can be made to the angular dependence of the transport equation is the diffusion approximation.  To derive this approximation, we again being with the multi-group transport equation from equation \ref{e:multigroupboltzmann}.  First, we obtain the P$_1$ form of the equation by operating on it by $\intop\left(\cdot\right)d\Omega$ and $\intop\left(\cdot\right)\Omega_i d\Omega$.  To simplify these integrals, we make use of the following identities for integrating over $\bm\Omega$:
+
+\begin{subequations}\label{e:omegaIdentities}
+\begin{equation}
+\intop_{4\pi} d\Omega = 4\pi
+\end{equation}
+\begin{equation}
+\intop_{4\pi} \Omega_i d\Omega = 0
+\end{equation}
+\begin{equation}
+\intop_{4\pi} \Omega_i\Omega_j d\Omega = \frac{4\pi}{3}\delta_{i,j}
+\end{equation}
+\begin{equation}
+\intop_{4\pi} \Omega_i\Omega_j\Omega_k d\Omega = 0
+\end{equation}
+\end{subequations}
+
+We must also assume that the angular flux is linearly anisotropic.  This leads to the following expression of the angular flux as a function of the scalar flux $\phi$ and current $J$:
+
+\begin{equation}
+\psi_g\left(x,\bm\Omega\right) \approx \frac{1}{4\pi}\left(\phi_g\left(x\right) + 3\bm\Omega \cdot \bm J\left(x\right)\right)
+\end{equation}
+
+Applying this assumption and integrating, we obtain a coupled set of four equations.
+
+\begin{subequations}\label{e:P1transport}
+\begin{dmath}\label{e:P1transport-0th}
+\frac{d J_x}{dx} + \frac{d J_y}{dy} + \frac{d J_z}{dz} + \Sigma_{t,g}\left(x\right)\phi_g\left(x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(x\right)\phi_{g'}\left(x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(x\right)\phi_{g'}\left(x\right)} + Q_g\left(x\right)
+\end{dmath}
+\begin{dmath}\label{e:P1transport-1st-x}
+\frac{d\phi_g}{dx} + \Sigma_{t,g}\left(x\right)J_{x,g}\left(x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right) J_{x,g'}\left(x\right)}
+\end{dmath}
+\begin{dmath}\label{e:P1transport-1st-y}
+\frac{d\phi_g}{dy} + \Sigma_{t,g}\left(y\right)J_{y,g}\left(x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right) J_{y,g'}\left(x\right)}
+\end{dmath}
+\begin{dmath}\label{e:P1transport-1st-z}
+\frac{d\phi_g}{dz} + \Sigma_{t,g}\left(x\right)J_{z,g}\left(x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right) J_{z,g'}\left(x\right)}
+\end{dmath}
+\end{subequations}
+
+Solving equations \ref{e:P1transport-1st-x}-\ref{e:P1transport-1st-z} for the components of the current, we obtain the following expression:
+
+\begin{subequations}
+\begin{equation}
+\bm J_g\left(x\right) = -D_g\left(x\right) \bm\nabla \phi_g\left(x\right)
+\end{equation}
+\begin{equation}
+D_g\left(x\right) = \frac{1}{3}\left(\Sigma_{t,g}-\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right)\right)^{-1}
+\end{equation}
+\end{subequations}
+
+Substituting this expression into equation \ref{e:P1transport-0th} gives us the diffusion form of the transport equation, which has only the scalar flux $\phi$ and eigenvalue $\frac{1}{k}$ as unknowns.
+
+\begin{dmath}\label{e:DiffusionEquation}
+-\bm\nabla \cdot D_g\left(x\right) \bm \nabla\phi_g\left(x\right) + \Sigma_{t,g}\left(x\right)\phi_g\left(x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(x\right)\phi_{g'}\left(x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(x\right)\phi_{g'}\left(x\right)} + Q_g\left(x\right)
+\end{dmath}
 
 \subsection{Scattering Approximations}
 
@@ -112,7 +154,7 @@ One of the biggest challenges to solving the transport equation is angle depende
 
 \subsubsection{P$_N$ Scattering}
 
-\ifdraft{\hl{Rearrange this: Introduce Legendre polynomials, then show how that simplifies the scattering source/XS}}{}  To simplify the equation while preserving accuracy of the transport equation, the spherical harmonics approximation is applied to the scattering cross-sections.  This approximation makes use of Legendre polynomials, which can be defined via the following recurrence relation:
+To simplify the angular dependence of the scattering cross-section, one approximation that can be made to the scattering source in equation \ref{e:BTEtermsScatteringSource} is to assume that the scattering cross-section can be expanded in terms of Legendre polynomials, defined in equations \ref{e:LegendrePolynomials}.
 
 \begin{subequations}
 \begin{equation}
@@ -124,22 +166,12 @@ P_0\left(x\right) = 1
 \begin{equation}
 P_1\left(x\right) = x
 \end{equation}
-\end{subequations}
-
-Furthermore, all Legendre polynomials are orthonormal, meaning that they obey the following property:
-
-\begin{subequations}
 \begin{equation}
 \intop_{-1}^1 P_n\left(x\right) P_m\left(x\right) dx = \frac{2}{2n+1}\delta_{n,m}
 \end{equation}
-\begin{equation}
-\delta_{n,m} = \begin{cases} 1, & n = m \\
-0, & n \neq m
-\end{cases}
-\end{equation}
 \end{subequations}
 
-These polynomials can be used to express the differential scattering cross-section as a summation of the Legendre polynomials, shown in equations \ref{e:sphericalHarmonicsXSExpansion}:
+The $\bm\Omega'\cdot\bm\Omega$ term in the scattering cross-section can be simplified as a single variable $\mu$, the cosine between the incoming and outgoing scattering angles.  Applying these polynomials to the scattering cross-section in terms of $\mu$ gives the following expression for the scattering cross-section:
 
 \begin{subequations}\label{e:sphericalHarmonicsXSExpansion}
 \begin{equation}
@@ -150,9 +182,22 @@ These polynomials can be used to express the differential scattering cross-secti
 \end{equation}
 \end{subequations}
 
+Using this expansion simplifies the integrals required to determine the scattering source in the transport equation.  
+
 \subsection{Transport Correction}
 
-\ifdraft{\hl{Not 100\% sure if this even needs to exist at all}}{}
+A further simplification of the scattering source that is often employed is transport-corrected isotropic (TCP$_0$) scattering.  When using this approximation, the equation is solved using an isotropic scattering cross-section.  The cross-section data used to develop the multi-group scattering cross-sections is modified beforehand to still preserve some of the higher order scattering physics.
+
+Equations \ref{e:outscatterTCP0} show the out-scatter transport correction, which is commonly used in MPACT.  In this correction, the total and the 0th-order self-secatter cross-sections are modified by subtracting the sum of the first-order out-scatter data.  There are several variants of the out-scatter correction as well as other completely different correction techniques \todo{Cite for out-scatter, in-scatter, NLC, etc.} that are available in MPACT but will not be discussed in detail here.
+
+\begin{subequations}\label{e:outscatterTCP0}
+\begin{equation}
+\Sigma_{tr,g} = \Sigma_{t,g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}
+\end{equation}
+\begin{equation}
+\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}
+\end{equation}
+\end{subequations}
 
 \section{Numerical Methods}
 
