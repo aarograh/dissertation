@@ -1,92 +1,97 @@
 \section{Boltzmann Equation}
+\todo{Add a chapter intro}
 
 The Boltzmann equation for neutron transport is shown below:
 
 \begin{dmath}\label{e:boltzmann}
-{\frac{1}{v} \frac{\partial \psi}{\partial t} + \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E,t\right)\psi\left(x,E,\bm \Omega,t\right)} = {\frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(x,E',t\right) \psi\left(x,E',\bm \Omega,t\right) d\bm\Omega dE' + \frac{Q\left(x,E,\bm \Omega,t\right)}{4\pi}}
+{\frac{1}{v} \frac{\partial \psi}{\partial t} + \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E,t\right)\psi\left(\bm x,E,\bm \Omega,t\right)} = {\frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E',t\right) \psi\left(\bm x,E',\bm \Omega,t\right) d\Omega dE' + Q\left(\bm x,E,\bm \Omega,t\right)}
 \end{dmath}
+\todo{Distinguish between prompt and delayed fission}
+\todo{Discuss terms of time-dependent equation, then show steady-state equation}
 
-For many problems, the time dependence of the Boltzmann equation can be neglected.  Doing do eliminates the first term of the equation above.  In order to ensure neutron balance, this equation is normally formulated as an eigenvalue problem.  The eigenvalue $\lambda = \frac{1}{k}$ allows the two sides of the equation to balance.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, which is the only meaningful solution for steady-state problems.  The eigenvalue form of the Boltzmann equation is shown below:
+For many problems, the time dependence of the Boltzmann equation can be neglected.  Doing do eliminates the first term of the equation above.  To ensure neutron balance, this equation is reformulated as an eigenvalue problem.  The eigenvalue $\lambda = \frac{1}{k}$ allows the two sides of the equation to balance.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, providing a physically meaningful steady-state solution to the equation.  The eigenvalue form of the Boltzmann equation is shown below:
 
 \begin{dmath}\label{e:ssboltzmann}
-{\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = \frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(x,E'\right) \psi\left(x,E',\bm \Omega\right) d\bm\Omega dE' + \frac{Q\left(x,E,\bm \Omega\right)}{4\pi}}
+{\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm \Omega\right) = \frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E'\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE' + \frac{Q\left(\bm x,E,\bm \Omega\right)}{4\pi}}
 \end{dmath}
+\todo{Use $k_{eff}$ instead of $k$}
 
-Before addressing the methods used to solve equation \ref{e:ssboltzmann}, we will briefly define each of the terms in the equation.  The first term (equation \ref{e:BTEtermsStreaming} is the streaming term.  This term is made up of the scalar product of the flight direction $\bm \Omega$ and the gradient of the angular flux $\bm \nabla \psi$.  This describes the loss of neutrons from each point in space due to their movement to other points in space.
+Before addressing the methods used to solve equation \ref{e:ssboltzmann}, we will briefly define each of the terms in the equation.  The first term (equation \ref{e:BTEtermsStreaming} is the streaming term.  This describes neutrons with energy $E$ traveling out of the volume dV in the direction $\bm\Omega$.
 
 \begin{equation}\label{e:BTEtermsStreaming}
 \bm \Omega \cdot \bm \nabla \psi
 \end{equation}
 
-The second term is the total reaction rate (equation \ref{e:BTEtermsTotalRR}).  The angular flux $\psi\left(x,E\bm\Omega\right)$ multiplied by the total macroscopic cross-section $\Sigma_t\left(x,E\right)$ gives the total reaction rate for neutrons in $\left(x,E,\bm\Omega\right)$.  This, together with the streaming term, gives the total loss of neutrons for a steady-state problem.
+The second term is the total reaction rate (equation \ref{e:BTEtermsTotalRR}).  This describes the total number of collisions experienced in dV by neutrons with energy $E$ and direction $\bm\Omega$.  Equations \ref{e:BTEtermsStreaming} and \ref{e:BTEtermsTotalRR} together make up the total loss of neutrons.
 
 \begin{equation}\label{e:BTEtermsTotalRR}
-\Sigma_t\left(x,E\right)\psi\left(x,E\bm\Omega\right)
+\Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E\bm\Omega\right)
 \end{equation}
 
-The first term on the right-hand side is the scattering source of neutrons from all energies and angles $E'$ and $\bm\Omega'$ into $E$ and $\bm\Omega$, shown in equation \ref{e:BTEtermsScatteringSource}.  Normally the differential scattering cross-section would be written as $\Sigma_s\left(x,E'\rightarrow E,\bm\Omega'\rightarrow\bm\Omega\right)$.  Because the scattering is symmetric about the incoming direction $\bm\Omega'$, the results of the scattering are only dependent on the cosine of the angle between the directions, allowing the cross-section to be written as a function of the dot product between the angles instead.
+Equation \ref{e:BTEtermsScatteringSource} shows the scattering source written in a simplified form.  This is the total number of neutrons scattering into energy $E$ and direction $\bm\Omega$ from all other energies and directions $E'$ and $\bm\Omega'$ in dV.  Because scattering is symmetric around the incident angle, the scattering cross-section depends only on the dot product $\bm\Omega'\cdot\bm\Omega$ rather than each of the two angles independently.
 
 \begin{equation}\label{e:BTEtermsScatteringSource}
-\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega' dE'
+\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'
 \end{equation}
 
-The second term on the right-hand side is the source of neutrons from fission, shown in equation \ref{e:BTEtermsFissionSource}.  The integrals over energy and angle gives the total fission source, while the distribution $\chi\left(E\right)$ gives the amount of the fission source that is deposited into energy $E$.  Fission is isotropic, requiring the total fission source to be divided by $4\pi$.  Finally, in order to ensure balance between the left- and right-hand sides of the equation, the fission source is usually multiplied by the eigenvalue $\frac{1}{k}$.  This allows for a mathematical solution to the equation even if the loss and production terms are not equal.  When these terms are equal, the eigenvalue is 1, which means that a solution to the steady-state equation is physically possible.
+Equation \ref{e:BTEtermsFissionSource} shows neutrons entering dV with energy and direction $E$ and $\bm\Omega$ due to fission.  Fission is an isotropic process, so the total fission source is calculated then distributed evenly across $4\pi$.  Furthermore, the energy distribution of fission is practically independent of incident neutron energy, so the fission neutron distribution $\chi\left(E\right)$ can be outside the integral over energy.
 
 \begin{equation}\label{e:BTEtermsFissionSource}
-\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(x,E,t\right) \psi\left(x,E,\bm \Omega,t\right) d\bm\Omega dE
+\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E,t\right) \psi\left(\bm x,E,\bm \Omega,t\right) d\Omega dE
 \end{equation}
 
-Equation \ref{e:BTEtermsExtSource} shows the final term in the transport equation.  This term is the external source.  This includes all other neutrons which are emitted from means other than in-scatter and fission.
+Equation \ref{e:BTEtermsExtSource} shows external source term.  This term accounts for all neutrons entering dV with energy and direction $E$ and $\bm\Omega$ from sources other than scatter and fission.  Equation \ref{e:BTEtermsExtSource} shows the source term as a function of angle, but it is often considered to be isotropic like the fission source.
 
 \begin{equation}\label{e:BTEtermsExtSource}
-Q\left(x,E,\bm\Omega\right)
+Q\left(\bm x,E,\bm\Omega\right)
 \end{equation}
 
 \subsection{Multi-group Approximation}
 
-One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.  Once an appropriate group structure has been selected, equation \ref{e:ssboltzmann} (or \ref{e:boltzmann} for time-dependent problems) is operated on by 
+One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.
 
-\begin{equation}
-\frac{1}{E_{n-1} - E_n}\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE.
-\end{equation}
-
-Doing this for each energy group $g$ gives a coupled set of multi-group transport equations:
-
-\begin{dmath}\label{e:multigroupboltzmann}
-{\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(x\right)\psi_g\left(x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(x,\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \nu \Sigma_{f,g'}\left(x\right) \intop_{4\pi} \psi_{g'}\left(x,\bm \Omega'\right)d\bm\Omega' + \frac{Q_g\left(x,E\right)}{4\pi}},
-\end{dmath}
-
-where the multi-group angular flux and cross-sections are defined by equations \ref{e:multigroupDefinitions}.  These definitions ensure that the total reaction rates for each energy group are preserved from the continuous to discretized forms of the transport equation.
+We first define the multi-group flux, cross-sections, and chi distribution in equations \ref{e:multigroupDefinitions}.  These definitions ensure that the total reaction rates are preserved in each energy interval $g$.
 
 \begin{subequations}\label{e:multigroupDefinitions}
 \begin{equation}\label{e:multigroupangflux}
-\psi_g\left(x,\bm \Omega\right)=\frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(x,E,\bm\Omega\right) dE
+\psi_g\left(\bm x,\bm \Omega\right)=\frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(\bm x,E,\bm\Omega\right) dE
 \end{equation}
 \begin{equation}\label{e:multigroupXS}
 \Sigma_{x,g} \psi_g = \frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE \Rightarrow \Sigma_x,g = \frac{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE}{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) dE}
 \end{equation}
 \end{subequations}
 
+Using the definitions above, equation \ref{e:ssboltzmann} can be operated on by \ref{e:multigroupIntegral} to obtain the multi-group transport equation \ref{e:multigroupboltzmann}
+
+\begin{equation}\label{e:multigroupIntegral}
+\frac{1}{E_{n-1} - E_n}\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE.
+\end{equation}
+
+\begin{dmath}\label{e:multigroupboltzmann}
+{\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(\bm x\right)\psi_g\left(\bm x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(\bm x,\bm \Omega'\right) d\Omega'} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \nu \Sigma_{f,g'}\left(\bm x\right) \intop_{4\pi} \psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega' + \frac{Q_g\left(\bm x,E\right)}{4\pi}}.
+\end{dmath}
+
 \subsection{Discrete Ordinates Approximation}
 
-In addition to energy discretization, it is also useful to discretize the transport equation in angle.  To do this, we use an angular quadrature with angles $\Omega_n$ and weights $w_n$:
+In addition to energy discretization, it is also useful to discretize the transport equation in angle.  To do this, we use an angular quadrature with angles $\bm\Omega_n$ and associated weights $w_n$:
+\todo{More carefully show discretization of polar/azimuthal angles}
 
 \begin{subequations}
 \begin{equation}
 \sum_{n=1}^N w_n = 4\pi
 \end{equation}
 \begin{equation}
-\sum_{n=1}^N \Omega_n w_n = 0
+\sum_{n=1}^N \bm\Omega_n w_n = 0
 \end{equation}
 \begin{equation}
-\intop_{4\pi} f\left(\bm\Omega\right)d\bm\Omega \approx \sum_{n=1}^N f_n w_n
+\intop_{4\pi} f\left(\Omega\right)d\Omega \approx \sum_{n=1}^N f_n w_n
 \end{equation}
 \end{subequations}
 
 Applying this discretization to the multi-group transport equation \ref{e:multigroupboltzmann}, we obtain the following discrete ordinates (S$_N$) equations:
 
 \begin{dmath}
-\bm\Omega_n\cdot\bm\nabla\psi_{g,n} + \Sigma_{t,g}\left(x\right)\psi_{g,n}\left(x\right) = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{g'\rightarrow g,n'\rightarrow n}\left(x\right)\psi_{g',n'}\left(x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(x\right)\sum_{n'=1}^N \psi_{g,n}\left(x\right)} + \frac{Q_{g,n}\left(x\right)}{4\pi}
+\bm\Omega_n\cdot\bm\nabla\psi_{g,n} + \Sigma_{t,g}\left(\bm x\right)\psi_{g,n}\left(\bm x\right) = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{g'\rightarrow g,n'\rightarrow n}\left(\bm x\right)\psi_{g',n'}\left(\bm x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\sum_{n'=1}^N \psi_{g,n}\left(\bm x\right)} + \frac{Q_{g,n}\left(\bm x\right)}{4\pi}
 \end{dmath}
 
 \subsection{Diffusion Approximation}
@@ -110,85 +115,92 @@ Another approximation that can be made to the angular dependence of the transpor
 
 We must also assume that the angular flux is linearly anisotropic.  This leads to the following expression of the angular flux as a function of the scalar flux $\phi$ and current $J$:
 
+\begin{subequations}
 \begin{equation}
-\psi_g\left(x,\bm\Omega\right) \approx \frac{1}{4\pi}\left(\phi_g\left(x\right) + 3\bm\Omega \cdot \bm J\left(x\right)\right)
+\psi_g\left(\bm x,\bm\Omega\right) \approx \frac{1}{4\pi}\left(\phi_g\left(\bm x\right) + 3\bm\Omega \cdot \bm J\left(\bm x\right)\right)
 \end{equation}
+\begin{equation}
+\phi_g\left(\bm x\right) = \intop_{4\pi} \psi_g\left(\bm x,\bm\Omega\right) d\Omega
+\end{equation}
+\begin{equation}
+J_g\left(\bm x\right) = \intop_{4\pi} \psi_g\left(\bm x,\bm\Omega\right) \bm\Omega d\Omega
+\end{equation}
+\end{subequations}
 
-Applying this assumption and integrating, we obtain a coupled set of four equations.
+Applying this assumption and integrating, we obtain a coupled set of four equations for the scalar flux and the three components of the current vector.
 
 \begin{subequations}\label{e:P1transport}
 \begin{dmath}\label{e:P1transport-0th}
-\frac{d J_x}{dx} + \frac{d J_y}{dy} + \frac{d J_z}{dz} + \Sigma_{t,g}\left(x\right)\phi_g\left(x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(x\right)\phi_{g'}\left(x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(x\right)\phi_{g'}\left(x\right)} + Q_g\left(x\right)
+\frac{d J_x}{dx} + \frac{d J_y}{dy} + \frac{d J_z}{dz} + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
 \end{dmath}
 \begin{dmath}\label{e:P1transport-1st-x}
-\frac{d\phi_g}{dx} + \Sigma_{t,g}\left(x\right)J_{x,g}\left(x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right) J_{x,g'}\left(x\right)}
+\frac{d\phi_g}{dx} + \Sigma_{t,g}\left(\bm x\right)J_{x,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{x,g'}\left(\bm x\right)}
 \end{dmath}
 \begin{dmath}\label{e:P1transport-1st-y}
-\frac{d\phi_g}{dy} + \Sigma_{t,g}\left(y\right)J_{y,g}\left(x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right) J_{y,g'}\left(x\right)}
+\frac{d\phi_g}{dy} + \Sigma_{t,g}\left(y\right)J_{y,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{y,g'}\left(\bm x\right)}
 \end{dmath}
 \begin{dmath}\label{e:P1transport-1st-z}
-\frac{d\phi_g}{dz} + \Sigma_{t,g}\left(x\right)J_{z,g}\left(x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right) J_{z,g'}\left(x\right)}
+\frac{d\phi_g}{dz} + \Sigma_{t,g}\left(\bm x\right)J_{z,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{z,g'}\left(\bm x\right)}
 \end{dmath}
 \end{subequations}
 
 Solving equations \ref{e:P1transport-1st-x}-\ref{e:P1transport-1st-z} for the components of the current, we obtain the following expression:
 
-\begin{subequations}
-\begin{equation}
-\bm J_g\left(x\right) = -D_g\left(x\right) \bm\nabla \phi_g\left(x\right)
+\begin{subequations}\label{e:FicksLaw}
+\begin{equation}\label{e:FicksLawCurrent}
+\bm J_g\left(\bm x\right) = -D_g\left(\bm x\right) \bm\nabla \phi_g\left(\bm x\right)
 \end{equation}
-\begin{equation}
-D_g\left(x\right) = \frac{1}{3}\left(\Sigma_{t,g}-\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right)\right)^{-1}
+\begin{equation}\label{e:FicksLawDiffConstant}
+D_g\left(\bm x\right) = \frac{1}{3}\left(\Sigma_{t,g}-\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right)\right)^{-1}
 \end{equation}
 \end{subequations}
 
-Substituting this expression into equation \ref{e:P1transport-0th} gives us the diffusion form of the transport equation, which has only the scalar flux $\phi$ and eigenvalue $\frac{1}{k}$ as unknowns.
+Substituting \ref{e:FicksLawCurrent} into \ref{e:P1transport-0th} gives us the diffusion form of the transport equation, which has only the scalar flux $\phi$ and eigenvalue $\frac{1}{k}$ as unknowns.
 
 \begin{dmath}\label{e:DiffusionEquation}
--\bm\nabla \cdot D_g\left(x\right) \bm \nabla\phi_g\left(x\right) + \Sigma_{t,g}\left(x\right)\phi_g\left(x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(x\right)\phi_{g'}\left(x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(x\right)\phi_{g'}\left(x\right)} + Q_g\left(x\right)
+-\bm\nabla \cdot D_g\left(\bm x\right) \bm \nabla\phi_g\left(\bm x\right) + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
 \end{dmath}
 
 \subsection{Scattering Approximations}
 
-One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.
+One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.  To simplify the scattering cross-sections, there are two different types of approximations that can be made in MPACT.
 
 \subsubsection{P$_N$ Scattering}
 
-To simplify the angular dependence of the scattering cross-section, one approximation that can be made to the scattering source in equation \ref{e:BTEtermsScatteringSource} is to assume that the scattering cross-section can be expanded in terms of Legendre polynomials, defined in equations \ref{e:LegendrePolynomials}.
+The first scattering approximation that can be made is P$_N$ scattering.  To make this approximation, the $\bm\Omega'\cdot\bm\Omega$ is rewritten as a single angular variable $\mu$, the cosine between the incoming and outgoing scattering angles.  The scattering cross-section can then be expanded in terms of Legendre polynomials, defined by equations \ref{e:LegendrePolynomials}.
+\todo{do $\mu_s$ instead of $\mu$}
 
-\begin{subequations}
+\begin{subequations}\label{e:LegendrePolynomials}
 \begin{equation}
-P_{n+1}\left(x\right) = \frac{\left(2n+1\right)xP_n\left(x\right) - nP_{n-1}\left(x\right)}{n+1}
+P_{n+1}\left(\bm x\right) = \frac{\left(2n+1\right)xP_n\left(\bm x\right) - nP_{n-1}\left(\bm x\right)}{n+1}
 \end{equation}
 \begin{equation}
-P_0\left(x\right) = 1
+P_0\left(\bm x\right) = 1
 \end{equation}
 \begin{equation}
-P_1\left(x\right) = x
+P_1\left(\bm x\right) = x
 \end{equation}
 \begin{equation}
-\intop_{-1}^1 P_n\left(x\right) P_m\left(x\right) dx = \frac{2}{2n+1}\delta_{n,m}
+\intop_{-1}^1 P_n\left(\bm x\right) P_m\left(\bm x\right) dx = \frac{2}{2n+1}\delta_{n,m}
 \end{equation}
 \end{subequations}
 
-The $\bm\Omega'\cdot\bm\Omega$ term in the scattering cross-section can be simplified as a single variable $\mu$, the cosine between the incoming and outgoing scattering angles.  Applying these polynomials to the scattering cross-section in terms of $\mu$ gives the following expression for the scattering cross-section:
+Equations \ref{e:PnScatteringExpansion} show the expansion of the scattering cross-section using Legendre polynomials.  Using more terms in the expansion improves the accuracy.  For most reactor problems, $N \le 3$ is sufficient.  Problems such as shielding and others may require many more terms to be kept to obtain sufficient accuracy.
 
-\begin{subequations}\label{e:sphericalHarmonicsXSExpansion}
+\begin{subequations}\label{e:PnScatteringExpansion}
 \begin{equation}
-\Sigma_s\left(\mu\right) = \sum_{n=0}^\infty \frac{2n+1}{4\pi} P_n\left(\mu\right) \Sigma_{s,n}
+\Sigma_s\left(\bm x,\mu\right) = \sum_{n=0}^N \frac{2n+1}{4\pi} P_n\left(\mu\right) \Sigma_{sn}\left(\bm x\right)
 \end{equation}
 \begin{equation}
-\Sigma_{s,n} = \intop_{-1}^1 \Sigma\left(\mu\right) P_n\left(\mu\right) d\mu
+\Sigma_{s,n}\left(\bm x\right) = \intop_{-1}^1 \Sigma_s\left(\bm x,\mu\right) P_n\left(\mu\right) d\mu
 \end{equation}
-\end{subequations}
-
-Using this expansion simplifies the integrals required to determine the scattering source in the transport equation.  
+\end{subequations} 
 
 \subsection{Transport Correction}
 
-A further simplification of the scattering source that is often employed is transport-corrected isotropic (TCP$_0$) scattering.  When using this approximation, the equation is solved using an isotropic scattering cross-section.  The cross-section data used to develop the multi-group scattering cross-sections is modified beforehand to still preserve some of the higher order scattering physics.
+A second simplification of the scattering source that can be used is transport-corrected isotropic (TCP$_0$) scattering.  When using this approximation, the equation is solved using only the zeroth order term in \ref{e:PnScatteringExpansion}.  The cross-section data used to develop the multi-group scattering cross-sections is modified beforehand to still preserve some of the higher order scattering physics.
 
-Equations \ref{e:outscatterTCP0} show the out-scatter transport correction, which is commonly used in MPACT.  In this correction, the total and the 0th-order self-secatter cross-sections are modified by subtracting the sum of the first-order out-scatter data.  There are several variants of the out-scatter correction as well as other completely different correction techniques \todo{Cite for out-scatter, in-scatter, NLC, etc.} that are available in MPACT but will not be discussed in detail here.
+Equations \ref{e:outscatterTCP0} show the out-scatter transport correction, which is commonly used in MPACT.  In this correction, the total cross-section and zeroth moment of the self-scatter cross-section are modified by subtracting the sum of the first-order out-scatter data.  There are several variants of the out-scatter correction as well as other completely different correction techniques \todo{Cite for out-scatter, in-scatter, NLC, etc.} that are available in MPACT but will not be discussed in detail here.
 
 \begin{subequations}\label{e:outscatterTCP0}
 \begin{equation}
@@ -211,10 +223,10 @@ One method that is commonly used to solve the transport equation is the Method o
 
 \begin{subequations}
 \begin{equation}
-\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(x,E\right)\psi\left(x,E,\bm \Omega\right) = q\left(x,E.\bm \Omega\right)
+\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm \Omega\right) = q\left(\bm x,E.\bm \Omega\right)
 \end{equation}
 \begin{dmath}\label{e:MOCqboltzmann}
-{q\left(x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(x,E',\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(x,E\right) \psi\left(x,E,\bm \Omega\right) dE + Q\left(x,E,\bm \Omega\right)}
+{q\left(\bm x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(\bm x,E\right) \psi\left(\bm x,E,\bm \Omega\right) dE + Q\left(\bm x,E,\bm \Omega\right)}
 \end{dmath}
 \end{subequations}
 
