@@ -9,12 +9,11 @@ The Boltzmann equation for neutron transport is shown below:
 \todo{Distinguish between prompt and delayed fission}
 \todo{Discuss terms of time-dependent equation, then show steady-state equation}
 
-For many problems, the time dependence of the Boltzmann equation can be neglected.  Doing do eliminates the first term of the equation above.  To ensure neutron balance, this equation is reformulated as an eigenvalue problem.  The eigenvalue $\lambda = \frac{1}{k}$ allows the two sides of the equation to balance.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, providing a physically meaningful steady-state solution to the equation.  The eigenvalue form of the Boltzmann equation is shown below:
+For many problems, the time dependence of the Boltzmann equation can be neglected.  Doing do eliminates the first term of the equation above.  To ensure neutron balance, this equation is reformulated as an eigenvalue problem.  The eigenvalue $\lambda = \frac{1}{k_{eff}}$ allows the two sides of the equation to balance.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, providing a physically meaningful steady-state solution to the equation.  The eigenvalue form of the Boltzmann equation is shown below:
 
 \begin{dmath}\label{e:ssboltzmann}
 {\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm \Omega\right) = \frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E'\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE' + \frac{Q\left(\bm x,E,\bm \Omega\right)}{4\pi}}
 \end{dmath}
-\todo{Use $k_{eff}$ instead of $k$}
 
 Before addressing the methods used to solve equation \ref{e:ssboltzmann}, we will briefly define each of the terms in the equation.  The first term (equation \ref{e:BTEtermsStreaming} is the streaming term.  This describes neutrons with energy $E$ traveling out of the volume dV in the direction $\bm\Omega$.
 
@@ -68,20 +67,30 @@ Using the definitions above, equation \ref{e:ssboltzmann} can be operated on by 
 \end{equation}
 
 \begin{dmath}\label{e:multigroupboltzmann}
-{\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(\bm x\right)\psi_g\left(\bm x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(\bm x,\bm \Omega'\right) d\Omega'} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \nu \Sigma_{f,g'}\left(\bm x\right) \intop_{4\pi} \psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega' + \frac{Q_g\left(\bm x,E\right)}{4\pi}}.
+{\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(\bm x\right)\psi_g\left(\bm x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(\bm x,\bm \Omega'\right) d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \nu \Sigma_{f,g'}\left(\bm x\right) \intop_{4\pi} \psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega' + \frac{Q_g\left(\bm x,E\right)}{4\pi}}.
 \end{dmath}
 
 \subsection{Discrete Ordinates Approximation}
 
-In addition to energy discretization, it is also useful to discretize the transport equation in angle.  To do this, we use an angular quadrature with angles $\bm\Omega_n$ and associated weights $w_n$:
-\todo{More carefully show discretization of polar/azimuthal angles}
+In addition to energy discretization, it is also useful to discretize the transport equation in angle.  The angular variable $\bm\Omega$ is made up of a polar angle ($\mu_s$) and an azimuthal angle ($\alpha$), both of which can be discretized:
 
 \begin{subequations}
 \begin{equation}
-\sum_{n=1}^N w_n = 4\pi
+\bm\Omega = \cos\left(\alpha\right)\sqrt{1-\mu_s^2}\bm i + \sin\left(\alpha\right)\sqrt{1-\mu_s^2}\bm j + \mu_s\bm k
 \end{equation}
 \begin{equation}
-\sum_{n=1}^N \bm\Omega_n w_n = 0
+\bm\Omega_n = \cos\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm i + \sin\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm j + \mu_{s,n}\bm k
+\end{equation}
+\end{subequations}
+
+For each $\bm\Omega_n$, there is an associated weight $w_n$.  These weights and angles together make up an angular quadrature set which simplifies the integrals in equations \ref{e:quadratureIntegrals}.
+
+\begin{subequations}\label{e:quadratureIntegrals}
+\begin{equation}
+\intop d\Omega = \sum_{n=1}^N w_n = 4\pi
+\end{equation}
+\begin{equation}
+\intop \bm\Omega d\Omega = \sum_{n=1}^N \bm\Omega_n w_n = 0
 \end{equation}
 \begin{equation}
 \intop_{4\pi} f\left(\Omega\right)d\Omega \approx \sum_{n=1}^N f_n w_n
@@ -91,7 +100,7 @@ In addition to energy discretization, it is also useful to discretize the transp
 Applying this discretization to the multi-group transport equation \ref{e:multigroupboltzmann}, we obtain the following discrete ordinates (S$_N$) equations:
 
 \begin{dmath}
-\bm\Omega_n\cdot\bm\nabla\psi_{g,n} + \Sigma_{t,g}\left(\bm x\right)\psi_{g,n}\left(\bm x\right) = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{g'\rightarrow g,n'\rightarrow n}\left(\bm x\right)\psi_{g',n'}\left(\bm x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\sum_{n'=1}^N \psi_{g,n}\left(\bm x\right)} + \frac{Q_{g,n}\left(\bm x\right)}{4\pi}
+\bm\Omega_n\cdot\bm\nabla\psi_{g,n} + \Sigma_{t,g}\left(\bm x\right)\psi_{g,n}\left(\bm x\right) = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{g'\rightarrow g,n'\rightarrow n}\left(\bm x\right)\psi_{g',n'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\sum_{n'=1}^N \psi_{g,n}\left(\bm x\right)} + \frac{Q_{g,n}\left(\bm x\right)}{4\pi}
 \end{dmath}
 
 \subsection{Diffusion Approximation}
@@ -131,7 +140,7 @@ Applying this assumption and integrating, we obtain a coupled set of four equati
 
 \begin{subequations}\label{e:P1transport}
 \begin{dmath}\label{e:P1transport-0th}
-\frac{d J_x}{dx} + \frac{d J_y}{dy} + \frac{d J_z}{dz} + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
+\frac{d J_x}{dx} + \frac{d J_y}{dy} + \frac{d J_z}{dz} + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
 \end{dmath}
 \begin{dmath}\label{e:P1transport-1st-x}
 \frac{d\phi_g}{dx} + \Sigma_{t,g}\left(\bm x\right)J_{x,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{x,g'}\left(\bm x\right)}
@@ -155,10 +164,10 @@ D_g\left(\bm x\right) = \frac{1}{3}\left(\Sigma_{t,g}-\sum_{g'=1}^G \Sigma_{s1,g
 \end{equation}
 \end{subequations}
 
-Substituting \ref{e:FicksLawCurrent} into \ref{e:P1transport-0th} gives us the diffusion form of the transport equation, which has only the scalar flux $\phi$ and eigenvalue $\frac{1}{k}$ as unknowns.
+Substituting \ref{e:FicksLawCurrent} into \ref{e:P1transport-0th} gives us the diffusion form of the transport equation, which has only the scalar flux $\phi$ and eigenvalue $\frac{1}{k_{eff}}$ as unknowns.
 
 \begin{dmath}\label{e:DiffusionEquation}
--\bm\nabla \cdot D_g\left(\bm x\right) \bm \nabla\phi_g\left(\bm x\right) + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
+-\bm\nabla \cdot D_g\left(\bm x\right) \bm \nabla\phi_g\left(\bm x\right) + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
 \end{dmath}
 
 \subsection{Scattering Approximations}
@@ -167,8 +176,7 @@ One of the biggest challenges to solving the transport equation is angle depende
 
 \subsubsection{P$_N$ Scattering}
 
-The first scattering approximation that can be made is P$_N$ scattering.  To make this approximation, the $\bm\Omega'\cdot\bm\Omega$ is rewritten as a single angular variable $\mu$, the cosine between the incoming and outgoing scattering angles.  The scattering cross-section can then be expanded in terms of Legendre polynomials, defined by equations \ref{e:LegendrePolynomials}.
-\todo{do $\mu_s$ instead of $\mu$}
+The first scattering approximation that can be made is P$_N$ scattering.  To make this approximation, the $\bm\Omega'\cdot\bm\Omega$ is rewritten as a single angular variable $\mu_s$, the cosine between the incoming and outgoing scattering angles.  The scattering cross-section can then be expanded in terms of Legendre polynomials, defined by equations \ref{e:LegendrePolynomials}.
 
 \begin{subequations}\label{e:LegendrePolynomials}
 \begin{equation}
@@ -189,10 +197,10 @@ Equations \ref{e:PnScatteringExpansion} show the expansion of the scattering cro
 
 \begin{subequations}\label{e:PnScatteringExpansion}
 \begin{equation}
-\Sigma_s\left(\bm x,\mu\right) = \sum_{n=0}^N \frac{2n+1}{4\pi} P_n\left(\mu\right) \Sigma_{sn}\left(\bm x\right)
+\Sigma_s\left(\bm x,\mu_s\right) = \sum_{n=0}^N \frac{2n+1}{4\pi} P_n\left(\mu_s\right) \Sigma_{sn}\left(\bm x\right)
 \end{equation}
 \begin{equation}
-\Sigma_{s,n}\left(\bm x\right) = \intop_{-1}^1 \Sigma_s\left(\bm x,\mu\right) P_n\left(\mu\right) d\mu
+\Sigma_{s,n}\left(\bm x\right) = \intop_{-1}^1 \Sigma_s\left(\bm x,\mu_s\right) P_n\left(\mu_s\right) d\mu_s
 \end{equation}
 \end{subequations} 
 
@@ -226,7 +234,7 @@ One method that is commonly used to solve the transport equation is the Method o
 \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm \Omega\right) = q\left(\bm x,E.\bm \Omega\right)
 \end{equation}
 \begin{dmath}\label{e:MOCqboltzmann}
-{q\left(\bm x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(\bm x,E\right) \psi\left(\bm x,E,\bm \Omega\right) dE + Q\left(\bm x,E,\bm \Omega\right)}
+{q\left(\bm x,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k_{eff}}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(\bm x,E\right) \psi\left(\bm x,E,\bm \Omega\right) dE + Q\left(\bm x,E,\bm \Omega\right)}
 \end{dmath}
 \end{subequations}
 
@@ -243,7 +251,7 @@ Substituting this variable into equation \ref{e:MOCqboltzmann} gives the charact
 \frac{\partial \psi}{\partial s} + \Sigma_t\left(\bm r0_0 + s\bm\Omega,E\right)\psi\left(\bm r0_0 + s\bm\Omega,E,\bm \Omega\right) = q\left(\bm r0_0 + s\bm\Omega,E.\bm \Omega\right)
 \end{equation}
 \begin{dmath}\label{e:characteristicboltzmann}
-{q\left(\bm r0_0 + s\bm\Omega,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(\bm {r_0} + s \bm\Omega',E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm {r_0} + s\bm\Omega',E',\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(\bm r0_0 + s\bm\Omega,E\right) \psi\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right) dE + Q\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right)}
+{q\left(\bm r0_0 + s\bm\Omega,E,\bm \Omega\right) = \intop_{4\pi} \Sigma_s\left(\bm {r_0} + s \bm\Omega',E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm {r_0} + s\bm\Omega',E',\bm \Omega'\right) d\bm \Omega'} + {\frac{1}{k_{eff}}\frac{\chi\left(E\right)}{4\pi} \intop \nu \Sigma_f\left(\bm r0_0 + s\bm\Omega,E\right) \psi\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right) dE + Q\left(\bm {r_0} + s\bm\Omega,E,\bm \Omega\right)}
 \end{dmath}
 \end{subequations}
 
