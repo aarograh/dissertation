@@ -4,24 +4,24 @@
 The Boltzmann equation for neutron transport is shown below:
 
 \begin{dmath}\label{e:boltzmann}
-{\frac{1}{v} \frac{\partial \psi}{\partial t} + \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E,t\right)\psi\left(\bm x,E,\bm \Omega,t\right)} = {\frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E',t\right) \psi\left(\bm x,E',\bm \Omega,t\right) d\Omega dE' + Q\left(\bm x,E,\bm \Omega,t\right)}
+{\frac{1}{v} \frac{\partial \psi}{\partial t} + 
+\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E,t\right)\psi\left(\bm x,E,\bm \Omega,t\right)} = {\frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi_p\left(\bm x,E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \left(1 - \beta\left(\bm x,E'\right)\right) \nu \Sigma_f\left(\bm x,E',t\right) \psi\left(\bm x,E',\bm \Omega,t\right) d\Omega dE'} + {\sum_{j=1}^{N_d} \frac{\chi_{d,j}\left(\bm x,E\right)}{4\pi} \lambda_j C_j\left(\bm x,t\right)} + {Q\left(\bm x,E,\bm \Omega,t\right)}
 \end{dmath}
-\todo{Distinguish between prompt and delayed fission}
 \todo{Discuss terms of time-dependent equation, then show steady-state equation}
 
-For many problems, the time dependence of the Boltzmann equation can be neglected.  Doing do eliminates the first term of the equation above.  To ensure neutron balance, this equation is reformulated as an eigenvalue problem.  The eigenvalue $\lambda = \frac{1}{k_{eff}}$ allows the two sides of the equation to balance.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, providing a physically meaningful steady-state solution to the equation.  The eigenvalue form of the Boltzmann equation is shown below:
+Before addressing the methods used to solve equation \ref{e:boltzmann}, we will briefly define each of the terms in the equation \ref{e:BTEtermsTimeDerivative}.  The first term is the time derivative term, shown in , which accounts for the change in the angular flux over time in dV about $\bm x$, dE about $E$, and d$\Omega$ about $\bm\Omega$.  
 
-\begin{dmath}\label{e:ssboltzmann}
-{\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm \Omega\right) = \frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E'\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE' + \frac{Q\left(\bm x,E,\bm \Omega\right)}{4\pi}}
-\end{dmath}
+\begin{equation}\label{e:BTEtermsTimeDerivative}
+\frac{1}{v} \frac{\partial \psi}{\partial t}
+\end{equation}
 
-Before addressing the methods used to solve equation \ref{e:ssboltzmann}, we will briefly define each of the terms in the equation.  The first term (equation \ref{e:BTEtermsStreaming} is the streaming term.  This describes neutrons with energy $E$ traveling out of the volume dV in the direction $\bm\Omega$.
+The second term (equation \ref{e:BTEtermsStreaming} is the streaming term.  This describes neutrons with energy $E$ traveling out of the volume dV in the direction $\bm\Omega$.
 
 \begin{equation}\label{e:BTEtermsStreaming}
 \bm \Omega \cdot \bm \nabla \psi
 \end{equation}
 
-The second term is the total reaction rate (equation \ref{e:BTEtermsTotalRR}).  This describes the total number of collisions experienced in dV by neutrons with energy $E$ and direction $\bm\Omega$.  Equations \ref{e:BTEtermsStreaming} and \ref{e:BTEtermsTotalRR} together make up the total loss of neutrons.
+The third term is the total reaction rate (equation \ref{e:BTEtermsTotalRR}).  This describes the total number of collisions experienced in dV by neutrons with energy $E$ and direction $\bm\Omega$.  Equations \ref{e:BTEtermsTimeDerivative}-\ref{e:BTEtermsTotalRR} together make up the total loss of neutrons.
 
 \begin{equation}\label{e:BTEtermsTotalRR}
 \Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E\bm\Omega\right)
@@ -33,10 +33,16 @@ Equation \ref{e:BTEtermsScatteringSource} shows the scattering source written in
 \intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'
 \end{equation}
 
-Equation \ref{e:BTEtermsFissionSource} shows neutrons entering dV with energy and direction $E$ and $\bm\Omega$ due to fission.  Fission is an isotropic process, so the total fission source is calculated then distributed evenly across $4\pi$.  Furthermore, the energy distribution of fission is practically independent of incident neutron energy, so the fission neutron distribution $\chi\left(E\right)$ can be outside the integral over energy.
+Equation \ref{e:BTEtermsFissionSource} shows the prompt fission source, neutrons entering dV with energy and direction $E$ and $\bm\Omega$ directly from a fission event.  Fission is an isotropic process, so the total fission source is calculated then distributed evenly across $4\pi$.  Furthermore, the energy distribution of fission is practically independent of incident neutron energy, so the fission neutron distribution $\chi_p\left(E\right)$ can be outside the integral over energy.  A small fraction of fission neutrons are considered ``delayed,'' meaning they are emitted by the radioactive decay of a fission product.  The prompt fission source must be adjusted by the factor $\left(1-\beta\left(\bm x,E'\right)\right)$ to account for this.  Typically $\beta$ is less than 1\% and different for each fissionable isotope.
 
 \begin{equation}\label{e:BTEtermsFissionSource}
-\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E,t\right) \psi\left(\bm x,E,\bm \Omega,t\right) d\Omega dE
+{\frac{\chi_p\left(\bm x,E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \left(1 - \beta\left(\bm x,E'\right)\right) \nu \Sigma_f\left(\bm x,E',t\right) \psi\left(\bm x,E',\bm \Omega,t\right) d\Omega dE'}
+\end{equation}
+
+Equation \ref{e:BTEtermsDelayedSource} shows the fission source due to delayed neutrons.  The precursors, fission products which emit delayed neutrons, are divided into $N_d$ groups based on the magnitude of their decay constant $\lambda_j$.  Like the prompt neutrons, delayed neutrons are isotropic and distributed in energy with some distribution $\chi_{d,j}\left(\bm x,E\right)$ based on which precursors are produced.
+
+\begin{equation}\label{e:BTEtermsDelayedSource}
+{\sum_{j=1}^{N_d} \frac{\chi_{d,j}\left(\bm x,E\right)}{4\pi} \lambda_j C_j\left(\bm x,t\right)}
 \end{equation}
 
 Equation \ref{e:BTEtermsExtSource} shows external source term.  This term accounts for all neutrons entering dV with energy and direction $E$ and $\bm\Omega$ from sources other than scatter and fission.  Equation \ref{e:BTEtermsExtSource} shows the source term as a function of angle, but it is often considered to be isotropic like the fission source.
@@ -44,6 +50,12 @@ Equation \ref{e:BTEtermsExtSource} shows external source term.  This term accoun
 \begin{equation}\label{e:BTEtermsExtSource}
 Q\left(\bm x,E,\bm\Omega\right)
 \end{equation}
+
+Many problems of interest are steady-state, allowing equation \ref{e:boltzmann} to be simplified significantly.  The time derivative becomes 0, eliminating the term in \ref{e:BTEtermsTimeDerivative}, and the precursor concentrations are unchanging in time, allowing the fission source terms in \ref{e:BTEtermsFissionSource} and \ref{e:BTEtermsDelayedSource} to be lumped into a single term.  To ensure balance between the loss and source terms without a time derivative, the equation is reformulated as an eigenvalue equation.  The fission source is multiplied by the eigenvalue $\lambda = \frac{1}{k_{eff}}$, allowing the equation to be balanced.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, providing a physically meaningful steady-state solution to the equation.  The steady-state form of the Boltzmann equation is shown below:
+
+\begin{dmath}\label{e:ssboltzmann}
+{\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm \Omega\right) = \frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E'\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE' + \frac{Q\left(\bm x,E,\bm \Omega\right)}{4\pi}}
+\end{dmath}
 
 \subsection{Multi-group Approximation}
 
@@ -75,12 +87,10 @@ Using the definitions above, equation \ref{e:ssboltzmann} can be operated on by 
 In addition to energy discretization, it is also useful to discretize the transport equation in angle.  The angular variable $\bm\Omega$ is made up of a polar angle ($\mu_s$) and an azimuthal angle ($\alpha$), both of which can be discretized:
 
 \begin{subequations}
-\begin{equation}
-\bm\Omega = \cos\left(\alpha\right)\sqrt{1-\mu_s^2}\bm i + \sin\left(\alpha\right)\sqrt{1-\mu_s^2}\bm j + \mu_s\bm k
-\end{equation}
-\begin{equation}
-\bm\Omega_n = \cos\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm i + \sin\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm j + \mu_{s,n}\bm k
-\end{equation}
+\begin{align}
+\bm\Omega &= \cos\left(\alpha\right)\sqrt{1-\mu_s^2}\bm i + \sin\left(\alpha\right)\sqrt{1-\mu_s^2}\bm j + \mu_s\bm k \\
+\Rightarrow \bm\Omega_n &= \cos\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm i + \sin\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm j + \mu_{s,n}\bm k
+\end{align}
 \end{subequations}
 
 For each $\bm\Omega_n$, there is an associated weight $w_n$.  These weights and angles together make up an angular quadrature set which simplifies the integrals in equations \ref{e:quadratureIntegrals}.
@@ -93,7 +103,7 @@ For each $\bm\Omega_n$, there is an associated weight $w_n$.  These weights and 
 \intop \bm\Omega d\Omega = \sum_{n=1}^N \bm\Omega_n w_n = 0
 \end{equation}
 \begin{equation}
-\intop_{4\pi} f\left(\Omega\right)d\Omega \approx \sum_{n=1}^N f_n w_n
+\intop_{4\pi} f\left(\bm\Omega\right)d\Omega \approx \sum_{n=1}^N f_n w_n
 \end{equation}
 \end{subequations}
 
