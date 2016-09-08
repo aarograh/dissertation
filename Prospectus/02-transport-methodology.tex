@@ -150,7 +150,7 @@ Applying this assumption and integrating, we obtain a coupled set of four equati
 
 \begin{subequations}\label{e:P1transport}
 \begin{dmath}\label{e:P1transport-0th}
-\frac{d J_x}{dx} + \frac{d J_y}{dy} + \frac{d J_z}{dz} + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
+\frac{d J_{x,g}}{dx} + \frac{d J_{y,g}}{dy} + \frac{d J_{z,g}}{dz} + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
 \end{dmath}
 \begin{dmath}\label{e:P1transport-1st-x}
 \frac{d\phi_g}{dx} + \Sigma_{t,g}\left(\bm x\right)J_{x,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{x,g'}\left(\bm x\right)}
@@ -324,45 +324,73 @@ Source iteration also has a convenient physical interpretation.  Selecting zero 
 
 \subsection{Coarse-Mesh Finite Difference}\label{ss:CMFD}
 
-The source iteration method provides a convenient way of solving transport problems that guarantees a positive, correct solution.  However, because the source iteration can take hundreds of iterations to converge for typical reactor problems, it is important to accelerate the convergence.  The most common way of doing this is the Coarse-Mesh Finite Difference (CMFD) method.  This method involves solving a diffusion problem on a coarse grid to get the average magnitude of the flux in each coarse cell.  This is then used to scale the flux solution on the fine mesh cells.  In order to ensure consistency between the transport solution and the lower order diffusion solution, coupling coefficients are calculated on the boundaries of the coarse mesh cells to correct the leakage between the cells.
+The source iteration method provides a convenient way of solving transport problems that guarantees a positive, correct solution.  However, because the source iteration can take hundreds of iterations to converge for typical reactor problems, it is important to accelerate the convergence.  The most common way of doing this is the Coarse-Mesh Finite Difference (CMFD) method.  This method involves solving a diffusion problem on a coarse grid to get the average magnitude of the flux in each coarse cell.  This is then used to scale the flux solution on the fine grid.  In order to ensure consistency between the transport solution and the lower order diffusion solution, coupling coefficients are calculated on the boundaries of the coarse mesh cells to correct the leakage between the cells.
 
-\ifdraft{To derive this method, we begin with equation \hl{diffusion equation} and apply the multigroup approximation:
-\hl{multi-group diffusion equation}
+To describe the CMFD method, the scalar flux, current, and cross-sections on the coarse grid must be related to the same quantities on the fine grid.  We assume the fine mesh has already been spatially discretized and solved so that quantities such as volume, cell-averaged flux, cell-averaged cross-sections, and cell-averaged source terms are known for each fine cell.  With this assumption, we can define the needed coarse mesh values for each coarse cell $i$ in terms of the fine cells it owns.  $N_f$ is the total number of fine cells owned by a coarse cell, $\left(x_i,y_i,z_i\right)$ are the coordinates for the center of coarse cell $i$, and $x_{i+\frac{1}{2}}$, $x_{i-\frac{1}{2}}$, $y_{i+\frac{1}{2}}$, $y_{i-\frac{1}{2}}$, $z_{i+\frac{1}{2}}$, and $z_{i-\frac{1}{2}}$ define the edges of the coarse cell in each direction.
 
-\begin{equation}
+\begin{subequations}
+\begin{align}
+A_{x,i} &= \left(y_{i+\frac{1}{2}} - y_{i-\frac{1}{2}}\right)\left(z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}\right) \\
+A_{y,i} &= \left(x_{i+\frac{1}{2}} - x_{i-\frac{1}{2}}\right)\left(z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}\right) \\
+A_{z,i} &= \left(x_{i+\frac{1}{2}} - x_{i-\frac{1}{2}}\right)\left(y_{i+\frac{1}{2}} - y_{i-\frac{1}{2}}\right) \\
+V_i &= \sum_{j=1}^{N_f} V_j \\
+\phi_{g,i} &= \frac{1}{V_i}\sum_{j=1}^{N_f} \phi_{g,j} V_j \\
+\Sigma_{t,g,i} &= \frac{1}{\phi_{g,i} V_i}\sum_{j=1}^{N_f} \Sigma_{t,g,j} \phi_{g,j} V_j \\
+\Sigma_{s0,g'\rightarrow g,i} &= \frac{1}{\phi_{g',i} V_i}\sum_{j=1}^{N_f} \Sigma_{s0,g'\rightarrow g,j} \phi_{g',j} V_j \\
+\nu\Sigma_{f,g,i} &= \frac{1}{\phi_{g,i} V_i}\sum_{j=1}^{N_f} \nu\Sigma_{f,g,j} \phi_{g,j} V_j \\
+\chi_{g,i} &= \frac{\sum_{j=1}^{N_f} \chi_{g,j} \sum_{g'=1}^G \nu\Sigma_{f,g',j} \phi_{g',j} V_j}{\sum_{j=1}^{N_f} \sum_{g'=1}^G \nu\Sigma_{f,g',j} \phi_{g',j} V_j} \\
+Q_{g,i} &= \frac{1}{V_i}\sum_{j=1}^{N_f} Q_{g,j} V_j
+\end{align}
+\end{subequations}
+
+Furthermore, it is assumed that the method used to solve the fine grid also calculated the average current on each surface of each \todo{Mention current tallies in MOC section?} coarse cell.  Using these definitions, we now operate on the multi-group diffusion equation (\ref{e:P1transport-0th}) by equation \ref{e:DiffVolumeIntegral} to obtain equation \ref{e:DiffusionEquationDiscretized}.
+
+\begin{subequations}
+\begin{equation}\label{e:DiffVolumeIntegral}
+\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}} \intop_{z_{i-\frac{1}{2}}}^{z_{i+\frac{1}{2}}} \left(\cdot\right) dz dy dz
 \end{equation}
+\begin{dmath}\label{e:DiffusionEquationDiscretized}
+A_{x,i} \left(J_{x,g}\left(x_{i+\frac{1}{2}}\right) - J_{x,g}\left(x_{i-\frac{1}{2}}\right)\right) + A_{y,i} \left(J_{y,g}\left(y_{i+\frac{1}{2}}\right) - J_{y,g}\left(y_{i-\frac{1}{2}}\right)\right) + A_{z,i} \left(J_{z,g}\left(z_{i+\frac{1}{2}}\right) - J_{z,g}\left(z_{i-\frac{1}{2}}\right)\right) + {\Sigma_{t,g,i} \phi_{g,i} V_i} = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g,i}\phi_{g',i}V_i} + \frac{1}{k_{eff}}\frac{\chi_{g,i}}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g',i}\phi_{g',i}V_i + Q_{g,i}V_i
+\end{dmath}
+\end{subequations}
 
-Integrating this equation over some volume $V$ and dividing by the total volume creates and equation for the average scalar flux $\overline{\phi}$ in that cell.
-\hl{discretized equation}
+Using equations \ref{e:FicksLaw}, we can define the interface currents in terms of the diffusion constants on either side of the interface (equation \ref{e:interfaceCurrentDiff}, which is easily applied to the $y$ and $z$ directions).  The interface diffusion coefficients are defined in \todo{fill in and reference subequations}
 
-\begin{equation}
+\begin{subequations}
+\begin{equation}\label{e:interfaceCurrentDiff}
+J_{x,g}\left(x_{i+\frac{1}{2}}\right) = -D_g\left(x_{i+\frac{1}{2}}\right)\frac{\phi_{g,i+1} - \phi_{g,i}}{x_{i+1} - x{i}}
 \end{equation}
-
-The boundary conditions for each cell are the currents at the interface between two cells:
-\hl{boundary condition equation}
-
-\begin{equation}
+\begin{equation}\label{e:interfaceD}
+D
 \end{equation}
-
-This equation can be determined for each cell in the problem to set up a linear system.  This system can then be solved using one of a variety of standard linear solvers.
-
-Because the currents in the matrix are calculated from the diffusion equation, an inconsistency between the diffusion and transport solutions will arise.  To account for this, current correction factors are calculated at the cell boundaries using the fine mesh transport calculations.  These correction factors are calculated as follows:
-\hl{dhat equation}
-
-\begin{equation}
+\begin{equation}\label{e:interfaceDpositive}
+D
 \end{equation}
-
-This defines a relationship between the scalar fluxes on each sides of the interface and the current at the interface.  This relationship allows us to correct the diffusion current that is used in the CMFD matrix:\hl{corrected diffusion current}
-
-\begin{equation}
+\begin{equation}\label{e:interfaceD}
+D
 \end{equation}
+\end{subequations}
+
+\hl{This paragraph talks about the need to correct the currents using the higher order currents}
+
+\hl{Enter dhat equation and corrected currents}
+
+\hl{Enter discretized diffusion equation with dhats}
+
+\hl{Talk about coupling all the groups in each cell, then all the cells through the currents}
+
+\hl{Matrix form of equation}
+
+\hl{Talk briefly about solving for flux and eigenvalue, mention possible eigenvalue solvers that MPACT uses.}
+
+\hl{Discuss projection back to fine mesh}
+
+\hl{Discuss how this ties in with source iteration discussion from earlier}
 
 \subsection{Simplified Pn}
 
-\hl{I can actually probably get rid of this section completely by just referring to the axial solver as $P_3$ instead of $SP_3$}
+\hl{Just discuss the 1D version since that's all that MPACT uses.}
 
-\subsection{Power Iteration}
+\subsection{Collision Probabilities Method}
 
-
-
-\subsection{Collision Probabilities Method}}{}
+\hl{ugh}
