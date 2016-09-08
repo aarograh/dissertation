@@ -235,9 +235,13 @@ A wide variety of numerical methods exist to solve the transport equation, but a
 
 All the work discussed in the following sections makes use of deterministic methods.  There are many different deterministic methods, but only the ones relevant to this work will be discussed in the coming sections.
 
-\ifdraft{\subsection{Method of Characteristics}
+\subsection{Method of Characteristics}
 
-One method that is commonly used to solve the transport equation is the Method of Characteristics (MOC).  This method allows the transport equation to be solved along a characteristic direction without any approximations, making it useful for complicated geometries such as those found in nuclear reactors.  This method generally makes use of both the multi-group and discrete ordinates approximations, so this derivation will begin by replacing the right-hand side of equation \ref{e:SnBoltzmann}
+One method that is commonly used to solve the transport equation is the Method of Characteristics (MOC).  This method allows the transport equation to be solved along a characteristic direction with limited approximations, making it useful for complicated geometries such as those found in nuclear reactors.  Doing this along many lines for a variety of angles and integrating allows an accurate calculation of the scalar flux for large, geometrically complex problems, making MOC useful for many reactor calculations.  First, MOC will be derived, then details of its practical implementation in MPACT will be discussed.   This method generally makes use of both the multi-group and discrete ordinates approximations, so this derivation will begin by replacing the right-hand side of equation \ref{e:SnBoltzmann}
+
+\subsubsection{Derivation}
+
+MOC can be derived starting from the most general form of the transport equation (\ref{e:boltzmann}).  However, most implementations make use of both the multi-group and discrete ordinates approximations, so this derivation will begin with equation \ref{e:SnBoltzmann}.  First, the right-hand side is lumped into a single source term for a given energy group $g$ and direction $n$:
 
 \begin{subequations}\label{e:MOCqboltzmann}
 \begin{equation}
@@ -248,7 +252,7 @@ One method that is commonly used to solve the transport equation is the Method o
 \end{dmath}
 \end{subequations}
 
-Now we can introduce a characteristic direction $\bm r$ in the direction $\bm\Omega_n$
+Now we introduce a characteristic direction $\bm r$ in the direction $\bm\Omega_n$
 
 \begin{equation}
 \bm r = \bm {r_0} + s \bm \Omega_n \Rightarrow \begin{cases} x\left(s\right) = x_0 + s\Omega_{n,x} \\ y\left(s\right) = y_0 + s\Omega_{n,y} \\ z\left(s\right) = z_0 + s\Omega_{n,z} \end{cases}
@@ -301,7 +305,13 @@ For a segment of length $A$ beginning on the boundary of the problem, equation \
 \end{align}
 \end{subequations}
 
-\subsection{Source Iteration}
+If the transport cross-section is constant along $s$ for the region of interest, then the only approximation that has been made in this derivation is that the source is constant.  It is possible to assume higher order shapes for the source (linear, quadratic, etc.) to improve the accuracy of MOC\todo{citation for linear source MOC}, but these will not be discussed here.
+
+Once $\psi_{out}$ has been calculated at the edge of a region, it can be used as $\psi_{in}$ for a neighboring region.  This allows the angular flux to be solved along a characteristic across large, heterogeneous problems by solving a series of segments.  Doing this along many characteristics in different directions allows the scalar flux to be calculated for each region of interest.
+
+\subsubsection{Implementation}
+
+\ifdraft{\subsection{Source Iteration}
 
 Using MOC, fixed source transport problems can be solved.  However, in realistic calculations it is rare that the scattering or fission sources are known.  In order to solve the transport equation for problems with an unknown source distribution, the equation can be re-formulated as follows:
 \hl{Insert source iteration form of the equation}
