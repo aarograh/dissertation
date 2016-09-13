@@ -61,8 +61,8 @@ classdef meshClass < handle
                         width = input.radii(input.pinmap(i),j);
                         width = pi*width^2.0/(2.0*input.pitch);
                     else
-                         width = (input.radii(input.pinmap(i),j) - input.radii(input.pinmap(i),j-1));
-                         width = pi*width^2.0/(2.0*input.pitch);
+                         width = pi*(input.radii(input.pinmap(i),j)^2 - input.radii(input.pinmap(i),j-1)^2);
+                         width = width/(2.0*input.pitch);
                     end
                     % Set coarse mesh
                     obj.xsedges(ncoarsecells+1,1) = obj.xsedges(ncoarsecells) + width;
@@ -86,8 +86,8 @@ classdef meshClass < handle
                         width = input.radii(input.pinmap(i),j);
                         width = pi*width^2.0/(2.0*input.pitch);
                     else
-                         width = (input.radii(input.pinmap(i),j) - input.radii(input.pinmap(i),j-1));
-                         width = pi*width^2.0/(2.0*input.pitch);
+                         width = pi*(input.radii(input.pinmap(i),j)^2 - input.radii(input.pinmap(i),j-1)^2);
+                         width = width/(2.0*input.pitch);
                     end
                     % Set coarse mesh
                     obj.xsedges(ncoarsecells+1,1) = obj.xsedges(ncoarsecells) + width;
