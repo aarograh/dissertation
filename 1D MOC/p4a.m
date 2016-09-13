@@ -17,12 +17,12 @@ input.radii = [ 0.4096, 0.475;
     0.4, 0.475;
     0.4, 0.475;
     0.4, 0.475];
-input.pinmesh = [ 20 3 20;
-    20 3 20;
-    20 3 20;
-    20 3 20];
+input.pinmesh = [ 15 2 15;
+    15 2 15;
+    15 2 15;
+    15 2 15];
 % Quadrature
-input.npol = 32;
+input.npol = 16;
 % XS Library Info
 input.xsfilename = 'c5g7.xsl';
 input.scattype = 'P0';
@@ -30,7 +30,7 @@ input.scattype = 'P0';
 input.BCond = ['reflecting';'reflecting'];
 % Convergence
 input.nouters = 2000;
-input.conv_crit = [1.0e-6 1.0e-6];
+input.conv_crit = [1.0e-5 1.0e-5];
 
 %% Case 1 - 50-50 Mixutre Eigenvalue Case
 input.pinmap = [1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
@@ -44,29 +44,30 @@ names(1) = {sprintf('Mixed       - %g',solver(1).solution.keff(1))};
 input.pinmap = [1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
     1, 1, 2, 1, 1, 2, 1, 1, 3, 1, 1, 2, 1, 1, 2, 1, 1, ...
     1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1];
-input.nouters = 1;
-solver(2) = MOC_1D(input);
+solver(2) = eigensolverClass(input);
 % Copy source, angular flux
-solver(2).mesh.source(:) = solver(1).mesh.source(:);
-solver(2).solution.angflux(:) = solver(1).solution.angflux(:);
+solver(2).solution.fisssrc(:) = solver(1).solution.fisssrc(:);
+solver(2).solution.scalflux(:) = solver(1).solution.scalflux(:);
+solver(2).solution.angflux(:) = solver(1).solution.angflux(:); 
 solver(2).step(true);
-names(2) = {sprintf('Rodded    - %g',solver(2).solution.keff(1))};
+names(2) = {sprintf('Rodded    - %g',solver(1).solution.keff(1))};
 
 %% Case 2 - Guide Tube Case
 input.pinmap = [1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
     1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
     1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1];
-solver(3) = MOC_1D(input);
+solver(3) = eigensolverClass(input);
 % Copy source, angular flux
-solver(3).mesh.source(:) = solver(1).mesh.source(:);
+solver(3).solution.fisssrc(:) = solver(1).solution.fisssrc(:);
+solver(3).solution.scalflux(:) = solver(1).solution.scalflux(:);
 solver(3).solution.angflux(:) = solver(1).solution.angflux(:);
 solver(3).step(true);
-names(3) = {sprintf('Unrodded - %g',solver(3).solution.keff(1))};
+names(3) = {sprintf('Unrodded - %g',solver(1).solution.keff(1))};
 
 %% Generate Plots
 
 % Angular Flux Plots
-ipol=1;
+ipol=input.npol/2;
 for igroup=1:solver(1).xsLib.ngroups
     figure(igroup);
     hold on;
