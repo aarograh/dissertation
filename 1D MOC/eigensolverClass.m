@@ -76,9 +76,9 @@ classdef eigensolverClass < handle
                 obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
                 obj.solution.update();
                 obj.step();
-                display([obj.solution.fisssrc(:,1),obj.solution.fisssrc(:,2), ...
-                    obj.mesh.source(:,1),obj.solution.scalflux(:,1,1),obj.solution.scalflux(:,1,2),...
-                    tmp]);
+%                 display([obj.solution.fisssrc(:,1),obj.solution.fisssrc(:,2), ...
+%                     obj.mesh.source(:,1),obj.solution.scalflux(:,1,1),obj.solution.scalflux(:,1,2),...
+%                     tmp]);
                 tmp = obj.mesh.source(:,1);
                 if obj.converged
                     if obj.verbose
@@ -105,16 +105,18 @@ classdef eigensolverClass < handle
             end
             for inners=1:1
                 for igroup=1:obj.xsLib.ngroups
-                    if ~source_in
-                        obj.setupFSP(igroup);
-                    end
+                    obj.setupFSP(igroup);
                     if obj.accel
                         obj.sweep_wCur(igroup);
                     else
                         obj.sweep(igroup);
                     end
                 end
-                obj.update();
+                if source_in
+                    obj.solution.update();
+                else
+                    obj.update();
+                end
             end
             
         end
