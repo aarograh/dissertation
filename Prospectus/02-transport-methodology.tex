@@ -354,42 +354,59 @@ A_{x,i} \left(J_{x,g}\left(x_{i+\frac{1}{2}}\right) - J_{x,g}\left(x_{i-\frac{1}
 \end{dmath}
 \end{subequations}
 
-Using equations \ref{e:FicksLaw}, we can define the interface currents in terms of the diffusion constants on either side of the interface (equation \ref{e:interfaceCurrentDiff}, which is easily applied to the $y$ and $z$ directions).  The interface diffusion coefficients are defined in \todo{fill in and reference subequations}
+Using equations \ref{e:FicksLaw}, we can define the interface currents in terms of the diffusion constants on the positive ($p$) and negative ($n$) sides of the interface (equation \ref{e:interfaceCurrentDiff}.  The interface diffusion coefficients are defined in \ref{e:interfaceD}-\ref{e:interfaceDnegative}.
 
 \begin{subequations}
 \begin{equation}\label{e:interfaceCurrentDiff}
-J_{x,g}\left(x_{i+\frac{1}{2}}\right) = -D_g\left(x_{i+\frac{1}{2}}\right)\frac{\phi_{g,i+1} - \phi_{g,i}}{x_{i+1} - x{i}}
+J_{g} = -D_g\left(\phi_{g,p} - \phi_{g,n}\right)
 \end{equation}
 \begin{equation}\label{e:interfaceD}
-D
+D_g=\frac{1}{3}\left(\left(\Delta x_p\Sigma_{t,g,i+1} + \Delta x_n\Sigma_{t,g,i}\right)\right)^{-1}
 \end{equation}
 \begin{equation}\label{e:interfaceDpositive}
-D
+D_{g,\frac{1}{2}}=\alpha\left(1 + 3\Delta x_p\alpha\Sigma_{t,g,1}\right)^{-1}
 \end{equation}
-\begin{equation}\label{e:interfaceD}
-D
+\begin{equation}\label{e:interfaceDnegative}
+D_{g,N+\frac{1}{2}}=\alpha\left(3\Delta x_n\alpha\Sigma_{t,g,N} + 1\right)^{-1}
+\end{equation}
+\begin{equation}\label{e:alpha}
+\alpha=\begin{cases} 0 &,\text{ reflecting} \\ 0.5 &,\text{ vacuum}\end{cases}
+\end{equation}
+\end{subequations}
+\todo{Change to transport cross-section?}
+
+Defining the interface currents as in equation \ref{e:interfaceCurrentDiff} will cause inconsistency between the high-order transport solver and the diffusion-based CMFD solver.  To account for this, a correction factor can be defined in terms of the transport solution and added to the CMFD currents to enforce consistency between the two solutions.
+
+\begin{subequations}
+\begin{equation}\label{e:interfaceCurrentCMFD}
+J_{CMFD,g} = -D_g\left(\phi_{g,p} - \phi_{g,n}\right) + \hat{D}_g\left(\phi_{g,p} \phi{g,n}\right)
+\end{equation}
+\begin{equation}\label{e:dhat}
+\hat{D}_g = \frac{J_{trans,g} + D_g\left(\phi_{g,p} - \phi{g,n}\right)}{\left(\phi_{g,p} \phi{g,n}\right)}
 \end{equation}
 \end{subequations}
 
-\hl{This paragraph talks about the need to correct the currents using the higher order currents}
+Using this definition of the current, all terms in equation \ref{e:DiffusionEquationDiscretized} are defined.  This gives a system of $N\times G$ equations, where $N$ is the number of coarse nodes and $G$ is the number of energy groups in the problem, which can be written in matrix form and solved as an eigenvalue problem:
 
-\hl{Enter dhat equation and corrected currents}
+\begin{equation}\label{e:CMFDmatrix}
+\underline{\underline{M}}\underline{\phi}=\frac{1}{k}\underline{\underline{F}}\underline{\phi}
+\end{equation}
 
-\hl{Enter discretized diffusion equation with dhats}
+Using the homogenized transport solution as an initial guess on the right-hand side of equation \ref{e:CMFDmatrix}, this equation can be easily solved using a standard eigenvalue solver.  MPACT generally uses either power iteration or \hl{generalized Davidson} methods to solve this problem\todo{citation}, but these methods will not be discussed in detail here.
 
-\hl{Talk about coupling all the groups in each cell, then all the cells through the currents}
+After obtaining a solution equation \ref{e:CMFDmatrix}, the solution must be used to update the fine mesh solution for the next transport calculation.  To do this, a simple scaling is applied to the previous transport solution as shown in equation \ref{e:CMFDscaling}.  This scaling is applied to all fine mesh cells $j$ in each coarse mesh cell $i$ and ensures preservation of reaction rates between the CMFD and transport solutions prior to the next transport sweep.
 
-\hl{Matrix form of equation}
-
-\hl{Talk briefly about solving for flux and eigenvalue, mention possible eigenvalue solvers that MPACT uses.}
-
-\hl{Discuss projection back to fine mesh}
+\begin{equation}\label{e:CMFDscaling}
+\phi_{trans,g,j}^{k}=\frac{\phi_{CMFD,g,i}^k}{\phi_{CMFD,g,i}^{k-1}}\phi_{trans,g,j}^{k-1}
+\end{equation}
 
 \hl{Discuss how this ties in with source iteration discussion from earlier}
 
 \subsection{Simplified Pn}
 
 \hl{Just discuss the 1D version since that's all that MPACT uses.}
+
+One method that can be used to solve the transport equation is the Spherical Harmonics (P$_n$) method\todo{citation}.  This method is able to resolve the angle dependence of the angular flux, but is very complicated and cumbersome to implement.  A more efficient method that is employed in MPACT is the Simplified Spherical Harmonics (SP$_n$) method.  This method is identical to the P$_n$ method in 1D, but greatly simplifies the equations to be solved in 2D and 3D while maintaining a high level of accuracy.  The derivation below will focus only on the SP$_n$ method in one spatial dimension, since this is how it is used in MPACT.
 
 \subsection{Collision Probabilities Method}
 
