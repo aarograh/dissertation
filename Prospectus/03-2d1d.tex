@@ -1,7 +1,25 @@
-\ifdraft{
+While MPACT has the capability to solve the Boltzmann transport equation using the 3D Method of Characteristics, doing so is too computationally burdensome to be of practical value.  To obtain accurate solutions to the equation more quickly, a method known as 2D/1D is employed.  This method takes advantage of the geometry in LWRs by exploiting the fact that most of the material heterogeneities (and thus sharp flux gradients) occur only in the radial direction.  Axially, the reactor is typically almost uniform for a given radial point.  This allows the detailed, expensive transport calculations to be done in 2D instead of 3D.  A much faster, lower order calculation can then be done in the axial direction to couple a ``stack'' of 2D planar solutions to obtain 3D flux shapes.  This chapter is devoted to discussing the derivation of the 2D/1D equations, how some of the methods from chapter \ref{chap:transport} are applied to the these equations in MPACT, and some of the approximations and limitations of the 2D/1D method.
+
+\section{Derivation}
+
+To begin, equation \ref{e:multigroupboltzmann} \hl{or \ref{e:SnBoltzmann}?} must be integrated in the $z$-direction over some range $\Delta z_i = z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}$, giving:
+
+\begin{equation}
+\Omega_x\frac{\partial \psi_g}{\partial x} + \Omega_y\frac{\partial \psi_g}{\partial y} + \Omega_z\left(\psi_{g,z_{i+\frac{1}{2}}} - \psi_{g,z_{i-\frac{1}{2}}}\right)
+\end{equation}
+
+\section{Implementation}
+
+\section{Approximations and Limitations}
+
+\subsection{Transverse Leakage}
+
+\subsubsection{Axial Transverse Leakage}
+
+\subsubsection{Radial Transverse Leakage}
+
 \begin{itemize}
 \item \hl{Axial TL}
 \item \hl{Radial TL}
 \item \hl{Axial Homogenization}
 \end{itemize}
-}{}
