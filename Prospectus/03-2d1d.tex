@@ -2,11 +2,31 @@ While MPACT has the capability to solve the Boltzmann transport equation using t
 
 \section{Derivation}
 
-To begin, equation \ref{e:multigroupboltzmann} \hl{or \ref{e:SnBoltzmann}?} must be integrated in the $z$-direction over some range $\Delta z_i = z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}$, giving:
+\subsection{Radial Equations}
 
+To begin, equation \ref{e:multigroupboltzmann} \hl{or Sn equation?} must be integrated in the $z$-direction over some range $\Delta z_i = z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}$, giving:
+
+\begin{dmath}
+{\Omega_x\frac{\partial \psi_{g,z}}{\partial x} + \Omega_y\frac{\partial \psi_{g,z}}{\partial y} + \frac{\Omega_z}{\Delta z_i}\left(\psi_{g,z_{i+\frac{1}{2}}} - \psi_{g,z_{i-\frac{1}{2}}}\right)} + {\Sigma_{t,g}\left(x,y\right)\psi_{g,z}\left(x,y,\bm\Omega\right)} = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\nu\Sigma_{f,g',z}\left(x,y\right)\psi_{g',z}\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g,z}}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g',z}\left(x,y\right)\psi_{g',z}\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g,z}\left(x,y\right)}{4\pi}}
+\end{dmath}
+
+The $z$-component of the streaming can now be moved to the right-hand side of the equation and treated as a source term.
+
+\begin{subequations}
+\begin{dmath}
+{\Omega_x\frac{\partial \psi_{g,z}}{\partial x} + \Omega_y\frac{\partial \psi_{g,z}}{\partial y}} + {\Sigma_{t,g}\left(x,y\right)\psi_{g,z}\left(x,y,\bm\Omega\right)} = {q_{g,z}\left(x,y\right) + L_{g,z}\left(x,y,\Omega_z\right)}
+\end{dmath}
+\begin{dmath}
+q_{g,z}\left(x,y\right) = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\nu\Sigma_{f,g',z}\left(x,y\right)\psi_{g',z}\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g,z}}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g',z}\left(x,y\right)\psi_{g',z}\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g,z}\left(x,y\right)}{4\pi}}
+\end{dmath}
 \begin{equation}
-\Omega_x\frac{\partial \psi_g}{\partial x} + \Omega_y\frac{\partial \psi_g}{\partial y} + \Omega_z\left(\psi_{g,z_{i+\frac{1}{2}}} - \psi_{g,z_{i-\frac{1}{2}}}\right)
+L_{g,z}\left(x,y,\Omega_z\right) = \frac{\Omega_z}{\Delta z_i}\left(\psi_{g,z_{i+\frac{1}{2}}} - \psi_{g,z_{i-\frac{1}{2}}}\right)
 \end{equation}
+\end{subequations}
+
+$L_{g,z}\left(x,y,\Omega_z\right)$ is the axial transverse leakage source term for plane $z$
+
+\subsection{Axial Equations}
 
 \section{Implementation}
 
