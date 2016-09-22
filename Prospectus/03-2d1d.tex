@@ -32,14 +32,14 @@ $L_{g,z}\left(x,y,\Omega_z\right)$ is the axial transverse leakage source term f
 
 \section{Approximations and Limitations}
 
-\subsection{Transverse Leakage}
+\subsection{Axial Homogenization}
 
-\subsubsection{Axial Transverse Leakage}
+One assumption made in the 2D/1D scheme is that each of the 2D planes is axially homogeneous.  In many cases this assumption is true.  Other times, materials such as spacer grids, end plugs for fuel rods and control tips, or other structural materials may be homogenized, but do not have a large impact on the results, making the axial homogenization within a plane a reasonable approximation.  However, when strongly absorbing materials (or others which may significantly impact neutron behavior) are partially inserted into an axial plane, homogenizing them axially can produce large errors in the solution.  When this occurs, the best way to remedy these errors is to divide the plane into 2 or more planes in such a way that the problematic material is no longer partially inserted into a plane.
 
-\subsubsection{Radial Transverse Leakage}
+While there is a known workaround for this approximation, it has the drawback of adding extra planes to the 2D/1D scheme, which in turn increases the computational burden of the calculations.  Because of this, other methods to improve the axial homogenization have been a topic of interest for reactor components that commonly cause this problem, such as control rods.  This will be discussed in more detail in \hl{the following chapter.}
 
-\begin{itemize}
-\item \hl{Axial TL}
-\item \hl{Radial TL}
-\item \hl{Axial Homogenization}
-\end{itemize}
+\subsection{Axial Transverse Leakage Source}
+
+Another significant approximation in 2D/1D relates to the axial transverse leakage source used by the 2D transport solver.  The 1D axial solve and 3D CMFD acceleration are both done on a pin-homogenized coarse mesh.  This results in the assumption that the axial currents are the same in each part of the pin.  Obviously, this is not true since the fuel and moderator regions will have different energy spectra, thus different currents.  This assumption introduces error in source used in the 2D transport calculations.
+
+\subsection{Radial Transverse Leakage Source}
