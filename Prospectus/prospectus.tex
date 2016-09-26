@@ -16,6 +16,15 @@
 \usepackage{todonotes}
 \usepackage{flexisym}
 \usepackage{breqn}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+% Set up flowchart stuff
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
 
 % Set up refs
 \hypersetup{
@@ -53,9 +62,12 @@
 
 \chapter{Rod Cusping}
 \input{04-rod-cusping.tex}
+
+\chapter{Results}
+\input{05-results.tex}
  
 \chapter{Conclusions}
-\input{05-conclusions.tex}
+\input{06-conclusions.tex}
 
 % bibliography
 \renewcommand{\bibname}{References}
