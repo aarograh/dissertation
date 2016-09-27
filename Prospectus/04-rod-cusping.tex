@@ -2,12 +2,17 @@
 
 \ifdraft{\hl{Discuss what rod cusping is and why it happens.  Show some plots from MPACT.}
 
-\section{Old Solutions}\todo{Better name}
+\section{Traditional Solutions}
+
+\subsection{Nodal Codes}
 
 \hl{Discuss ways people have addressed this in the past}
-\hl{Discuss polynomial currently implemented in MPACT}
 
-\section{New Solutions}\todo{Better name}}{}
+\subsection{2D/1D Codes}
+
+\hl{Discuss polynomial currently implemented in MPACT, stuff in nTRACER}
+
+\section{Improved Decusping Methods}
 
 \subsection{Subplane Scheme}
 
@@ -47,6 +52,8 @@ While the cross-sections are treated the same as for traditional CMFD, the homog
 \end{subequations}
 
 Calculating the homogenized $\chi$ using these equations ensures that the total fission source in each pin cell is preserved.
+
+\subsubsection{Coupling Coefficients}
 
 Finally, the CMFD system uses radial coupling coefficients calculated from the MOC solution to ensure consistency between the transport and diffusion solutions.  These coefficients are calculated as shown in equation \todo{equation number}.  When using the subplane scheme, these coefficients are needed for each subplane.  To ensure that neutron balance is preserved, the current calculated by MOC is applied to all subplanes.  Additionally, to maintain stability, the MOC flux is used to calculate the radial coupling coefficients\ifdraft{\todo{Name the variables from whatever the CMFD equations are to make this more clear}}{}.  This results in a constant coefficient for all subplanes in a given MOC plane.  \hl{Currently trying to change this so each subplane uses different dhats.  Should improve accuracy some, and more importantly might improve convergence.  So far, no luck.}
 

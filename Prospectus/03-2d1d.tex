@@ -30,7 +30,11 @@ $L_{g,z}\left(x,y,\Omega_z\right)$ is the axial transverse leakage source term f
 
 \section{Implementation}
 
+\begin{figure}
+\centering
 \input{figs/2d1d-flowchart.tex}
+\caption{Calculation flow for 2D/1D scheme}\label{f:2d1d-flowchart}
+\end{figure}
 
 \section{Approximations and Limitations}
 
@@ -38,7 +42,7 @@ $L_{g,z}\left(x,y,\Omega_z\right)$ is the axial transverse leakage source term f
 
 One assumption made in the 2D/1D scheme is that each of the 2D planes is axially homogeneous.  In many cases this assumption is true.  Other times, materials such as spacer grids, end plugs for fuel rods and control tips, or other structural materials may be homogenized, but do not have a large impact on the results, making the axial homogenization within a plane a reasonable approximation.  However, when strongly absorbing materials (or others which may significantly impact neutron behavior) are partially inserted into an axial plane, homogenizing them axially can produce large errors in the solution.  When this occurs, the best way to remedy these errors is to divide the plane into 2 or more planes in such a way that the problematic material is no longer partially inserted into a plane.
 
-While there is a known workaround for this approximation, it has the drawback of adding extra planes to the 2D/1D scheme, which in turn increases the computational burden of the calculations.  Because of this, other methods to improve the axial homogenization have been a topic of interest for reactor components that commonly cause this problem, such as control rods.  This will be discussed in more detail in \hl{the following chapter.}
+While there is a known workaround for this approximation, it has the drawback of adding extra planes to the 2D/1D scheme, which in turn increases the computational burden of the calculations.  Because of this, other methods to improve the axial homogenization have been a topic of interest for reactor components that commonly cause this problem, such as control rods.  This will be discussed in more detail in chapter \ref{chap:cusping}.
 
 \subsection{Axial Transverse Leakage Source}
 

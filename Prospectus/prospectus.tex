@@ -21,9 +21,9 @@
 
 % Set up flowchart stuff
 \tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
-\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=2cm, minimum height=1cm, text centered, text width=2cm, draw=black, fill=blue!30]
 \tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=orange!30]
-\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=green!30]
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
 % Set up refs
@@ -49,7 +49,7 @@
 
 \pagenumbering{arabic}
 
-\chapter{Introduction}
+\chapter{Introduction}\label{chap:intro}
 \input{01-introduction.tex}
 \ifdraft{\todo{punctuate equations correctly and consistently}}{}
 \todo{Format equation references appropriately}
@@ -60,13 +60,13 @@
 \chapter{2D/1D Scheme}\label{chap:2d1d}
 \input{03-2d1d.tex}
 
-\chapter{Rod Cusping}
+\chapter{Rod Cusping}\label{chap:cusping}
 \input{04-rod-cusping.tex}
 
-\chapter{Results}
+\chapter{Results}\label{chap:results}
 \input{05-results.tex}
  
-\chapter{Conclusions}
+\chapter{Conclusions}\label{chap:concl}
 \input{06-conclusions.tex}
 
 % bibliography
