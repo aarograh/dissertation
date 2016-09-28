@@ -314,10 +314,10 @@
 \renewcommand{\@title}{A Dynamic Control Rod Decusping Method for the 2D/1D Scheme}
 \renewcommand{\@author}{Aaron M. Graham}
 \newcommand{\@degree}{Doctor of Philosophy}
-\newcommand{\@department}{Nuclear Engineering and Radiological Science}
-\newcommand{\@committee}{Other People}
-\newcommand{\@chair}{Tom Downar, Ben Collins}
-\newcommand{\@cochair}{}
+\newcommand{\@department}{Nuclear Engineering and Radiological Sciences and Scientific Computing}
+\newcommand{\@committee}{Professor Thoms J. Downar, Co-Chair \\ Reactor Physics Nuclear Engineer Benjamin S. Collins, ORNL, Co-Chair \\ Professor Edward W. Larsen \\ Professor William R. Martin \\ Professor ??? ???}
+\newcommand{\@chair}{Tom Downar}
+\newcommand{\@cochair}{Ben Collins}
 
 % Commands to set the titlepage fields
 \renewcommand{\title}[1]{\renewcommand{\@title}{#1}}

@@ -231,7 +231,7 @@ Equations \ref{e:outscatterTCP0} show the out-scatter transport correction, whic
 
 \section{Numerical Methods}
 
-A wide variety of numerical methods exist to solve the transport equation, but all of them can be categorized in one of two ways: stochastic (Monte Carlo) or deterministic methods.  Monte Carlo methods use random numbers to directly sample probability distribution functions based on the material cross-sections.  These methods can produce highly accurate, detailed results and make no assumptions about the materials or geometry of the problem.  However, because of the random nature of the method, there is always some uncertainty in the answer.  For large problems, the number of particles that must be simulated to achieve acceptable levels of uncertainty is often too burdensome \ifdraft{\todo{Need a better word}}{} for practical calculations.\todo{Shorten or focus Monte Carlo talk}
+A wide variety of numerical methods exist to solve the transport equation, but all of them can be categorized in one of two ways: stochastic (Monte Carlo) or deterministic methods.  Monte Carlo methods use random numbers to directly sample probability distribution functions based on the material cross-sections.  These methods can produce highly accurate, detailed results and make no assumptions about the materials or geometry of the problem.  However, because of the random nature of the method, there is always some uncertainty in the answer.  For large problems, the number of particles that must be simulated to achieve acceptable levels of uncertainty is often too burdensome \todo{Need a better word} for practical calculations.\todo{Shorten or focus Monte Carlo talk}
 
 All the work discussed in the following sections makes use of deterministic methods.  There are many different deterministic methods, but only the ones relevant to this work will be discussed in the coming sections.
 
@@ -311,7 +311,7 @@ Once $\psi_{out}$ has been calculated at the edge of a region, it can be used as
 
 \subsubsection{Implementation}
 
-\ifdraft{\subsection{Source Iteration}
+\subsection{Source Iteration}
 
 Using MOC, fixed source transport problems can be solved.  However, in realistic calculations it is rare that the scattering or fission sources are known.  In order to solve the transport equation for problems with an unknown source distribution, the equation can be re-formulated as follows:
 \hl{Insert source iteration form of the equation}
@@ -320,7 +320,7 @@ Now making some initial guess for \hl{$\phi^-1$} allows us to solve for \hl{$\ph
 
 Source iteration also has a convenient physical interpretation.  Selecting zero as the initial guess means that the first iterate \hl{$\phi^0$} is simply equal to the sum of sources of new neutrons.  Plugging the expression for \hl{$\phi^0$} into the equation for \hl{$\phi^1$}, we find that the \hl{$\phi^1$} is 
 
-\hl{make sure to talk about how ridiculously slowly it can converge.  Find some references for the math if possible}}{}
+\hl{make sure to talk about how ridiculously slowly it can converge.  Find some references for the math if possible}
 
 \subsection{Coarse-Mesh Finite Difference}\label{ss:CMFD}
 

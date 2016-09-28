@@ -1,6 +1,6 @@
 \section{Background}
 
-\ifdraft{\hl{Discuss what rod cusping is and why it happens.  Show some plots from MPACT.}
+\hl{Discuss what rod cusping is and why it happens.  Show some plots from MPACT.}
 
 \section{Traditional Solutions}
 
@@ -55,7 +55,7 @@ Calculating the homogenized $\chi$ using these equations ensures that the total 
 
 \subsubsection{Coupling Coefficients}
 
-Finally, the CMFD system uses radial coupling coefficients calculated from the MOC solution to ensure consistency between the transport and diffusion solutions.  These coefficients are calculated as shown in equation \todo{equation number}.  When using the subplane scheme, these coefficients are needed for each subplane.  To ensure that neutron balance is preserved, the current calculated by MOC is applied to all subplanes.  Additionally, to maintain stability, the MOC flux is used to calculate the radial coupling coefficients\ifdraft{\todo{Name the variables from whatever the CMFD equations are to make this more clear}}{}.  This results in a constant coefficient for all subplanes in a given MOC plane.  \hl{Currently trying to change this so each subplane uses different dhats.  Should improve accuracy some, and more importantly might improve convergence.  So far, no luck.}
+Finally, the CMFD system uses radial coupling coefficients calculated from the MOC solution to ensure consistency between the transport and diffusion solutions.  These coefficients are calculated as shown in equation \todo{equation number}.  When using the subplane scheme, these coefficients are needed for each subplane.  To ensure that neutron balance is preserved, the current calculated by MOC is applied to all subplanes.  Additionally, to maintain stability, the MOC flux is used to calculate the radial coupling coefficients\todo{Name the variables from whatever the CMFD equations are to make this more clear}.  This results in a constant coefficient for all subplanes in a given MOC plane.  \hl{Currently trying to change this so each subplane uses different dhats.  Should improve accuracy some, and more importantly might improve convergence.  So far, no luck.}
 
 \subsubsection{Projection}
 
@@ -115,12 +115,12 @@ of Planes & (pcm) & RMS & Max & Traditional & Subplane & Traditional & Subplane 
 
 \subsubsection{Discussion}
 
-\ifdraft{\begin{itemize}
+\begin{itemize}
 \item \hl{Captures axial shape accurately with fewer planes}
 \item \hl{Fewer planes means better runtime, in theory}
 \item \hl{Convergence is worse.  Could be a showstopper for hard problems}
 \item \hl{naturally lends itself to development of rod cusping techniques}
-\end{itemize}}{}
+\end{itemize}
 
 \subsection{Auxiliary Solvers}
 
@@ -154,7 +154,6 @@ Multiplying equations \ref{e:CMFDsubplaneFlux} and \ref{e:CMFDhomXS} gives the r
 
 When using the embedded solver, a radial flux profile is obtained from the solver.  The process described above is followed for the nodes around the partially inserted rod.  However, instead of the MOC flux, the radial flux from the embedded solver is used.  This allows subplanes with partially inserted control rods to have different cross-sections based on the radial flux profile around the tip of the control rod.
 
-\ifdraft{
 \hl{The flux coming out of the embedded solver is treated as a shape function and scaled to preserve the MOC flux.}
 
 \hl{Need to make sure reaction rates are preserved I think}.
@@ -164,7 +163,6 @@ When using the embedded solver, a radial flux profile is obtained from the solve
 \hl{When projecting, the subplane fluxes scale MOC fluxes.  Reference equation.}
 
 \hl{The cross-sections can be modified by mixing the rodded and unrodded cross-sections.  Equation from Han Joo cusping paper.}
-}{}
 
 \section{Future Work}
 
