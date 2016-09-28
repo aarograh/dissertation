@@ -328,13 +328,13 @@ The source iteration method provides a convenient way of solving transport probl
 
 To describe the CMFD method, the scalar flux, current, and cross-sections on the coarse grid must be related to the same quantities on the fine grid.  We assume the fine mesh has already been spatially discretized and solved so that quantities such as volume, cell-averaged flux, cell-averaged cross-sections, and cell-averaged source terms are known for each fine cell.  With this assumption, we can define the needed coarse mesh values for each coarse cell $i$ in terms of the fine cells it owns.  $N_f$ is the total number of fine cells owned by a coarse cell, $\left(x_i,y_i,z_i\right)$ are the coordinates for the center of coarse cell $i$, and $x_{i+\frac{1}{2}}$, $x_{i-\frac{1}{2}}$, $y_{i+\frac{1}{2}}$, $y_{i-\frac{1}{2}}$, $z_{i+\frac{1}{2}}$, and $z_{i-\frac{1}{2}}$ define the edges of the coarse cell in each direction.
 
-\begin{subequations}
+\begin{subequations}\label{e:CMFDhomogTerms}
 \begin{align}
 A_{x,i} &= \left(y_{i+\frac{1}{2}} - y_{i-\frac{1}{2}}\right)\left(z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}\right) \\
 A_{y,i} &= \left(x_{i+\frac{1}{2}} - x_{i-\frac{1}{2}}\right)\left(z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}\right) \\
 A_{z,i} &= \left(x_{i+\frac{1}{2}} - x_{i-\frac{1}{2}}\right)\left(y_{i+\frac{1}{2}} - y_{i-\frac{1}{2}}\right) \\
 V_i &= \sum_{j=1}^{N_f} V_j \\
-\phi_{g,i} &= \frac{1}{V_i}\sum_{j=1}^{N_f} \phi_{g,j} V_j \\
+\phi_{g,i} &= \frac{1}{V_i}\sum_{j=1}^{N_f} \phi_{g,j} V_j \label{e:CMFDhomogFlux}\\
 \Sigma_{t,g,i} &= \frac{1}{\phi_{g,i} V_i}\sum_{j=1}^{N_f} \Sigma_{t,g,j} \phi_{g,j} V_j \\
 \Sigma_{s0,g'\rightarrow g,i} &= \frac{1}{\phi_{g',i} V_i}\sum_{j=1}^{N_f} \Sigma_{s0,g'\rightarrow g,j} \phi_{g',j} V_j \\
 \nu\Sigma_{f,g,i} &= \frac{1}{\phi_{g,i} V_i}\sum_{j=1}^{N_f} \nu\Sigma_{f,g,j} \phi_{g,j} V_j \\
@@ -356,7 +356,7 @@ A_{x,i} \left(J_{x,g}\left(x_{i+\frac{1}{2}}\right) - J_{x,g}\left(x_{i-\frac{1}
 
 Using equations \ref{e:FicksLaw}, we can define the interface currents in terms of the diffusion constants on the positive ($p$) and negative ($n$) sides of the interface (equation \ref{e:interfaceCurrentDiff}.  The interface diffusion coefficients are defined in \ref{e:interfaceD}-\ref{e:interfaceDnegative}.
 
-\begin{subequations}
+\begin{subequations}\label{e:CMFDinterface}
 \begin{equation}\label{e:interfaceCurrentDiff}
 J_{g} = -D_g\left(\phi_{g,p} - \phi_{g,n}\right)
 \end{equation}
@@ -377,7 +377,7 @@ D_{g,N+\frac{1}{2}}=\alpha\left(3\Delta x_n\alpha\Sigma_{t,g,N} + 1\right)^{-1}
 
 Defining the interface currents as in equation \ref{e:interfaceCurrentDiff} will cause inconsistency between the high-order transport solver and the diffusion-based CMFD solver.  To account for this, a correction factor can be defined in terms of the transport solution and added to the CMFD currents to enforce consistency between the two solutions.
 
-\begin{subequations}
+\begin{subequations}\label{e:CMFDcouplingCoeffs}
 \begin{equation}\label{e:interfaceCurrentCMFD}
 J_{CMFD,g} = -D_g\left(\phi_{g,p} - \phi_{g,n}\right) + \hat{D}_g\left(\phi_{g,p} \phi{g,n}\right)
 \end{equation}
