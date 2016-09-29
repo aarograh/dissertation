@@ -138,23 +138,16 @@ When using this decomposition, each parallel process only has a portion of the m
 
 For angle decomposition, each process has the entire spatial domain.  When the MOC sweeps are performed, each process only sweeps a subset of the angles in the selected quadrature.  After the sweep, a reduction is performed to get the actual scalar flux and currents on all processes.  For the CMFD calculation, the angle processes are repurposed as spatial processes.  Each angle process owns the full domain, but only solves a portion of it as if it were spatially decomposed.
 
-It is possible to use both spatial and angle decomposition together.  When this is done, spatial decomposition is performed first, then angle decomposition is done within each spatial domain.  In general, the efficiency of angle decomposition calculations is less than that of spatial decompositions.  Furthermore, it also requires that each angle process models all of the spatial domain, 
+It is possible to use both spatial and angle decomposition together.  When this is done, spatial decomposition is performed first, then angle decomposition is done within each spatial domain.  In general, the efficiency of angle decomposition calculations is less than that of spatial decompositions.  Furthermore, it also requires that each angle process models all of the spatial domain, increasing the total memory required for the calculation compared with finer spatial decomposition.  However, angle decomposition is still useful for reducing the runtime of cases where further spatial decomposition is not possible.
 
-\item \textbf{Ray Decomposition/Threading}
+\item \textbf{Ray Decomposition}
+
+A third type of decomposition that can be done is to decompose the rays in the MOC calculation.  Unlike the previous methods, the ray decomposition makes use of OpenMP threading\todo{citation} instead of MPI.  While performing the MOC sweeps, several threads are used to solve all the rays in each angle.  For the CMFD calculation, MPACT has internal RBSOR solvers which are capable of using threading\todo{citation}.  However, when third-party libraries are used for the CMFD calculations, the threading will be used only during the CMFD calculation.  Threading can also be combined with both spatial and angle decomposition to further increase the parallelism of MPACT.
 
 \item \textbf{Energy Decomposition}
+
+At this time, energy decomposition is not available in MPACT.  However, when it is added, it will be similar to the angle decomposition.  For the MOC calculation, each process will solve a subset of the energy groups on the spatial domain, and for the CMFD calculation, the energy processes will be repurposed as space processes.
 \end{enumerate}
-
-There are four ways to decompose the problem for parallel execution with MPACT.  
-
-The second method of decomposi
-
-\begin{itemize}
-\item \hl{space}
-\item \hl{angle}
-\item \hl{energy}
-\item \hl{ray}
-\end{itemize}
 
 \section{Sources of Error}
 
