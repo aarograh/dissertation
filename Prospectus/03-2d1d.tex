@@ -129,7 +129,7 @@ For the radial calculations, 2D MOC is used.  This allows MPACT to easily calcul
 
 While the 2D/1D scheme greatly reduces runtime from a direct 3D transport calculation, it is still computationally expensive when compared to nodal methods traditionally used by industry.  To minimize the walltime required for 2D/1D calculations in MPACT, several different methods of decomposing the problem for parallel execution have been implemented.  These methods allow MPACT to easily scale to hundreds or thousands of CPUs.  Each of these methods will be briefly described in this section.
 
-\begin{enumerate}
+\begin{enumerate}[leftmargin=*]
 \item \textbf{Spatial Decomposition}
 
 When using this decomposition, each parallel process only has a portion of the model.  Each portion is solved locally by one process, then boundary data is communicated to all processes which own neighboring portions of the model.  The updated boundary data is then used in the following iteration.  When using spatial decomposition, planar decomposition is performed first.  This means that if the total number of parallel processes being used is less than or equal to the number of 2D MOC planes, then one or more entire planes is simulated by each process.  If more processes are used than there are planes in the model, then radial decomposition is performed.  This decomposes every plane radially into smaller pieces.  Every plane must be radially decomposed in the same way, and the smallest unit allowed in radial decomposition is a single ray-tracing module.  Because spatial decomposition does not duplicate much memory and does not decrease the computational efficiency significantly, it is usually the preferred choice of decomposition methods.
@@ -151,7 +151,7 @@ At this time, energy decomposition is not available in MPACT.  However, when it 
 
 \section{Sources of Error}
 
-\begin{enumerate}
+\begin{enumerate}[leftmargin=*]
 \item \hl{Ray Spacing}
 \item \hl{Radial Meshing}
 \item \hl{Axial Meshing}
