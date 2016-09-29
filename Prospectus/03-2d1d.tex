@@ -73,7 +73,7 @@ Now that the general 2D/1D scheme has been described, some attention should be g
 
 The CMFD method was originally implemented in MPACT just as described in section \todo{section num}.  To do this, each pin cell is homogenized using the quantities defined in equation \ref{e:CMFDhomogTerms} in every plane in the model.  The radial coupling coefficients defined in equation \ref{e:CMFDcouplingCoeffs} are obtained by calculating the current at the interface between each pair of pin cells using the 2D MOC sweeper, while the axial coupling coefficients are obtained from the axial currents calculated by the axial solve during the previous iteration.  The matrix for the 3D multi-group system can then be set up and solved, typically using the generalized Davidson eigenvalue solver.
 
-In addition to this traditional 3D CMFD, MPACT also has the capability to use the sublpane scheme\todo{citations}.  This scheme was first implemented in the DeCART code to allow users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  This eliminated some convergence difficulties associated with thin 2D planes \todo{citation?} and reduced the computational burden of performing MOC on many thin planes.  However, the sub-plane scheme is also being employed as a framework to develop new control rod decusping methods (discussed in more detail in chapter \ref{chap:decusping}).
+In addition to this traditional 3D CMFD, MPACT also has the capability to use the sublpane scheme\todo{citations}.  This scheme was first implemented in the DeCART code to allow users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  This eliminated some convergence difficulties associated with thin 2D planes \todo{citation?} and reduced the computational burden of performing MOC on many thin planes.  However, the sub-plane scheme is also being employed as a framework to develop new control rod decusping methods (discussed in more detail in chapter \ref{chap:cusping}).
 
 
 \subsubsection{Homogenization}
@@ -111,17 +111,22 @@ MPACT has a variety of 1D nodal methods that are capable of performing these cal
 
 \subsection{2D MOC}
 
-For the radial calculations, 2D MOC is used.  This allows MPACT to easily calculate scalar fluxes and currents in each plane regardless of the geometric complexity.
+For the radial calculations, 2D MOC is used.  This allows MPACT to easily calculate scalar fluxes and currents in each plane regardless of the geometric complexity.  This section is devoted to discussing some of the details of the MOC implementation and sweeping algorithm in MPACT.
 
-\subsubsection{Modular Ray Tracing}
+\subsubsection{Ray Tracing}
 
+One of the key features of MPACT's MOC implementation is that of modular ray tracing.  Ray tracing is performed once at the beginning of a calculation and stored for the remainder of the calculation.  Doing this greatly reduces the runtime of the MOC sweeps since the length of each ray segment and the region it is crossing are already known ahead of time.
 
+In addition to storing the ray tracing data up front, MPACT also seeks to take advantage of repeated geometry in a reactor.  To do this, some subset of the geometry which repeats itself is identified and designated as a ray tracing module.  Now instead of tracing the entire problem domain, each unique module can be traced.  As long as the modules are traced in such a way that the endpoint of each modular ray is guaranteed to line up with the starting point of a ray in a neighboring module, then the ray tracing data can simply be stored on the module level instead of for the entire core.
 
-\subsubsection{Angle Correction}
+\hline{Above paragraph is really vague.  Rewrite, then introduce angle/spacing corrections and volume corrections.}
 
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{figs/modular_rays.png}
+\caption{Modular Ray Tracing}\label{e:ModRays}
+\end{figure}
 
-
-\subsubsection{Volume Correction}
+\subsubsection{Sweeping Algorithm}
 
 
 
@@ -136,13 +141,13 @@ When using this decomposition, each parallel process only has a portion of the m
 
 \item \textbf{Angle Decomposition}
 
-For angle decomposition, each process has the entire spatial domain.  When the MOC sweeps are performed, each process only sweeps a subset of the angles in the selected quadrature.  After the sweep, a reduction is performed to get the actual scalar flux and currents on all processes.  For the CMFD calculation, the angle processes are repurposed as spatial processes.  Each angle process owns the full domain, but only solves a portion of it as if it were spatially decomposed.
+For angle decomposition, each process has the entire spatial domain.  When the MOC sweeps are performed, each process only sweeps a subset of the angles in the selected quadrature.  After the sweep, a reduction is performed to get the actual scalar flux and currents on all processes.  For the CMFD calculation, the angle processes are re-purposed as spatial processes.  Each angle process owns the full domain, but only solves a portion of it as if it were spatially decomposed.
 
 It is possible to use both spatial and angle decomposition together.  When this is done, spatial decomposition is performed first, then angle decomposition is done within each spatial domain.  In general, the efficiency of angle decomposition calculations is less than that of spatial decompositions.  Furthermore, it also requires that each angle process models all of the spatial domain, increasing the total memory required for the calculation compared with finer spatial decomposition.  However, angle decomposition is still useful for reducing the runtime of cases where further spatial decomposition is not possible.
 
 \item \textbf{Ray Decomposition}
 
-A third type of decomposition that can be done is to decompose the rays in the MOC calculation.  Unlike the previous methods, the ray decomposition makes use of OpenMP threading\todo{citation} instead of MPI.  While performing the MOC sweeps, several threads are used to solve all the rays in each angle.  For the CMFD calculation, MPACT has internal RBSOR solvers which are capable of using threading\todo{citation}.  However, when third-party libraries are used for the CMFD calculations, the threading will be used only during the CMFD calculation.  Threading can also be combined with both spatial and angle decomposition to further increase the parallelism of MPACT.
+A third type of decomposition that can be done is to decompose the rays in the MOC calculation.  Unlike the previous methods, the ray decomposition makes use of OpenMP threading\todo{cite} instead of MPI.  While performing the MOC sweeps, several threads are used to solve all the rays in each angle.  For the CMFD calculation, MPACT has internal RBSOR solvers which are capable of using threading\todo{cite}.  However, when third-party libraries are used for the CMFD calculations, the threading will be used only during the CMFD calculation.  Threading can also be combined with both spatial and angle decomposition to further increase the parallelism of MPACT.
 
 \item \textbf{Energy Decomposition}
 

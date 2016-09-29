@@ -297,7 +297,7 @@ For a segment of length $A$ beginning on the boundary of the problem, equation \
 \begin{equation}\label{e:MOCoutgoingFlux}
 \psi_{out} = \psi_{t,g}\left(\bm r_0 + A\bm\Omega_n\right) = \psi_{in}e^{-\Sigma_{t,g} A} + \frac{q_{g,n}}{\Sigma_{t,g}}\left(1 - e^{-\Sigma_{t,g}A}\right)
 \end{equation}
-\begin{align}
+\begin{align}\label{e:MOCavgFlux}
 \overline{\psi} &= \frac{\intop_0^A \psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) ds}{\intop_0^A ds} \nonumber\\
  &= \frac{1}{A}\intop_0^A \psi_{in}e^{-\Sigma_{t,g}s} + \frac{q_{g,n}}{\Sigma_{t,g}}\left(1-e^{-\Sigma_{t,g}s}\right) ds \nonumber \\
  &= \frac{1}{A}\intop_0^A \frac{q_{g,n}}{\Sigma_{t,g}} + \left(\psi_{in} - \frac{q_{g,n}}{\Sigma_{t,g}}\right)e^{-\Sigma_{t,g}s} ds \nonumber \\
