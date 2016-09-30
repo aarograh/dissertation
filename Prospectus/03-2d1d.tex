@@ -119,7 +119,7 @@ One of the key features of MPACT's MOC implementation is that of modular ray tra
 
 In addition to storing the ray tracing data up front, MPACT also seeks to take advantage of repeated geometry in a reactor.  To do this, some subset of the geometry which repeats itself is identified and designated as a ray tracing module.  Now instead of tracing the entire problem domain, each unique module can be traced.  As long as the modules are traced in such a way that the endpoint of each modular ray is guaranteed to line up with the starting point of a ray in a neighboring module, then the ray tracing data can simply be stored on the module level instead of for the entire core.
 
-\hline{Above paragraph is really vague.  Rewrite, then introduce angle/spacing corrections and volume corrections.}
+\hl{Above paragraph is really vague.  Rewrite, then introduce angle/spacing corrections and volume corrections.}
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{figs/modular_rays.png}
