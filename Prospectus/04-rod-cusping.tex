@@ -38,8 +38,11 @@ Another 2D/1D code is nTRACER, which is under active development by \hl{some peo
 \hl{DeCART?  Other 2D/1D codes?}
 
 \section{Improved Decusping Methods}
+\todo{Better Title?  Not that much ``better''}
 
-\subsection{Subplane Scheme}
+This section discusses two new decusping treatments added to MPACT.  These methods rely on the sub-plane scheme described in section \todo{ref}.  The first method only treats the axial cusping effects, while the second method extends the first by also treating the radial decusping effects.
+
+\subsection{Subplane Decusping}
 
 \todo{Does this really belong anywhere?}
 
@@ -129,8 +132,18 @@ When using the embedded solver, a radial flux profile is obtained from the solve
 
 \section{Future Work}
 
-\begin{itemize}
-\item \hl{Improved shape for dhats in sublpane (without sacrificing stability)}
-\item \hl{New ``sub-ray'' MOC}
-\item \hl{Radial shape for axial TL source (ref. Mike Jarrett)}
-\end{itemize}
+\subsection{Auxiliary Solver}
+
+\hl{Something better than 1D CPM... Namely MOC}
+
+\subsection{Radial Transverse Leakage Source}
+
+\hl{sub-plane dependent dhats/currents}
+
+\subsection{Axial Transverse Leakage Source}
+
+\hl{Spatially dependent axial TL}
+
+\subsection{Sub-Ray MOC}
+
+\hl{Boom}
