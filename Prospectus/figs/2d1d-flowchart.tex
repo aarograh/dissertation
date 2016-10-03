@@ -5,42 +5,29 @@
 \node (init) [io, right of=start, xshift=2.0cm] {Input, Initialize Solution};
 
 % CMFD
-\node (homog) [process, right of=init, xshift=2.0cm] {Homogenize CMFD cross-sections};
-\node (calcCouplingCoeffs) [process, below of=homog] {Calculate $\tilde{D}$, $\hat{D}$};
-\node (3DCMFD) [process, below of=calcCouplingCoeffs] {3D CMFD Calculation};
-\node (CMFDupdate) [process, left of=3DCMFD, xshift=-2.5cm] {Update fission source, matrix};
-\node (CMFDconv) [decision, below of=3DCMFD, yshift=-1.5cm] {CMFD Flux, k-eff converged?};
-\node (proj) [process, below of=CMFDconv, yshift=-1.5cm] {Scale MOC flux with CMFD flux};
+\node (CMFD) [process, below of=init] {CMFD Eigenvalue Calculation};
 
 % Nodal
-\node (radialTL) [process, left of=proj, xshift=-2.5cm] {Calculate radial transverse leakage source};
-\node (sp3) [process, left of=radialTL, xshift=-2.0cm] {1D SP$_3$ Calculation};
+\node (Nodal) [process, below of=CMFD] {Axial SP$_3$ Calculation};
 
 % MOC
-\node (axialTL) [process, below of=sp3,yshift=-1.5cm] {Calculate fission source, Axial transverse leakage source};
-\node (MOC) [process, right of=axialTL, xshift=2.0cm] {Perform 2D MOC sweeps};
-\node (MOCconv) [decision, right of=MOC,xshift=2.5cm] {Fission source converged?};
-\node (output) [io, below of=MOCconv,yshift=-1.5cm] {Output};
-\node (stop) [startstop, below of=output] {Stop};
+\node (MOC) [process, below of=Nodal] {2D MOC Sweeps};
+
+% Finish
+\node (convCheck) [decision, below of=MOC, yshift=-1.5cm] {Fission Source, k-eff Converged?};
+\node (out) [io, below of=convCheck,yshift=-1.5cm] {Output};
+\node (stop) [startstop, right of=out, xshift=2.0cm] {Stop};
 
 % Basic Arrows
 \draw [arrow] (start) -- (init);
-\draw [arrow] (init) -- (homog);
-\draw [arrow] (homog) -- (calcCouplingCoeffs);
-\draw [arrow] (calcCouplingCoeffs) -| (CMFDupdate);
-\draw [arrow] (CMFDupdate) -- (3DCMFD);
-\draw [arrow] (3DCMFD) -- (CMFDconv);
-\draw [arrow] (CMFDconv) -- node[anchor=west] {yes} (proj);
-\draw [arrow] (proj) -- (radialTL);
-\draw [arrow] (radialTL) -- (sp3);
-\draw [arrow] (sp3) -- (axialTL);
-\draw [arrow] (axialTL) -- (MOC);
-\draw [arrow] (MOC) -- (MOCconv);
-\draw [arrow] (MOCconv) -- node[anchor=west] {yes} (output);
-\draw [arrow] (output) -- (stop);
+\draw [arrow] (init) -- (CMFD);
+\draw [arrow] (CMFD) -- (Nodal);
+\draw [arrow] (Nodal) -- (MOC);
+\draw [arrow] (MOC) -- (convCheck);
+\draw [arrow] (out) -- (stop);
 
 % Fancy Arrows
-\draw [arrow] (CMFDconv) -| node[anchor=north] {no} (CMFDupdate);
-\draw [arrow] (MOCconv) -| node[anchor=north] {no} ([xshift=0.5cm]CMFDconv.east) |- (homog);
+\draw [arrow] (convCheck) -- node[anchor=west] {yes} (out);
+\draw [arrow] (convCheck) -| node[anchor=north] {no} ([xshift=1.5cm]Nodal.east) |- (CMFD);
 
 \end{tikzpicture}
