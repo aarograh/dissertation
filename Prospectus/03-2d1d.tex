@@ -66,8 +66,6 @@ Now that the general 2D/1D scheme has been described, some attention should be g
 \input{figs/2d1d-flowchart.tex}
 \caption{Calculation flow for 2D/1D scheme}\label{f:2d1d-flowchart}
 \end{figure}
-\todo{Simplify this flowchart into large blocks of cmfd, nodal, moc}
-\todo{Use other smaller flowcharts in subsections}
 
 \subsection{3D Sub-plane CMFD}
 
@@ -101,13 +99,25 @@ The projection of the CMFD flux back to the 2D planes must also account for the 
 \phi_{trans,g,j}^k = \frac{\sum_{i'=1}^{N_{sp}} \phi_{CMFD,g,i'}^k V_i}{\sum_{i'=1}^{N_{sp}} \phi_{CMFD,g,i'}^k V_i} \phi_{trans,g,j}^{k-1}
 \end{equation}
 
-The calculation flow for 3D CMFD is shown in figure \todo{figure num}.
+The calculation flow for 3D CMFD is shown in figure \ref{f:CMFD-flowchart}.
+
+\begin{figure}
+  \centering
+  \input{figs/CMFD-flowchart.tex}
+  \caption{Calculation flow for 3D sub-plane CMFD}\label{f:CMFD-flowchart}
+\end{figure}
 
 \subsection{1D Axial}
 
 In MPACT, the 1D axial solvers operate on the same mesh as the 3D CMFD calculations, meaning that cell-homogenized quantities and radial currents have already been obtained from the CMFD calculation.  All the 1D axial solver must do is construct a source term from the radial currents for each cell, then perform a calculation to obtain currents on the axial interfaces at the top and bottom of each node.
 
 MPACT has a variety of 1D nodal methods that are capable of performing these calculations, including diffusion-based such as NEM and SENM and higher-order solvers such as SP$_N$ and S$_N$.  For most MPACT calculations, including those in this work, the solver of choice is SP$_3$, which provides significant improvement over the diffusion-based methods and SP$_1$.  Very little benefit is obtained by using the higher-order SP$_5$\todo{citation}.
+
+\begin{figure}
+  \centering
+  \input{figs/Axial-flowchart.tex}
+  \caption{Calculation flow for 1D axial calculations in MPACT}\label{f:Axial-flowchart}
+\end{figure}
 
 \subsection{2D MOC}
 
@@ -128,7 +138,11 @@ In addition to storing the ray tracing data up front, MPACT also seeks to take a
 
 \subsubsection{Sweeping Algorithm}
 
-
+\begin{figure}
+  \centering
+  \input{figs/MOC-flowchart.tex}
+  \caption{Calculation flow for 2D MOC calculation in MPACT}\label{f:MOC-flowchart}
+\end{figure}
 
 \section{Parallel Decomposition}
 
