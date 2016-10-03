@@ -1,0 +1,18 @@
+\begin{tikzpicture}[node distance=2cm]
+
+% Begin
+\node (start) [startstop] {Start};
+
+% Nodal
+\node (radialTL) [process, right of=start, xshift=2.5cm] {Calculate radial transverse leakage source};
+\node (sp3) [process, below of=radialTL] {1D SP$_3$ Calculation};
+
+% Stop
+\node (stop) [startstop, right of=sp3, xshift=2.5cm] {Stop};
+
+% Basic Arrows
+\draw [arrow] (start) -- (radialTL);
+\draw [arrow] (radialTL) -- (sp3);
+\draw [arrow] (sp3) -- (stop);
+
+\end{tikzpicture}

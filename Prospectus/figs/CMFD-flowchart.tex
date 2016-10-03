@@ -1,0 +1,31 @@
+\begin{tikzpicture}[node distance=2cm]
+
+% Start
+\node (start) [startstop] {Start};
+
+% CMFD
+\node (homog) [process, right of=start, xshift=2.0cm] {Homogenize Cross-sections and Flux; Calculate $\tilde{D}$};
+\node (iterCheck) [decision, below of=homog, yshift=-1.5cm] {First Iteration?};
+\node (firstIter) [process, below of=iterCheck, xshift=-2.5cm, yshift=-1.0cm] {Set $\hat{D}=0$};
+\node (laterIter) [process, below of=iterCheck, xshift=2.5cm, yshift=-1.0cm] {Calculate $\hat{D}$};
+\node (matrix) [process, below of=firstIter, xshift=2.5cm] {Set up CMFD Matrix};
+\node (3DCMFD) [process, below of=matrix] {3D CMFD Calculation};
+\node (proj) [process, below of=3DCMFD] {Scale MOC flux with CMFD flux};
+
+% Stop
+\node (stop) [startstop, right of=proj, xshift=2.0cm] {Stop};
+
+% Basic Arrows
+\draw [arrow] (start) -- (homog);
+\draw [arrow] (homog) -- (iterCheck);
+\draw [arrow] (matrix) -- (3DCMFD);
+\draw [arrow] (3DCMFD) -- (proj);
+\draw [arrow] (proj) -- (stop);
+
+% Fancy Arrows
+\draw [arrow] (iterCheck) -| node[anchor=south] {yes} (firstIter);
+\draw [arrow] (iterCheck) -| node[anchor=south] {no} (laterIter);
+\draw [arrow] (firstIter) |- (matrix);
+\draw [arrow] (laterIter) |- (matrix);
+
+\end{tikzpicture}

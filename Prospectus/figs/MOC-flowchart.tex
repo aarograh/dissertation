@@ -1,0 +1,27 @@
+\begin{tikzpicture}[node distance=2cm]
+
+% Begin
+\node (start) [startstop] {Start};
+\node (init) [io, right of=start, xshift=2.5cm] {Input N$_{inners}$};
+
+% MOC
+\node (begin) [process, below of=init] {Set $n=0$};
+\node (source) [process, below of=begin] {Calculate fission and axial transverse leakage sources};
+\node (scatSource) [process, below of=source] {Calculate scattering source};
+\node (MOC) [process, below of=scatSource] {2D MOC sweep over each energy group};
+\node (MOCdone) [decision, below of=MOC, yshift=-1.5cm] {$n = N_{inners}$?};z
+\node (stop) [startstop, below of=MOCdone, yshift=-1.5cm] {Stop};
+
+% Basic Arrows
+\draw [arrow] (start) -- (init);
+\draw [arrow] (init) -- (begin);
+\draw [arrow] (begin) -- (source);
+\draw [arrow] (source) -- (scatSource);
+\draw [arrow] (scatSource) -- (MOC);
+\draw [arrow] (MOC) -- (MOCdone);
+
+% Fancy Arrows
+\draw [arrow] (MOCdone) -| node[anchor=north] {no} ([xshift=1.5cm]MOC.east) |- (scatSource);
+\draw [arrow] (MOCdone) -- node[anchor=west] {yes} (stop);
+
+\end{tikzpicture}

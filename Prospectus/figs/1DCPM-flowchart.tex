@@ -1,0 +1,37 @@
+\begin{tikzpicture}[node distance=2cm]
+
+% Start
+\node (start) [startstop] {Start};
+
+% CMFD
+\node (homog) [process, right of=start, xshift=2.0cm] {Homogenize cross-sections and flux; Calculate $\tilde{D}$};
+\node (1dcpm) [process, below of=start, yshift=-0.5cm] {1D CP calculations};
+\node (homogCP) [process, right of=1dcpm, xshift=2.0cm] {Re-homogenize cross-sections in partially rodded pin cells};
+\node (iterCheck) [decision, below of=homogCP, yshift=-1.5cm] {First iteration?};
+\node (firstIter) [process, below of=iterCheck, xshift=-2.5cm, yshift=-1.0cm] {Set $\hat{D}=0$};
+\node (laterIter) [process, below of=iterCheck, xshift=2.5cm, yshift=-1.0cm] {Calculate $\hat{D}$};
+\node (matrix) [process, below of=firstIter, xshift=2.5cm] {Set up CMFD matrix};
+\node (3DCMFD) [process, below of=matrix] {3D CMFD calculation};
+\node (proj) [process, below of=3DCMFD] {Scale MOC flux with CMFD flux};
+\node (projCP) [process, below of=proj] {Homogenize partially rodded MOC cross-sections};
+
+% Stop
+\node (stop) [startstop, right of=projCP, xshift=2.0cm] {Stop};
+
+% Basic Arrows
+\draw [arrow] (start) -- (homog);
+\draw [arrow] (1dcpm) -- (homogCP);
+\draw [arrow] (homogCP) -- (iterCheck);
+\draw [arrow] (matrix) -- (3DCMFD);
+\draw [arrow] (3DCMFD) -- (proj);
+\draw [arrow] (proj) -- (projCP);
+\draw [arrow] (projCP) -- (stop);
+
+% Fancy Arrows
+\draw [arrow] (homog) |- ([yshift=-0.75cm]start.south) -| (1dcpm);
+\draw [arrow] (iterCheck) -| node[anchor=south] {yes} (firstIter);
+\draw [arrow] (iterCheck) -| node[anchor=south] {no} (laterIter);
+\draw [arrow] (firstIter) |- (matrix);
+\draw [arrow] (laterIter) |- (matrix);
+
+\end{tikzpicture}
