@@ -237,11 +237,9 @@ All the work discussed in the following sections makes use of deterministic meth
 
 \subsection{Method of Characteristics}
 
-One method that is commonly used to solve the transport equation is the Method of Characteristics (MOC).  This method allows the transport equation to be solved along a characteristic direction with limited approximations, making it useful for complicated geometries such as those found in nuclear reactors.  Doing this along many lines for a variety of angles and integrating allows an accurate calculation of the scalar flux for large, geometrically complex problems, making MOC useful for many reactor calculations.  First, MOC will be derived, then details of its practical implementation in MPACT will be discussed.   This method generally makes use of both the multi-group and discrete ordinates approximations, so this derivation will begin by replacing the right-hand side of equation \ref{e:SnBoltzmann}
+One method that is commonly used to solve the transport equation is the Method of Characteristics (MOC).  This method allows the transport equation to be solved along a characteristic direction with limited approximations, making it useful for complicated geometries such as those found in nuclear reactors.  Doing this along many lines for a variety of angles and integrating allows an accurate calculation of the scalar flux for large, geometrically complex problems, making MOC useful for many reactor calculations.  This section focuses on a detailed derivation of MOC.
 
-\subsubsection{Derivation}
-
-MOC can be derived starting from the most general form of the transport equation (\ref{e:boltzmann}).  However, most implementations make use of both the multi-group and discrete ordinates approximations, so this derivation will begin with equation \ref{e:SnBoltzmann}.  First, the right-hand side is lumped into a single source term for a given energy group $g$ and direction $n$:
+To derive MOC, we make use of both the multi-group and discrete ordinates approximations by beginning with equation \ref{e:SnBoltzmann}.  First, the right-hand side is lumped into a single source term for a given energy group $g$ and direction $n$:
 
 \begin{subequations}\label{e:MOCqboltzmann}
 \begin{equation}
@@ -309,9 +307,12 @@ If the transport cross-section is constant along $s$ for the region of interest,
 
 Once $\psi_{out}$ has been calculated at the edge of a region, it can be used as $\psi_{in}$ for a neighboring region.  This allows the angular flux to be solved along a characteristic across large, heterogeneous problems by solving a series of segments.  Doing this along many characteristics in different directions allows the scalar flux to be calculated for each region of interest.
 
-\subsubsection{Implementation}
+\todo{integrating to get scalar flux}
+\todo{volume considerations}
 
 \subsection{Source Iteration}
+
+\todo{Is this needed?}
 
 Using MOC, fixed source transport problems can be solved.  However, in realistic calculations it is rare that the scattering or fission sources are known.  In order to solve the transport equation for problems with an unknown source distribution, the equation can be re-formulated as follows:
 \hl{Insert source iteration form of the equation}
@@ -392,7 +393,7 @@ Using this definition of the current, all terms in equation \ref{e:DiffusionEqua
 \underline{\underline{M}}\underline{\phi}=\frac{1}{k}\underline{\underline{F}}\underline{\phi}
 \end{equation}
 
-Using the homogenized transport solution as an initial guess on the right-hand side of equation \ref{e:CMFDmatrix}, this equation can be easily solved using a standard eigenvalue solver.  MPACT generally uses either power iteration or \hl{generalized Davidson} methods to solve this problem\todo{citation}, but these methods will not be discussed in detail here.
+Using the homogenized transport solution as an initial guess on the right-hand side of equation \ref{e:CMFDmatrix}, this equation can be easily solved using a standard eigenvalue solver.  MPACT generally uses either power iteration\todo{cite} or generalized Davidson\todo{cite} methods to solve this problem\todo{citation}, but these methods will not be discussed in detail here.
 
 After obtaining a solution equation \ref{e:CMFDmatrix}, the solution must be used to update the fine mesh solution for the next transport calculation.  To do this, a simple scaling is applied to the previous transport solution as shown in equation \ref{e:CMFDscaling}.  This scaling is applied to all fine mesh cells $j$ in each coarse mesh cell $i$ and ensures preservation of reaction rates between the CMFD and transport solutions prior to the next transport sweep.
 
@@ -400,14 +401,65 @@ After obtaining a solution equation \ref{e:CMFDmatrix}, the solution must be use
 \phi_{trans,g,j}^{k}=\frac{\phi_{CMFD,g,i}^k}{\phi_{CMFD,g,i}^{k-1}}\phi_{trans,g,j}^{k-1}
 \end{equation}
 
-\hl{Discuss how this ties in with source iteration discussion from earlier}
+\todo{discussion}
 
 \subsection{Simplified Pn}
 
-\hl{Just discuss the 1D version since that's all that MPACT uses.}
+One method that can be used to solve the transport equation is the Spherical Harmonics (P$_n$) method\todo{citation}.  This method is able to resolve the angle dependence of the angular flux by expanding the flux using spherical harmonic functions.  These functions are defined in equation \ref{e:SphericalHarmonicFunctions}, with the Associated Legendre Functions and Legendre Polynomials defined in equations \ref{e:AssociatedLegendreFunctions} and \ref{e:LegendrePolynomials}, respectively.
 
-One method that can be used to solve the transport equation is the Spherical Harmonics (P$_n$) method\todo{citation}.  This method is able to resolve the angle dependence of the angular flux, but is very complicated and cumbersome to implement.  A more efficient method that is employed in MPACT is the Simplified Spherical Harmonics (SP$_n$) method.  This method is identical to the P$_n$ method in 1D, but greatly simplifies the equations to be solved in 2D and 3D while maintaining a high level of accuracy.  The derivation below will focus only on the SP$_n$ method in one spatial dimension, since this is how it is used in MPACT.
+
+\begin{subequations}
+  \begin{equation}\label{e:SphericalHarmonicFunctions}
+  Y^m_n\left(\bm\Omega\right) = \left[\frac{2n + 1}{4\pi}\frac{\left(n-\left|m\right|\right)!}{\left(n+\left|m\right|\right)!}\right]^{\frac{1}{2}} P_n^{\left|m\right|}\left(\mu\right)e^{im\gamma},\quad 0 \le \left|m\right| \le n < \infty
+  \end{equation}
+  \begin{equation}\label{e:AssociatedLegendreFunctions}
+  P_n^m\left(\mu\right)=\left(1-\mu^2\right)^{\frac{m}{2}}\frac{d}{d\mu}^m P_n\left(\mu\right),\quad 0 \le m \le n < \infty
+  \end{equation}
+\end{subequations}
+
+The angular flux can then be expanded in terms of the spherical harmonic functions, as shown in equation \ref{e:PnFluxExpansion}.  When using the P$_n$ approximation, some integer $N$ is specified.  The first summation in equation \ref{e:PnFluxExpansion} is then truncated at $N$.  This gives $\left(N+1\right)^2 G$ expansion coefficients that must be determined.  To solve for these coefficients, the transport equation must be multiplied by $Y^{-m}_n\left(\bm{\Omega}\right)$ and integrated over $\bm{\Omega}$ for each combination of $m$, $n$, and $g$.
+
+\begin{equation}\label{e:PnFluxExpansion}
+\psi_g\left(\bm x,\bm \Omega\right) = \sum_{n=0}^{\infty}\sum_{m=-n}^n \psi_{n,m,g}\left(\bm x\right) Y_n^m\left(\bm{\Omega}\right)
+\end{equation}
+
+While the P$_n$ method can be used to solve the transport equation, this is rarely done in practice due to the increasing complexity of the equations and the quadratic growth in the number of unknowns as $N$ increases.  Instead, the more common method used in practice is the Simplified Spherical Harmonics (SP$_n$) method.  In 1D planar geometry, the angular variable $\gamma$ vanishes, leaving only $\mu$.  In this case, only the spherical harmonic functions for $m=0$ are needed, since these are the functions independent of $\gamma$.  Thus, the flux expansion reduces to a Legendre polynomial expansion:
+
+\begin{subequations}\label{e:SPnFluxExpansion}
+  \begin{equation}
+  \psi_g\left(x,\mu\right) = \sum_{m=0}^\infty \frac{2m+1}{2} \psi_{m,g}\left(x\right)P_m\left(\mu\right)
+  \end{equation}
+  \begin{equation}
+  \psi_{m,g}\left(x\right) = \intop_{-1}^1 P_m\left(\mu '\right)\psi_g\left(x,\mu '\right)d\mu '
+  \end{equation}
+\end{subequations}
+
+To solve, we apply the expansion in equation \ref{e:SPnFluxExpansion} to the transport equation, multiply by Legendre polynomials $P_n\left(\mu\right)$ for $0 \le n \le N$, and integrate over $\mu$.  Following this procedure results in the 1D planar geometry P$_1$ equations, shown in equation \ref{e:1DplanarP1}:
+
+\begin{subequations}\label{e:1DplanarP1}
+  \begin{equation}
+  \frac{d\psi_{1,g}}{dx} + \sigma_{t,g}\left(x\right)\psi_{0,g}\left(x\right) = \sum_{g'=1}^G \sigma_{s0,g'\rightarrow g}\left(x\right)\psi_{0,g'}\left(x\right) + \frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(x\right)\psi_{0,g'}\left(x\right) + Q_g\left(x\right)
+  \end{equation}
+  \begin{equation}
+  \frac{d\psi_{0,g}}{dx} + \Sigma_{t,g}\left(x\right)\psi_{1,g}\left(x\right) = \sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right)\psi_{1,g'}\left(x\right)
+  \end{equation}
+\end{subequations}
+
+It is clear that if $\frac{d}{dx}$ in equation \ref{e:1DplanarP1} is replaced by $\bm{\nabla}$, then the 3D P$_1$ equations are obtained exactly as shown in equation \ref{e:P1transport}.  For any odd $N > 1$, this following this same process and making the same observation about the derivative terms will result in the 3D SP$_n$ equations.  For $N=1$, these equations are exactly equal to the P$_n$ equations.  However, for $N > 1$, this results in a simplified system of equations which still preserve much of the transport physics that are not preserved by the P$_1$ or diffusion approximations.  Appendix \todo{ref} contains a detailed derivation of the SP$_1$ and SP$_3$ equations, but the final 3D SP$_3$ equations are shown in equation \ref{e:3DSP3}.
+
+\begin{subequations}\label{e:3DSP3}
+  \begin{dmath}
+  {-\bm{\nabla} \cdot D_{0,g} \left(\bm x\right) \bm \nabla \Psi_{0,g}\left(\bm x\right)} + {\left[\Sigma_{t,g}\left(\bm x\right) - \Sigma_{s0,g}\left(\bm x\right)\right]\Psi_{0,g}\left(\bm x\right)} = {Q_g\left(\bm x\right) + 2\left[\Sigma_{t,g}\left(\bm x\right) - \Sigma_{s0,g}\left(\bm x\right)\right]\Psi_{2,g}\left(\bm x\right)}
+  \end{dmath}
+  \begin{dmath}
+  {-\bm{\nabla} \cdot D_{2,g} \left(\bm x\right) \bm \nabla \Psi_{2,g}\left(\bm x\right)} + {\left[\Sigma_{t,g}\left(\bm x\right) - \Sigma_{s2,g}\left(\bm x\right)\right]\Psi_{2,g}\left(\bm x\right)} = {\frac{2}{5}\left\lbrace \left[\Sigma_{t,g}\left(\bm x\right) - \Sigma_{s0,g}\left(\bm x\right)\right]\left[\Psi_{0,g}\left(\bm x\right) - 2\Psi_{2,g}\left(\bm x\right)\right] - Q_g\left(\bm x\right) \right\rbrace}
+  \end{dmath}
+\end{subequations}
+
+\todo{define psi and D}
+\todo{A bit of discussion}
+\todo{Appendix derivation}
 
 \subsection{Collision Probabilities Method}
 
-\hl{ugh}
+\todo{suck it up}
