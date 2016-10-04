@@ -4,7 +4,7 @@ While MPACT has the capability to solve the Boltzmann transport equation using t
 
 \subsection{Radial Equations}
 
-To begin, equation \ref{e:multigroupboltzmann} \hl{or Sn equation?} must be integrated in the $z$-direction over some range $\Delta z_i = z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}$, giving:
+To begin, equation \ref{e:multigroupboltzmann} \todo{use Sn equation instead} must be integrated in the $z$-direction over some range $\Delta z_i = z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}$, giving:
 
 \begin{dmath}
 {\Omega_x\frac{\partial \psi_{g,z}}{\partial x} + \Omega_y\frac{\partial \psi_{g,z}}{\partial y} + \frac{\Omega_z}{\Delta z_i}\left(\psi_{g,z_{i+\frac{1}{2}}} - \psi_{g,z_{i-\frac{1}{2}}}\right)} + {\Sigma_{t,g}\left(x,y\right)\psi_{g,z}\left(x,y,\bm\Omega\right)} = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g,z}\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g',z}\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g,z}}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g',z}\left(x,y\right)\psi_{g',z}\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g,z}\left(x,y\right)}{4\pi}}
@@ -87,7 +87,7 @@ where superscripts indicate which iteration the values are taken from and $N_{sp
 
 \subsubsection{Coupling Coefficients}
 
-In addition to the homogenized cell terms, the coupling coefficients described by equations \ref{e:CMFDinterface} and \ref{e:CMFDcouplingCoeffs} must be calculated for each sublpane.  To maintain consistency, the area-averaged current calculated by the radial sweeper must be preserved across the sub-surfaces used by the sub-plane scheme.  Thus, the current calculated by the radial sweeper at an interface is used at the corresponding interfaces for all sub-planes in that plane.  Additionally, to maintain consistency, this requires that the cell-homogenized flux used in the calculation of the diffusion coefficients be defined for the entire MOC plane as in equation \ref{e:CMFDhomogFlux} rather than using the sub-plane scaling factor for each sub-plane.  \hl{Additional work is currently underway to address this limitation, but at this time using sub-plane--dependent coupling coefficients prevents many realistic problems from converging.}
+In addition to the homogenized cell terms, the coupling coefficients described by equations \ref{e:CMFDinterface} and \ref{e:CMFDcouplingCoeffs} must be calculated for each sublpane.  To maintain consistency, the area-averaged current calculated by the radial sweeper must be preserved across the sub-surfaces used by the sub-plane scheme.  Thus, the current calculated by the radial sweeper at an interface is used at the corresponding interfaces for all sub-planes in that plane.  Additionally, to maintain consistency, this requires that the cell-homogenized flux used in the calculation of the diffusion coefficients be defined for the entire MOC plane as in equation \ref{e:CMFDhomogFlux} rather than using the sub-plane scaling factor for each sub-plane.
 
 The axial coupling coefficient can be treated in a more straightforward manner.  Because the 1D axial solvers use the same pin-homogenized mesh as the CMFD solver, axial currents are naturally calculated at the top and bottom of each of the sub-planes.  Thus, these currents can be used together with the sub-planes fluxes to calculate sub-plane--dependent axial coupling coefficients.
 
@@ -125,11 +125,9 @@ For the radial calculations, 2D MOC is used.  This allows MPACT to easily calcul
 
 \subsubsection{Ray Tracing}
 
-One of the key features of MPACT's MOC implementation is that of modular ray tracing.  Ray tracing is performed once at the beginning of a calculation and stored for the remainder of the calculation.  Doing this greatly reduces the runtime of the MOC sweeps since the length of each ray segment and the region it is crossing are already known ahead of time.
+One of the key features of MPACT's MOC implementation is that of modular ray tracing.  Ray tracing is performed once at the beginning of a calculation and stored for the remainder of the calculation.  Doing this greatly reduces the runtime of the MOC sweeps since the length of each ray segment and the region it is crossing are already known ahead of time.  Furthermore, MPACT takes advantage of the repeatable nature of a reactor's geometry.  Because reactor geometry is repetitive, small portions of the geometry which repeat frequently can be ray-traced separately instead of tracing the entire core.  These smaller units of geometry are known as ray tracing modules, and in MPACT can be a full fuel assembly, a quarter fuel assembly, or a single fuel pin.  After the unique modules are identified, each of them is ray-traced in such a way that the endpoints of a ray in each module will line up with the beginning of a ray in the neighboring module.  This significantly reduces the storage requirements for the ray data since a small number of ray tracing modules can represent a full core problem.
 
-In addition to storing the ray tracing data up front, MPACT also seeks to take advantage of repeated geometry in a reactor.  To do this, some subset of the geometry which repeats itself is identified and designated as a ray tracing module.  Now instead of tracing the entire problem domain, each unique module can be traced.  As long as the modules are traced in such a way that the endpoint of each modular ray is guaranteed to line up with the starting point of a ray in a neighboring module, then the ray tracing data can simply be stored on the module level instead of for the entire core.
-
-\hl{Above paragraph is really vague.  Rewrite, then introduce angle/spacing corrections and volume corrections.}
+\todo{angle/spacing corrections and volume corrections}
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{figs/modular_rays.png}
