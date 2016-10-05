@@ -315,7 +315,7 @@
 \renewcommand{\@author}{Aaron M. Graham}
 \newcommand{\@degree}{Doctor of Philosophy}
 \newcommand{\@department}{Nuclear Engineering and Radiological Sciences and Scientific Computing}
-\newcommand{\@committee}{Professor Thoms J. Downar, Co-Chair \\ Reactor Physics Nuclear Engineer Benjamin S. Collins, ORNL, Co-Chair \\ Professor Edward W. Larsen \\ Professor William R. Martin \\ Professor ??? ???}
+\newcommand{\@committee}{Professor Thoms J. Downar, Co-Chair \\ Adjunct Assistant Professor Benjamin S. Collins, Co-Chair \\ Professor Edward W. Larsen \\ Professor William R. Martin \\ Assistant Professor Shravan Veerapaneni}
 \newcommand{\@chair}{Tom Downar}
 \newcommand{\@cochair}{Ben Collins}
 
