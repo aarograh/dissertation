@@ -1,9 +1,91 @@
-\section{Simplified Spherical Harmonics Derivation}
+\section{Simplified Spherical Harmonics}\label{appsec:SPn}
 
 First, the SP$_3$ method will be derived from equation \ref{e:multigroupboltzmann}.  From these results, simplifications can be made to easily obtain the SP$_1$ equations as well.
 
-\subsection{SP$_3$ Derivation}
+\subsection{SP$_3$}\label{appsubsec:SP3}
 
 
 
-\subsection{SP$_1$ Derivation}
+\subsection{SP$_1$}\label{appsubsec:SP1}
+
+
+
+\section{Method of Collision Probabilities}\label{appsec:CP}
+
+
+
+\subsection{Derivation}\label{appsubsec:CPderivation}
+
+To derive the transfer matrix for a cylindrical pin cell, we begin by considering the fraction of neutrons from a point source which will reach a line whose closest distance to the point source is $\tau$ mean free paths.  We will consider the point source to be an isotropic unit point source.  The polar angle is $\theta$ and the azimuthal angle is $\alpha$.  The fraction of neutrons emitted into a specific direction $d\Omega$ about $\bm{\Omega$} from the point source to the line in question is given by,
+
+\begin{equation}
+\frac{d\Omega}{4\pi} = \frac{sin\left(\theta\right)d\theta d\alpha}{4\pi}.
+\end{equation}
+
+Integrating this expression over the polar angle gives the probability that neutrons will be emitted from the source in $d\alpha$ about $\alpha$ and reach the line a distance of $\tau$ away:
+
+\begin{equation}
+\intop_0^\pi e^{-\frac{\tau}{\sin\theta}} \frac{\sin\theta d\theta d\alpha}{4\pi}
+\end{equation}
+
+We are only concerned with the fraction of neutrons in $d\alpha$ which are also in $d\Omega$.  The fraction of neutrons emitted into $d\alpha$ is given by $\frac{d\alpha}{2\pi}$, so if we divide the previous expression by this fraction, we obtain the probability that a neutron emitted form the source in direction $d\alpha$ about $\alpha$ will reach the line:
+
+\begin{align}\label{e:CPprobLine}
+p\left(\tau\right) &= \frac{1}{2} \intop_0^\pi e^{-\frac{\tau}{\sin\theta}} \sin\theta d\theta \nonumber\\
+ &= \intop_0^{\frac{\pi}{2}} e^{-\frac{\tau}{\sin\theta}}\sin\theta d\theta \nonumber\\
+ &= Ki_2\left(\tau\right)
+\end{align}
+
+where $Ki_2\left(x\right)$ is the second-order Bickley-Naylor function\todo{cite}.  The Bickley-Naylor function can be defined as follows:
+
+\begin{subequations}\label{e:BickleyFunctions}
+  \begin{equation}
+  Ki_n\left(x\right) = \intop_0^{\frac{\pi}{2}} \cos^{n-1}\theta e^{-\frac{x}{\cos\theta}} d\theta
+  \end{equation}
+  \begin{equation}
+  \frac{dKi_n\left(x\right)}{dx} = -Ki_{n-1}\left(x\right)
+  \end{equation}
+  \begin{equation}
+  \intop_a^b Ki_n\left(y\right) dy = Ki_{n+1}\left(a\right)-Ki_{n+1}\left(b\right)
+  \end{equation}
+\end{subequations}
+
+Using equations \ref{e:CPprobLine} and \ref{e:BickleyFunctions}, we can now determine the probability of a neutron which escapes from region $i$ having its next collision in region $j$.  This probability is given by the probability of the escaped neutron reaching the first edge of region $j$ minus the probability of reaching the second edge of $j$:
+
+\begin{equation}\label{e:CPpTauAlphaY}
+p_{ij}\left(\tau, \alpha, y\right) = Ki_2\left(\tau_{ij} + \tau_j + \tau\right) - Ki_2\left(\tau_{ij} + \tau\right)
+\end{equation}
+
+where $\tau_{ij}$ is the number of mean free paths between $i$ and $j$, $\tau_j$ is the number of mean free paths across $j$, and $\tau$ is the number of mean free paths from the neutron's point of emission to the edge of region $i$.  The variable $y$ is defined along an axis in the plane of the problem perpendicular to the direction of streaming.  The combination of $\tau$ and $y$ specify a specific point in region $i$ for each angle $\alpha$.
+
+Next, we define a strip in $i$ of length $t_i = \frac{\tau}{\Sigma_i}$ along the streaming direction with width $dy$.  To obtain the fraction of neutrons born in this strip that collide in $j$, we integrate the strip and divide by its length:
+
+\begin{align}
+p_{ij}\left(\alpha, y\right) &= \frac{1}{t_i} \intop_0^{t_i} p_{ij}\left(\tau, \alpha, y\right) dt \nonumber \\
+&= \frac{1}{t_i} \intop_0^{t_i} Ki_2\left(\tau_{ij} + \tau\right) - Ki_2\left(\tau_{ij} + \tau_j + \tau\right) dt \nonumber \\
+&= \frac{1}{t_i} \intop_0^{t_i} Ki_2\left(\tau_{ij} + \tau_i - \Sigma_i t\right) - Ki_2\left(\tau_{ij} + \tau_j + \tau_i - \Sigma_i t\right) dt
+\end{align}
+
+Now we apply a change of variables $x=\tau_{ij} + \tau_i - \Sigma_i t$.  Doing this, we obtain
+
+\begin{align}
+p_{ij}\left(\alpha, y\right) &= -\frac{1}{\Sigma_i t_i} \intop_{\tau_{ij} + \tau_i}^{\tau_{ij}} Ki_2\left(x\right) - Ki_2\left(x + \tau_j\right) dx \nonumber \\
+&= \frac{1}{\Sigma_i t_i} \left[\left(Ki_3\left(\tau_{ij}\right) - Ki_3\left(\tau_{ij} + \tau_i\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) - Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right)\right]
+\end{align}
+
+This expression can now be multiplied by the fraction of neutrons in each strip and integrated over $y$ to obtain the total fraction of neutrons born anywhere in $i$ that stream in direction $\alpha$ and collide in $j$.
+
+\begin{align}
+p_{ij}\left(\alpha\right) &= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} p_{ij}\left(\alpha,y\right) \frac{t_i}{V_i} dy \nonumber\\
+&= \frac{1}{\Sigma_i V_i} \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy
+\end{align}
+
+Finally, we obtain element $ij$ of the transfer matrix by multiplying by the volume and cross-section.  When multiplied by $\phi_i$, this gives the total contribution to $\phi_j$ from region $i$.
+
+\begin{equation}
+P_{ij}\left(\alpha\right) = \Sigma_i V_i p_{ij}\left(\alpha\right) = \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy
+\end{equation}
+
+\todo{self-transport kernel}
+
+\subsection{CP in Cylindrical Coordinates}\label{appsubsec:CPcylCoord}
