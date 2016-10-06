@@ -116,12 +116,12 @@ To obtain the transport matrix for a cylindrical pin cell, the pin cell must fir
 \end{figure}
 \todo{cite figure}
 
-Now that the geometry is set up, we can take advantage of the symmetry of the problem and only model on quarter of the volume to simplify the calculation.  The kernels from equations \ref{e:CPPij} and \ref{e:CPPii} can be used, but some modification is required.  The reason for these modifications is that from a ring $i$, a ring $j$ which is outside ring $i$ can be intersected from two different directions.  Thus, the kernels that are needed are shown in equation \ref{e:CPcylPij(y)}.  Two ``sub-kernels'' are defined for the positive and negative directions.  Since each of these only covers one of two directions, they are multiplied by $\frac{1}{2}$.  However, to account for symmetry, the kernel must be divided by $\frac{1}{4}$, resulting in a factor of 2 in the final kernel.  The $\tau$ terms are defined for the positive and negative directions, but have the same meanings as in the previous section.  The geometry is shown in \ref{f:CPcylGeom}.
+Now that the geometry is set up, we can take advantage of the symmetry of the problem and only model on quarter of the volume to simplify the calculation.  The kernels from equations \ref{e:CPPij} and \ref{e:CPPii} can be used, but some modification is required.  The reason for these modifications is that from a ring $i$, a ring $j$ which is outside ring $i$ can be intersected from two different directions.  Two ``sub-kernels'' are defined for teh positive and negative directions.  Each covers only one of two directions, so they should be multiplied by $\frac{1}{2}$.  However, each only accounts for $\frac{1}{4}$ the total volume, so the final expression $P_{ij}\left(y\right)$ should be multiplied by 2 to account for each of these.  The sub-kernels are each multiplied by $\frac{1}{\Sigma_i V_i}$ to account for the unit source density in the volume $V_i$ as well as a $\frac{1}{\Sigma_i}$ term that comes from the change of variables during the integration over $t_i$.  The positive and negative $\tau$ terms are shown in the geometry in \ref{f:CPcylGeom}.
 
 \begin{subequations}\label{e:CPcylPij(y)}
   \begin{align}
-  P_{ij}^-\left(y\right) &= Ki_3\left(\tau_{ij-1}^-\right) + Ki_3\left(\tau_{i-1j}^-\right) - Ki_3\left(\tau_{ij}^-\right) - Ki_3\left(\tau_{i-1j-1}^-\right) \\
-  P_{ij}^+\left(y\right) &= Ki_3\left(\tau_{i-1j-1}^+\right) + Ki_3\left(\tau_{ij}^+\right) - Ki_3\left(\tau_{i-1j}^+\right) - Ki_3\left(\tau_{ij-1}^+\right) \\
+  P_{ij}^-\left(y\right) &= \frac{1}{\Sigma_i V_i} \left(Ki_3\left(\tau_{ij-1}^-\right) + Ki_3\left(\tau_{i-1j}^-\right) - Ki_3\left(\tau_{ij}^-\right) - Ki_3\left(\tau_{i-1j-1}^-\right)\right) \\
+  P_{ij}^+\left(y\right) &= \frac{1}{\Sigma_i V_i} \left(Ki_3\left(\tau_{i-1j-1}^+\right) + Ki_3\left(\tau_{ij}^+\right) - Ki_3\left(\tau_{i-1j}^+\right) - Ki_3\left(\tau_{ij-1}^+\right)\right) \\
   P_{ij}\left(y\right) &= 2\left(P_{ij}^-\left(y\right) + P_{ij}^+\left(y\right)\right)
   \end{align}
 \end{subequations}
@@ -130,13 +130,11 @@ Now we introduce notation to simplify this expression:
 
 \begin{subequations}\label{e:CPcypPij}
   \begin{align}
-  S_{ij} &= \intop_0^{R_i} \left(Ki_3\left(\tau_{ij}^+\right) = Ki_3\left(\tau_{ij}^-\right)\right)dy \\
-  \Rightarrow P_{ij} &= \intop_0^{R_i} P_{ij}\left(y\right)dy \nonumber \\
+  S_{ij} &= \intop_0^{R_i} \left(Ki_3\left(\tau_{ij}^+\right) - Ki_3\left(\tau_{ij}^-\right)\right)dy \\
+  \Rightarrow P_{ij} &= \Sigma_i V_i \intop_0^{R_i} P_{ij}\left(y\right)dy \nonumber \\
   &= 2\left(S_{ij} + S_{i-1j-1} - S_{ij-1} - S_{i-1j}\right)
   \end{align}
 \end{subequations}
-
-This is the final form of the transport matrix element between $i$ and $j$.
 
 \begin{figure}
   \centering
@@ -148,8 +146,39 @@ A similar process is followed for the self-transport kernel.  Again, positive an
 
 \begin{subequations}\label{e:CPcylPii}
   \begin{align}
-  P_{ij}^-\left(y\right) &= Ki_3\left(\tau_{ii-1}^-\right) + Ki_3\left(\tau_{i-1i}^-\right) - Ki_3\left(\tau_{ii}^-\right) - Ki_3\left(\tau_{i-1i-1}^-\right) \\
-  P_{ij}^+\left(y\right) &= Ki_3\left(\tau_{ii}^+\right) + Ki_3\left(\tau_{i-1i-1}^+\right) - Ki_3\left(\tau_{ii-1}^+\right) - Ki_3\left(\tau_{i-1i}^+\right) \\
-  P_{ij}\left(y\right) &= 
+  P_{ii}^-\left(y\right) &= \frac{t_i\left(y\right)}{V_i} + \frac{1}{\Sigma_i V_i}\left(Ki_3\left(\tau_{ii-1}^-\right) + Ki_3\left(\tau_{i-1i}^-\right) - Ki_3\left(\tau_{ii}^-\right) - Ki_3\left(\tau_{i-1i-1}^-\right)\right) \\
+  P_{ii}^+\left(y\right) &= \frac{t_i\left(y\right)}{V_i} + \frac{1}{\Sigma_i V_i}\left(Ki_3\left(\tau_{ii}^+\right) + Ki_3\left(\tau_{i-1i-1}^+\right) - Ki_3\left(\tau_{ii-1}^+\right) - Ki_3\left(\tau_{i-1i}^+\right)\right) \\
+  P_{ii}\left(y\right) &= 2 \left(P_{ii}^-\left(y\right) + P_{ii}^+\left(y\right)\right) \\
+  P_{ii} &= \Sigma_i V_i \intop_0^{R_i} P_{ii}\left(y\right) dy \nonumber \\
+  &= \Sigma_i V_i  + 2\left(S{ii} + S_{i-1i-1} - S_{ii-1} - S_{i-1i}\right)
   \end{align}
 \end{subequations}
+
+$P_{ij}$ is the probability that a neutron born in cell $i$ has its first collision in cell $j$.  Likewise, $P_{ii}$ is the probability that a neutron born in cell $i$ has its first collision in the same cell.  To obtain the transport matrix elements $T_{ij}$ and $T_{ii}$, we must consider the actual linear system we wish to solve.  The goal is to find the reaction rates in each cell, from which we can easily find the flux in the cell $\phi_i$.  There are two main contributions to the reaction rates in cell $i$.  The first contribution is from neutrons born in another cell $j$ which have their first collision in cell $i$.  This source is given by $\frac{Q_j}{\Sigma_{t,j}}$, which gives the contribution to the reaction rates in $i$ when multiplied by $P_{ji}$.  The second part of the source comes from neutrons which streamed into $j$ and collided, scattered, then streamed into $i$ before having their next collision.  This source is given by $P_{ji} \phi_j c_j$, where $c_j$ is the scattering ration in cell $j$, defined as $\frac{\Sigma_{s,j}}{\Sigma_{t,j}}$.  The linear sysmem which needs to be solved is then shown in equation \ref{e:CPproblem}.
+
+\begin{equation}\label{e:CPproblem}
+\Sigma_{t,i} \phi_i V_i = sum_{j=1}^{N_R} P_{ji}\left(c_j\phi_j + \frac{Q_j}{\Sigma_{t,j}}\right)
+\end{equation}
+
+The linear system, with the matrix and source elements, can now be explicitly defined in equation \ref{e:CPlinsys}.
+
+\begin{subequations}\label{e:CPlinsys}
+  \begin{equation}
+  \underline{\underline{\bm T}}\underline{\bm\phi} = \underline{\bm B}
+  \end{equation}
+  \begin{align}
+  T_{ij} &= -P_{ji} c_j = -2 c_j \left(S_{ii} + S_{i-1j-1} - S_{ij-1} - S_{i-1j}\right) \\
+  T_{ii} &= \Sigma_{t,i} V_i - P_{ii} c_i = \Sigma_{t,i} V_i - \Sigma_{s,i} V_i - 2 c_j \left(S_{ii} + S_{i-1j-1} - S_{ij-1} - S_{i-1j}\right)
+  \end{align}
+  \begin{equation}
+  B_i =\sum_{j=1}^{N_R} P_{ji} \frac{Q_j}{\Sigma_{t,j}}
+  \end{equation}
+\end{subequations}
+
+The only remaining unknowns required to construct this linear system are the $S_{ij}$ terms that involve integrals over the third-order Bickley-Naylor functions.  This will be discussed in the next section.
+
+\subsection{Bickely-Naylor Function Integration}
+
+
+
+\subsection{Reciprocity}
