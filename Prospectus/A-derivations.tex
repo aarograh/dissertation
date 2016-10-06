@@ -12,7 +12,7 @@ First, the SP$_3$ method will be derived from equation \ref{e:multigroupboltzman
 
 \section{Method of Collision Probabilities}\label{appsec:CP}
 
-
+A more thorough derivation of the Collision Probabilities (CP) method is conducted in this section.  The derivation begins by considering the probability of a neutron reaching a vertical line in space form its point of emission or scatter.  From here, the derivation follows closely with \cite{NEHandbook-LatticePhysics,NERS561CPNotes} to eventually arrive at a linear system for the flux.
 
 \subsection{Derivation}\label{appsubsec:CPderivation}
 
@@ -200,7 +200,7 @@ Next, we perform a coordinate transformation to change the bounds of integration
 
 \begin{subequations}\label{e:CPSijCoordTrans}
   \begin{align}
-  p &= 2\frac{y - R_{k-1}}{R_k - R_{k-1}} - 1 = 1\frac{y - R_{k-1}}{\Delta_k} -1 \\
+  p &= 2\frac{y - R_{k-1}}{R_k - R_{k-1}} - 1 = 2\frac{y - R_{k-1}}{\Delta_k} -1 \\
   dp &= \frac{2}{\Delta_k}dy \\
   \Rightarrow S_{ij}^k &= \frac{\Delta_k}{2} \intop_{-1}^1 f\left(p\right)dp = \frac{\Delta_k}{2} \sum_i \omega_i f\left(p_i\right)
   \end{align}
@@ -208,7 +208,7 @@ Next, we perform a coordinate transformation to change the bounds of integration
 
 This can now be integrated using a standard Gaussian quadrature\todo{cite}.  Because this quadrature is being applied to sections of each integral rather than the whole integral, MPACT uses a 4-point Gaussian quadrature (shown in table \ref{t:gaussQuad}), which is sufficient to give accurate solutions over the entire bounds of the integral.
 
-\begin{table}
+\begin{table}[h]
   \centering
   \caption{Four-Point Gaussian Quadrature}\label{t:gaussQuad}
   \begin{tabular}{|c|c|}\hline
