@@ -142,6 +142,8 @@ Now we introduce notation to simplify this expression:
   \caption{Cylindrical Geometry Collision Probabilities Self-Transport}\label{f:CPcylGeomSelf}
 \end{figure}
 
+It is useful to note at this point that the principle of reciprocity exists for these kernels.  What is meant by this is that $P_{ij} = P_{ji}$.  This is because the $S_{ij}$ terms are functions only of $\tau_{ij}^+$ and $\tau_{ij}^-$.  These variables are defined as the distance between radii $i$ and $j$, to $\tau_{ij}^+ = \tau_{ji}^+$ and $\tau_{ij}^- = \tau_{ji}^-$.  Because of this, only half of the possible combinations of $i$ and $j$ must be calculated.  Likewise, when the final transport matrix is set up, it will be symmetric, so only one of the upper and lower triangles must be explicitly calculated.  This saves some time in the computation of the matrix elements.
+
 A similar process is followed for the self-transport kernel.  Again, positive and negative directions are set up.  Additionally, the possibility of a neutron being born in $i$, escaping, then re-entering the other side of $i$ must be accounted for as well.  This is illustrated in figure \ref{f:CPcylGeomSelf}.  This leads to the kernel in equation \ref{e:CPcylPii}.
 
 \begin{subequations}\label{e:CPcylPii}
@@ -215,5 +217,3 @@ This can now be integrated using a standard Gaussian quadrature\todo{cite}.  Bec
     $\pm \sqrt{\frac{3}{7} + \frac{2}{7}\sqrt{\frac{6}{5}}}$ & $\frac{18 - \sqrt{30}}{36}$ \\\hline
   \end{tabular}
 \end{table}
-
-\subsection{Reciprocity}
