@@ -204,7 +204,7 @@ Next, we perform a coordinate transformation to change the bounds of integration
   \end{align}
 \end{subequations}
 
-This can now be integrated using a standard Gaussian quadrature\todo{cite}.  MPACT uses a 4-point Gaussian quadrature, shown in table \ref{t:gaussQuad}.
+This can now be integrated using a standard Gaussian quadrature\todo{cite}.  Because this quadrature is being applied to sections of each integral rather than the whole integral, MPACT uses a 4-point Gaussian quadrature (shown in table \ref{t:gaussQuad}), which is sufficient to give accurate solutions over the entire bounds of the integral.
 
 \begin{table}
   \centering
