@@ -16,7 +16,7 @@ First, the SP$_3$ method will be derived from equation \ref{e:multigroupboltzman
 
 \subsection{Derivation}\label{appsubsec:CPderivation}
 
-To derive the transfer matrix for a cylindrical pin cell, we begin by considering the fraction of neutrons from a point source which will reach a line whose closest distance to the point source is $\tau$ mean free paths.  We will consider the point source to be an isotropic unit point source.  The polar angle is $\theta$ and the azimuthal angle is $\alpha$.  The fraction of neutrons emitted into a specific direction $d\Omega$ about $\bm{\Omega$} from the point source to the line in question is given by,
+To derive the transport matrix for a cylindrical pin cell, we begin by considering the fraction of neutrons from a point source which will reach a line whose closest distance to the point source is $\tau$ mean free paths.  We will consider the point source to be an isotropic unit point source.  The polar angle is $\theta$ and the azimuthal angle is $\alpha$.  The fraction of neutrons emitted into a specific direction $d\Omega$ about $\bm{\Omega$} from the point source to the line in question is given by,
 
 \begin{equation}
 \frac{d\Omega}{4\pi} = \frac{sin\left(\theta\right)d\theta d\alpha}{4\pi}.
@@ -80,12 +80,76 @@ p_{ij}\left(\alpha\right) &= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\
 &= \frac{1}{\Sigma_i V_i} \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy
 \end{align}
 
-Finally, we obtain element $ij$ of the transfer matrix by multiplying by the volume and cross-section.  When multiplied by $\phi_i$, this gives the total contribution to $\phi_j$ from region $i$.
+Finally, we obtain element $ij$ of the transport matrix by multiplying by the volume and cross-section.  When multiplied by $\phi_i$, this gives the total contribution to $\phi_j$ from region $i$.
 
-\begin{equation}
-P_{ij}\left(\alpha\right) = \Sigma_i V_i p_{ij}\left(\alpha\right) = \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy
-\end{equation}
+\begin{align}\label{e:CPPij}
+P_{ij}\left(\alpha\right) &= \Sigma_i V_i p_{ij}\left(\alpha\right) \nonumber \\
+&= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy
+\end{align}
 
-\todo{self-transport kernel}
+Now that this probability has been derived, it can be integrated over all $\alpha$ to obtain the transport matrix elements for a specific geometry.
+
+We must also handle the self-transport case, where $i=j$.  Again we follow the same procedure and define the probability $p_{ii}\left(t, \alpha, y\right)$ as the probability the neutron reaches region $i$ minus the probability it escapes region $i$.  Since the neutron was born in region $i$, the first probability is 1.  This gives the following expressions:
+
+\begin{subequations}\label{e:CPPii}
+  \begin{align}
+  p_{ii}\left(t,\alpha,y\right) &= 1 - Ki_2\left(\tau\right) \\
+  p_{ii}\left(\alpha,y\right) &= \frac{1}{t_i} \intop_0^{t_i} p_{ii}\left(t,\alpha,y\right) dt \nonumber \\
+  &= 1- \frac{1}{\Sigma_i t_i} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] \\
+  p_{ii}\left(\alpha\right) &= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} p_{ii}\left(\alpha,y\right) \frac{t_i dy}{V_i} \nonumber\\
+  &= 1 - \frac{1}{\Sigma_i V_i} \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] dy \\
+  P_{ii}\left(\alpha\right) &= \Sigma_i V_i p_{ii}\left(\alpha\right) \nonumber \\
+  &= \Sigma_i V_i - \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] dy
+  \end{align}
+\end{subequations}
+
+Now this self-transport kernel can be used with the kernel in \ref{e:CPPij} to set up the full transport matrix for a problem.  This matrix is dependent on the geometry of the problem, so it must be done for each unique problem being solved.  The following section discusses the details of this process for a cylindrical pin cell.
 
 \subsection{CP in Cylindrical Coordinates}\label{appsubsec:CPcylCoord}
+
+To obtain the transport matrix for a cylindrical pin cell, the pin cell must first be cylindricized.  To do this, the moderator region around the outside of the fuel pin is changed to an annular ring which preserves the total volume of the cylinder.  This allows the calculation to be 1D spatially.  Secondly, to ensure that there is a sufficient source driving the problem, a fuel and moderator mixture can be placed in a ring beyond the moderator ring.  This is especially important for using the CP method for decusping since the control rod pin cell has no fission source of its own to drive the problem.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figs/JooCPcylGeom.png}
+  \caption{Cylindrical Geometry Collision Probabilities}\label{f:CPcylGeom}
+\end{figure}
+\todo{cite figure}
+
+Now that the geometry is set up, we can take advantage of the symmetry of the problem and only model on quarter of the volume to simplify the calculation.  The kernels from equations \ref{e:CPPij} and \ref{e:CPPii} can be used, but some modification is required.  The reason for these modifications is that from a ring $i$, a ring $j$ which is outside ring $i$ can be intersected from two different directions.  Thus, the kernels that are needed are shown in equation \ref{e:CPcylPij(y)}.  Two ``sub-kernels'' are defined for the positive and negative directions.  Since each of these only covers one of two directions, they are multiplied by $\frac{1}{2}$.  However, to account for symmetry, the kernel must be divided by $\frac{1}{4}$, resulting in a factor of 2 in the final kernel.  The $\tau$ terms are defined for the positive and negative directions, but have the same meanings as in the previous section.  The geometry is shown in \ref{f:CPcylGeom}.
+
+\begin{subequations}\label{e:CPcylPij(y)}
+  \begin{align}
+  P_{ij}^-\left(y\right) &= Ki_3\left(\tau_{ij-1}^-\right) + Ki_3\left(\tau_{i-1j}^-\right) - Ki_3\left(\tau_{ij}^-\right) - Ki_3\left(\tau_{i-1j-1}^-\right) \\
+  P_{ij}^+\left(y\right) &= Ki_3\left(\tau_{i-1j-1}^+\right) + Ki_3\left(\tau_{ij}^+\right) - Ki_3\left(\tau_{i-1j}^+\right) - Ki_3\left(\tau_{ij-1}^+\right) \\
+  P_{ij}\left(y\right) &= 2\left(P_{ij}^-\left(y\right) + P_{ij}^+\left(y\right)\right)
+  \end{align}
+\end{subequations}
+
+Now we introduce notation to simplify this expression:
+
+\begin{subequations}\label{e:CPcypPij}
+  \begin{align}
+  S_{ij} &= \intop_0^{R_i} \left(Ki_3\left(\tau_{ij}^+\right) = Ki_3\left(\tau_{ij}^-\right)\right)dy \\
+  \Rightarrow P_{ij} &= \intop_0^{R_i} P_{ij}\left(y\right)dy \nonumber \\
+  &= 2\left(S_{ij} + S_{i-1j-1} - S_{ij-1} - S_{i-1j}\right)
+  \end{align}
+\end{subequations}
+
+This is the final form of the transport matrix element between $i$ and $j$.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\textwidth]{figs/JooCPcylGeomSelf.png}
+  \caption{Cylindrical Geometry Collision Probabilities Self-Transport}\label{f:CPcylGeomSelf}
+\end{figure}
+
+A similar process is followed for the self-transport kernel.  Again, positive and negative directions are set up.  Additionally, the possibility of a neutron being born in $i$, escaping, then re-entering the other side of $i$ must be accounted for as well.  This is illustrated in figure \ref{f:CPcylGeomSelf}.  This leads to the kernel in equation \ref{e:CPcylPii}.
+
+\begin{subequations}\label{e:CPcylPii}
+  \begin{align}
+  P_{ij}^-\left(y\right) &= Ki_3\left(\tau_{ii-1}^-\right) + Ki_3\left(\tau_{i-1i}^-\right) - Ki_3\left(\tau_{ii}^-\right) - Ki_3\left(\tau_{i-1i-1}^-\right) \\
+  P_{ij}^+\left(y\right) &= Ki_3\left(\tau_{ii}^+\right) + Ki_3\left(\tau_{i-1i-1}^+\right) - Ki_3\left(\tau_{ii-1}^+\right) - Ki_3\left(\tau_{i-1i}^+\right) \\
+  P_{ij}\left(y\right) &= 
+  \end{align}
+\end{subequations}
