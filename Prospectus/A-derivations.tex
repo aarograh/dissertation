@@ -179,6 +179,41 @@ The only remaining unknowns required to construct this linear system are the $S_
 
 \subsection{Bickely-Naylor Function Integration}
 
+In the previous sections, we defined the following functions which contain integrals over third-order Bickley-Naylor functions:
 
+\begin{equation}\label{e:CPSijDef}
+S_{ij} = \intop_0^{R} \left(Ki_3\left(\tau_{ij}^+\left(y\right)\right) - Ki_3\left(\tau_{ij}^-\left(y\right)\right)\right) dy
+\end{equation}
+
+To numerically integrate these functions, we first break them up into regions (equation \ref{e:CPSijSubInt}).
+
+\begin{subequations}\label{e:CPSijSubInt}
+  \begin{align}
+  S_{ij} &= \sum_{k=1}^i S_{ij}^k \\
+  S_{ij}^k &= \intop_{R_{k-1}}^{R_k} \left(Ki_3\left(\tau_{ij}^+\left(y\right)\right) - Ki_3\left(\tau_{ij}^-\left(y\right)\right)\right) dy
+  \end{align}
+\end{subequations}
+
+Next, we perform a coordinate transformation to change the bounds of integration to be on the interval $\left[-1, 1\right]$.  This allows us to apply a Gaussian quadrature to evaluate the integral numerically.  The results of the transformation are shown in \ref{e:CPSijCoordTrans}, where $f\left(p\right)$ is the transformed $S_{ij}^k$ and $p_i$ and $\omega_i$ are some points and weights associated with the quadrature.
+
+\begin{subequations}\label{e:CPSijCoordTrans}
+  \begin{align}
+  p &= 2\frac{y - R_{k-1}}{R_k - R_{k-1}} - 1 = 1\frac{y - R_{k-1}}{\Delta_k} -1 \\
+  dp &= \frac{2}{\Delta_k}dy \\
+  \Rightarrow S_{ij}^k &= \frac{\Delta_k}{2} \intop_{-1}^1 f\left(p\right)dp = \frac{\Delta_k}{2} \sum_i \omega_i f\left(p_i\right)
+  \end{align}
+\end{subequations}
+
+This can now be integrated using a standard Gaussian quadrature\todo{cite}.  MPACT uses a 4-point Gaussian quadrature, shown in table \ref{t:gaussQuad}.
+
+\begin{table}
+  \centering
+  \caption{Four-Point Gaussian Quadrature}\label{t:gaussQuad}
+  \begin{tabular}{|c|c|}\hline
+    Point & Weight \\\hline
+    $\pm \sqrt{\frac{3}{7} - \frac{2}{7}\sqrt{\frac{6}{5}}}$ & $\frac{18 + \sqrt{30}}{36}$ \\\hline
+    $\pm \sqrt{\frac{3}{7} + \frac{2}{7}\sqrt{\frac{6}{5}}}$ & $\frac{18 - \sqrt{30}}{36}$ \\\hline
+  \end{tabular}
+\end{table}
 
 \subsection{Reciprocity}
