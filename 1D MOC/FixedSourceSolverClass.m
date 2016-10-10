@@ -48,18 +48,23 @@ classdef FixedSourceSolverClass < handle
             obj.solution.keff(:) = eig.fss.solution.keff(:);
             obj.solution.scalflux(:) = eig.fss.solution.scalflux(:);
             obj.solution.angflux(:) = eig.fss.solution.angflux(:);
+            obj.solution.fisssrc(:) = eig.fss.solution.fisssrc(:);
             
         end
         
-        function obj = solve( obj, wCur, ninners )
+        function obj = solve( obj, wCur, ninners, convcrit )
             %SOLVE Solves a fixed source problem
-            %   obj     - The FixedSourceSolverClass object to solve
-            %   wCur    - Logical to tally currents (1) or not (0)
-            %   ninners - The number of inner iterations to perform
+            %   obj      - The FixedSourceSolverClass object to solve
+            %   wCur     - Logical to tally currents (1) or not (0)
+            %   ninners  - The number of inner iterations to perform
+            %   convcrit - Convergence criteria for scattering source calculation
             
             obj.solution.updateBC();
             obj.converged = false;
             inner=0;
+            if ~exist('convcrit','var')
+                convcrit=1.0e-5;
+            end
             
             while ~obj.converged
                 inner = inner + 1;
@@ -75,7 +80,7 @@ classdef FixedSourceSolverClass < handle
                 if obj.verbose
                     display(sprintf('Fixed Source Iteration %i - %g',inner,scatconv));
                 end
-                if inner == ninners || scatconv < 1.0e-5
+                if inner == ninners || scatconv < convcrit
                     obj.converged = true;
                     if obj.verbose
                         display('Fixed Source Solve Converged.')
