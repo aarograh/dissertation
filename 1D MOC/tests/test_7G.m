@@ -26,7 +26,8 @@ input.nouters = 93;
 input.verbose = verbose;
 
 %% Test Case
-solver = MOC_1D(input);
+solver = eigensolverClass(input);
+solver.solve( );
 
 %% Test Solution
 ref = 0.1384693;

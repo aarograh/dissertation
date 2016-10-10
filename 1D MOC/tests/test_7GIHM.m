@@ -28,8 +28,8 @@ input.nouters = 1984;
 input.verbose = verbose;
 
 %% Solve Problem
-solver = ...
-    MOC_1D(input);%% Set up XS
+solver = eigensolverClass(input);
+solver.solve( );
 
 %% Setup Reference
 clear diag;

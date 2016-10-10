@@ -28,8 +28,8 @@ input.nouters = 25;
 input.verbose = verbose;
 
 %% Test Case
-solver = ...
-    MOC_1D(input);
+solver = eigensolverClass(input);
+solver.solve( );
 
 %% Test Solution
 ref = 1.2/0.8;

@@ -28,8 +28,8 @@ input.nouters = 854;
 input.verbose = verbose;
 
 %% Test Case
-solver = ...
-    MOC_1D(input);
+solver = eigensolverClass(input);
+solver.solve( );
 
 %% Setup Reference
 clear diag;
