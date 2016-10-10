@@ -28,7 +28,7 @@ classdef solutionClass < handle
             obj.fisssrc(1:ncells,1:2) = 1.0;
         end
         
-        function obj = update( obj )
+        function obj = updateBC( obj )
             %UPDATEBC Updates the solution to prepare for the next iteration
             %   obj - The solutionClass object to update
             
