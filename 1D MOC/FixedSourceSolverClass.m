@@ -8,26 +8,46 @@ classdef FixedSourceSolverClass < handle
         mesh
         quad
         solution
+        converged
+        verbose=false;
     end
     
     methods
-        function obj = FixedSourceSolverClass( xsLib, quad, input )
+        function obj = FixedSourceSolverClass( varargin )
             %FIXEDSOURCESOLVERCLASS Initializes a fixedSourceSolverClass object
-            %   xsLib    - XSLibraryClass object
-            %   quad     - QuadratureClass object
+            %   varargin - Input arguments.  These can be "xsLib, quad, input" or
+            %              "input, eig".  Anything else results in an error.
+            %   xsLib - XSLibraryClass object
+            %   quad  - QuadratureClass object
+            %   input - inputClass object to initialize from
+            %   eig   - eigensolverClass object to initialize from (optional; other arguments
+            %           ignored if this one is present)
             
-            obj.xsLib = xsLib;
-            obj.mesh = meshClass(input);
-            obj.quad = quad;
-            obj.solution = solutionClass(obj.mesh.nfsrcells, obj.xsLib.ngroups, input);
+            if nargin == 2
+                obj.mesh = meshClass(varargin{1});
+                obj.xsLib = varargin{2}.xsLib;
+                obj.quad = varargin{2}.quad;
+                obj.solution = solutionClass(obj.mesh.nfsrcells, obj.xsLib.ngroups, varargin{1});
+                obj.initFromEigenSolver( varargin{2});
+                obj.verbose = varargin{1}.verbose;
+            elseif nargin == 3
+                obj.xsLib = varargin{1};
+                obj.quad = varargin{2};
+                obj.mesh = meshClass(varargin{3});
+                obj.solution = solutionClass(obj.mesh.nfsrcells, obj.xsLib.ngroups, varargin{3});
+                obj.verbose = varargin{3}.verbose;
+            end
         end
         
-        function obj = initFromEigenSolver( eig )
+        function obj = initFromEigenSolver( obj, eig )
             %INITFROMEIGENSOLVER Initializes a fixedSourceSolverClass object from
             %an eigensolverClass object
+            %   obj - fixedSourceSolverClass object to initialize
             %   eig - EigensolverClass object to use for initialization
             
-            
+            obj.solution.keff(:) = eig.fss.solution.keff(:);
+            obj.solution.scalflux(:) = eig.fss.solution.scalflux(:);
+            obj.solution.angflux(:) = eig.fss.solution.angflux(:);
             
         end
         
@@ -37,20 +57,32 @@ classdef FixedSourceSolverClass < handle
             %   wCur    - Logical to tally currents (1) or not (0)
             %   ninners - The number of inner iterations to perform
             
-            obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
             obj.solution.updateBC();
-            for inner=1:ninners
+            obj.converged = false;
+            inner=0;
+            
+            while ~obj.converged
+                inner = inner + 1;
                 for igroup=1:obj.xsLib.ngroups
                     obj.setup(igroup);
-                    if wCur
+                    if wCur && inner == ninners
                         obj.sweep_wCur(igroup);
                     else
                         obj.sweep(igroup);
                     end
                 end
+                scatconv = obj.checkConv( );
+                if obj.verbose
+                    display(sprintf('Fixed Source Iteration %i - %g',inner,scatconv));
+                end
+                if inner == ninners || scatconv < 1.0e-5
+                    obj.converged = true;
+                    if obj.verbose
+                        display('Fixed Source Solve Converged.')
+                    end
+                end
             end
             
-            obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
         end
         
         function obj = setup( obj, igroup )
@@ -65,6 +97,24 @@ classdef FixedSourceSolverClass < handle
                 obj.mesh.source(i,igroup) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(igroup)/obj.solution.keff(1) + ...
                     obj.solution.scalflux(i,:,1)*obj.xsLib.xsSets(matID).scatter(igroup,:)')*0.5;
                 obj.mesh.xstr(i,igroup) = obj.xsLib.xsSets(matID).transport(igroup);
+            end
+            
+        end
+        
+        function maxdiff = checkConv( obj )
+            %CHECKCONV Checks for convergence of the scattering source
+            %   obj - FixedSourceSolverClass object whose convergence is being checked
+            
+            maxdiff = 0.0;
+            for igroup=1:obj.xsLib.ngroups
+                oldsource = zeros(obj.mesh.nfsrcells,1);
+                newsource = zeros(obj.mesh.nfsrcells,1);
+                for i=1:obj.mesh.nfsrcells
+                    matID = obj.mesh.materials(i);
+                    oldsource(i,1) = obj.solution.scalflux(i,:,2)*obj.xsLib.xsSets(matID).scatter(igroup,:)';
+                    newsource(i,1) = obj.solution.scalflux(i,:,1)*obj.xsLib.xsSets(matID).scatter(igroup,:)';
+                end
+                maxdiff = max(max(abs((oldsource - newsource)./oldsource)),maxdiff);
             end
             
         end

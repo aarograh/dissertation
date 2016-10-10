@@ -9,6 +9,7 @@ classdef eigensolverClass < handle
         xsLib
         mesh
         quad
+        solution
         fss
         accel
         cmfd
@@ -28,6 +29,7 @@ classdef eigensolverClass < handle
             obj.mesh = meshClass(input);
             obj.quad = quadratureClass(input);
             obj.fss = FixedSourceSolverClass(obj.xsLib, obj.quad, input);
+            obj.solution = obj.fss.solution;
             if ~isempty(input.cmfd)
                 if input.cmfd
                     obj.cmfd = cmfdClass(input, obj.mesh, obj.xsLib);
@@ -61,10 +63,11 @@ classdef eigensolverClass < handle
                 if obj.verbose
                     display(sprintf('Eigenvalue iteration %i',iouter));
                 end
-                if obj.accel && iouter < 180
-                    obj.cmfd.solve(obj.fss.solution, obj.mesh);
+                if obj.accel
+                    obj.cmfd.solve(obj.solution, obj.mesh);
                 end
                 obj.step();
+                obj.checkConv();
                 if obj.converged
                     if obj.verbose
                         display(sprintf('Converged after %i iterations...',iouter));
@@ -83,14 +86,16 @@ classdef eigensolverClass < handle
             %STEP Performs a single iteration of the eigenvalue solve
             %   obj       - The eigensolver object to solve
             
+            if ~obj.accel
+                obj.solution.updateEig( );
+            end
+            obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
             if obj.accel
                 obj.fss.solve(0, 1);
             else
-                obj.fss.solution.updateEig( );
                 obj.fss.solve(1, 1);
             end
-            
-            obj.checkConv();
+            obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
             
         end
         
@@ -98,11 +103,11 @@ classdef eigensolverClass < handle
             %CHECKCONV Updates eigenvalue object after each iteration
             %   obj - The eigensolver object whose convergence should be checked
             
-            [conv_flux, conv_keff] = obj.fss.solution.calcResidual( obj.mesh, obj.xsLib);
+            [conv_flux, conv_keff] = obj.solution.calcResidual( obj.mesh, obj.xsLib);
             if obj.verbose
                 display(sprintf('Flux norm : %0.7f',conv_flux));
                 display(sprintf('k-eff norm: %0.7f',conv_keff));
-                display(sprintf('k-eff     : %0.7f\n',obj.fss.solution.keff(1)));
+                display(sprintf('k-eff     : %0.7f\n',obj.solution.keff(1)));
             end
             if abs(conv_flux) < obj.conv_crit(2) && abs(conv_keff) < obj.conv_crit(1)
                 obj.converged = true;
