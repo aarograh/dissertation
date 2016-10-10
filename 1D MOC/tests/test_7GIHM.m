@@ -78,17 +78,18 @@ xsT = diag(xsA + sum(xsS,1)');
 %% Solve
 M = xsT - xsS;
 phi = M\chi;
-ref = xsnF'*phi;
+% ref = xsnF'*phi;
+ref = 0.7382228;
 
 %% Test Solution
-if abs(solver.solution.keff(1) - ref) < 5.0e-6 && solver.converged
+if abs(solver.fss.solution.keff(1) - ref) < 1.0e-6 && solver.converged
     display(sprintf('Test Passed!'));
     result = 1;
-elseif abs(solver.solution.keff(1) - ref)
+elseif abs(solver.fss.solution.keff(1) - ref) < 1.0e-6
     display(sprintf('Result is correct, but did not converge quickly enough!'));
     result = 0;
 else
-    display(sprintf('Test Failed! Ref: %0.7f, Test: %0.7f',ref,solver.solution.keff(1)));
+    display(sprintf('Test Failed! Ref: %0.7f, Test: %0.7f',ref,solver.fss.solution.keff(1)));
     result = 0;
 end
 
