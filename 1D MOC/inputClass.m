@@ -18,7 +18,7 @@ classdef inputClass < handle
         BCond
         nouters
         conv_crit=[0, 0]
-        verbose
+        verbose=false
         cmfd
     end
     
