@@ -10,6 +10,7 @@ classdef FixedSourceSolverClass < handle
         solution
         converged
         verbose=false;
+        relax=0.25;
     end
     
     methods
@@ -68,13 +69,15 @@ classdef FixedSourceSolverClass < handle
             
             while ~obj.converged
                 inner = inner + 1;
-                for igroup=1:obj.xsLib.ngroups
-                    obj.setup(igroup);
-                    if wCur && inner == ninners
-                        obj.sweep_wCur(igroup);
-                    else
-                        obj.sweep(igroup);
-                    end
+                obj.setup( );
+                if wCur && inner == ninners
+                    obj.sweep_wCur( );
+                    obj.solution.scalflux(:,:,1) = obj.relax*obj.solution.scalflux(:,:,1) + ...
+                        (1.0-obj.relax)*obj.solution.scalflux(:,:,2);
+                    obj.solution.current(:,:,1) = obj.relax*obj.solution.current(:,:,1) + ...
+                        (1.0-obj.relax)*obj.solution.current(:,:,2);
+                else
+                    obj.sweep( );
                 end
                 scatconv = obj.checkConv( );
                 if obj.verbose
@@ -90,18 +93,19 @@ classdef FixedSourceSolverClass < handle
             
         end
         
-        function obj = setup( obj, igroup )
+        function obj = setup( obj )
             %SETUPFSP Sets up source and XS mesh for fixed source MOC problem
             %   obj    - The FixedSourceSolverClass object to set up
-            %   igroup      - Group index
             
-            obj.mesh.source(1:obj.mesh.nfsrcells,igroup) = 0.0;
-            for i=1:obj.mesh.nfsrcells
-                % Use old scalar flux to do Jacobi style iteration
-                matID = obj.mesh.materials(i);
-                obj.mesh.source(i,igroup) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(igroup)/obj.solution.keff(1) + ...
-                    obj.solution.scalflux(i,:,1)*obj.xsLib.xsSets(matID).scatter(igroup,:)')*0.5;
-                obj.mesh.xstr(i,igroup) = obj.xsLib.xsSets(matID).transport(igroup);
+            obj.mesh.source(:) = 0.0;
+            for j=1:obj.xsLib.ngroups
+                for i=1:obj.mesh.nfsrcells
+                    % Use old scalar flux to do Jacobi style iteration
+                    matID = obj.mesh.materials(i);
+                    obj.mesh.source(i,j) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
+                        obj.solution.scalflux(i,:,1)*obj.xsLib.xsSets(matID).scatter(j,:)')*0.5;
+                    obj.mesh.xstr(i,j) = obj.xsLib.xsSets(matID).transport(j);
+                end
             end
             
         end
@@ -124,82 +128,84 @@ classdef FixedSourceSolverClass < handle
             
         end
         
-        function obj = sweep( obj, igroup )
+        function obj = sweep( obj )
             %SWEEP Performs 1D MOC sweep for a single ray with multiple polars
             %   obj    - The eigensolver object to sweep
-            %   igroup - The energy group being swept
             
-            obj.solution.scalflux(:,igroup,2) = obj.solution.scalflux(:,igroup,1);
-            obj.solution.scalflux(:,igroup,1) = 0.0;
-            for i=1:obj.mesh.nfsrcells
-                k = obj.mesh.nfsrcells-i+1;
-                for j=1:obj.quad.npol
-                    % Forward Sweep
-                    dx = (obj.mesh.fsredges(i+1) - obj.mesh.fsredges(i))/obj.quad.cosines(j);
-                    exparg = exp(-obj.mesh.xstr(i,igroup)*dx);
-                    obj.solution.angflux(i+1,j,1,igroup) = obj.solution.angflux(i,j,1,igroup)*exparg + ...
-                        obj.mesh.source(i,igroup)/obj.mesh.xstr(i,igroup)*(1 - exparg);
-                    
-                    psibar = 0.5*sum(obj.solution.angflux(i:i+1,j,1,igroup));
-                    obj.solution.scalflux(i,igroup,1) = obj.solution.scalflux(i,igroup,1) + ...
-                        psibar*obj.quad.weights(j);
-                    
-                    % Backward Sweep
-                    dx = (obj.mesh.fsredges(k+1) - obj.mesh.fsredges(k))/obj.quad.cosines(j);
-                    exparg = exp(-obj.mesh.xstr(k,igroup)*dx);
-                    obj.solution.angflux(k,j,2,igroup) = obj.solution.angflux(k+1,j,2,igroup)*exparg + ...
-                        obj.mesh.source(k,igroup)/obj.mesh.xstr(k,igroup)*(1 - exparg);
-                    
-                    psibar = 0.5*sum(obj.solution.angflux(k:k+1,j,2,igroup));
-                    obj.solution.scalflux(k,igroup,1) = obj.solution.scalflux(k,igroup,1) + ...
-                        psibar*obj.quad.weights(j);
+            for igroup=1:obj.xsLib.ngroups
+                obj.solution.scalflux(:,igroup,2) = obj.solution.scalflux(:,igroup,1);
+                obj.solution.scalflux(:,igroup,1) = 0.0;
+                for i=1:obj.mesh.nfsrcells
+                    k = obj.mesh.nfsrcells-i+1;
+                    for j=1:obj.quad.npol
+                        % Forward Sweep
+                        dx = (obj.mesh.fsredges(i+1) - obj.mesh.fsredges(i))/obj.quad.cosines(j);
+                        exparg = exp(-obj.mesh.xstr(i,igroup)*dx);
+                        obj.solution.angflux(i+1,j,1,igroup) = obj.solution.angflux(i,j,1,igroup)*exparg + ...
+                            obj.mesh.source(i,igroup)/obj.mesh.xstr(i,igroup)*(1 - exparg);
+
+                        psibar = 0.5*sum(obj.solution.angflux(i:i+1,j,1,igroup));
+                        obj.solution.scalflux(i,igroup,1) = obj.solution.scalflux(i,igroup,1) + ...
+                            psibar*obj.quad.weights(j);
+
+                        % Backward Sweep
+                        dx = (obj.mesh.fsredges(k+1) - obj.mesh.fsredges(k))/obj.quad.cosines(j);
+                        exparg = exp(-obj.mesh.xstr(k,igroup)*dx);
+                        obj.solution.angflux(k,j,2,igroup) = obj.solution.angflux(k+1,j,2,igroup)*exparg + ...
+                            obj.mesh.source(k,igroup)/obj.mesh.xstr(k,igroup)*(1 - exparg);
+
+                        psibar = 0.5*sum(obj.solution.angflux(k:k+1,j,2,igroup));
+                        obj.solution.scalflux(k,igroup,1) = obj.solution.scalflux(k,igroup,1) + ...
+                            psibar*obj.quad.weights(j);
+                    end
                 end
             end
         end
         
-        function obj = sweep_wCur( obj, igroup )
+        function obj = sweep_wCur( obj )
             %SWEEP_wCur Performs 1D MOC sweep for a single ray with multiple polars while
             %           tallying currents for cmfd acceleration
             %   obj    - The eigensolver object to sweep
-            %   igroup - The energy group being swept
             
-            obj.solution.scalflux(:,igroup,2) = obj.solution.scalflux(:,igroup,1);
-            obj.solution.current(:,igroup,2) = obj.solution.current(:,igroup,1);
-            obj.solution.scalflux(:,igroup,1) = 0.0;
-            obj.solution.current(:,igroup,1) = 0.0;
-            for j = 1:obj.quad.npol
-                obj.solution.current(1,igroup,1) = obj.solution.current(1,igroup,1) + ...
-                    obj.solution.angflux(1,j,1,igroup)*obj.quad.cosines(j)*obj.quad.weights(j);
-                obj.solution.current(end,igroup,1) = obj.solution.current(end,igroup,1) - ...
-                    obj.solution.angflux(end,j,2,igroup)*obj.quad.cosines(j)*obj.quad.weights(j);
-            end
-            
-            for i=1:obj.mesh.nfsrcells
-                k = obj.mesh.nfsrcells-i+1;
-                for j=1:obj.quad.npol
-                    % Forward Sweep
-                    dx = (obj.mesh.fsredges(i+1) - obj.mesh.fsredges(i))/obj.quad.cosines(j);
-                    exparg = exp(-obj.mesh.xstr(i,igroup)*dx);
-                    obj.solution.angflux(i+1,j,1,igroup) = obj.solution.angflux(i,j,1,igroup)*exparg + ...
-                        obj.mesh.source(i,igroup)/obj.mesh.xstr(i,igroup)*(1 - exparg);
-                    
-                    psibar = 0.5*sum(obj.solution.angflux(i:i+1,j,1,igroup));
-                    obj.solution.scalflux(i,igroup,1) = obj.solution.scalflux(i,igroup,1) + ...
-                        psibar*obj.quad.weights(j);
-                    obj.solution.current(i+1,igroup,1) = obj.solution.current(i+1,igroup,1) + ...
-                        obj.solution.angflux(i+1,j,1,igroup)*obj.quad.cosines(j)*obj.quad.weights(j);
-                    
-                    % Backward Sweep
-                    dx = (obj.mesh.fsredges(k+1) - obj.mesh.fsredges(k))/obj.quad.cosines(j);
-                    exparg = exp(-obj.mesh.xstr(k,igroup)*dx);
-                    obj.solution.angflux(k,j,2,igroup) = obj.solution.angflux(k+1,j,2,igroup)*exparg + ...
-                        obj.mesh.source(k,igroup)/obj.mesh.xstr(k,igroup)*(1 - exparg);
-                    
-                    psibar = 0.5*sum(obj.solution.angflux(k:k+1,j,2,igroup));
-                    obj.solution.scalflux(k,igroup,1) = obj.solution.scalflux(k,igroup,1) + ...
-                        psibar*obj.quad.weights(j);
-                    obj.solution.current(k,igroup,1) = obj.solution.current(k,igroup,1) - ...
-                        obj.solution.angflux(k,j,2,igroup)*obj.quad.cosines(j)*obj.quad.weights(j);
+            for igroup=1:obj.xsLib.ngroups
+                obj.solution.scalflux(:,igroup,2) = obj.solution.scalflux(:,igroup,1);
+                obj.solution.current(:,igroup,2) = obj.solution.current(:,igroup,1);
+                obj.solution.scalflux(:,igroup,1) = 0.0;
+                obj.solution.current(:,igroup,1) = 0.0;
+                for j = 1:obj.quad.npol
+                    obj.solution.current(1,igroup,1) = obj.solution.current(1,igroup,1) + ...
+                        obj.solution.angflux(1,j,1,igroup)*obj.quad.cosines(j)*obj.quad.weights(j);
+                    obj.solution.current(end,igroup,1) = obj.solution.current(end,igroup,1) - ...
+                        obj.solution.angflux(end,j,2,igroup)*obj.quad.cosines(j)*obj.quad.weights(j);
+                end
+
+                for i=1:obj.mesh.nfsrcells
+                    k = obj.mesh.nfsrcells-i+1;
+                    for j=1:obj.quad.npol
+                        % Forward Sweep
+                        dx = (obj.mesh.fsredges(i+1) - obj.mesh.fsredges(i))/obj.quad.cosines(j);
+                        exparg = exp(-obj.mesh.xstr(i,igroup)*dx);
+                        obj.solution.angflux(i+1,j,1,igroup) = obj.solution.angflux(i,j,1,igroup)*exparg + ...
+                            obj.mesh.source(i,igroup)/obj.mesh.xstr(i,igroup)*(1 - exparg);
+
+                        psibar = 0.5*sum(obj.solution.angflux(i:i+1,j,1,igroup));
+                        obj.solution.scalflux(i,igroup,1) = obj.solution.scalflux(i,igroup,1) + ...
+                            psibar*obj.quad.weights(j);
+                        obj.solution.current(i+1,igroup,1) = obj.solution.current(i+1,igroup,1) + ...
+                            obj.solution.angflux(i+1,j,1,igroup)*obj.quad.cosines(j)*obj.quad.weights(j);
+
+                        % Backward Sweep
+                        dx = (obj.mesh.fsredges(k+1) - obj.mesh.fsredges(k))/obj.quad.cosines(j);
+                        exparg = exp(-obj.mesh.xstr(k,igroup)*dx);
+                        obj.solution.angflux(k,j,2,igroup) = obj.solution.angflux(k+1,j,2,igroup)*exparg + ...
+                            obj.mesh.source(k,igroup)/obj.mesh.xstr(k,igroup)*(1 - exparg);
+
+                        psibar = 0.5*sum(obj.solution.angflux(k:k+1,j,2,igroup));
+                        obj.solution.scalflux(k,igroup,1) = obj.solution.scalflux(k,igroup,1) + ...
+                            psibar*obj.quad.weights(j);
+                        obj.solution.current(k,igroup,1) = obj.solution.current(k,igroup,1) - ...
+                            obj.solution.angflux(k,j,2,igroup)*obj.quad.cosines(j)*obj.quad.weights(j);
+                    end
                 end
             end
         end
