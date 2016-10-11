@@ -1,5 +1,5 @@
 ORNL 47-Group Library, Group 47
- 1 5
+ 1 6
  2.0E+07
 !
 !Comments can appear after the first 3 lines and between macro/micro blocks
@@ -40,3 +40,8 @@ XSMACRO FUEL 0
 XSMACRO CONTROL 0
 19.13440383 0.0 0.0 0.0
 1.0
+
+! Material 6: Less crazy moderator
+XSMACRO MOD 0
+2.0 0.0 0.0 0.0
+0.0
