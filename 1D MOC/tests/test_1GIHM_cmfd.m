@@ -32,7 +32,8 @@ end
 input.cmfd = true;
 
 %% Test Case
-solver = MOC_1D(input);
+solver = eigensolverClass(input);
+solver.solve( );
 
 %% Test Solution
 ref = 1.2/0.8;

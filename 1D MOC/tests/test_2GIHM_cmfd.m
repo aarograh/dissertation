@@ -23,7 +23,7 @@ input.scattype = 'P0';
 % Boundary Conditions
 input.BCond = ['reflecting';'reflecting'];
 % Convergence
-input.nouters = 15;
+input.nouters = 13;
 if exist('verbose','var')
     input.verbose = verbose;
 else
@@ -32,7 +32,8 @@ end
 input.cmfd = true;
 
 %% Test Case
-solver = MOC_1D(input);
+solver = eigensolverClass(input);
+solver.solve( );
 
 %% Setup Reference
 clear diag;
