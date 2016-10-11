@@ -142,19 +142,19 @@ classdef FixedSourceSolverClass < handle
                     for igroup=1:obj.xsLib.ngroups
                         % Forward Sweep
                         exparg = exp(-obj.mesh.xstr(igroup,i)*dx1);
-                        obj.solution.angflux(igroup,j,i+1,1) = obj.solution.angflux(igroup,j,i,1)*exparg + ...
+                        obj.solution.angflux(1,igroup,j,i+1) = obj.solution.angflux(1,igroup,j,i)*exparg + ...
                             obj.mesh.source(igroup,i)/obj.mesh.xstr(igroup,i)*(1 - exparg);
 
-                        psibar = 0.5*sum(obj.solution.angflux(igroup,j,i:i+1,1));
+                        psibar = 0.5*sum(obj.solution.angflux(1,igroup,j,i:i+1));
                         obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
                             psibar*obj.quad.weights(j);
 
                         % Backward Sweep
                         exparg = exp(-obj.mesh.xstr(igroup,k)*dx2);
-                        obj.solution.angflux(igroup,j,k,2) = obj.solution.angflux(igroup,j,k+1,2)*exparg + ...
+                        obj.solution.angflux(2,igroup,j,k) = obj.solution.angflux(2,igroup,j,k+1)*exparg + ...
                             obj.mesh.source(igroup,k)/obj.mesh.xstr(igroup,k)*(1 - exparg);
 
-                        psibar = 0.5*sum(obj.solution.angflux(igroup,j,k:k+1,2));
+                        psibar = 0.5*sum(obj.solution.angflux(2,igroup,j,k:k+1));
                         obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
                             psibar*obj.quad.weights(j);
                     end
@@ -174,9 +174,9 @@ classdef FixedSourceSolverClass < handle
             for j = 1:obj.quad.npol
                 for igroup=1:obj.xsLib.ngroups
                     obj.solution.current(igroup,1,1) = obj.solution.current(igroup,1,1) + ...
-                        obj.solution.angflux(igroup,j,1,1)*obj.quad.cosines(j)*obj.quad.weights(j);
+                        obj.solution.angflux(1,igroup,j,1)*obj.quad.cosines(j)*obj.quad.weights(j);
                     obj.solution.current(igroup,end,1) = obj.solution.current(igroup,end,1) - ...
-                        obj.solution.angflux(igroup,j,end,2)*obj.quad.cosines(j)*obj.quad.weights(j);
+                        obj.solution.angflux(2,igroup,j,end)*obj.quad.cosines(j)*obj.quad.weights(j);
                 end
             end
 
@@ -188,25 +188,25 @@ classdef FixedSourceSolverClass < handle
                     for igroup=1:obj.xsLib.ngroups
                         % Forward Sweep
                         exparg = exp(-obj.mesh.xstr(igroup,i)*dx1);
-                        obj.solution.angflux(igroup,j,i+1,1) = obj.solution.angflux(igroup,j,i,1)*exparg + ...
+                        obj.solution.angflux(1,igroup,j,i+1) = obj.solution.angflux(1,igroup,j,i)*exparg + ...
                             obj.mesh.source(igroup,i)/obj.mesh.xstr(igroup,i)*(1 - exparg);
 
-                        psibar = 0.5*sum(obj.solution.angflux(igroup,j,i:i+1,1));
+                        psibar = 0.5*sum(obj.solution.angflux(1,igroup,j,i:i+1));
                         obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
                             psibar*obj.quad.weights(j);
                         obj.solution.current(igroup,i+1,1) = obj.solution.current(igroup,i+1,1) + ...
-                            obj.solution.angflux(igroup,j,i+1,1)*obj.quad.cosines(j)*obj.quad.weights(j);
+                            obj.solution.angflux(1,igroup,j,i+1)*obj.quad.cosines(j)*obj.quad.weights(j);
 
                         % Backward Sweep
                         exparg = exp(-obj.mesh.xstr(igroup,k)*dx2);
-                        obj.solution.angflux(igroup,j,k,2) = obj.solution.angflux(igroup,j,k+1,2)*exparg + ...
+                        obj.solution.angflux(2,igroup,j,k) = obj.solution.angflux(2,igroup,j,k+1)*exparg + ...
                             obj.mesh.source(igroup,k)/obj.mesh.xstr(igroup,k)*(1 - exparg);
 
-                        psibar = 0.5*sum(obj.solution.angflux(igroup,j,k:k+1,2));
+                        psibar = 0.5*sum(obj.solution.angflux(2,igroup,j,k:k+1));
                         obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
                             psibar*obj.quad.weights(j);
                         obj.solution.current(igroup,k,1) = obj.solution.current(igroup,k,1) - ...
-                            obj.solution.angflux(igroup,j,k,2)*obj.quad.cosines(j)*obj.quad.weights(j);
+                            obj.solution.angflux(2,igroup,j,k)*obj.quad.cosines(j)*obj.quad.weights(j);
                     end
                 end
             end

@@ -21,7 +21,7 @@ classdef solutionClass < handle
             %   input   - The iput Class container from which to initialize
             
             obj.keff(1:2) = 1.0;
-            obj.angflux(1:ngroups,1:input.npol,1:ncells+1,1:2) = 1.0;
+            obj.angflux(1:2,1:ngroups,1:input.npol,1:ncells+1) = 1.0;
             obj.current(1:ngroups,1:ncells+1,1:2) = 0.0;
             obj.scalflux(1:ngroups,1:ncells,1:2) = 1.0;
             obj.BCond = input.BCond;
@@ -35,16 +35,16 @@ classdef solutionClass < handle
             % Set angular flux BC
             if ischar(obj.BCond(1))
                 if strcmp(strtrim(obj.BCond(1,:)),'vacuum')
-                    obj.angflux(:,:,1,1) = 0.0;
+                    obj.angflux(1,:,:,1) = 0.0;
                 elseif strcmp(strtrim(obj.BCond(1,:)),'reflecting')
-                    obj.angflux(:,:,1,1) = obj.angflux(:,:,1,2);
+                    obj.angflux(1,:,:,1) = obj.angflux(2,:,:,1);
                 end
             end
             if ischar(obj.BCond(2))
                 if strcmp(strtrim(obj.BCond(2,:)),'vacuum')
-                    obj.angflux(:,:,end,2) = 0.0;
+                    obj.angflux(2,:,:,end) = 0.0;
                 elseif strcmp(strtrim(obj.BCond(2,:)),'reflecting')
-                    obj.angflux(:,:,end,2) = obj.angflux(:,:,end,1);
+                    obj.angflux(2,:,:,end) = obj.angflux(1,:,:,end);
                 end
             end
             
