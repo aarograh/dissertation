@@ -14,7 +14,7 @@ input.diag = 0; % flat to indicate whether pin moves through narrow (0) or wide 
 input.pinmats = 1;
 
 input.radii = [ ];
-input.pinmesh = 1;
+input.pinmesh = 10;
 % Quadrature
 input.npol = 32;
 % XS Library Info
