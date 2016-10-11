@@ -1,5 +1,5 @@
 function result = test_1G( verbose )
-%TEST1GIHM Performs a 1-group test with vacuum boundaries
+%TEST_1G Performs a 1-group test with vacuum boundaries
 %   verbose - Flag to enable/disable output
 
 %% General Input Data
@@ -24,7 +24,11 @@ input.scattype = 'P0';
 input.BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 103;
-input.verbose = verbose;
+if exist('verbose','var')
+    input.verbose = verbose;
+else
+    input.verbose = true;
+end
 
 %% Test Case
 solver = eigensolverClass(input);

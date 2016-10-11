@@ -1,5 +1,5 @@
 function result = test_4GIHM_cmfd( verbose )
-%TEST_4GIHM_CMFD Performs a 4-group IHM tests
+%TEST_4GIHM_CMFD Performs a 4-group IHM test with CMFD enabled
 %   verbose - Flag to enable/disable output
 
 %% General Input Data
@@ -22,10 +22,13 @@ input.xsfilename = '4group.xsl';
 input.scattype = 'P0';
 % Boundary Conditions
 input.BCond = ['reflecting';'reflecting'];
-% BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 55;
-input.verbose = verbose;
+if exist('verbose','var')
+    input.verbose = verbose;
+else
+    input.verbose = true;
+end
 input.cmfd = true;
 
 %% Test Case

@@ -1,5 +1,5 @@
 function result = test_2GIHM( verbose )
-%TEST1GIHM Performs a 2-group IHM tests
+%TEST_2GIHM Performs a 2-group IHM test
 %   verbose - Flag to enable/disable output
 
 %% General Input Data
@@ -25,7 +25,11 @@ input.BCond = ['reflecting';'reflecting'];
 % BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 60;
-input.verbose = verbose;
+if exist('verbose','var')
+    input.verbose = verbose;
+else
+    input.verbose = true;
+end
 
 %% Test Case
 solver = eigensolverClass(input);

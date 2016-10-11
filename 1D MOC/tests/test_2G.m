@@ -1,5 +1,6 @@
 function result = test_2G( verbose )
-%TEST1GIHM Performs a 2-group test with vacuum boundaries
+%TEST_2G Performs a 2-group test with vacuum boundaries
+%   verbose - Flag to enable/disable output
 
 %% General Input Data
 % 1: Fuel Pin
@@ -23,7 +24,11 @@ input.scattype = 'P0';
 input.BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 96;
-input.verbose = verbose;
+if exist('verbose','var')
+    input.verbose = verbose;
+else
+    input.verbose = true;
+end
 
 %% Test Case
 solver = eigensolverClass(input);

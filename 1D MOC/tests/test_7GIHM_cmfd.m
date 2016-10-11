@@ -1,5 +1,5 @@
 function result = test_7GIHM_cmfd( verbose )
-%TEST_1GIHM_CMFD Performs a 2-group IHM test with CMFD enabled
+%TEST_7GIHM_CMFD Performs a 7-group IHM test with CMFD enabled
 %   verbose - Flag to enable/disable output
 
 %% General Input Data
@@ -7,7 +7,7 @@ function result = test_7GIHM_cmfd( verbose )
 % 2: Control Pin
 % 3: Guide Tube Pin
 input = inputClass();
-input.pinmap = [1, 1, 1, 1, 1];
+input.pinmap = 1;
 input.pitch = 1.0;
 input.diag = 0; % flat to indicate whether pin moves through narrow (0) or wide (1) water
 % Pin information
@@ -23,7 +23,7 @@ input.scattype = 'P0';
 % Boundary Conditions
 input.BCond = ['reflecting';'reflecting'];
 % Convergence
-input.nouters = 67;
+input.nouters = 56;
 if exist('verbose','var')
     input.verbose = verbose;
 else
@@ -32,7 +32,8 @@ end
 input.cmfd = true;
 
 %% Test Case
-solver = MOC_1D(input);
+solver = eigensolverClass(input);
+solver.solve( );
 
 %% Setup Reference
 clear diag;
@@ -85,10 +86,10 @@ ref = xsnF'*phi;
 
 %% Test Solution
 
-if abs(solver.fss.solution.keff(1) - ref) < 6.0e-6 && solver.converged
+if abs(solver.fss.solution.keff(1) - ref) < 1.0e-5 && solver.converged
     display(sprintf('Test Passed!'));
     result = 1;
-elseif abs(solver.fss.solution.keff(1) - ref) < 1.0e-6
+elseif abs(solver.fss.solution.keff(1) - ref) < 1.0e-5
     display(sprintf('Result is correct, but did not converge quickly enough!'));
     result = 0;
 else

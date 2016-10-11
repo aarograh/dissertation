@@ -1,5 +1,6 @@
 function result = test_7G( verbose )
-%TEST1GIHM Performs a 7-group test with vacuum boundaries
+%TEST_7G Performs a 7-group test with vacuum boundaries
+%   verbose - Flag to enable/disable output
 
 %% General Input Data
 % 1: Fuel Pin
@@ -23,7 +24,11 @@ input.scattype = 'P0';
 input.BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 93;
-input.verbose = verbose;
+if exist('verbose','var')
+    input.verbose = verbose;
+else
+    input.verbose = true;
+end
 
 %% Test Case
 solver = eigensolverClass(input);

@@ -1,5 +1,5 @@
 function result = test_7GIHM( verbose )
-%TEST1GIHM Performs a 7-group IHM tests
+%TEST_7GIHM Performs a 7-group IHM tests
 %   verbose - Flag to enable/disable output
 
 %% General Input Data
@@ -22,10 +22,13 @@ input.xsfilename = 'c5g7.xsl';
 input.scattype = 'P0';
 % Boundary Conditions
 input.BCond = ['reflecting';'reflecting'];
-% BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 1984;
-input.verbose = verbose;
+if exist('verbose','var')
+    input.verbose = verbose;
+else
+    input.verbose = true;
+end
 
 %% Solve Problem
 solver = eigensolverClass(input);

@@ -25,6 +25,7 @@ classdef cmfdClass < handle
         regPerCell
         cellwidths
         firstIteration = true
+        verbose = true
     end
     
     methods
@@ -59,6 +60,8 @@ classdef cmfdClass < handle
             obj.x(1:obj.ncells*obj.ngroups,1) = 0.0;
             obj.b(1:obj.ncells*obj.ngroups,1) = 0.0;
             
+            obj.verbose = input.verbose;
+            
         end
         
         function obj = solve( obj )
@@ -74,21 +77,29 @@ classdef cmfdClass < handle
             obj.setupMatrix();
             iters = 0;
             maxiters = 20;
-            display('Performing CMFD Acceleration...');
-            display('  k-eff      norm_keff  norm_fissrc');
-            display(sprintf('  %0.8f %0.8f %0.8f',obj.solution.keff(1),1.0e-8,1.0e-8));
+            if obj.verbose
+                display('Performing CMFD Acceleration...');
+                display('  k-eff      norm_keff  norm_fissrc');
+                display(sprintf('  %0.8f %0.8f %0.8f',obj.solution.keff(1),1.0e-8,1.0e-8));
+            end
             while ~converged
                 iters = iters + 1;
                 obj.setupSource();
                 obj.step();
                 [conv_flux, conv_keff] = obj.calcResidual( );
-                display(sprintf('  %0.8f %0.8f %0.8f',...
-                    obj.solution.keff(1),abs(conv_keff),conv_flux));
+                if obj.verbose
+                    display(sprintf('  %0.8f %0.8f %0.8f',...
+                        obj.solution.keff(1),abs(conv_keff),conv_flux));
+                end
                 if conv_flux < 1.0e-8 && conv_keff < 1.0e-8
-                    display(sprintf('  CMFD converged after %i iterations...',iters));
+                    if obj.verbose
+                        display(sprintf('  CMFD converged after %i iterations...',iters));
+                    end
                     converged = 1;
                 elseif iters == maxiters
-                    display(sprintf('  Reached maximum of %i iterations...',maxiters));
+                    if obj.verbose
+                        display(sprintf('  Reached maximum of %i iterations...',maxiters));
+                    end
                     break
                 end
             end
@@ -291,7 +302,7 @@ classdef cmfdClass < handle
             for i=1:obj.ncells
                 regcells = obj.regPerCell(i);
                 for g=1:obj.ngroups
-                    scale = obj.flux(i,g,1)/obj.flux(i,g,2)
+                    scale = obj.flux(i,g,1)/obj.flux(i,g,2);
                     obj.solution.scalflux(icell+1:icell+regcells,g,1) = ...
                         obj.solution.scalflux(icell+1:icell+regcells,g,1)*scale;
                 end

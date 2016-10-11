@@ -1,5 +1,5 @@
 function result = test_2GIHM_cmfd( verbose )
-%TEST_1GIHM_CMFD Performs a 2-group IHM test with CMFD enabled
+%TEST_2GIHM_CMFD Performs a 2-group IHM test with CMFD enabled
 %   verbose - Flag to enable/disable output
 
 %% General Input Data

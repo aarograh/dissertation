@@ -1,6 +1,7 @@
 function result = test_3pin7G( verbose )
-%TEST1GIHM Performs a 3 pin, 7-group test with a symmetric
+%TEST_3PIN7G Performs a 3 pin, 7-group test with a symmetric
 % boundary on the right-hand side
+%   verbose - Flag to enable/disable output
 
 %% General Input Data
 % 1: Fuel Pin
@@ -27,7 +28,11 @@ input.scattype = 'P0';
 input.BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 112;
-input.verbose = verbose;
+if exist('verbose','var')
+    input.verbose = verbose;
+else
+    input.verbose = true;
+end
 
 %% Test Case
 solver = eigensolverClass(input);
