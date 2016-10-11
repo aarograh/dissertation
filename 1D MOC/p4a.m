@@ -22,7 +22,7 @@ input.pinmesh = [ 15 2 15;
     15 2 15;
     15 2 15];
 % Quadrature
-input.npol = 16;
+input.npol = 32;
 % XS Library Info
 input.xsfilename = 'c5g7.xsl';
 input.scattype = 'P0';
@@ -31,56 +31,56 @@ input.BCond = ['reflecting';'reflecting'];
 % Convergence
 input.nouters = 2000;
 input.conv_crit = [1.0e-5 1.0e-5];
+input.verbose = false;
 
-%% Case 1 - 50-50 Mixutre Eigenvalue Case
+%% Base Case - 50-50 Mixture Eignevalue Case
 input.pinmap = [1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
     1, 1, 4, 1, 1, 4, 1, 1, 3, 1, 1, 4, 1, 1, 4, 1, 1, ...
     1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1];
-solver = MOC_1D(input);
-names(1) = {sprintf('Mixed       - %g',solver(1).solution.keff(1))};
+eigenSolver = eigensolverClass(input);
+eigenSolver.verbose = true;
+eigenSolver.solve();
+
+%% Case 1 - 50-50 Mixutre FSP
+input.verbose = true;
+fssSolver = FixedSourceSolverClass(input, eigenSolver);
+fssSolver.solve(0, 1);
+names(1) = {sprintf('Mixed')};
 
 %% Case 2 - Control Rod Case
 % pinmap_rodded = 1;
 input.pinmap = [1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
     1, 1, 2, 1, 1, 2, 1, 1, 3, 1, 1, 2, 1, 1, 2, 1, 1, ...
     1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1];
-solver(2) = eigensolverClass(input);
-% Copy source, angular flux
-solver(2).solution.fisssrc(:) = solver(1).solution.fisssrc(:);
-solver(2).solution.scalflux(:) = solver(1).solution.scalflux(:);
-solver(2).solution.angflux(:) = solver(1).solution.angflux(:); 
-solver(2).step(true);
-names(2) = {sprintf('Rodded    - %g',solver(1).solution.keff(1))};
+fssSolver(2) = FixedSourceSolverClass(input, eigenSolver);
+fssSolver(2).solve(0, 1); %59 Iterations at 1.0e-5
+names(2) = {sprintf('Rodded')};
 
 %% Case 2 - Guide Tube Case
 input.pinmap = [1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
     1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
     1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1];
-solver(3) = eigensolverClass(input);
-% Copy source, angular flux
-solver(3).solution.fisssrc(:) = solver(1).solution.fisssrc(:);
-solver(3).solution.scalflux(:) = solver(1).solution.scalflux(:);
-solver(3).solution.angflux(:) = solver(1).solution.angflux(:);
-solver(3).step(true);
-names(3) = {sprintf('Unrodded - %g',solver(1).solution.keff(1))};
+fssSolver(3) = FixedSourceSolverClass(input, eigenSolver);
+fssSolver(3).solve(0, 1); %110 Iteration as 1.0e-5
+names(3) = {sprintf('Unrodded')};
 
 %% Generate Plots
 
 % Angular Flux Plots
 ipol=input.npol/2;
-for igroup=1:solver(1).xsLib.ngroups
+for igroup=1:fssSolver(1).xsLib.ngroups
     figure(igroup);
     hold on;
     tmp = 0;
-    for i=1:length(solver)
-        plot(solver(i).mesh.fsredges,solver(i).solution.angflux(:,ipol,1,igroup),'linewidth',2);
-        tmp = max(tmp,max(solver(i).solution.angflux(:,ipol,1,igroup)));
+    for i=1:length(fssSolver)
+        plot(fssSolver(i).mesh.fsredges,fssSolver(i).solution.angflux(:,ipol,1,igroup),'linewidth',2);
+        tmp = max(tmp,max(fssSolver(i).solution.angflux(:,ipol,1,igroup)));
     end
     ax = gca;
-    ax.XAxis.TickValues = solver(1).mesh.xsedges;
-    ax.XAxis.MinorTickValues = solver(1).mesh.fsredges;
+    ax.XAxis.TickValues = fssSolver(1).mesh.xsedges;
+    ax.XAxis.MinorTickValues = fssSolver(1).mesh.fsredges;
     ax.XTickLabelRotation = 45;
-    axis([min(solver(1).mesh.xsedges), max(solver(1).mesh.xsedges), 0.0, 1.05*tmp]);
+    axis([min(fssSolver(1).mesh.xsedges), max(fssSolver(1).mesh.xsedges), 0.0, 1.05*tmp]);
     xlabel('Position (cm)');
     ylabel('Angular Flux');
     title(sprintf('Right-going Angular Flux vs. Position, Group %i',igroup));
@@ -93,17 +93,17 @@ end
 figure(8);
 hold on;
 igroup = 7;
-cellcenter = 0.5*(solver(1).mesh.fsredges(1:end-1) + solver(1).mesh.fsredges(2:end));
+cellcenter = 0.5*(fssSolver(1).mesh.fsredges(1:end-1) + fssSolver(1).mesh.fsredges(2:end));
 tmp = 0;
-for i=1:length(solver)
-    plot(cellcenter,solver(i).solution.scalflux(:,igroup,1),'linewidth',2);
-    tmp = max(tmp,max(solver(i).solution.scalflux(:,igroup,1)));
+for i=1:length(fssSolver)
+    plot(cellcenter,fssSolver(i).solution.scalflux(:,igroup,1),'linewidth',2);
+    tmp = max(tmp,max(fssSolver(i).solution.scalflux(:,igroup,1)));
 end
 ax = gca;
-ax.XAxis.TickValues = solver(1).mesh.xsedges;
-ax.XAxis.MinorTickValues = solver(1).mesh.fsredges;
+ax.XAxis.TickValues = fssSolver(1).mesh.xsedges;
+ax.XAxis.MinorTickValues = fssSolver(1).mesh.fsredges;
 ax.XTickLabelRotation = 45;
-axis([min(solver(1).mesh.xsedges), max(solver(1).mesh.xsedges), 0.0, 1.05*tmp]);
+axis([min(fssSolver(1).mesh.xsedges), max(fssSolver(1).mesh.xsedges), 0.0, 1.05*tmp]);
 xlabel('Position (cm)')
 ylabel('Scalar Flux')
 title(sprintf('Scalar Flux vs. Position, Group %i',igroup));
