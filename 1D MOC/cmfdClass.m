@@ -164,8 +164,8 @@ classdef cmfdClass < handle
                         imat = obj.mesh.materials(icell);
                         dx = (obj.mesh.fsredges(icell+1)-obj.mesh.fsredges(icell));
                         volsum = volsum + dx;
-                        flxvol = obj.solution.scalflux(icell,g,1)*dx;
-                        flxvolpsi = sum(obj.solution.scalflux(icell,:,1)*obj.xsLib.xsSets(imat).nufission')*...
+                        flxvol = obj.solution.scalflux(g,icell,1)*dx;
+                        flxvolpsi = obj.xsLib.xsSets(imat).nufission*obj.solution.scalflux(:,icell,1)*...
                             dx;
                         flxvolsum = flxvolsum + flxvol;
                         fisssrcsum = fisssrcsum + flxvolpsi;
@@ -199,7 +199,7 @@ classdef cmfdClass < handle
                     %   Interior surface, left edge of cell
                     if i > 1
                         obj.dtils(i,g) = 2.0/(3.0*(volsum*obj.xstr(i,g) + oldvolsum*obj.xstr(i-1,g)));
-                        obj.dhats(i,g) = obj.UR*((obj.solution.current(icell-obj.regPerCell(i),g,1)-1 + ...
+                        obj.dhats(i,g) = obj.UR*((obj.solution.current(g,icell-obj.regPerCell(i),1)-1 + ...
                             obj.dtils(i,g)*(obj.flux(i,g,1) - obj.flux(i-1,g,1)))/ ...
                             (obj.flux(i,g,1) + obj.flux(i-1,g,1))) + ...
                                 (1.0-obj.UR)*obj.dhats(1,g);
@@ -214,7 +214,7 @@ classdef cmfdClass < handle
                         if strcmp(strtrim(obj.solution.BCond(1,:)),'reflecting')
                             obj.dhats(1,g) = 0.0;
                         else
-                            obj.dhats(1,g) = obj.UR*((obj.solution.current(1,g,1) + ...
+                            obj.dhats(1,g) = obj.UR*((obj.solution.current(g,1,1) + ...
                                 obj.dtils(1,g)*obj.flux(1,g,1))/obj.flux(1,g,1)) + ...
                                 (1.0-obj.UR)*obj.dhats(1,g);
                         end
@@ -306,8 +306,8 @@ classdef cmfdClass < handle
                 regcells = obj.regPerCell(i);
                 for g=1:obj.ngroups
                     scale = obj.flux(i,g,1)/obj.flux(i,g,2);
-                    obj.solution.scalflux(icell+1:icell+regcells,g,1) = ...
-                        obj.solution.scalflux(icell+1:icell+regcells,g,1)*scale;
+                    obj.solution.scalflux(g,icell+1:icell+regcells,1) = ...
+                        obj.solution.scalflux(g,icell+1:icell+regcells,1)*scale;
                 end
                 icell = icell + regcells;
             end

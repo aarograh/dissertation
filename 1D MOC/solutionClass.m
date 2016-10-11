@@ -21,9 +21,9 @@ classdef solutionClass < handle
             %   input   - The iput Class container from which to initialize
             
             obj.keff(1:2) = 1.0;
-            obj.angflux(1:ncells+1,1:input.npol,1:2,1:ngroups) = 1.0;
-            obj.current(1:ncells+1,1:ngroups,1:2) = 0.0;
-            obj.scalflux(1:ncells,1:ngroups,1:2) = 1.0;
+            obj.angflux(1:ngroups,1:input.npol,1:ncells+1,1:2) = 1.0;
+            obj.current(1:ngroups,1:ncells+1,1:2) = 0.0;
+            obj.scalflux(1:ngroups,1:ncells,1:2) = 1.0;
             obj.BCond = input.BCond;
             obj.fisssrc(1:ncells,1:2) = 1.0;
         end
@@ -35,16 +35,16 @@ classdef solutionClass < handle
             % Set angular flux BC
             if ischar(obj.BCond(1))
                 if strcmp(strtrim(obj.BCond(1,:)),'vacuum')
-                    obj.angflux(1,:,1,:) = 0.0;
+                    obj.angflux(:,:,1,1) = 0.0;
                 elseif strcmp(strtrim(obj.BCond(1,:)),'reflecting')
-                    obj.angflux(1,:,1,:) = obj.angflux(1,:,2,:);
+                    obj.angflux(:,:,1,1) = obj.angflux(:,:,1,2);
                 end
             end
             if ischar(obj.BCond(2))
                 if strcmp(strtrim(obj.BCond(2,:)),'vacuum')
-                    obj.angflux(end,:,2,:) = 0.0;
+                    obj.angflux(:,:,end,2) = 0.0;
                 elseif strcmp(strtrim(obj.BCond(2,:)),'reflecting')
-                    obj.angflux(end,:,2,:) = obj.angflux(end,:,1,:);
+                    obj.angflux(:,:,end,2) = obj.angflux(:,:,end,1);
                 end
             end
             
@@ -59,18 +59,14 @@ classdef solutionClass < handle
             
         end
         
-        function [conv_flux, conv_keff] = calcResidual( obj, mesh, xsLib)
+        function [conv_flux, conv_keff] = calcResidual( obj )
             %CALCRESIDUAL Calculates the scalar flux and k-eff residuals
             %   obj   - The solutionClass object to check
-            %   mesh  - The mesh that the solution is on
-            %   xsLib - The XS Library used by the calculation
             
             conv_flux = 0.0;
-%             for j=1:xsLib.ngroups
-                for i=1:mesh.nfsrcells
-                    conv_flux = max(conv_flux,abs((obj.fisssrc(i,1) - obj.fisssrc(i,2))));
-                end
-%             end
+            for i=1:length(obj.fisssrc(:,1))
+                conv_flux = max(conv_flux,abs((obj.fisssrc(i,1) - obj.fisssrc(i,2))));
+            end
             conv_keff = obj.keff(1) - obj.keff(2);
             
         end
@@ -85,7 +81,7 @@ classdef solutionClass < handle
             obj.fisssrc(:,1) = 0.0;
             for i=1:mesh.nfsrcells
                 matID = mesh.materials(i);
-                obj.fisssrc(i,1) = sum(obj.scalflux(i,:,1).*xsLib.xsSets(matID).nufission);
+                obj.fisssrc(i,1) = xsLib.xsSets(matID).nufission*obj.scalflux(:,i,1);
             end
         end
     end

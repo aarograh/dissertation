@@ -106,7 +106,7 @@ classdef eigensolverClass < handle
             %CHECKCONV Updates eigenvalue object after each iteration
             %   obj - The eigensolver object whose convergence should be checked
             
-            [conv_flux, conv_keff] = obj.solution.calcResidual( obj.mesh, obj.xsLib);
+            [conv_flux, conv_keff] = obj.solution.calcResidual( );
             if obj.verbose
                 display(sprintf('Flux norm : %0.7f',conv_flux));
                 display(sprintf('k-eff norm: %0.7f',conv_keff));
