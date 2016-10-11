@@ -58,7 +58,6 @@ classdef eigensolverClass < handle
             %SOLVE Solves the eigenvalue problem
             %   obj - The eigensolver object to solve
             
-            obj.mesh.source(1:20,1) = 0.0;
             for iouter=1:obj.nouters
                 if obj.verbose
                     display(sprintf('Eigenvalue iteration %i',iouter));
@@ -77,6 +76,10 @@ classdef eigensolverClass < handle
                     if obj.verbose
                         display(sprintf('Reached maximum number of iterations...'));
                     end
+                else                    
+                    if obj.accel
+                        obj.solution.keff(2) = obj.solution.keff(1);
+                    end
                 end
             end
             
@@ -91,9 +94,9 @@ classdef eigensolverClass < handle
             end
             obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
             if obj.accel
-                obj.fss.solve(0, 1);
-            else
                 obj.fss.solve(1, 1);
+            else
+                obj.fss.solve(0, 1);
             end
             obj.solution.calcFissSrc(obj.mesh, obj.xsLib);
             
