@@ -32,7 +32,7 @@ classdef eigensolverClass < handle
             obj.solution = obj.fss.solution;
             if ~isempty(input.cmfd)
                 if input.cmfd
-                    obj.cmfd = cmfdClass(input, obj.mesh, obj.xsLib);
+                    obj.cmfd = cmfdClass(input, obj.mesh, obj.xsLib, obj.solution);
                     obj.accel = true;
                 else
                     obj.accel = false;
@@ -64,7 +64,7 @@ classdef eigensolverClass < handle
                     display(sprintf('Eigenvalue iteration %i',iouter));
                 end
                 if obj.accel
-                    obj.cmfd.solve(obj.solution, obj.mesh);
+                    obj.cmfd.solve( );
                 end
                 obj.step();
                 obj.checkConv();
