@@ -85,8 +85,7 @@ classdef cmfdClass < handle
             while ~converged
                 iters = iters + 1;
                 obj.setupSource();
-                obj.step();
-                [conv_flux, conv_keff] = obj.calcResidual( );
+                [conv_flux, conv_keff] = obj.step();
                 if obj.verbose
                     display(sprintf('  %0.8f %0.8f %0.8f',...
                         obj.solution.keff(1),abs(conv_keff),conv_flux));
@@ -107,8 +106,9 @@ classdef cmfdClass < handle
             
         end
         
-        function obj = step( obj )
-            %STEP Performs a single CMFD iteration
+        function [conv_flux, conv_keff] = step( obj )
+            %STEP Performs a single CMFD iteration and returns the residuals
+            %for the scalar flux and k-eff
             %   obj      - The cmfdClass object to set up
             
             % Solve linear system
@@ -128,21 +128,16 @@ classdef cmfdClass < handle
             end
             
             % Update eigenvalue
-            obj.solution.keff(2) = obj.solution.keff(1);
-            obj.solution.keff(1) = obj.solution.keff(2)*sum(obj.fisssrc(:,1))/sum(obj.fisssrc(:,2));
-            
-        end
-        
-        function [conv_flux, conv_keff] = calcResidual(obj)
-            %CALCRESIDUAL Calculates the scalar flux and k-eff residuals
-            %   obj - cmfdClass object whose convergence needs to be calculated
+            oldkeff = obj.solution.keff(1);
+            obj.solution.keff(1) = oldkeff*...
+                sum(obj.cellwidths*obj.fisssrc(:,1))/sum(obj.cellwidths*obj.fisssrc(:,2));
             
             conv_flux = 0.0;
             for i=1:obj.ncells
                 conv_flux = max(conv_flux,abs((obj.fisssrc(i,1) - obj.fisssrc(i,2))/...
                     obj.fisssrc(i,2)));
             end
-            conv_keff = obj.solution.keff(1) - obj.solution.keff(2);
+            conv_keff = obj.solution.keff(1) - oldkeff;
             
         end
         
@@ -198,9 +193,9 @@ classdef cmfdClass < handle
                     % Calculate coupling coefficients
                     %   Interior surface, left edge of cell
                     if i > 1
-                        obj.dtils(i-1,g) = 2.0/(3.0*(volsum*obj.xstr(i,g) + oldvolsum*obj.xstr(i-1,g)));
-                        obj.dhats(i-1,g) = (obj.solution.current(icell-obj.regPerCell(i),g,1) + ...
-                            obj.dtils(i-1,g)*(obj.flux(i,g,1) - obj.flux(i-1,g,1)))/ ...
+                        obj.dtils(i,g) = 2.0/(3.0*(volsum*obj.xstr(i,g) + oldvolsum*obj.xstr(i-1,g)));
+                        obj.dhats(i,g) = (obj.solution.current(icell-obj.regPerCell(i),g,1)-1 + ...
+                            obj.dtils(i,g)*(obj.flux(i,g,1) - obj.flux(i-1,g,1)))/ ...
                             (obj.flux(i,g,1) + obj.flux(i-1,g,1));
                     %   Left boundary
                     else
@@ -252,7 +247,7 @@ classdef cmfdClass < handle
                 for g=1:obj.ngroups
                     irow = irow + 1;
                     % Sum of coupling coefficients goes on diagonal
-                    obj.A(irow,irow) = obj.dtils(i+1,g) + obj.dhats(i+1,g) - ...
+                    obj.A(irow,irow) = obj.dtils(i+1,g) - obj.dhats(i+1,g) - ...
                         obj.dtils(i,g) + obj.dhats(i,g);
                     % Add coupling coefficients for east neighbor
                     if i < obj.ncells
@@ -260,7 +255,7 @@ classdef cmfdClass < handle
                     end
                     % Add coupling coefficients for west neighbor
                     if i > 1
-                        obj.A(irow,irow-obj.ngroups) = obj.dtils(i,g) + obj.dhats(i,g);
+                        obj.A(irow,irow-obj.ngroups) = obj.dtils(i,g) - obj.dhats(i,g);
                     end
                     
                     % Add total reaction rate
@@ -302,7 +297,7 @@ classdef cmfdClass < handle
             for i=1:obj.ncells
                 regcells = obj.regPerCell(i);
                 for g=1:obj.ngroups
-                    scale = obj.flux(i,g,1)/obj.flux(i,g,2);
+                    scale = obj.flux(i,g,1)/obj.flux(i,g,2)
                     obj.solution.scalflux(icell+1:icell+regcells,g,1) = ...
                         obj.solution.scalflux(icell+1:icell+regcells,g,1)*scale;
                 end
