@@ -23,7 +23,7 @@ input.scattype = 'P0';
 % Boundary Conditions
 input.BCond = ['reflecting';'reflecting'];
 % Convergence
-input.nouters = 1984;
+input.nouters = 1985;
 if exist('verbose','var')
     input.verbose = verbose;
 else
