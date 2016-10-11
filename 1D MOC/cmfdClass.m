@@ -26,6 +26,7 @@ classdef cmfdClass < handle
         cellwidths
         firstIteration = true
         verbose = true
+        UR = 0.1
     end
     
     methods
@@ -76,7 +77,7 @@ classdef cmfdClass < handle
             end
             obj.setupMatrix();
             iters = 0;
-            maxiters = 20;
+            maxiters = 200;
             if obj.verbose
                 display('Performing CMFD Acceleration...');
                 display('  k-eff      norm_keff  norm_fissrc');
@@ -184,7 +185,11 @@ classdef cmfdClass < handle
                     obj.xstr(i,g) = obj.xstr(i,g)/flxvolsum;
                     obj.xst(i,g) = obj.xst(i,g)/flxvolsum;
                     obj.xsnf(i,g) = obj.xsnf(i,g)/flxvolsum;
-                    obj.xsch(i,g) = obj.xsch(i,g)/fisssrcsum;
+                    if fisssrcsum > eps
+                        obj.xsch(i,g) = obj.xsch(i,g)/fisssrcsum;
+                    else
+                        obj.xsch(i,g) = 0.0;
+                    end
                     for g2=1:obj.ngroups
                         obj.xssc(i,g2,g) = obj.xssc(i,g2,g)/flxvolsum;
                     end
@@ -194,9 +199,10 @@ classdef cmfdClass < handle
                     %   Interior surface, left edge of cell
                     if i > 1
                         obj.dtils(i,g) = 2.0/(3.0*(volsum*obj.xstr(i,g) + oldvolsum*obj.xstr(i-1,g)));
-                        obj.dhats(i,g) = (obj.solution.current(icell-obj.regPerCell(i),g,1)-1 + ...
+                        obj.dhats(i,g) = obj.UR*((obj.solution.current(icell-obj.regPerCell(i),g,1)-1 + ...
                             obj.dtils(i,g)*(obj.flux(i,g,1) - obj.flux(i-1,g,1)))/ ...
-                            (obj.flux(i,g,1) + obj.flux(i-1,g,1));
+                            (obj.flux(i,g,1) + obj.flux(i-1,g,1))) + ...
+                                (1.0-obj.UR)*obj.dhats(1,g);
                     %   Left boundary
                     else
                         if strcmp(strtrim(obj.solution.BCond(1,:)),'vacuum')
@@ -208,8 +214,9 @@ classdef cmfdClass < handle
                         if strcmp(strtrim(obj.solution.BCond(1,:)),'reflecting')
                             obj.dhats(1,g) = 0.0;
                         else
-                            obj.dhats(1,g) = (obj.solution.current(1,g,1) + ...
-                                obj.dtils(1,g)*obj.flux(1,g,1))/obj.flux(1,g,1);
+                            obj.dhats(1,g) = obj.UR*((obj.solution.current(1,g,1) + ...
+                                obj.dtils(1,g)*obj.flux(1,g,1))/obj.flux(1,g,1)) + ...
+                                (1.0-obj.UR)*obj.dhats(1,g);
                         end
                     end
                     %   Right boundary
@@ -223,8 +230,9 @@ classdef cmfdClass < handle
                         if strcmp(strtrim(obj.solution.BCond(2,:)),'reflecting')
                             obj.dhats(end,g) = 0.0;
                         else
-                            obj.dhats(end,g) = (obj.solution.current(end,g,1) - ...
-                                obj.dtils(end,g)*obj.flux(end,g,1))/obj.flux(end,g,1);
+                            obj.dhats(end,g) = obj.UR*((obj.solution.current(end,g,1) - ...
+                                obj.dtils(end,g)*obj.flux(end,g,1))/obj.flux(end,g,1)) + ...
+                                (1.0-obj.UR)*obj.dhats(1,g);
                         end
                     end
                     if g == 1
@@ -247,15 +255,15 @@ classdef cmfdClass < handle
                 for g=1:obj.ngroups
                     irow = irow + 1;
                     % Sum of coupling coefficients goes on diagonal
-                    obj.A(irow,irow) = obj.dtils(i+1,g) - obj.dhats(i+1,g) - ...
-                        obj.dtils(i,g) + obj.dhats(i,g);
+                    obj.A(irow,irow) = obj.dtils(i+1,g) + obj.dhats(i+1,g) - ...
+                        obj.dtils(i,g) - obj.dhats(i,g);
                     % Add coupling coefficients for east neighbor
                     if i < obj.ncells
                         obj.A(irow,irow+obj.ngroups) = -obj.dtils(i+1,g) + obj.dhats(i+1,g);
                     end
                     % Add coupling coefficients for west neighbor
                     if i > 1
-                        obj.A(irow,irow-obj.ngroups) = obj.dtils(i,g) - obj.dhats(i,g);
+                        obj.A(irow,irow-obj.ngroups) = -obj.dtils(i,g) - obj.dhats(i,g);
                     end
                     
                     % Add total reaction rate
@@ -297,7 +305,7 @@ classdef cmfdClass < handle
             for i=1:obj.ncells
                 regcells = obj.regPerCell(i);
                 for g=1:obj.ngroups
-                    scale = obj.flux(i,g,1)/obj.flux(i,g,2)
+                    scale = obj.flux(i,g,1)/obj.flux(i,g,2);
                     obj.solution.scalflux(icell+1:icell+regcells,g,1) = ...
                         obj.solution.scalflux(icell+1:icell+regcells,g,1)*scale;
                 end
