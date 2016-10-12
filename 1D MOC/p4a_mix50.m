@@ -44,24 +44,24 @@ eigenSolver.solve();
 %% Case 1 - 50-50 Mixutre FSP
 input.verbose = true;
 fssSolver = FixedSourceSolverClass(input, eigenSolver);
-fssSolver.solve(0, 1);
+fssSolver.solve(0, 0);
 names(1) = {sprintf('Mixed')};
 
-%% Case 2 - Control Rod Case
+% Case 2 - Control Rod Case
 % pinmap_rodded = 1;
 input.pinmap = [1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
     1, 1, 2, 1, 1, 2, 1, 1, 3, 1, 1, 2, 1, 1, 2, 1, 1, ...
     1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1];
 fssSolver(2) = FixedSourceSolverClass(input, eigenSolver);
-fssSolver(2).solve(0, 1); %59 Iterations at 1.0e-5
+fssSolver(2).solve(0, 0); %59 Iterations at 1.0e-5
 names(2) = {sprintf('Rodded')};
 
-%% Case 2 - Guide Tube Case
+% Case 2 - Guide Tube Case
 input.pinmap = [1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
     1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, ...
     1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1];
 fssSolver(3) = FixedSourceSolverClass(input, eigenSolver);
-fssSolver(3).solve(0, 1); %110 Iteration as 1.0e-5
+fssSolver(3).solve(0, 0); %110 Iteration as 1.0e-5
 names(3) = {sprintf('Unrodded')};
 
 %% Generate Plots
