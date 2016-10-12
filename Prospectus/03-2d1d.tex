@@ -82,7 +82,10 @@ Now that the general 2D/1D scheme has been described, some attention should be g
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\textwidth]{oimagefile}o
+  \includegraphics[width=0.8\textwidth]{../figs/2d1d-subplane.png}
+  \caption{2D/1D with subplane}
+  \label{f:2d1dsubpalne}
+\end{figure}
 
 The CMFD method was originally implemented in MPACT just as described in section \ref{ss:CMFD}.  To do this, each pin cell is homogenized using the quantities defined in equation \ref{e:CMFDhomogTerms} in every plane in the model.  The radial coupling coefficients defined in equation \ref{e:CMFDcouplingCoeffs} are obtained by calculating the current at the interface between each pair of pin cells using the 2D MOC sweeper, while the axial coupling coefficients are obtained from the axial currents calculated by the axial solve during the previous iteration.  The matrix for the 3D multi-group system can then be set up and solved, typically using the generalized Davidson eigenvalue solver.
 
