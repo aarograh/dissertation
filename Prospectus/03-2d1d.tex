@@ -1,77 +1,92 @@
-While MPACT has the capability to solve the Boltzmann transport equation using the 3D Method of Characteristics, doing so is too computationally burdensome to be of practical value.  To obtain accurate solutions to the equation more quickly, a method known as 2D/1D is employed.  This method takes advantage of the geometry in LWRs by exploiting the fact that most of the material heterogeneities (and thus sharp flux gradients) occur only in the radial direction.  Axially, the reactor is typically almost uniform for a given radial point.  This allows the detailed, expensive transport calculations to be done in 2D instead of 3D.  A much faster, lower order calculation can then be done in the axial direction to couple a ``stack'' of 2D planar solutions to obtain 3D flux shapes.  This chapter is devoted to discussing the derivation of the 2D/1D equations, how some of the methods from chapter \ref{chap:transport} are applied to the these equations in MPACT, and some of the approximations and limitations of the 2D/1D method.
+\section{Background}
+
+The Boltzmann transport equation can be solved directly in 3D to obtain 3D flux and power distributions.  One method to do this is the 3D Method of characteristics, which is implemented in MPACT \cite{KochunasThesis}.  However, performing these 3D transport calculations becomes too computationally burdensome to be of practical use, even with today's improved computing resources.  Because LWRs have most of their material heterogeneity in the radial direction with very little change in the axial direction, it was recognized that approximations could be made in the axial direction to increase the efficiency of the calculations while still performing high-fidelity transport calculations in the radial direction.  Two different groups of researchers pursued this concept and developed two different methods of solving the transport equation for LWR problems.
+
+The first of these methods was the ``2D/1D Fusion'' technique, developed by researchers at Korea Advanced Institute of Science and Technology (KAIST) and implemented in codes such as CRX \cite{Fusion2D1D,FusionMOC}.  In this method, the 3D problem is decomposed into a stack of 2D planes.  These planes are solved using 2D MOC, with incoming angular fluxes on the top and bottom boundaries of the plane as source terms.  To couple the planes, the problem domain is integrated in the x- and y-directions for each pin cell.  The angular fluxes at the radial edges are obtained from the 2D MOC calculations and used as source terms.  The angular fluxes are then solved in the axial direction using the Diamond Difference \todo{cite} method.  These results, in turn, are fed back into the radial calculations.  Iterating between the radial and axial calculations then produces a full 3D solutions.
+
+The second group of researchers was at Korea Atomic Energy Research Institute (KAERI).  They developed what is known more simply as the ``2D/1D'' scheme, first implemented in the DeCART code \cite{3DHetWholeCoreTransPlanarMOC,DeCARTTheoryManual,MethodsAndPerformanceOfDecart}.  This employs very similar technique to the 2D/1D Fusion method described above.  However, rather than using angular fluxes from each solver as a source term, currents are tallied on each of the six faces of each pin cell.  The currents can then be used to compute axial and radial ``transverse leakage'' sources for the radial and axial solvers, respectively.  This change allows for the storage of group-wise currents at each interface instead of storing the group-wise angular fluxes for each angle, significantly reducing the memory burden of the calculation.
+
+After some development, the DeCART code was forked into several different versions for different institutions, one of them being the University of Michigan (UM).  After some development, it was determined that there would be no further development of the DeCART code at UM and a new 2D/1D implementation would be put in MPACT \cite{2D1DApproxTo3DTransport1,StabilityAndAccuracyOf3DTransportInMPACT}.  In MPACT's implementation of 2D/1D, 2D MOC is used for each of the radial planes, as with earlier 2D/1D codes.  The axial calculation done on a pin-homogenized mesh usually with SP$_3$, though a variety of other solver are available such as NEM \todo{cite}, SENM \todo{cite}, SP$_1$, SP$_5$, or S$_N$.  Finally, MPACT also uses 3D CMFD on the same pin-homogenized mesh to provide convergence acceleration to the calculations.  The remainder of this chapter will look at the derivation of the 2D/1D equations, the details of how they are implemented in MPACT, and some of the approximations and sources of errors related to this method.
 
 \section{Derivation}
 
 \subsection{Radial Equations}
 
-To begin, equation \ref{e:multigroupboltzmann} \todo{use Sn equation instead} must be integrated in the $z$-direction over some range $\Delta z_i = z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}$, giving:
-
-\begin{dmath}
-{\Omega_x\frac{\partial \psi_{g,z}}{\partial x} + \Omega_y\frac{\partial \psi_{g,z}}{\partial y} + \frac{\Omega_z}{\Delta z_i}\left(\psi_{g,z_{i+\frac{1}{2}}} - \psi_{g,z_{i-\frac{1}{2}}}\right)} + {\Sigma_{t,g}\left(x,y\right)\psi_{g,z}\left(x,y,\bm\Omega\right)} = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g,z}\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g',z}\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g,z}}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g',z}\left(x,y\right)\psi_{g',z}\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g,z}\left(x,y\right)}{4\pi}}
-\end{dmath}
-
-The $z$-component of the streaming can now be moved to the right-hand side of the equation and treated as a source term.
-
+To derive the radial equations, we begin with the multigroup approximation in equation \ref{e:multigroupboltzmann}  and integrate in the $z$-direction over some range $\Delta z_i = z_{k+\frac{1}{2}} - z_{k-\frac{1}{2}}$.  To do this, we assume the cross-sections are all constant in the interval $z \in \left[z_{k-\frac{1}{2}},z_{k+\frac{1}{2}}\right]$.  With this assumption, we obtain the following equation:
 \begin{subequations}
-\begin{dmath}
-{\Omega_x\frac{\partial \psi_{g,z}}{\partial x} + \Omega_y\frac{\partial \psi_{g,z}}{\partial y}} + {\Sigma_{t,g}\left(x,y\right)\psi_{g,z}\left(x,y,\bm\Omega\right)} = {q_{g,z}\left(x,y\right) + L_{g,z}\left(x,y,\Omega_z\right)}
-\end{dmath}
-\begin{dmath}
-q_{g,z}\left(x,y\right) = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g,z}\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g',z}\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g,z}}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g',z}\left(x,y\right)\psi_{g',z}\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g,z}\left(x,y\right)}{4\pi}}
+\begin{dmath}\label{e:2D1DradialEq}
+{\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + \Omega_y\frac{\partial \psi_{g}^Z}{\partial y} + \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k+\frac{1}{2}}} - \psi_{g,z_{k-\frac{1}{2}}}\right)} + {\Sigma_{t,g}\left(x,y\right)\psi_{g}^Z\left(x,y,\bm\Omega\right)} = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g'}^Z\left(x,y\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^Z\left(x,y\right)}{4\pi}}
 \end{dmath}
 \begin{equation}
-L_{g,z}\left(x,y,\Omega_z\right) = \frac{\Omega_z}{\Delta z_i}\left(\psi_{g,z_{i-\frac{1}{2}}} - \psi_{g,z_{i+\frac{1}{2}}}\right)
+\psi_g^Z\left(x,y,\bm{\Omega}\right) = \frac{1}{\Delta z_k} \intop_{z_{k-\frac{1}{2}}}^{z_{k+\frac{1}{2}}} \psi_g^Z\left(x,y,z,\bm{\Omega}\right) dz
 \end{equation}
 \end{subequations}
-
-$L_{g,z}\left(x,y,\Omega_z\right)$ is the axial transverse leakage source term for plane $z$.  To simplify the source term, the axial transverse leakage term is often handled isotropically.  This is done by averaging over angle:
-
+where a superscript $Z$ indicates the average of a quantity over a given plane.  The $z$-component of the streaming can now be moved to the right-hand side of the equation and treated as a source term, giving a 2D transport problem which could be solved with a variety of methods:
+\begin{subequations}
+\begin{dmath}
+{\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + \Omega_y\frac{\partial \psi_{g}^Z}{\partial y}} + {\Sigma_{t,g}\left(x,y\right)\psi_{g}^Z\left(x,y,\bm\Omega\right)} = {q_{g}^Z\left(x,y\right) + L_{g}^Z\left(x,y,\Omega_z\right)}
+\end{dmath}
+\begin{dmath}
+q_{g}^Z\left(x,y\right) = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g'}^Z\left(x,y\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^Z\left(x,y\right)}{4\pi}}
+\end{dmath}
 \begin{equation}
-L_{g,z}\left(x,y\right) = \frac{1}{4\pi}\intop L_{g,z}\left(x,y,\Omega_z\right) \approx \frac{J_{g,z_{i-\frac{1}{2}}} - J_{g,z_{i+\frac{1}{2}}}}{4\pi\Delta z_i}
+L_{g}^Z\left(x,y,\Omega_z\right) = \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k-\frac{1}{2}}} - \psi_{g,z_{k+\frac{1}{2}}}\right)
 \end{equation}
-
-Other methods exist that allow the axial transverse leakage source to maintain its angular dependence\todo{Cite Blake and others}, but this work always used the isotropic treatment for the sake of simplicity and efficiency.
+\end{subequations}
+where $L_{g}^Z\left(x,y,\Omega_z\right)$ is the axial transverse leakage source term for plane $z$.  To simplify the source term, the axial transverse leakage term is often handled isotropically.  This is done by averaging over angle:
+\begin{equation}
+L_{g}^Z\left(x,y\right) = \frac{1}{4\pi}\intop L_{g}^Z\left(x,y,\Omega_z\right) \approx \frac{J_{g,z_{k-\frac{1}{2}}} - J_{g,z_{k+\frac{1}{2}}}}{4\pi\Delta z_k}
+\end{equation}
+where $J_{z_{i\pm \frac{1}{2}}}$ is the current at the top ($+$) or bottom ($-$) of the plane.  This eliminates the need for storing all the angluar fluxes on the top and bottom of every plane.  Other methods exist that allow the axial transverse leakage source to maintain its angular dependence without storing the angular fluxes\todo{Cite Blake and others}, but these methods are not discussed here since they were not used by this work.
 
 \subsection{Axial Equations}
 
-The axial equations can be derived in a manner similar to the radial equations.  We begin with equation \ref{e:multigroupboltzmann} and average over an x-y area:
-
-\begin{subequations}
+The axial equations can be derived in a manner similar to the radial equations.  Again, we begin with the multi-group approximation shown in equation \ref{e:multigroupboltzmann}.  This time, we integrate in both the x and y directions over intervals $x \in \left[x_{i-\frac{1}{2}},x_{i+\frac{1}{2}}\right]$ and $y \in \left[y_{j-\frac{1}{2}},y_{j+\frac{1}{2}}\right]$, giving the following equations in the axial direction, which are analogous to the radial equations in the previous section:
+\begin{subequations}\label{e:2D1DaxialEq}
 \begin{dmath}
-{\Omega_z \frac{\partial \psi_{g,x,y}}{\partial z}} + {\Sigma_{t,g}\left(z\right)\psi_{g,x,y}\left(z,\bm\Omega\right)} = q_{g,x,y}\left(z,\Omega_x,\Omega_y\right) + {L_{g,x,y}\left(z,\Omega_x,\Omega_y\right)}
+{\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + {\Sigma_{t,g}^{XY}\left(z\right)\psi_{g}^{XY}\left(z,\bm\Omega\right)} = q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) + {L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)}
 \end{dmath}
 \begin{dmath}
-q_{g,x,y}\left(z,\Omega_x,\Omega_y\right) = {\frac{1}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \Sigma_{s,g'\rightarrow g,x,y}\left(z,\bm\Omega'\cdot\bm\Omega\right)\psi_{g',x,y}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g,x,y}}{4\pi}\sum_{g'=1}^G\intop_{4\pi}\nu\Sigma_{f,g',x,y}\left(z\right)\psi_{g',x,y}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g,x,y}\left(z\right)}{4\pi}}
+q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = {\frac{1}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \Sigma_{s,g'\rightarrow g}^{XY}\left(z,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^{XY}}{4\pi}\sum_{g'=1}^G\intop_{4\pi}\nu\Sigma_{f,g'}^{XY}\left(z\right)\psi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^{XY}\left(z\right)}{4\pi}}
 \end{dmath}
 \begin{dmath}
-L_{g,x,y}\left(z,\Omega_x,\Omega_y\right) = {\frac{\Omega_x}{\Delta x_i \Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}} \left(\psi_{g,x_{i-\frac{1}{2}},y_i} - \psi_{g,x_{i+\frac{1}{2}},y_i} dy\right)} + {\frac{\Omega_y}{\Delta x_i \Delta y_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \left(\psi_{g,x_i,y_{i-\frac{1}{2}}} - \psi_{g,x_i,y_{i+\frac{1}{2}}} dx\right)}
+L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = {\frac{\Omega_x}{\Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}} \left(\psi_{g,x_{i-\frac{1}{2}}}\left(y\right) - \psi_{g,x_{i+\frac{1}{2}}}\left(y\right) dy\right)} + {\frac{\Omega_y}{\Delta x_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \left(\psi_{g,y_{i-\frac{1}{2}}}\left(x\right) - \psi_{g,y_{i+\frac{1}{2}}}\left(x\right) dx\right)}
 \end{dmath}
+\begin{equation}\label{e:2D1DaxFluxDef}
+\psi_g^{XY} = \frac{1}{\Delta_i \Delta_j} \intop_{y_{j-\frac{1}{2}}}^{y_{j+\frac{1}{2}}} \intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \psi_g\left(x,y,z,\bm{\Omega}\right) dx dy
+\end{equation}
 \end{subequations}
+where a superscript $XY$ now corresponds to a particular x- and y-region which extends the full height of the problem in the z-direction.  Again, it is assumed that the cross-sections are constant in the x- and y-directions inside the region of integration.  How this is accomplished will be discussed in more detail when discussing MPACT's implementation of SP$_3$ and CMFD.
 
-As with the radial equations, we can again treat the transverse leakage source as being isotropic by averaging over angle:
+As with the radial equations, we can treat the transverse leakage source isotropically by averaging over angle:
 
 \begin{dmath}
-{L_{g,x,y}\left(z\right)} = {\frac{1}{4\pi}\intop_{4\pi} L_{g,x,y}\left(z,\Omega_x,\Omega_y\right)} \approx {\frac{1}{4\pi\Delta x_i\Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}}\left( J_{g,x_{i-\frac{1}{2}},y_i}\left(z\right) - J_{g,x_{i+\frac{1}{2}},y_i}\left(z\right)\right)dy} + {\frac{1}{4\pi\Delta x_i\Delta y_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}}\left( J_{g,x_i,y_{i-\frac{1}{2}}}\left(z\right) - J_{g,x_i,y_{i+\frac{1}{2}}}\left(z\right)\right)dx}
+{L_{g}^{XY}\left(z\right)} = {\frac{1}{4\pi}\intop_{4\pi} L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)} \approx {\frac{1}{4\pi\\Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}}\left( J_{g,x_{i-\frac{1}{2}},y_i}\left(z\right) - J_{g,x_{i+\frac{1}{2}},y_i}\left(z\right)\right)dy} + {\frac{1}{4\pi\Delta x_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}}\left( J_{g,x_i,y_{i-\frac{1}{2}}}\left(z\right) - J_{g,x_i,y_{i+\frac{1}{2}}}\left(z\right)\right)dx}
 \end{dmath}
 
-Again, methods have been developed to angle the angle-dependence of the radial transverse leakage source\todo{Cite Shane and anyone else who has done it}, but this work will assume isotropic radial transverse leakage.
-\todo{Clean up notation! Radial too!}
+Again, methods have been developed to angle the angle-dependence of the radial transverse leakage source\todo{Cite Shane and anyone else who has done it}, but this work used only isotropic radial leakage.
 
 \section{Implementation}
 
 Now that the general 2D/1D scheme has been described, some attention should be given to the details of its implementation in MPACT.  Figure \ref{f:2d1d-flowchart} shows the calculation flow used by MPACT.  The first step is to perform a global 3D CMFD calculation to obtain pin-averaged flux and interface currents between each cell.  Next, the axial solver uses the radial currents calculated by CMFD as a radial transverse leakage source to obtain an axial transverse leakage source for the radial solver.  Finally, 2D MOC is used as the radial solver to obtain a solution with sub-pin resolution in each plane.
 
-\begin{figure}
-\centering
-\input{../figs/2d1d-flowchart.tex}
-\caption{Calculation flow for 2D/1D scheme}\label{f:2d1d-flowchart}
+\begin{figure}[h]
+  \centering
+  \input{../figs/2d1d-flowchart.tex}
+  \caption{Calculation flow for 2D/1D scheme}\label{f:2d1d-flowchart}
 \end{figure}
+
+Now that the general 2D/1D scheme has been described, some attention should be given to the details of its implementation in MPACT.  Figure \ref{f:2d1d-flowchart} shows the calculation flow used by MPACT.  The first step is to perform a global 3D CMFD calculation to obtain pin-averaged flux and interface currents between each cell.  Next, the axial solver uses the radial currents calculated by CMFD as a radial transverse leakage source to obtain an axial transverse leakage source for the radial solver.  Finally, 2D MOC is used as the radial solver to obtain a solution with sub-pin resolution in each plane.
 
 \subsection{3D Sub-plane CMFD}
 
-The CMFD method was originally implemented in MPACT just as described in section \todo{section num}.  To do this, each pin cell is homogenized using the quantities defined in equation \ref{e:CMFDhomogTerms} in every plane in the model.  The radial coupling coefficients defined in equation \ref{e:CMFDcouplingCoeffs} are obtained by calculating the current at the interface between each pair of pin cells using the 2D MOC sweeper, while the axial coupling coefficients are obtained from the axial currents calculated by the axial solve during the previous iteration.  The matrix for the 3D multi-group system can then be set up and solved, typically using the generalized Davidson eigenvalue solver.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{oimagefile}o
 
-In addition to this traditional 3D CMFD, MPACT also has the capability to use the sublpane scheme\todo{citations}.  This scheme was first implemented in the DeCART code to allow users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  This eliminated some convergence difficulties associated with thin 2D planes \todo{citation?} and reduced the computational burden of performing MOC on many thin planes.  However, the sub-plane scheme is also being employed as a framework to develop new control rod decusping methods (discussed in more detail in chapter \ref{chap:cusping}).
+The CMFD method was originally implemented in MPACT just as described in section \ref{ss:CMFD}.  To do this, each pin cell is homogenized using the quantities defined in equation \ref{e:CMFDhomogTerms} in every plane in the model.  The radial coupling coefficients defined in equation \ref{e:CMFDcouplingCoeffs} are obtained by calculating the current at the interface between each pair of pin cells using the 2D MOC sweeper, while the axial coupling coefficients are obtained from the axial currents calculated by the axial solve during the previous iteration.  The matrix for the 3D multi-group system can then be set up and solved, typically using the generalized Davidson eigenvalue solver.
+
+In addition to this traditional 3D CMFD, MPACT also has the capability to use the sublpane scheme \cite{DeCARTsubplane,ICAPPcontrolRodDecuspingNTRACER}.  This scheme was first implemented in the DeCART code to allow users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  This eliminated some convergence difficulties associated with thin 2D planes \todo{citation?} and reduced the computational burden of performing MOC on many thin planes.  However, the sub-plane scheme is also being employed as a framework to develop new control rod decusping methods (discussed in more detail in chapter \ref{chap:cusping}).
 
 
 \subsubsection{Homogenization}
@@ -101,7 +116,7 @@ The projection of the CMFD flux back to the 2D planes must also account for the 
 
 The calculation flow for 3D CMFD is shown in figure \ref{f:CMFD-flowchart}.
 
-\begin{figure}
+\begin{figure}[h]
   \centering
   \input{../figs/CMFD-flowchart.tex}
   \caption{Calculation flow for 3D sub-plane CMFD}\label{f:CMFD-flowchart}
