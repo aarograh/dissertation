@@ -64,7 +64,7 @@ classdef FixedSourceSolverClass < handle
             obj.converged = false;
             inner=0;
             if ~exist('convcrit','var')
-                convcrit=1.0e-5;
+                convcrit=1.0e-3;
             end
             
             while ~obj.converged
