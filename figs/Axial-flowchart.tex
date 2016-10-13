@@ -5,14 +5,21 @@
 
 % Nodal
 \node (radialTL) [process, right of=start, xshift=2.5cm] {Calculate radial transverse leakage source};
-\node (sp3) [process, below of=radialTL] {1D SP$_3$ Calculation};
+\node (sp3-0) [process, below of=radialTL] {Solve 0th moment equation};
+\node (sp3-2) [process, below of=sp3-0] {Solve 2nd moment equation};
+\node (convCheck) [decision, below of=sp3-2, yshift=-1.5cm] {Converged?};
 
 % Stop
-\node (stop) [startstop, right of=sp3, xshift=2.5cm] {Stop};
+\node (stop) [startstop, right of=convCheck, xshift=2.5cm] {Stop};
 
 % Basic Arrows
 \draw [arrow] (start) -- (radialTL);
-\draw [arrow] (radialTL) -- (sp3);
-\draw [arrow] (sp3) -- (stop);
+\draw [arrow] (radialTL) -- (sp3-0);
+\draw [arrow] (sp3-0) -- (sp3-2);
+\draw [arrow] (sp3-2) -- (convCheck);
+\draw [arrow] (convCheck) -- node[anchor=north] {yes} (stop);
+
+% Fancy Arrows
+\draw [arrow] (convCheck) -| node[anchor=north] {no} ([xshift=-1.5cm]sp3-2.west) |- (sp3-0);
 
 \end{tikzpicture}
