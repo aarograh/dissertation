@@ -237,7 +237,7 @@ A wide variety of numerical methods exist to solve the transport equation, but a
 
 All the work discussed in the following sections makes use of deterministic methods.  There are many different deterministic methods, but only the ones relevant to this work will be discussed in the coming sections.
 
-\subsection{Method of Characteristics}
+\subsection{Method of Characteristics}\label{ss:MOCtheory}
 
 One method that is commonly used to solve the transport equation is the Method of Characteristics (MOC).  This method allows the transport equation to be solved along a characteristic direction with limited approximations, making it useful for complicated geometries such as those found in nuclear reactors.  Doing this along many lines for a variety of angles and integrating allows an accurate calculation of the scalar flux for large, geometrically complex problems, making MOC useful for many reactor calculations.  This section focuses on a detailed derivation of MOC.
 
@@ -311,19 +311,6 @@ Once $\psi_{out}$ has been calculated at the edge of a region, it can be used as
 
 \todo{integrating to get scalar flux}
 \todo{volume considerations}
-
-\subsection{Source Iteration}
-
-\todo{Is this needed?}
-
-Using MOC, fixed source transport problems can be solved.  However, in realistic calculations it is rare that the scattering or fission sources are known.  In order to solve the transport equation for problems with an unknown source distribution, the equation can be re-formulated as follows:
-\hl{Insert source iteration form of the equation}
-
-Now making some initial guess for \hl{$\phi^-1$} allows us to solve for \hl{$\phi^0$}.  This process can be repeated for all \hl{$\phi^n$} using the previous iterate \hl{variable$\phi^{n-1}$}.  This method is known as Source Iteration (SI).
-
-Source iteration also has a convenient physical interpretation.  Selecting zero as the initial guess means that the first iterate \hl{$\phi^0$} is simply equal to the sum of sources of new neutrons.  Plugging the expression for \hl{$\phi^0$} into the equation for \hl{$\phi^1$}, we find that the \hl{$\phi^1$} is 
-
-\hl{make sure to talk about how ridiculously slowly it can converge.  Find some references for the math if possible}
 
 \subsection{Coarse-Mesh Finite Difference}\label{ss:CMFD}
 

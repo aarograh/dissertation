@@ -8,7 +8,7 @@
 \node (begin) [process, below of=init] {Set $n=0$};
 \node (source) [process, below of=begin] {Calculate fission and axial transverse leakage sources};
 \node (scatSource) [process, below of=source] {Calculate scattering source};
-\node (MOC) [process, below of=scatSource] {2D MOC sweep over each energy group};
+\node (MOC) [process, below of=scatSource] {2D MOC sweep for each plane};
 \node (MOCdone) [decision, below of=MOC, yshift=-1.5cm] {$n = N_{inners}$?};z
 \node (stop) [startstop, right of=MOCdone, xshift=2.5cm] {Stop};
 
