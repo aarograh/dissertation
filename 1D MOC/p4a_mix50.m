@@ -65,6 +65,8 @@ fssSolver(3).solve(0, 0); %110 Iteration as 1.0e-5
 names(3) = {sprintf('Unrodded')};
 
 %% Generate Plots
+xgrid = linspace(min(fssSolver(1).mesh.xsedges),max(fssSolver(1).mesh.xsedges),...
+    (max(fssSolver(1).mesh.xsedges)-min(fssSolver(1).mesh.xsedges))/input.pitch + 1);
 
 % Angular Flux Plots
 ipol=input.npol/2;
@@ -81,8 +83,8 @@ for igroup=1:fssSolver(1).xsLib.ngroups
         tmp = max(tmp,max(fssSolver(i).solution.angflux(1,igroup,ipol,:)));
     end
     ax = gca;
-    ax.XAxis.TickValues = fssSolver(1).mesh.xsedges;
-    ax.XAxis.MinorTickValues = fssSolver(1).mesh.fsredges;
+    ax.XAxis.TickValues = xgrid;
+    ax.XAxis.MinorTickValues = fssSolver(1).mesh.xsedges;
     ax.XTickLabelRotation = 45;
     axis([min(fssSolver(1).mesh.xsedges), max(fssSolver(1).mesh.xsedges), 0.0, 1.05*tmp]);
     xlabel('Position (cm)');
@@ -104,8 +106,8 @@ for i=1:length(fssSolver)
     tmp = max(tmp,max(fssSolver(i).solution.scalflux(igroup,:,1)));
 end
 ax = gca;
-ax.XAxis.TickValues = fssSolver(1).mesh.xsedges;
-ax.XAxis.MinorTickValues = fssSolver(1).mesh.fsredges;
+ax.XAxis.TickValues = xgrid;
+ax.XAxis.MinorTickValues = fssSolver(1).mesh.xsedges;
 ax.XTickLabelRotation = 45;
 axis([min(fssSolver(1).mesh.xsedges), max(fssSolver(1).mesh.xsedges), 0.0, 1.05*tmp]);
 xlabel('Position (cm)')
