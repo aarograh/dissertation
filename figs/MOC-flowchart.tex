@@ -10,7 +10,7 @@
 \node (scatSource) [process, below of=source] {Calculate scattering source};
 \node (MOC) [process, below of=scatSource] {2D MOC sweep over each energy group};
 \node (MOCdone) [decision, below of=MOC, yshift=-1.5cm] {$n = N_{inners}$?};z
-\node (stop) [startstop, below of=MOCdone, yshift=-1.5cm] {Stop};
+\node (stop) [startstop, right of=MOCdone, xshift=2.5cm] {Stop};
 
 % Basic Arrows
 \draw [arrow] (start) -- (init);
@@ -21,7 +21,7 @@
 \draw [arrow] (MOC) -- (MOCdone);
 
 % Fancy Arrows
-\draw [arrow] (MOCdone) -| node[anchor=north] {no} ([xshift=1.5cm]MOC.east) |- (scatSource);
-\draw [arrow] (MOCdone) -- node[anchor=west] {yes} (stop);
+\draw [arrow] (MOCdone) -| node[anchor=north] {no} ([xshift=-1.5cm]MOC.west) |- (scatSource);
+\draw [arrow] (MOCdone) -- node[anchor=north] {yes} (stop);
 
 \end{tikzpicture}
