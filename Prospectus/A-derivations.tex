@@ -1,10 +1,47 @@
 \section{Simplified Spherical Harmonics}\label{appsec:SPn}
 
-First, the SP$_3$ method will be derived from equation \ref{e:multigroupboltzmann}.  From these results, simplifications can be made to easily obtain the SP$_1$ equations as well.
+This section will provide a detailed derivation of the SP$_3$ equations.  The SP$_1$ equations are easily obtained by neglecting higher order moments of the flux, and SP$_N$ approximations of order greater than 3 are easily obtained by following the same procedure.  These higher order approximations are not of interest because they were not used in this work and only marginally improve on the accuracy of SP$_3$.
 
-\subsection{SP$_3$}\label{appsubsec:SP3}
+To begin, we start with the mono-energetic planar geometry transport equation with anisotropic scattering:
 
+\begin{equation}
+\mu\frac{\partial \psi}{\partial x} + \Sigma_{t}\left(x\right) \psi\left(x,\mu\right) = \intop_{-1}^1 \Sigma_{s}\left(x,\mu,\mu'\right) \psi\left(x,\mu'\right) d\mu' + \frac{Q\left(x\right)}{2}
+\end{equation}
 
+Now we assume that the angular flux and scattering cross-sections are both expanded in terms of Legendre polynomials, with these expansions truncated at the $N$th term as follows:
+
+\begin{subequations}
+\begin{equation}
+\psi\left(x,\mu\right) \approx \sum_{n=0}^N \frac{2n+1}{2} \psi_{n}\left(x\right) P_n\left(\mu\right)
+\end{equation}
+\begin{equation}
+\Sigma_{s}\left(x,\mu,\mu'\right) \approx \sum_{n=0}^N \frac{2n+1}{2} P_n\left(\mu\right)P_n\left(\mu'\right)\Sigma_{s,n}\left(x\right)
+\end{equation}
+\end{subequations}
+
+Substituting these expansions into the transport equation, multiplying by $P_n\left(\mu\right)$, and integrating, we obtain the following:
+
+\begin{equation}\label{e:SPnGeneral}
+\frac{d}{dx}\left[\frac{n+1}{2n+1}\psi_{n+1}\left(x\right) + \frac{n}{2n+1}\psi_{n-1}\left(x\right)\right] + \Sigma_{t}\left(x\right) \psi_{n}\left(x\right) = \Sigma_{s,n}\left(x\right) \psi_n\left(x\right) + Q\left(x\right)\delta_{0,n}
+\end{equation}
+
+Now to obtain the SP$_3$ equations, we solve equation \ref{e:SPnGeneral} for moments 0-3:
+
+\begin{align}
+\frac{d\psi_1}{dx} + \Sigma_t\left(x\right)\psi_0\left(x\right) = \Sigma_{s,0}\left(x\right) \psi_0\left(x\right) + Q\left(x\right)
+\end{align}
+
+\begin{align}
+\frac{d}{dx}\left[\frac{2}{3}\psi_2\left(x\right) + \frac{1}{3}\psi_0\left(x\right)\right] + \Sigma_t\left(x\right)\psi_1\left(x\right) = \Sigma_{s,1}\left(x\right)\psi_1\left(x\right)
+\end{align}
+
+\begin{align}
+\frac{d}{dx}\left[\frac{3}{5}\psi_3\left(x\right) + \frac{2}{5}\psi_1\left(x\right)\right] + \Sigma_t\left(x\right) \psi_2\left(x\right) = \Sigma_{s,2}\left(x\right) \psi_2\left(x\right)
+\end{align}
+
+\begin{align}
+\frac{3}{7}\frac{d\psi_2}{dx} + \Sigma_t\left(x\right)\psi_3\left(x\right) = \Sigma_{s,3}\left(x\right)\psi_3\left(x\right)
+\end{align}
 
 \subsection{SP$_1$}\label{appsubsec:SP1}
 
