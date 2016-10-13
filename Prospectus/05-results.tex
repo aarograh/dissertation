@@ -64,11 +64,3 @@ Like problem 4, the reference case was run with 58 planes while the decusping ca
 \end{table}
 
 \todo{discussion}
-
-\section{1D MOC Results}
-
-Since rod cusping is caused by an overly simplistic homogenization of two materials, a 1D MOC code was developed to analyze the impacts of rod cusping on the angular flux.  Understanding the response of the angular flux to homogenized cross-sections can then be used to develop a more effective decusping method that addresses the angular flux during the calculation instead of applying corrections to the cross-sections or scalar flux after a calculation.  This code is capable of performing both k-eigenvalue and fixed fission source calculations.  This allows the resulting fission source from a calculation to be reused in subsequent calculations to isolate the effects of the cross-section homogenization.
-
-Two begin this analysis, VERA Problem 4 was used as a starting point.  The center row of pins across all three assemblies was modeled in 1D, creating a model that had heterogeneous representations of fuel pins, instrument tubes, and control rods.  The control rod cross-sections were then mixed with the moderator cross-sections to simulate a partially inserted control rod.  \todo{Mention cross-section}
-
-With this model set up, 
