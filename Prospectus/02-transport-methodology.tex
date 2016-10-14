@@ -467,7 +467,7 @@ Each of these equations is similar in form to the P$_1$ equation and can be solv
 
 \subsection{Collision Probabilities Method}
 
-The Collision Probabilities (CP) method is a way of calculating flux spectra.  This method is used in MPACT to calculate the radial flux profile in a pin cell.  This section will introduce the concept behind the CP method and how a flux profile can be calculated from it.  A detailed derivation and specifics of MPACT's implementation are left to appendix \ref{appsec:CP}.
+One method that can be used to calculate flux spectra inside a pin cell is the method of Collision Probabilities (CP) \cite{NEHandbook-LatticePhysics}.  This method is used in MPACT as part of the control rod decusping methods described in Chapter \ref{chap:cusping}.  The details of the derivation will be left to Appendix \ref{app:derivations}, but a brief overview of the method will be presented here that focuses on a 1D radial calculation for a single pin cell.
 
 To begin, the multi-group transport equation \ref{e:multigroupboltzmann} can be rewritten so that the entire right-hand side is a single source term:
 \begin{subequations}\label{e:CPtransport}
@@ -491,4 +491,6 @@ Now the total source of neutrons in each region $r$ can be calculated by multipl
 \begin{equation}\label{e:CPflux}
 \phi_{g,r} = \sum_{r'=1}^R T_{g,r'\rightarrow r} q_{g,r'} V_{r'}
 \end{equation}
-Equation \ref{e:CPflux} gives the general solution to any problem using the CP method.  The only remaining work that must be done is to calculate the transfer matrices $\underline{\underline{T_g}}$, which is done in detail for a pin cell in the appendix.
+Equation \ref{e:CPflux} gives the general solution to any problem using the CP method.  The only remaining work that must be done is to calculate the transport matrix $\underline{\underline{T_g}}$ for each group, which is done in detail for a pin cell in the appendix.
+
+Several important details about this method shout be noted.  First, it is common to use a buffer region in the calculation.  When applying the CP method to a fuel pin, the buffer region is not necessary because the fuel pin has its own fission source to drive the problem.  However, when using this method on a different pin cell such as a control rod, it is useful to place a homogenized mixture of fuel and moderator around the outside of the pin cell.  This provides a source to drive the problem.  Second, because the calculation is a 1D radial calculation, the moderator region in the rectangular pin cell must be cylindricized.  This is done by transforming the moderator region into a ring with the same inner radius and volume as the rectangular moderator region.  Finally, the boundary conditions assumed on the edge of the problem are ``white'' boundary conditions.  A reflecting boundary condition assumes that all neutron exiting the problem return at the same energy and traveling in a reflected direction.  However, because the boundary of this problem is a circle, it is possible for a neutron to be born at such an angle that it continuously reflects off the boundary without ever traveling toward the fuel.  The white boundary condition takes all exiting neutrons and returns them isotropically to prevent this error.

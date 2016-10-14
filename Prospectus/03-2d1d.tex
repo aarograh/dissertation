@@ -44,7 +44,7 @@ where $L_{g}^Z\left(x,y,\Omega_z\right)$ is the axial transverse leakage source 
 \begin{equation}
 L_{g}^Z\left(x,y\right) = \frac{1}{4\pi}\intop L_{g}^Z\left(x,y,\Omega_z\right) \approx \frac{J_{g,z_{k-\frac{1}{2}}} - J_{g,z_{k+\frac{1}{2}}}}{4\pi\Delta z_k}
 \end{equation}
-where $J_{z_{i\pm \frac{1}{2}}}$ is the current at the top ($+$) or bottom ($-$) of the plane.  This eliminates the need for storing all the angluar fluxes on the top and bottom of every plane.  Other methods exist that allow the axial transverse leakage source to maintain its angular dependence without storing the angular fluxes\todo{Cite Blake and others}, but these methods are not discussed here since they were not used by this work.
+where $J_{z_{i\pm \frac{1}{2}}}$ is the current at the top ($+$) or bottom ($-$) of the plane.  This eliminates the need for storing all the angluar fluxes on the top and bottom of every plane.  Other methods exist that allow the axial transverse leakage source to maintain its angular dependence without storing the angular fluxes \cite{KelleyBlakeThesis}, but these methods are not discussed here since they were not used by this work.
 
 \subsection{Axial Equations}\label{ss:2d1daxialEq}
 
@@ -71,7 +71,7 @@ As with the radial equations, we can treat the transverse leakage source isotrop
 {L_{g}^{XY}\left(z\right)} = {\frac{1}{4\pi}\intop_{4\pi} L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)} \approx {\frac{1}{4\pi\\Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}}\left( J_{g,x_{i-\frac{1}{2}},y_i}\left(z\right) - J_{g,x_{i+\frac{1}{2}},y_i}\left(z\right)\right)dy} + {\frac{1}{4\pi\Delta x_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}}\left( J_{g,x_i,y_{i-\frac{1}{2}}}\left(z\right) - J_{g,x_i,y_{i+\frac{1}{2}}}\left(z\right)\right)dx}
 \end{dmath}
 
-Again, methods have been developed to angle the angle-dependence of the radial transverse leakage source\todo{Cite Shane and anyone else who has done it}, but this work used only isotropic radial leakage.
+Again, methods have been developed to angle the angle-dependence of the radial transverse leakage source \cite{StimpsonShaneThesis}, but this work used only isotropic radial leakage.
 
 \section{Implementation}
 
@@ -83,11 +83,11 @@ Again, methods have been developed to angle the angle-dependence of the radial t
 
 Now that the general 2D/1D scheme has been described, some attention should be given to the details of its implementation in MPACT.  Figure \ref{f:2d1d-flowchart} shows the calculation flow used by MPACT.  The first step is to perform a global 3D CMFD calculation to obtain pin-averaged flux and interface currents between each cell.  Next, the axial solver uses the radial currents calculated by CMFD as a radial transverse leakage source to obtain an axial transverse leakage source for the radial solver.  Finally, 2D MOC is used as the radial solver to obtain a solution with sub-pin resolution in each plane.
 
-\subsection{3D Sub-plane CMFD}
+\subsection{3D Sub-plane CMFD}\label{ss:2d1d-3dcmfd}
 
 The CMFD method was originally implemented in MPACT just as described in section \ref{ss:CMFD}.  To do this, each pin cell is homogenized using the quantities defined in equation \ref{e:CMFDhomogTerms} in every plane in the model.  The radial coupling coefficients defined in equation \ref{e:CMFDcouplingCoeffs} are obtained by calculating the current at the interface between each pair of pin cells using the 2D MOC sweeper, while the axial coupling coefficients are obtained from the axial currents calculated by the axial solve during the previous iteration.  The matrix for the 3D multi-group system can then be set up and solved, typically using the generalized Davidson eigenvalue solver.
 
-In addition to this traditional 3D CMFD, MPACT also has the capability to use the sublpane scheme \cite{DeCARTsubplane,ICAPPcontrolRodDecuspingNTRACER}.  This scheme was first implemented in the DeCART code to allow users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  This eliminated some convergence difficulties associated with thin 2D planes \todo{citation?} and reduced the computational burden of performing MOC on many thin planes.  However, the sub-plane scheme is also being employed as a framework to develop new control rod decusping methods (discussed in more detail in chapter \ref{chap:cusping}).
+In addition to this traditional 3D CMFD, MPACT also has the capability to use the sub-plane scheme.  This scheme was first developed by Cho et al. for the DeCART code \cite{DeCARTsubplane}.  Thin MOC planes are capable of causing instability in the 2D/1D scheme, but are sometimes required to maintain accuracy.  The sub-plane scheme allows users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  Later, the developers of the nTRACER code \cite{RyuBEAVRSnTRACER2015} also used the sub-plane scheme.  In addition to how it was used in DeCART, nTRACER also uses the sub-plane scheme as part of its rod decusping methods \cite{ICAPPcontrolRodDecuspingNTRACER}.  MPACT also uses sub-plane as part of a decusping treatment, which will be discussed in greater detail in chapter \ref{chap:cusping}.  This section will deal only with the basics of the sub-plane method as it was used in DeCART.
 
 
 \subsubsection{Homogenization}
@@ -103,7 +103,7 @@ where superscripts indicate which iteration the values are taken from and $N_{sp
 
 \subsubsection{Coupling Coefficients}
 
-In addition to the homogenized cell terms, the coupling coefficients described by equations \ref{e:CMFDinterface} and \ref{e:CMFDcouplingCoeffs} must be calculated for each sublpane.  To maintain consistency, the area-averaged current calculated by the radial sweeper must be preserved across the sub-surfaces used by the sub-plane scheme.  Thus, the current calculated by the radial sweeper at an interface is used at the corresponding interfaces for all sub-planes in that plane.  Additionally, to maintain consistency, this requires that the cell-homogenized flux used in the calculation of the diffusion coefficients be defined for the entire MOC plane as in equation \ref{e:CMFDhomogFlux} rather than using the sub-plane scaling factor for each sub-plane.
+In addition to the homogenized cell terms, the coupling coefficients described by equations \ref{e:CMFDinterface} and \ref{e:CMFDcouplingCoeffs} must be calculated for each sub-plane.  To maintain consistency, the area-averaged current calculated by the radial sweeper must be preserved across the sub-surfaces used by the sub-plane scheme.  Thus, the current calculated by the radial sweeper at an interface is used at the corresponding interfaces for all sub-planes in that plane.  Additionally, to maintain consistency, this requires that the cell-homogenized flux used in the calculation of the diffusion coefficients be defined for the entire MOC plane as in equation \ref{e:CMFDhomogFlux} rather than using the sub-plane scaling factor for each sub-plane.
 
 The axial coupling coefficient can be treated in a more straightforward manner.  Because the 1D axial solvers use the same pin-homogenized mesh as the CMFD solver, axial currents are naturally calculated at the top and bottom of each of the sub-planes.  Thus, these currents can be used together with the sub-planes fluxes to calculate sub-plane--dependent axial coupling coefficients.
 
