@@ -93,7 +93,7 @@ Using the definitions above, equation \ref{e:ssboltzmann} can be operated on by 
 \begin{dmath}
 {\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(\bm x\right)\psi_g\left(\bm x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(\bm x,\bm \Omega'\right) d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \intop_{4\pi} \nu \Sigma_{f,g'}\left(\bm x\right) \psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega' + \frac{Q_g\left(\bm x\right)}{4\pi}}.
 \end{dmath}
-\begin{equation}
+\begin{equation}\label{e:multigroupboltzmannBC}
 \psi_g\left(\bm x_b, \bm{\Omega}\right) = \frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi^b\left(\bm x_b, E, \bm{\Omega}\right)dE\ ,\quad \bm{\Omega}\cdot \bm n < 0
 \end{equation}
 \end{subequations}
@@ -136,8 +136,7 @@ Applying this discretization to the multi-group transport equation \ref{e:multig
 
 \subsection{Diffusion Approximation}
 
-Another approximation that can be made to the angular dependence of the transport equation is the diffusion approximation.  To derive this approximation, we again being with the multi-group transport equation from equation \ref{e:multigroupboltzmann}.  First, we obtain the P$_1$ form of the equation by operating on it by $\intop\left(\cdot\right)d\Omega$ and $\intop\left(\cdot\right)\Omega_i d\Omega$.  To simplify these integrals, we make use of the following identities for integrating over $\bm\Omega$:
-
+Another approximation that can be made to the angular dependence of the transport equation is the diffusion approximation.  To derive this approximation, we again begin with the multi-group transport equation from equation \ref{e:multigroupboltzmann}.  First, we obtain the P$_1$ form of the equation by operating on it by $\intop\left(\cdot\right)d\Omega$ and $\intop\left(\cdot\right)\Omega_i d\Omega$.  To simplify these integrals, we make use of the following identities for integrating over $\bm\Omega$:
 \begin{subequations}\label{e:omegaIdentities}
 \begin{equation}
 \intop_{4\pi} d\Omega = 4\pi
@@ -152,9 +151,7 @@ Another approximation that can be made to the angular dependence of the transpor
 \intop_{4\pi} \Omega_i\Omega_j\Omega_k d\Omega = 0
 \end{equation}
 \end{subequations}
-
 We must also assume that the angular flux is linearly anisotropic.  This leads to the following expression of the angular flux as a function of the scalar flux $\phi$ and current $J$:
-
 \begin{subequations}
 \begin{equation}
 \psi_g\left(\bm x,\bm\Omega\right) \approx \frac{1}{4\pi}\left(\phi_g\left(\bm x\right) + 3\bm\Omega \cdot \bm J\left(\bm x\right)\right)
@@ -166,9 +163,7 @@ We must also assume that the angular flux is linearly anisotropic.  This leads t
 J_g\left(\bm x\right) = \intop_{4\pi} \psi_g\left(\bm x,\bm\Omega\right) \bm\Omega d\Omega
 \end{equation}
 \end{subequations}
-
 Applying this assumption and integrating, we obtain a coupled set of four equations for the scalar flux and the three components of the current vector.
-
 \begin{subequations}\label{e:P1transport}
 \begin{dmath}\label{e:P1transport-0th}
 \frac{d J_{x,g}}{dx} + \frac{d J_{y,g}}{dy} + \frac{d J_{z,g}}{dz} + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
@@ -185,7 +180,6 @@ Applying this assumption and integrating, we obtain a coupled set of four equati
 \end{subequations}
 
 Solving equations \ref{e:P1transport-1st-x}-\ref{e:P1transport-1st-z} for the components of the current, we obtain the following expression:
-
 \begin{subequations}\label{e:FicksLaw}
 \begin{equation}\label{e:FicksLawCurrent}
 \bm J_g\left(\bm x\right) = -D_g\left(\bm x\right) \bm\nabla \phi_g\left(\bm x\right)
@@ -194,13 +188,22 @@ Solving equations \ref{e:P1transport-1st-x}-\ref{e:P1transport-1st-z} for the co
 D_g\left(\bm x\right) = \frac{1}{3}\left(\Sigma_{t,g}-\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right)\right)^{-1}
 \end{equation}
 \end{subequations}
-
-Substituting \ref{e:FicksLawCurrent} into \ref{e:P1transport-0th} gives us the diffusion form of the transport equation, which has only the scalar flux $\phi$ and eigenvalue $\frac{1}{k_{eff}}$ as unknowns.
-
+Substituting \ref{e:FicksLawCurrent} into \ref{e:P1transport-0th} gives us the diffusion form of the transport equation, which has only the scalar flux $\phi$ and eigenvalue $\frac{1}{k_{eff}}$ as unknowns:
 \begin{dmath}\label{e:DiffusionEquation}
 -\bm\nabla \cdot D_g\left(\bm x\right) \bm \nabla\phi_g\left(\bm x\right) + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
 \end{dmath}
-\todo{boundary conditions}
+
+To derive boundary conditions, Equation \ref{e:multigroupboltzmannBC} is used, making the same linear anisotropy assumption as in the derivation of the diffusion equation itself:
+\begin{align}
+\intop_{\bm \Omega \cdot \bm n < 0} \bigg|\bm \Omega \cdot \bm n\bigg|\psi_g\left(\bm x_b, \bm \Omega\right) d\Omega &= \intop_{\bm \Omega \cdot \bm n < 0} \bigg|\bm \Omega \cdot \bm n\bigg|\psi_g^b\left(\bm x_b, \bm \Omega\right) d\Omega \nonumber \\
+\intop_{\bm \Omega \cdot \bm n < 0} \bigg|\bm \Omega \cdot \bm n\bigg| \frac{1}{4\pi} \left[\phi_g\left(\bm x_b\right) + 3\bm \Omega \cdot \bm J_g\left(\bm x_b\right)\right] d\Omega &= J^-\left(\bm x_b\right) \nonumber \\
+-\frac{1}{4\pi}\intop_{\bm \Omega \cdot \bm n < 0} \bm \Omega \cdot \bm n \left[\phi_g\left(\bm x_b\right) + 3\bm \Omega \cdot \bm J_g\left(\bm x_b\right)\right] d\Omega &= J^-\left(\bm x_b\right) \nonumber \\
+\frac{1}{4} \phi_g\left(\bm x_b\right) - \frac{1}{2} \bm n \cdot \bm J\left(\bm x_b\right) &= J^-\left(\bm x_b\right)
+\end{align}
+This is the Marshak boundary condition, which preserves the total incident flux at every point on the boundary of the system while assuming linear anisotropy.  This boundary condition can be further simplified so that the only unknown is the scalar flux $\phi_g$ by substituting equation \ref{e:FicksLawCurrent}:
+\begin{equation}\label{e:DiffusionEquationBC}
+\frac{1}{4} \phi_g\left(\bm x_b\right) + \frac{D_g\left(\bm x\right)}{2} \bm \cdot \bm \nabla \phi_g\left(\bm x_b\right) = J^-\left(\bm x_b\right)
+\end{equation}
 
 \subsection{Scattering Approximations}
 
