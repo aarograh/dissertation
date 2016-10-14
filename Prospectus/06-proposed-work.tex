@@ -1,6 +1,6 @@
 Moving forward, there are several improvements that can be made to the 2D/1D scheme with regard to the cusping problem.  Four of these improvements will be discussed in this section.  The first two are modifications to methods already in MPACT, while the second two would involve implementation of new solvers.
 
-\section{Improvements to Sub-Plane--Based Decusping techniques}
+\section{Improvements to Current Decusping Techniques}
 
 The sub-plane--based decusping solvers presented in chapters \ref{chap:cusping}-\ref{chap:results} are capable of reducing the cusping errors significantly over having no treatment.  They also provide a more general solution to the problem than the polynomial corrections that existed in MPACT previously.  However, there are at least two improvements that can be made going forward.  The first deals with approximations made in the calculation of the radial currents, and the second deals with the auxiliary solver used to generate the radial flux profiles.
 
@@ -20,27 +20,33 @@ While the current methods can be improved in the near term, they still are not a
 
 \subsection{Motivation}
 
-\begin{enumerate}[leftmargin=*]
-  \item CE Rods
-  \item BWR Control Blades
-  \item Fundamentally just correcting things after the fact
-\end{enumerate}
+There are two reasons to pursue a more general, advanced decusping technique.  The first is that there are some components which will be more difficult to model using the sub-plane--based CP decusping method.  The PWR control rods used in the Watts Bar plants and other similar reactors fit regularly into the lattice of fuel pins, resulting in a rodded pin cell of similar shape and size.  However, some plants use larger absorber rods which take up multiple positions in the lattice.  Furthermore, BWRs use control blades, which are located between fuel assemblies and do not have a convenient cylindrical shape like the PWR control rods.  Modeling components such as these using the current decusping techniques would be difficult or impossible.
+
+A second reason to develop a more advanced method is to address the cusping effects on a more fundamental level.  Current techniques in MPACT involve correcting homogenized cross-sections or scalar fluxes after a calculation.  Techniques employed by other codes, such as nTRACER, discussed in section \ref{ss:2d1d-old-decusping-methods}, directly perform MOC calculations to treat the cusping effects.  However, these calculations must be done up front, in addition to the regular 2D/1D calculation.  A more desirable method would be able to deal directly with the effects of the axial heterogeneity on the angular flux during the 2D/1D iteration scheme without performing any additional calculations, producing accurate answers for general geometries with minimal increase in computational expense.
 
 \subsection{1D MOC Results}
 
-To analyze the behavior of the angular flux in relationship to homogenized cross-sections, a 1D MOC code was written that could solve eigenvalue and fixed source problems.  This code was used to solve a 1D variation of VERA Problem 4.  The center row of pins across all three problems were modeled in the 1D code.  The pin pitch of 1.26 cm was maintained and the volume fractions of each material in the actual Problem 4 were used to calculate the thicknesses of each region.  The 1D model of the center assembly had 4 guide tubes and one instrument tube, while the other two assemblies had only empty guide tubes.
+To analyze the behavior of the angular flux in relationship to homogenized cross-sections, a 1D MOC code was written that could solve eigenvalue and fixed source problems.  This code can solve small test problems quickly while making it much easier to obtain detailed solution data, as opposed to trying to extract angular flux data from MPACT.  This section will briefly explain the code and how it performs its calculations and the test problem that was used, then present results from two different types of calculations.
 
-The four guide tubes in the center assembly could be modified to be a mixture of moderator and control rod material.  Changing this mixture and running different calculations provides some insight into the effects of the cross-section homogenization on the angular flux.  Each of these calculations used cross-sections from the C5G7 benchmark \todo{cite}.
+\subsubsection{Code and Problem Description}
 
-\subsubsection{Specified Source}
+The code is set up to take in a description of pins and materials to be used for the calculations.  For the geometry, a pin pitch is specified which is used for all pins.  Each pin consists of a list of radii.  Assuming a square pin cell, these pins are then transformed from cylindrical geometry to slab geometry while preserving the volume fraction of each material.  Thus, the thickness of the pin slab is equal to the pin pitch, but the width of the fuel material will not be equal to input radius, since the volume fractions are preserved.  One material is then specified for each region, though each material region is divided into many sub-regions for the MOC calculations.  These materials are defined by a separate cross-section library file.  This file uses the ``user library'' format supported by MPACT, which allows the user to put in macroscopic cross-sections for absorption, nu-fission, kappa-fission, chi, and scattering moments.  For all these calculations, the C5G7 benchmark cross-sections \todo{cite} were used.  These cross sections are included in Appendix \todo{ref}.
 
-The first calculations that were performed used a mixture that was 50\% control rod and 50\% moderator by volume.  First, a full eigenvalue calculation was performed to obtain a fission and scattering source distribution for the whole model.  Once this was completed, a single MOC sweep was performed using the 50-50 cross-section mixture, 100\% rodded cross-section, and 100\% moderator cross-section.  Figure \ref{f:1dmoc-fixed-50-scalflux7} shows the group 7 scalar flux for this calculation, and Figure \ref{f:1dmoc-fixed-50-angflux}
+For the MOC sweeps, a Gaussian quadrature \cite{HandbookOfMathFunctions1972} is used with 2, 4, 8, 16, or 32 polar angles, with half of the angles being used in each direction.  The MOC sweeps are done similarly to how they are done in MPACT, with the loop over energy groups being the innermost loop.  The code can be run as either a fixed source solver or an eigenvalue solver.  For the eigenvalue mode, power iteration is used after each MOC calculation to determine and updated k$_{eff}$.  The fixed source mode can be used to run either a specified number of iterations or to run until the scattering source is converged below some tolerance.  This allows some flexibility on exactly what kinds of results can be obtained.
+
+The problem used for these calculations was a 1D variation of VERA Problem 4.  The center row of pins across all three assemblies was pulled out and used for the 1D model, resulting in a row of 3$\times$17 pins with a pin pitch of 1.26 cm (the inter-assembly gap was neglected for this model).  The center assembly had 4 guide tubes in it which contained a mixture of moderator and control rod to represent a partially inserted control rod.  These partially rodded locations were the only part of the problem that had any material changes.  This allowed the effects of the cross-section homogenization to be isolated for each calculations.
+
+\subsubsection{Specified Total Source}
+
+The first set of calculations performed were done using a specified total source.  To do this, the guide tubes were filled with 50\% control rod and 50\% moderator by volume fraction, and a full eigenvalue calculation was performed.  The source distribution from this calculation (both fission and scattering source) were then passed to the the fixed source solver.  A single iteration was run using this source on three different variations of the problem: the 50-50 mixture, fully rodded, and fully unrodded.  Because the multi-group source is set up before performing any MOC sweeps, this resulted in all three of those calculations having an identical source for the MOC sweep.  The only difference between them was the cross-sections used in the guide tubes.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{../figs/1dmoc-50mix-fixedscat-scalflux7.png}
     \caption{Group 7 scalar flux comparisons for a fixed fission and scattering source calculation}\label{f:1dmoc-fixed-50-scalflux7}
 \end{figure}
+
+Figure \ref{f:1dmoc-fixed-50-scalflux7} shows the scalar flux resulting from these three calculations.  The most important thing to note in this data is that the effects of the rod are very local in the MOC calculation.  Moving through the rodded pin cell, the rodded, unrodded, and mixed cases have converged back to the same shape by the time the edge of the pin cell is reached.  This indicates that whatever treatment is used for the partially rodded cell likely does not need to worry about interference between neighboring rods because the effects are so localized.
 
 \begin{figure}[h]
     \centering
@@ -58,45 +64,79 @@ The first calculations that were performed used a mixture that was 50\% control 
     \caption{Angular flux comparisons for a fixed fission and scattering source calculation}\label{f:1dmoc-fixed-50-angflux}
 \end{figure}
 
+Figure \ref{f:1dmoc-fixed-50-angflux} shows the right-going angular flux in groups 1 (fast) and group 7 (thermal).  The group 7 angular flux behaves similarly to the group 7 scalar flux in that the effects are localized around each rod.  The three different angular flux shapes are still somewhat different at the edge of the neighboring pin cell, but have pretty much converged upon reaching the clad and fuel.  The reason for this is that the mean free path of thermal neutrons is small.  The total group 7 cross-section in the moderator is about 2.65 cm$^{-1}$, which corresponds to a mean free path of about 0.38 cm, which is less than one third of the pin pitch for a typical PWR.  Because of this, the differences between the rodded and unrodded cases are washed out quickly if the source distribution is kept the same between the two calculations.
+
+The same cannot be said for the fast flux.  The mean free path of the fast flux is about 6.3 cm, which is the width of five pin cells.  Thus, it can be seen that each of the control rods after the first builds on the effects of the previous control rod.  While the fast flux does not have a significant impact on the fission source distribution, it does impact the scattering source distribution, which is not shown in these results.
+
 \subsubsection{Fixed Fission Source}
 
+The second set of calculations that was performed used a fixed fission source, but allowed the scattering source to fully converge for each calculation.  As in the previous section, an eigenvalue calculation was completed using partially rodded cross-sections.  This was done for 25\%, 50\%, and 75\% rodded cases.  For each case, a fixed fission source calculation was done with the fully rodded and fully unrodded cross-sections.  This time, multiple iterations were allowed for each material to converge the scattering source.  This allows us to see the effects of the rod on the scattering source distribution without worrying about changes in the eigenvalue and fission source distribution.
+
 \begin{figure}[h]
+  \centering
+  \subfigure[25\% Mixture]{
     \centering
-    \subfigure[25\% Mixture]{
-        \centering
-        \includegraphics[width=0.45\textwidth]{../figs/1dmoc-25mix-angflux7.png}
-        \label{f:1dmoc-25-angflux7}
-    }
-    ~
-    \subfigure[50\% Mixture]{
-        \centering
-        \includegraphics[width=0.45\textwidth]{../figs/1dmoc-50mix-angflux7.png}
-        \label{f:1dmoc-50-angflux7}
-    }
-    ~
-    \subfigure[75\% Mixture]{
-        \centering
-        \includegraphics[width=0.45\textwidth]{../figs/1dmoc-75mix-angflux7.png}
-        \label{f:1dmoc-75-angflux7}
-    }
-    \caption{Group 7 angular flux comparisons for 25\% and 75\% mixtures}\label{f:1dmoc-angflux7}
+    \includegraphics[width=0.45\textwidth]{../figs/1dmoc-25mix-angflux7.png}
+    \label{f:1dmoc-25-angflux7}
+  }
+  ~
+  \subfigure[50\% Mixture]{
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figs/1dmoc-50mix-angflux7.png}
+    \label{f:1dmoc-50-angflux7}
+  }
+  ~
+  \subfigure[75\% Mixture]{
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figs/1dmoc-75mix-angflux7.png}
+    \label{f:1dmoc-75-angflux7}
+  }
+  \caption{Group 7 angular flux comparisons for 25\% and 75\% mixtures}\label{f:1dmoc-angflux7}
 \end{figure}
 
-\begin{enumerate}[leftmargin=*]
-  \item Done - Describe problem 4 model
-  \item Done - Describe procedure for 1-inner calculations
-  \item Done - Present results
-  \item Discuss range of effects on angular flux
-  \item Describe procedure for full FSP
-  \item Present Results - Mostly done.  Show one fast flux plot to show it's mainly just the thermal groups we care about.
-  \item Discuss the difference between the sources exposed by the different flux shapes
-\end{enumerate} 
+Figure \ref{f:1dmoc-angflux7} shows the group 7 angular flux comparisons for each of the three mixtures.  We immediately see that for each of them, the angular flux for the mixture is closer to the rodded result than the unrodded result than what might be expected based on the volume fraction of the rod.  For example, comparing figures \ref{f:1dmoc-50-angflux7} and \ref{f:1dmoc-fixed-50-angflux7} shows that the angular flux is much closer to the rodded solution than when the scattering source was fixed, despite the small mean free path of thermal neutrons.  Figure \ref{f:1dmoc-angflux1} shows the same comparisons for the group 1 angular flux.  While the difference in magnitude between each of the three cases is small for any mixture, the long mean free path means that these differences get spread out over a larger area.  This changes the shape of the scattering source for the thermal groups, which then has a more widespread effect on the the scalar flux distribution.  It should be noted as well that all angular flux plots shown here are for the flattest polar angle.  Since the steeper angles travel through more material in each region, the differences between them go away more quickly.  Thus, the angle shown in these plots is the one having the largest impact on the solution.
+
+\begin{figure}[h]
+  \centering
+  \subfigure[25\% Mixture]{
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figs/1dmoc-25mix-angflux1.png}
+    \label{f:1dmoc-25-angflux1}
+  }
+  ~
+  \subfigure[50\% Mixture]{
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figs/1dmoc-50mix-angflux1.png}
+    \label{f:1dmoc-50-angflux1}
+  }
+  ~
+  \subfigure[75\% Mixture]{
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figs/1dmoc-75mix-angflux1.png}
+    \label{f:1dmoc-75-angflux1}
+  }
+  \caption{Group 1 angular flux comparisons for 25\% and 75\% mixtures}\label{f:1dmoc-angflux1}
+\end{figure}
 
 \subsection{Sub-Ray MOC Method Description}
 
-\begin{enumerate}[leftmargin=*]
-  \item Explain method concept -- Maybe a diagram of fuel, partial CR, fuel to show how the ray splitting/combining looks
-  \item Need different XS and sources - use subplane
-  \item Has to work well with axial solver - RTL improvements
-  \item Timeline
-\end{enumerate}
+The 1D MOC results tells us that the effects of changing the rodded cross-section has pretty local effects on the flux itself, but the source distribution that results from these small changes in the flux then leads to significant differences in the results.  To address this, a new ``sub-ray'' MOC method will be developed.  Currently, the angular flux resulting from MPACT's MOC calculations for a partially rodded plane are simply the results of a regular MOC calculation on volume-homogenized cross-sections.  The new method will calculate two separate angular fluxes using the heterogeneous cross-sections, then combine the angular fluxes instead of the cross-sections.  This should provide a more accurate result for the scalar flux calculation, which will in turn improve the source calculations in the upcoming iterations as well.
+
+This method will still make use of the sub-plane scheme for the CMFD and SP$_3$ calculations.  As before, sub-planes will allows the homogenized meshes to capture the axial shape of the flux.  However, they will also be beneficial to the MOC solver as well.  The rodded portion of the MOC plane will generally have a faster spectrum than the unrodded region due to absorption and a weaker ability to thermalize neutrons compared to the moderator.  Thus, two difference sources must be used in the sub-ray MOC calculations in addition to heterogeneous cross-sections.  The sub-plane scheme will provide a way to calculate those sources in the partially rodded regions.
+
+It is clear that this method should improve the results of the calculation.  However, one of the most important outcomes of this must be that the increased computational expense must be low, otherwise there are other decusping methods that could be used, such as simply refining the axial mesh.  A single 2D assembly in MPACT (VERA Problem 2a) has 715,675 ray segments.  With a ray spacing of 0.05 cm and 16 azimuthal angles, these segments should be close to uniformly distributed amongst the 289 pin cells in the problem.  This gives an average number of segments of about 2,475 segments per pin.  For a partially rodded pin cell, we can assume that every segment in that pin cell will have two sub-rays, effectively doubling the number of segments for that pin cell.  A typical PWR such as Watts Bar has control rods in 24 positions in the lattice, so this gives a total number of segments of about 775,000 segments for a 2D assembly, or an increase of about 8\% over the original total.  Furthermore, while this is likely an accurate estimate of the increase in calculations, the actual runtime increase should be less than this.  Because the sub-rays are not actually distinct ray segments and share length and angle data, a good implementation of this method should be quite efficient in performing the extra calculations, as mentioned in section \ref{sss:2d1dMOCsweepAlgorithm} concerning the Jacobi scattering source MOC sweeping algorithm.
+
+An execution plan was developed to map out the activities required to complete the sub-ray MOC development and implementation in MPACT.  This plan is shown in table \ref{t:subrayExecutionPlan}
+
+\begin{table}[h]
+  \centering
+  \caption{Execution plan for sub-ray MOC development and implementation}\label{t:subrayExecutionPlan}
+  \begin{tabular}{|c|c|c|}\toprule
+    Task & Description & Target Date \\\midrule
+    1 & Analysis of cross-section and source effects on angular flux & 10/2016 \\\midrule
+    2 & Development of sub-ray MOC method & 12/2016 \\\midrule
+    3 & Prototype of method in 1D MOC code & 03/2017 \\\midrule
+    4 & Implementation of method in MPACT & 06/2017 \\\midrule
+    5 & Testing on VERA Problem 4, 5, 9 & 08/2017 \\\bottomrule
+  \end{tabular}
+\end{table}
