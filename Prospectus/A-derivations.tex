@@ -99,7 +99,7 @@ p\left(\tau\right) &= \frac{1}{2} \intop_0^\pi e^{-\frac{\tau}{\sin\theta}} \sin
  &= Ki_2\left(\tau\right)
 \end{align}
 
-where $Ki_2\left(x\right)$ is the second-order Bickley-Naylor function\todo{cite}.  The Bickley-Naylor function can be defined as follows:
+where $Ki_2\left(x\right)$ is the second-order Bickley-Naylor function.  The Bickley-Naylor function can be defined as follows:
 
 \begin{subequations}\label{e:BickleyFunctions}
   \begin{equation}
@@ -175,9 +175,8 @@ To obtain the transport matrix for a cylindrical pin cell, the pin cell must fir
 \begin{figure}
   \centering
   \includegraphics[width=0.8\textwidth]{JooCPcylGeom.png}
-  \caption{Cylindrical Geometry Collision Probabilities}\label{f:CPcylGeom}
+  \caption{Cylindrical Geometry Collision Probabilities \cite{NERS561CPNotes}}\label{f:CPcylGeom}
 \end{figure}
-\todo{cite figure}
 
 Now that the geometry is set up, we can take advantage of the symmetry of the problem and only model on quarter of the volume to simplify the calculation.  The kernels from equations \ref{e:CPPij} and \ref{e:CPPii} can be used, but some modification is required.  The reason for these modifications is that from a ring $i$, a ring $j$ which is outside ring $i$ can be intersected from two different directions.  Two ``sub-kernels'' are defined for teh positive and negative directions.  Each covers only one of two directions, so they should be multiplied by $\frac{1}{2}$.  However, each only accounts for $\frac{1}{4}$ the total volume, so the final expression $P_{ij}\left(y\right)$ should be multiplied by 2 to account for each of these.  The sub-kernels are each multiplied by $\frac{1}{\Sigma_i V_i}$ to account for the unit source density in the volume $V_i$ as well as a $\frac{1}{\Sigma_i}$ term that comes from the change of variables during the integration over $t_i$.  The positive and negative $\tau$ terms are shown in the geometry in \ref{f:CPcylGeom}.
 
@@ -269,7 +268,7 @@ Next, we perform a coordinate transformation to change the bounds of integration
   \end{align}
 \end{subequations}
 
-This can now be integrated using a standard Gaussian quadrature\todo{cite}.  Because this quadrature is being applied to sections of each integral rather than the whole integral, MPACT uses a 4-point Gaussian quadrature (shown in table \ref{t:gaussQuad}), which is sufficient to give accurate solutions over the entire bounds of the integral.
+This can now be integrated using a standard Gaussian quadrature \cite{HandbookOfMathFunctions1972}.  Because this quadrature is being applied to sections of each integral rather than the whole integral, MPACT uses a 4-point Gaussian quadrature (shown in table \ref{t:gaussQuad}), which is sufficient to give accurate solutions over the entire bounds of the integral.
 
 \begin{table}[h]
   \centering
