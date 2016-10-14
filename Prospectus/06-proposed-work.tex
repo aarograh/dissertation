@@ -28,15 +28,67 @@ While the current methods can be improved in the near term, they still are not a
 
 \subsection{1D MOC Results}
 
-Since rod cusping is caused by an overly simplistic homogenization of two materials, a 1D MOC code was developed to analyze the impacts of rod cusping on the angular flux.  Understanding the response of the angular flux to homogenized cross-sections can then be used to develop a more effective decusping method that addresses the angular flux during the calculation instead of applying corrections to the cross-sections or scalar flux after a calculation.  This code is capable of performing both k-eigenvalue and fixed fission source calculations.  This allows the resulting fission source from a calculation to be reused in subsequent calculations to isolate the effects of the cross-section homogenization.
+To analyze the behavior of the angular flux in relationship to homogenized cross-sections, a 1D MOC code was written that could solve eigenvalue and fixed source problems.  This code was used to solve a 1D variation of VERA Problem 4.  The center row of pins across all three problems were modeled in the 1D code.  The pin pitch of 1.26 cm was maintained and the volume fractions of each material in the actual Problem 4 were used to calculate the thicknesses of each region.  The 1D model of the center assembly had 4 guide tubes and one instrument tube, while the other two assemblies had only empty guide tubes.
+
+The four guide tubes in the center assembly could be modified to be a mixture of moderator and control rod material.  Changing this mixture and running different calculations provides some insight into the effects of the cross-section homogenization on the angular flux.  Each of these calculations used cross-sections from the C5G7 benchmark \todo{cite}.
+
+\subsubsection{Specified Source}
+
+The first calculations that were performed used a mixture that was 50\% control rod and 50\% moderator by volume.  First, a full eigenvalue calculation was performed to obtain a fission and scattering source distribution for the whole model.  Once this was completed, a single MOC sweep was performed using the 50-50 cross-section mixture, 100\% rodded cross-section, and 100\% moderator cross-section.  Figure \ref{f:1dmoc-fixed-50-scalflux7} shows the group 7 scalar flux for this calculation, and Figure \ref{f:1dmoc-fixed-50-angflux}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../figs/1dmoc-50mix-fixedscat-scalflux7.png}
+    \caption{Group 7 scalar flux comparisons for a fixed fission and scattering source calculation}\label{f:1dmoc-fixed-50-scalflux7}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \subfigure[Group 1]{
+        \centering
+        \includegraphics[width=0.45\textwidth]{../figs/1dmoc-50mix-fixedscat-angflux1.png}
+        \label{f:1dmoc-fixed-50-angflux1}
+    }
+    ~
+    \subfigure[Group 7]{
+        \centering
+        \includegraphics[width=0.45\textwidth]{../figs/1dmoc-50mix-fixedscat-angflux7.png}
+        \label{f:1dmoc-fixed-50-angflux7}
+    }
+    \caption{Angular flux comparisons for a fixed fission and scattering source calculation}\label{f:1dmoc-fixed-50-angflux}
+\end{figure}
+
+\subsubsection{Fixed Fission Source}
+
+\begin{figure}[h]
+    \centering
+    \subfigure[25\% Mixture]{
+        \centering
+        \includegraphics[width=0.45\textwidth]{../figs/1dmoc-25mix-angflux7.png}
+        \label{f:1dmoc-25-angflux7}
+    }
+    ~
+    \subfigure[50\% Mixture]{
+        \centering
+        \includegraphics[width=0.45\textwidth]{../figs/1dmoc-50mix-angflux7.png}
+        \label{f:1dmoc-50-angflux7}
+    }
+    ~
+    \subfigure[75\% Mixture]{
+        \centering
+        \includegraphics[width=0.45\textwidth]{../figs/1dmoc-75mix-angflux7.png}
+        \label{f:1dmoc-75-angflux7}
+    }
+    \caption{Group 7 angular flux comparisons for 25\% and 75\% mixtures}\label{f:1dmoc-angflux7}
+\end{figure}
 
 \begin{enumerate}[leftmargin=*]
-  \item Describe problem 4 model
-  \item Describe procedure for 1-inner calculations
-  \item Present results
+  \item Done - Describe problem 4 model
+  \item Done - Describe procedure for 1-inner calculations
+  \item Done - Present results
   \item Discuss range of effects on angular flux
   \item Describe procedure for full FSP
-  \item Present Results
+  \item Present Results - Mostly done.  Show one fast flux plot to show it's mainly just the thermal groups we care about.
   \item Discuss the difference between the sources exposed by the different flux shapes
 \end{enumerate} 
 
