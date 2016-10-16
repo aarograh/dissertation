@@ -172,7 +172,7 @@ Now this self-transport kernel can be used with the kernel in \ref{e:CPPij} to s
 
 To obtain the transport matrix for a cylindrical pin cell, the pin cell must first be cylindricized.  To do this, the moderator region around the outside of the fuel pin is changed to an annular ring which preserves the total volume of the cylinder.  This allows the calculation to be 1D spatially.  Secondly, to ensure that there is a sufficient source driving the problem, a fuel and moderator mixture can be placed in a ring beyond the moderator ring.  This is especially important for using the CP method for decusping since the control rod pin cell has no fission source of its own to drive the problem.
 
-\begin{figure}
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.8\textwidth]{JooCPcylGeom.png}
   \caption{Cylindrical Geometry Collision Probabilities \cite{NERS561CPNotes}}\label{f:CPcylGeom}
@@ -198,10 +198,10 @@ Now we introduce notation to simplify this expression:
   \end{align}
 \end{subequations}
 
-\begin{figure}
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.6\textwidth]{JooCPcylGeomSelf.png}
-  \caption{Cylindrical Geometry Collision Probabilities Self-Transport}\label{f:CPcylGeomSelf}
+  \caption{Cylindrical Geometry Collision Probabilities Self-Transport \cite{NERS561CPNotes}}\label{f:CPcylGeomSelf}
 \end{figure}
 
 It is useful to note at this point that the principle of reciprocity exists for these kernels.  What is meant by this is that $P_{ij} = P_{ji}$.  This is because the $S_{ij}$ terms are functions only of $\tau_{ij}^+$ and $\tau_{ij}^-$.  These variables are defined as the distance between radii $i$ and $j$, to $\tau_{ij}^+ = \tau_{ji}^+$ and $\tau_{ij}^- = \tau_{ji}^-$.  Because of this, only half of the possible combinations of $i$ and $j$ must be calculated.  Likewise, when the final transport matrix is set up, it will be symmetric, so only one of the upper and lower triangles must be explicitly calculated.  This saves some time in the computation of the matrix elements.
