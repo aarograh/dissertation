@@ -17,6 +17,7 @@
 \usepackage{subfigure}
 \usepackage{enumitem}
 \usepackage{booktabs}
+\usepackage{listings}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows}
 
@@ -75,17 +76,20 @@
 \chapter{Conclusions}\label{chap:concl}
 \input{07-conclusions.tex}
 
-% bibliography
-\renewcommand{\bibname}{References}
-\addcontentsline{toc}{chapter}{References}
-\bibliographystyle{../bibliography}
-\bibliography{../bibliography}
-
 % appendices
 \begin{appendices}
 
 \chapter{Supplemental Derivations}\label{app:derivations}
 \input{A-derivations.tex}
+
+\chapter{C5G7 Cross-Section}\label{app:c5g7xs}
+\input{B-c5g7.tex}
+
+% bibliography
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{chapter}{References}
+\bibliographystyle{../bibliography}
+\bibliography{../bibliography}
 
 \end{appendices}
 
