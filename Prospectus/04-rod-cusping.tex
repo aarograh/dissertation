@@ -2,7 +2,7 @@ This chapter will focus specifically on control rod cusping effects, which are t
 
 \section{Background}
 
-In Section \ref{s:2d1dErrors}, some potential sources of errors for the 2D/1D scheme were introduced.  One of these was the error introduced by axial homogenization within a 2D MOC plane.  In some cases, this can be done without introducing significant errors.  For example, MPACT often homogenizes components outside the active fuel region, such as the end plugs and gaps at the end of the fuel rods.  However, when strong neutron absorbers, such as control rods, are homogenized axially in active fuel region, this has the effect of introducing absorption in regions where there should be none.  This effect is known as ``cusping,'' and is illustrated in Figure 
+In Section \ref{s:2d1dErrors}, some potential sources of errors for the 2D/1D scheme were introduced.  One of these was the error introduced by axial homogenization within a 2D MOC plane.  In some cases, this can be done without introducing significant errors.  For example, MPACT often homogenizes components outside the active fuel region, such as the end plugs and gaps at the end of the fuel rods.  However, when strong neutron absorbers, such as control rods, are homogenized axially in active fuel region, this has the effect of introducing absorption in regions where there should be none.  This effect is known as ``cusping,'' \cite{finnemann1977RodCuspingOrigMention} and is illustrated in Figure 
 
 \begin{figure}
     \centering
@@ -15,18 +15,64 @@ In some cases, this is easily handled by setting up an appropriate axial mesh wh
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{p4cuspingEffects.png}
-    \caption{Control Rod Cusping Effects for 3x3 Assembly}\label{f:p4cuspingEffects}
+    \caption[Rod Cusping in MPACT]{Control Rod Cusping Effects in MPACT for 3x3 Assembly}\label{f:p4cuspingEffects}
 \end{figure}
 
-\section{Traditional Solutions}
+\section{Past Solutions}
+
+Before discussing the recent and proposed methods to address the rod cusping problem, it is useful to provide an overview of past methods.  These will then be used as a comparison for recent work and justification for the proposed work.  First, we will look at some of the ways rod cusping was address in older nodal codes.  Then we will look at the effects in 2D/1D codes and recent work to address them.
 
 \subsection{Nodal Codes}
 
-\todo{Legacy decusping methods}
+Control rod decusping methods have been developed for nodal codes for over thirty years now.  Many different methods have been developed over that time frame, making a comprehensive discussion impractical.  However, several different methods will be discussed here to provide some context for how the rod cusping problem was handled in nodal codes.
+
+\subsubsection{Tabulation Methods}
+
+One of the most basic methods of handling the cusping problem was through pre-tabulation of cross-section for the partially rodded node (PRN) \cite{HanSemJooThesis1984}.  For the nodal calculations, node-averaged cross-sections were generated using some higher fidelity method on small portions of the domain.  For the PRN, this calculation could simply be repeated many times for each of the possible rod positions.  However, because of the many positions the control rod could have in a reactor, this required many different cross-sections to be calculated.  Furthermore, these calculations needed to be done on more than a single assembly to obtain acceptable accuracy due to inter-assembly effects \cite{KordSmithThesis1980spatial}.  Others tried using multi-assembly calculations \cite{hoxieThesis1982application} and color sets \cite{khalilThesis1983application} to improve the accuracy of this method.  However, the number of rod possible positions and the size of the problems required to generate accurate homogenized cross-sections made this method impractical at the time, motivating further research into rod decusping methods.
+
+One variation of this method which improved on the runtime used response matrices and node surface currents \cite{chengThesis1981homogenizationResponseMatrix,finckThesis1982homogenizationResponseMatrix}.  For this method, response matrices were tabulated ahead of time based on the surface current boundary conditions.  An iterative process could then be carried out between the global nodal calculation and a local fixed sources calculation.  During each iteration, the surface currents from the global calculation were used to update the homogenized cross-sections in the PRN using the response matrices.  At convergence, the cross-sections in the PRN were calculated from the actual solution boundary conditions, greatly increasing the accuracy of the global solution compared with the simpler cross-section tabulation method.  However, this method still required up-front calculation of the response matrices, which could be expensive for some problems.  Consistency was also not perfectly maintained between the local and global problems, which sometimes resulted in convergence difficulties.
+
+\subsubsection{Polynomial Flux Expansions}
+
+Another early method which sought to improve on the brute-force tabulation method used polynomial expansions of the intra-nodal flux shape in the axial direction \cite{bennewitz1975higher,finnemann1981space}.  Methods such as NEM which are commonly used in nodal codes typically assume some shape to the source and flux inside each node.  For this method, a quadratic shape was assumed and used to flux-volume weight the rodded and unrodded cross-sections to generate homogenized cross-sections for the PRN.  This resulted in a reduction of the cusping errors by about 50\% \cite{KordSmithMastersThesis1979AnalyticNodalMethod}, which was not sufficient for many applications.  Higher order polynomials were also attempted \cite{langenbuch1977coarse}, but the axial shapes these generated were non-physical and sometimes led to oscillations and other numerical problems.
+
+\subsubsection{Collector-Predictor Method}
+
+Joo \cite{HanSemJooThesis1984} focused on developing a method which would address rod decusping using only material compositions and node dimensions, rather than relying on boundary conditions as well.  To do this, he developed an asymptotic method in which the PRN was modeled as two semi-infinite slabs, with one slab being composed of rodded material and the other slab being unrodded material.  A 1D multi-group calculation was then carried out to determine the flux shape around the interface between the two materials.  This flux shape was then used in the homogenization process for the PRN.
+
+This method was found to be inaccurate because the infinite system is not actually a good representation of the flux shape in a reactor.  To improve on this method, Joo developed what is known as the Collector-Predictor Method.  There are two variations to this method.  The first, simpler variation assumes that the first calculation has the tip of the control rod aligned with the boundary between two noes.  The collector step occurs at the end of the global calculation, collecting the radial transverse leakages and axial boundary currents for the rodded and unrodded nodes which neighbor each other.  Then, rather than performing calculations using semi-infinite slabs as in the previous paragraph, a 1D calculation is instead performed using the information from the collector step.  This predictor step generates a more accurate flux profile around the interface between the rodded and unrodded materials.  The, when the rod is moved throughout the calculation, it is assumed that this axial flux profile in the vicinity of the rod tip does not change significantly, so the profile can just be shifted with the rod and used in all subsequent cross-section homogenizations.  This method then improved to allow the first calculation to also have a PRN.  Overall, this method significantly improved on previous ones by reducing decusping methods dynamically that converged consistently and did not rely on tabulated values.  Furthermore, because the extra calculations were 1D on a small sub-domain of the problem, the additional computational expense was small.
+
+\subsubsection{Bi-Linear Weighting Method}
+
+Most decusping methods which followed the Collector-Predictor Method focused on improvements to the 1D calculation or boundary condition information to improve accuracy \cite{gehinThesis1992quasi,smith1992enhancementsStudxvickCoreManagementSystem,lee1998CuspingCorrection1DFineMeshFluxProfiles}.  However, one significant variation that was developed by Kim and Cho \cite{kim1990BilinearWeighting} is the Bi-Linear Weighting Method.  This method uses the same concept as the Collector-Predictor method, but solves for both the forward and adjoint axial flux shapes.  Both of these shapes are then used in the cross-section homogenization, as shown in equation \ref{e:bilinearWeighting}.  The use of the adjoint flux in the homogenization process resulted in significant improvements in the accuracy of the nodal calculations.
+
+\begin{equation}\label{e:bilinearWeighting}
+\overline{\Sigma} = \frac{\intop \phi\left(z\right) \phi^*\left(z\right) \Sigma\left(z\right) dz}{\intop \phi\left(z\right) \phi^*\left(z\right) dz}
+\end{equation}
+
+\subsubsection{Nodal Expansion Method Modification}\label{sss:NEMmod}
+
+Another method which calculates axial flux profiles to improve homogenization is a modified form of NEM \cite{de2012NEMmodification,martinez1999NEMmodOrig}.  To improve the accuracy of nodal calculations, NEM assumes a quartic polynomial for the intra-nodal flux shape to calculate interface currents.  For the PRN, this quartic shape can can also be used to calculate improved cross-sections.  This is convenient because this axial profile must already be calculated when using NEM, so the only additional calculation is to integrate the shape over the rodded and unrodded region and use the result to homogenize the cross-sections.  Because Legendre polynomials are used for the flux expansion, these integrals can be calculated analytically, resulting in negligible increase in computational cost.
+
+\subsubsection{Equivalent-Node Method}
+
+The Equivalent-Node Method \cite{dall2002nodeEquivalenceDecusping} attempts to calculate the PRN cross-sections as if the PRN were modeled as two separate nodes: one fully rodded and one fully unrodded.
+
+\subsubsection{Pin-by-Pin Nodal Decusping}
+
+\cite{yamamoto2004pinByPinNodalDecusping}
 
 \subsection{2D/1D Codes}\label{ss:2d1d-old-decusping-methods}
 
-Several codes that have employed the 2D/1D method in recent years have also required rod decusping methods.  MPACT currently uses a simple polynomial correction to the volume fractions used to homogenize the control rod \cite{MC2015_VCS_Cycle_Depletion}.  To develop this method, a 3x3 assembly was set up with a control rod in the center assembly.  This problem was simulated with the rod tip at nine different positions in the plane.  These simulations were then repeated, but with the axial mesh refined so the rod tip aligned with a plane boundary.  The k-eff differences between the two sets of simulations were fitted with a sixth-order polynomial which is used in MPACT to reduce the volume fraction of the control rod by an appropriate amount to offset the cusping effects.  This process was repeated for different control rod materials such as AIC, B$_4$C, and Tungsten, since each material has unique cross-sections.  This method has the advantages of being simple to implement and requiring no increase in computational requirements.  However, the results obtained from this decusping method are tied to the control rod material and reactor model used to develop the corrections, limiting its usefulness to a small subset of reactors.
+\subsubsection{CRX-2K}
+
+\cite{cho2015CRX2d1dFusionDecusping}
+
+\subsubsection{MPACT}
+
+Several codes that have employed the 2D/1D method in recent years have also required rod decusping methods.  MPACT currently uses a simple polynomial correction to the volume fractions used to homogenize the control rod \cite{MC2015_VCS_Cycle_Depletion}.  To develop this method, a 3x3 assembly was set up with a control rod in the center assembly.  This problem was simulated with the rod tip at nine different positions in the plane.  These simulations were then repeated, but with the axial mesh refined so the rod tip aligned with a plane boundary.  The k$_{eff}$ differences between the two sets of simulations were fitted with a sixth-order polynomial which is used in MPACT to reduce the volume fraction of the control rod by an appropriate amount to offset the cusping effects.  This process was repeated for different control rod materials such as AIC, B$_4$C, and Tungsten, since each material has unique cross-sections.  This method has the advantages of being simple to implement and requiring no increase in computational requirements.  However, the results obtained from this decusping method are tied to the control rod material and reactor model used to develop the corrections, limiting its usefulness to a small subset of reactors.
+
+\subsubsection{nTRACER}
 
 Another 2D/1D code is nTRACER, which is under active development by Seoul National University \cite{RyuBEAVRSnTRACER2015}.  To address rod cusping effects in nTRACER, Jung and Joo developed a more general method than the polynomial correction method used by MPACT \cite{ICAPPcontrolRodDecuspingNTRACER}.  This method pre-generates correction factors at the start of a simulation, rather than relying on hard-coded corrections.  To do this, the assembly that will have a partially inserted control rod is identified, and a single-plane 3x3 assembly problem is set up using the partially-rodded assembly and its neighbors.  The radial and axial cusping effects are then determined separately.  First, the radial cusping effects are determined by performing 2D MOC calculations on the 3x3 sub-domain with the rod fully inserted and fully withdrawn.  This provides radial flux profiles in the rodded assembly for both rodded and unrodded regions, as well as current coupling coefficients for CMFD for the rodded and unrodded CMFD nodes.  Once this is done, the rod is simulated at positions of 25\%, 50\%, and 75\% withdrawn from the plane.  To reduce runtime, these calculations are done using only 3D sub-plane CMFD, using the heterogeneous rodded and unrodded cross-section for the appropriate sub-planes.  This generates axial flux profiles for the full MOC plane for each of the possible rod positions.  During the full-core 2D/1D calculation, these axial flux profiles are then used to generate improved homogenized cross-sections for the MOC calculation using equation.
 
@@ -34,10 +80,7 @@ Another 2D/1D code is nTRACER, which is under active development by Seoul Nation
 \overline{\Sigma_i} = \frac{\phi_{rad,i}^R \phi_{ax,i}^R \Sigma_i^R h^R + \phi_{rad,i}^U \phi_{ax,i}^U \Sigma_i^U h^U}{\phi_{rad,i}^R \phi_{ax,i}^R h^R + \phi_{rad,i}^U \phi_{ax,i}^U h^U}
 \end{equation}
 
-\todo{Look into other 2D/1D codes (decart)}
-
-\section{New Decusping Techniques}
-\todo{Better Title?  Not that much ``better''}
+\section{Recent Decusping Methods Development}
 
 This section discusses two new decusping treatments added to MPACT.  These methods rely on the sub-plane scheme described in section \ref{ss:2d1d-3dcmfd}.  The first method only treats the axial cusping effects, while the second method extends the first by also treating the radial decusping effects.
 
