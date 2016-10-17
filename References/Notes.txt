@@ -1,0 +1,44 @@
+Notes from Han Sem Joo thesis
+Resolution fo the Cotnrol Rod Cusping Problem for Nodal Methods, PhD thesis, MIT, February 1984
+
+ [S-5]
+ K. S. Smith, "Spatial Homogenization Methods for Light Water Reactor Analysis", Ph.D. Thesis, Department of Nuclear Engineering, MIT, Cambridge, MA, June 1980
+   Only marginally accurate for certain situations since boundary conditions are assumed to be reflecting
+ [H-2]
+ C. L. Hoxie, "Application of Nodal Equivalence Theory to the Nuetronic Analysis of PWR's," Ph.D. Thesis, Department of Nuclear Engineering, MIT, Cambridge, MA, June 1982
+   Cluster of assemblies to develop homogenized XS instead of a single assembly.  Too expensive, but much more accurate.
+ [K-2]
+ H. S. Khalil, "The Application of Nodal Methods to PWR Analysis," Ph.D. Thesis, Department of Nuclear Engineering, MIT, Cambridge, MA, January 1983
+   Color sets.  Have to use a lot of them, but are accurate and provide detailed flux reconstruction
+ [C-3], [F-5]
+ A. Y. Cheng, "Homogenization of BWR Assemblies by Response Matrix Methods," Ph.D. Thesis, Department of Nuclear Engineering, MIT, Cambridge, MA, June 1981
+ P. J. Finck, "Homogenization and Dehomogenization Schemes for BWR Assemblies", Ph.D. Thesis, Department of Nuclear Engineering, MIT, Cambridge, MA, January 1983
+   Iterative method.  Pre-tabulated response matrices combined with the surface currents used to update cross-sections on the fly.  Fairly accurate, but not totally consistent.  Convergence difficulties as well.
+ [B-2, F-7]
+ F. Bennewitz, H. Finnemann, M. R. Wagner, "Higher Order Corrections in Nodal Reactor Calculations," Trans. Amer. Nucl. Soc., 22, 250 (1975)
+ H. Finnemann, W. Gundlach, "Space-Time Kinetics Code IQSBOX for PWR and BWR," Atomkernenergie (ATKE), Bd. 37 (1981)
+  Uses old method 2 in code IQSBOX.  NEM quadratic source expansion is used to provide a flux shape (why didn't they use the quartic flux expansion?)
+ [S-4]
+ K. S. Smith, "An Analytic Nodal Method for Solving the Two-Group, Multidimensional, Static and Transient Neutron Diffusion Equation,"  N.E. Thesis, Department of Nuclear Engineering, MIT, Cambridge, MA, March 1979
+   Results for old method 2 from Smith.  Reduced error by about 50%.  Quadratic shape is not sufficient.
+ [L-2]
+ S. Langenbuch, W. Maurer, W. Werner, "Coarse-Mesh Nodal Dfifusion Method for the Analyis of Space-Time Effects in Large Light Water Reactors," Nucl. Sci. Eng., 63, (1977)
+   Tried higher order curves than quadratic for old method 2, but numerical issues arose and shapes were non-physical
+  
+  
+  
+  
+Old methods:
+1.  Tabulation of Cross Sections for PRN - Requires 3D assembly solve.  Too many rod positions for transients.
+2.  Flux Expansion in Polynomials - Quadratic shape.  Not good enough.
+
+New methods:
+0.  Equivalence Approach - Solves 3x3x4 node problem with rod in top 2 nodes.  Uses discontiniuty factors from this solution, and homogenizes cross-sections using these results.
+      Completely eliminated rod cusping.  New methods focus on executing this without a separate computation
+1.  Tabulation/Interpolation of DF and XS - Too many solutions required.  Impractical.
+2.  Asymptotic Method - Two semi-infinite slabs.  Solve.  Apply results to various rod positions.  Turns out it sucks.
+
+Newer methods:
+1.  Extension of asymptotic reconstruction (new #2) - Like new #2, but isntead of semi-infinite slabs, uses solution from 2 adjacent fully rodded/unrodded nodes.  Then assumes that the shape across those 2 nodes
+      does not change much when the rod moves, but only shifts axially with the rod.  Drawback: have to start out with rod aligned with node boundaries
+2.  Extension of newer #1 - Uses previous PRN solution and assumes control rod tip moved only slightly.  Solves 1D, 3-region problem for axial flux shape in the 2 parts of the PRN and fully unrodded node below
