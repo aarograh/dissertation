@@ -123,7 +123,7 @@ The calculation flow for 3D CMFD is shown in figure \ref{f:CMFD-flowchart}.
   \caption{Calculation flow for 3D sub-plane CMFD}\label{f:CMFD-flowchart}
 \end{figure}
 
-\subsection{1D SP$_3$}
+\subsection{1D \texorpdfstring{SP$_3$}{SP3}}
 
 In MPACT, the 1D axial solvers operate on the same mesh as the 3D CMFD calculations, meaning that cell-homogenized quantities and radial currents have already been obtained from the CMFD calculation.  All the 1D axial solver must do is construct a source term from the radial currents for each cell, then perform a calculation to obtain currents on the axial interfaces at the top and bottom of each node.
 
@@ -147,7 +147,7 @@ For the radial calculations, 2D MOC is used.  This allows MPACT to easily calcul
 
 \begin{figure}[h]
     \includegraphics[width=0.5\textwidth]{modular_rays.png}
-    \caption{Modular Ray Tracing}\label{e:ModRays}
+    \caption[Modular Ray Tracing]{Modular ray tracing depiction \cite{MPACTTheoryManual}}\label{e:ModRays}
 \end{figure}
 
 One of the key features of MPACT's MOC implementation is that of modular ray tracing.  Ray tracing is performed once at the beginning of a calculation and stored for the remainder of the calculation.  Doing this greatly reduces the runtime of the MOC sweeps since the length of each ray segment and the region it is crossing are already known ahead of time.  Furthermore, MPACT takes advantage of the repeatable nature of a reactor's geometry.  Because reactor geometry is repetitive, small portions of the geometry which repeat frequently can be ray-traced separately instead of tracing the entire core.  These smaller units of geometry are known as ray tracing modules, and in MPACT can be a full fuel assembly, a quarter fuel assembly, or a single fuel pin.  After the unique modules are identified, each of them is ray-traced in such a way that the endpoints of a ray in each module will line up with the beginning of a ray in the neighboring module.  This significantly reduces the storage requirements for the ray data since a small number of ray tracing modules can represent a full core problem.
