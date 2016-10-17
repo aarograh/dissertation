@@ -20,6 +20,7 @@
 \usepackage{listings}
 \usepackage{tikz}
 \usepackage{fixltx2e}
+\usepackage{color}
 \usetikzlibrary{shapes,arrows}
 
 % Set up flowchart stuff
@@ -28,6 +29,31 @@
 \tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=orange!30]
 \tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=green!30]
 \tikzstyle{arrow} = [thick,->,>=stealth]
+
+% Set up listings stuff
+\definecolor{lgrey}{RGB}{245,245,245}
+\lstset{ 
+%  title=\lstname,                    % show the filename of files included with \lstinputlisting;
+  language=Fortran,
+  upquote=true,
+  basicstyle=\ttfamily\scriptsize, % the size of the fonts that are used for the code
+  backgroundcolor=\color{lgrey},     % choose the background color. You must add \usepackage{color}
+  numbers=left,                      % where to put the line-numbers
+  numberstyle=\ttfamily\scriptsize,       % the size of the fonts that are used for the line-numbers
+  stepnumber=1,                      
+  showspaces=false,                  % show spaces adding particular underscores
+  showstringspaces=false,            % underline spaces within strings
+  showtabs=false,                    % show tabs within strings adding particular underscores
+  frame=single,                      % adds a frame around the code
+  tabsize=2,                         % sets default tabsize to 2 spaces
+  captionpos=t,                      % sets the caption-position to top
+  breaklines=true,                   % sets automatic line breaking
+  breakatwhitespace=false,           % sets if automatic breaks should only happen at whitespace
+  commentstyle=\ttfamily\color{ForestGreen},
+  keywordstyle=\ttfamily\color{Blue},
+  stringstyle=\ttfamily\color{BrickRed},
+  morekeywords={*,...,XSMACRO}               % if you want to add more keywords to the set
+}
 
 % Set up graphics path
 \graphicspath{{../figs/}}
@@ -83,15 +109,15 @@
 \chapter{Supplemental Derivations}\label{app:derivations}
 \input{A-derivations.tex}
 
-\chapter{C5G7 Cross-Section}\label{app:c5g7xs}
+\chapter{C5G7 Cross-Sections}\label{app:c5g7xs}
 \input{B-c5g7.tex}
+
+\end{appendices}
 
 % bibliography
 \renewcommand{\bibname}{References}
 \addcontentsline{toc}{chapter}{References}
 \bibliographystyle{../bibliography}
 \bibliography{../bibliography}
-
-\end{appendices}
 
 \end{document}
