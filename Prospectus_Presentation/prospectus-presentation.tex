@@ -1,0 +1,50 @@
+\documentclass{beamer}
+
+\usepackage{beamerthemesplit}
+\setbeamertemplate{navigation symbols}{}
+\usetheme{Darmstadt}
+\useoutertheme{infolines}
+\setbeamerfont{headline}{size=\fontsize{10}{11}}
+% \usecolortheme{wolverine}
+\newcommand*{\bfrac}[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
+
+\title[2D/1D Control Rod Decusping]{A Dynamic Control Rod Decusping Method for the 2D/1D Scheme}
+\author{Aaron M. Graham}
+
+\begin{document}
+
+\begin{frame}[t]
+    \titlepage
+\end{frame}
+
+\begin{frame}[t]
+    \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Introduction}
+\input{01-introduction.tex}
+
+\section{Neutron Transport Theory}
+\input{02-transport-theory.tex}
+
+\section{2D/1D Framework}
+\input{03-2d1d.tex}
+
+\section{Rod Cusping}
+\input{04-rod-cusping.tex}
+
+\section{Results}
+\input{05-results.tex}
+
+\section{Proposed Work}
+\input{06-proposed-work.tex}
+
+\section{Conclusions}
+\input{conclusions.tex}
+
+\section{References}
+\renewcommand{\bibname}{References}
+\bibliographystyle{../bibliography}
+\bibliography{../bibliography}
+
+\end{document}
