@@ -3,46 +3,41 @@
 This section will provide a detailed derivation of the SP$_3$ equations.  The SP$_1$ equations are easily obtained by neglecting higher order moments of the flux, and SP$_N$ approximations of order greater than 3 are easily obtained by following the same procedure.  These higher order approximations are not of interest because they were not used in this work and only marginally improve on the accuracy of SP$_3$.
 
 To begin, we start with the mono-energetic planar geometry transport equation with anisotropic scattering:
-
 \begin{equation}
-\mu\frac{\partial \psi}{\partial x} + \Sigma_{t}\left(x\right) \psi\left(x,\mu\right) = \intop_{-1}^1 \Sigma_{s}\left(x,\mu,\mu'\right) \psi\left(x,\mu'\right) d\mu' + \frac{Q\left(x\right)}{2}
+\mu\frac{\partial \psi}{\partial x} + \Sigma_{t}\left(x\right) \psi\left(x,\mu\right) = \intop_{-1}^1 \Sigma_{s}\left(x,\mu,\mu'\right) \psi\left(x,\mu'\right) d\mu' + \frac{Q\left(x\right)}{2}\ .
 \end{equation}
 
 Now we assume that the angular flux and scattering cross-sections are both expanded in terms of Legendre polynomials, with these expansions truncated at the $N$th term as follows:
-
 \begin{subequations}
 \begin{equation}
-\psi\left(x,\mu\right) \approx \sum_{n=0}^N \frac{2n+1}{2} \psi_{n}\left(x\right) P_n\left(\mu\right)
+\psi\left(x,\mu\right) \approx \sum_{n=0}^N \frac{2n+1}{2} \psi_{n}\left(x\right) P_n\left(\mu\right)\ ,
 \end{equation}
 \begin{equation}
-\Sigma_{s}\left(x,\mu,\mu'\right) \approx \sum_{n=0}^N \frac{2n+1}{2} P_n\left(\mu\right)P_n\left(\mu'\right)\Sigma_{s,n}\left(x\right)
+\Sigma_{s}\left(x,\mu,\mu'\right) \approx \sum_{n=0}^N \frac{2n+1}{2} P_n\left(\mu\right)P_n\left(\mu'\right)\Sigma_{s,n}\left(x\right)\ .
 \end{equation}
 \end{subequations}
-
 Substituting these expansions into the transport equation, multiplying by $P_n\left(\mu\right)$, and integrating, we obtain the following:
-
 \begin{equation}\label{e:SPnGeneral}
-\frac{d}{dx}\left[\frac{n+1}{2n+1}\psi_{n+1}\left(x\right) + \frac{n}{2n+1}\psi_{n-1}\left(x\right)\right] + \Sigma_{t}\left(x\right) \psi_{n}\left(x\right) = \Sigma_{s,n}\left(x\right) \psi_n\left(x\right) + Q\left(x\right)\delta_{0,n}
+\frac{d}{dx}\left[\frac{n+1}{2n+1}\psi_{n+1}\left(x\right) + \frac{n}{2n+1}\psi_{n-1}\left(x\right)\right] + \Sigma_{t}\left(x\right) \psi_{n}\left(x\right) = \Sigma_{s,n}\left(x\right) \psi_n\left(x\right) + Q\left(x\right)\delta_{0,n}\ .
 \end{equation}
 
-Now to obtain the SP$_3$ equations, we solve Equation \ref{e:SPnGeneral} for moments 0-3:
-
+To obtain the SP$_3$ equations, we solve Equation \ref{e:SPnGeneral} for moments 0-3:
 \begin{subequations}
 \begin{align}
 \text{n=0:}\quad & \frac{d\psi_1}{dx} + \Sigma_t\left(x\right)\psi_0\left(x\right) = \Sigma_{s,0}\left(x\right) \psi_0\left(x\right) + Q\left(x\right) \nonumber \\
-& \frac{d\psi_1}{dx} = Q - \left(\Sigma_t\left(x\right) - \Sigma_{s0}\left(x\right)\right)\psi_0\left(x\right) \label{e:sp3-0} \\
+& \frac{d\psi_1}{dx} = Q - \left(\Sigma_t\left(x\right) - \Sigma_{s0}\left(x\right)\right)\psi_0\left(x\right)\ , \label{e:sp3-0} \\
 \text{n=1:}\quad & \frac{d}{dx}\left[\frac{2}{3}\psi_2\left(x\right) + \frac{1}{3}\psi_0\left(x\right)\right] + \Sigma_t\left(x\right)\psi_1\left(x\right) = \Sigma_{s,1}\left(x\right)\psi_1\left(x\right) \nonumber\\
-& \psi_1\left(x\right) = -D_0 \frac{d}{dx}\left[2\psi_2\left(x\right) + \psi_0\left(x\right)\right] \label{e:sp3-1} \\
+& \psi_1\left(x\right) = -D_0 \frac{d}{dx}\left[2\psi_2\left(x\right) + \psi_0\left(x\right)\right]\ , \label{e:sp3-1} \\
 \text{n=2:}\quad & \frac{d}{dx}\left[\frac{3}{5}\psi_3\left(x\right) + \frac{2}{5}\psi_1\left(x\right)\right] + \Sigma_t\left(x\right) \psi_2\left(x\right) = \Sigma_{s,2}\left(x\right) \psi_2\left(x\right) \nonumber \\
-& \frac{d\psi_3}{dx} = -\frac{5}{3}\left(\Sigma_t\left(x\right) - \Sigma_{s2}\left(x\right)\right)\psi_2\left(x\right) - \frac{2}{3}\left[Q\left(x\right) - \left(\Sigma_t\left(x\right) - \Sigma_{s0}\left(x\right)\right)\psi_0\left(x\right)\right] \label{e:sp3-2} \\
+& \frac{d\psi_3}{dx} = -\frac{5}{3}\left(\Sigma_t\left(x\right) - \Sigma_{s2}\left(x\right)\right)\psi_2\left(x\right) - \frac{2}{3}\left[Q\left(x\right) - \left(\Sigma_t\left(x\right) - \Sigma_{s0}\left(x\right)\right)\psi_0\left(x\right)\right]\ , \label{e:sp3-2} \\
 \text{n=3:}\quad & \frac{3}{7}\frac{d\psi_2}{dx} + \Sigma_t\left(x\right)\psi_3\left(x\right) = \Sigma_{s,3}\left(x\right)\psi_3\left(x\right) \nonumber \\
-& \psi_3\left(x\right) = -\frac{5}{3} D_2\left(x\right) \frac{d\psi_2}{dx} \label{e:sp3-3}
+& \psi_3\left(x\right) = -\frac{5}{3} D_2\left(x\right) \frac{d\psi_2}{dx}\ , \label{e:sp3-3}
 \end{align}
 \begin{equation}\label{e:sp3-D0}
-D_0\left(x\right) = \frac{1}{3\left(\Sigma_t\left(x\right) - \Sigma_{s1}\left(x\right)\right)}
+D_0\left(x\right) = \frac{1}{3\left(\Sigma_t\left(x\right) - \Sigma_{s1}\left(x\right)\right)}\ ,
 \end{equation}
 \begin{equation}\label{e:sp3-D2}
-D_2\left(x\right) = \frac{9}{35\left(\Sigma_t\left(x\right) - \Sigma_{s3}\left(x\right)\right)}
+D_2\left(x\right) = \frac{9}{35\left(\Sigma_t\left(x\right) - \Sigma_{s3}\left(x\right)\right)}\ ,
 \end{equation}
 \end{subequations}
 where Equation \ref{e:sp3-2} was obtained by substituting Equation \ref{e:sp3-0} into it.
@@ -50,25 +45,25 @@ where Equation \ref{e:sp3-2} was obtained by substituting Equation \ref{e:sp3-0}
 Now we make the following definitions:
 \begin{subequations}
   \begin{align}
-  \Phi_0\left(x\right) &= \psi_0\left(x\right) - 2\psi_2\left(x\right) \\
-  \Phi_2\left(x\right) &= \psi_2\left(x\right)
+  \Phi_0\left(x\right) &= \psi_0\left(x\right) - 2\psi_2\left(x\right)\ , \\
+  \Phi_2\left(x\right) &= \psi_2\left(x\right)\ .
   \end{align}
 \end{subequations}
 Solving these equations for the 0th and 2nd moments gives the following:
 \begin{subequations}
   \begin{align}
-  \psi_0\left(x\right) &= \Phi_0\left(x\right) - 2\Phi_2\left(x\right) \\
-  \psi_2\left(x\right) &= \Phi_2\left(x\right)
+  \psi_0\left(x\right) &= \Phi_0\left(x\right) - 2\Phi_2\left(x\right)\ , \\
+  \psi_2\left(x\right) &= \Phi_2\left(x\right)\ .
   \end{align}
 \end{subequations}
 
 Substituting these expressions into each of the moment equations gives the final form of the SP$_3$ equations.  These forms of the 0th and 2nd moment equations were obtained by substituting the 1st and 3rd moment equations into the 0th and 2nd moment equations.
 \begin{subequations}
   \begin{align}
-  \text{n=0:}\quad & -D_0\left(x\right) \frac{d^2\Phi_2}{dx^2} + \left(\Sigma_t\left(x\right) - \Sigma_{s0}\left(x\right)\right)\Phi_0\left(x\right) = Q\left(x\right) + 2\left(\Sigma_t\left(x\right) - \Sigma_{s0}\left(x\right)\right)\Phi_2\left(x\right) \label{e:sp3final-0}\\
-  \text{n=1:}\quad & \psi_1\left(x\right) = -D_0\left(x\right) \frac{d\Phi_0}{dx} \label{e:sp3final-1} \\
-  \text{n=2:}\quad & -D_2\left(x\right) \frac{d^2\Phi_2}{dx^2} + \left(\frac{9}{5}\Sigma_t\left(x\right) - \Sigma_{s2}\left(x\right) - \frac{4}{5}\Sigma_{s0}\left(x\right)\right)\Phi_2\left(x\right) = \nonumber \\ &\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad -\frac{2}{5}\left[Q\left(x\right) - \left(\Sigma_t\left(x\right) - \Sigma_{s0}\left(x\right)\right)\Phi_0\left(x\right)\right] \label{e:sp3final-2} \\
-  \text{n=3:}\quad & \psi_3\left(x\right) = -\frac{5}{3}D_2\left(x\right)\frac{d\Phi_2}{dx} \label{e:sp3final-3}
+  \text{n=0:}\quad & -D_0\left(x\right) \frac{d^2\Phi_2}{dx^2} + \left(\Sigma_t\left(x\right) - \Sigma_{s0}\left(x\right)\right)\Phi_0\left(x\right) = Q\left(x\right) + 2\left(\Sigma_t\left(x\right) - \Sigma_{s0}\left(x\right)\right)\Phi_2\left(x\right)\ , \label{e:sp3final-0}\\
+  \text{n=1:}\quad & \psi_1\left(x\right) = -D_0\left(x\right) \frac{d\Phi_0}{dx}\ , \label{e:sp3final-1} \\
+  \text{n=2:}\quad & -D_2\left(x\right) \frac{d^2\Phi_2}{dx^2} + \left(\frac{9}{5}\Sigma_t\left(x\right) - \Sigma_{s2}\left(x\right) - \frac{4}{5}\Sigma_{s0}\left(x\right)\right)\Phi_2\left(x\right) = \nonumber \\ &\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad -\frac{2}{5}\left[Q\left(x\right) - \left(\Sigma_t\left(x\right) - \Sigma_{s0}\left(x\right)\right)\Phi_0\left(x\right)\right]\ , \label{e:sp3final-2} \\
+  \text{n=3:}\quad & \psi_3\left(x\right) = -\frac{5}{3}D_2\left(x\right)\frac{d\Phi_2}{dx}\ . \label{e:sp3final-3}
   \end{align}
 \end{subequations}
 Because the odd moments have been completely eliminated from the even moment equations, Equations \ref{e:sp3final-0} and \ref{e:sp3final-2} can be solved by iterating between the two equations without solving explicitly for the odd moments.
@@ -79,93 +74,77 @@ A more thorough derivation of the Collision Probabilities (CP) method is conduct
 
 \subsection{Derivation}\label{appsubsec:CPderivation}
 
-To derive the transport matrix for a cylindrical pin cell, we begin by considering the fraction of neutrons from a point source which will reach a line whose closest distance to the point source is $\tau$ mean free paths.  We will consider the point source to be an isotropic unit point source.  The polar angle is $\theta$ and the azimuthal angle is $\alpha$.  The fraction of neutrons emitted into a specific direction $d\Omega$ about $\bm{\Omega$} from the point source to the line in question is given by,
-
+To derive the transport matrix for a cylindrical pin cell, we begin by considering the fraction of neutrons from a point source which will reach a line whose closest distance to the point source is $\tau$ mean free paths.  We will consider the point source to be an isotropic unit point source.  The polar angle is $\theta$ and the azimuthal angle is $\alpha$.  The fraction of neutrons emitted into a specific direction $d\Omega$ about $\bm{\Omega$} from the point source to the line in question is given by
 \begin{equation}
-\frac{d\Omega}{4\pi} = \frac{sin\left(\theta\right)d\theta d\alpha}{4\pi}.
+\frac{d\Omega}{4\pi} = \frac{sin\left(\theta\right)d\theta d\alpha}{4\pi}\ .
 \end{equation}
 
 Integrating this expression over the polar angle gives the probability that neutrons will be emitted from the source in $d\alpha$ about $\alpha$ and reach the line a distance of $\tau$ away:
-
 \begin{equation}
-\intop_0^\pi e^{-\frac{\tau}{\sin\theta}} \frac{\sin\theta d\theta d\alpha}{4\pi}
+\intop_0^\pi e^{-\frac{\tau}{\sin\theta}} \frac{\sin\theta d\theta d\alpha}{4\pi}\ .
 \end{equation}
 
 We are only concerned with the fraction of neutrons in $d\alpha$ which are also in $d\Omega$.  The fraction of neutrons emitted into $d\alpha$ is given by $\frac{d\alpha}{2\pi}$, so if we divide the previous expression by this fraction, we obtain the probability that a neutron emitted form the source in direction $d\alpha$ about $\alpha$ will reach the line:
-
 \begin{align}\label{e:CPprobLine}
 p\left(\tau\right) &= \frac{1}{2} \intop_0^\pi e^{-\frac{\tau}{\sin\theta}} \sin\theta d\theta \nonumber\\
  &= \intop_0^{\frac{\pi}{2}} e^{-\frac{\tau}{\sin\theta}}\sin\theta d\theta \nonumber\\
- &= Ki_2\left(\tau\right)
+ &= Ki_2\left(\tau\right)\ ,
 \end{align}
-
 where $Ki_2\left(x\right)$ is the second-order Bickley-Naylor function.  The Bickley-Naylor function can be defined as follows:
-
 \begin{subequations}\label{e:BickleyFunctions}
   \begin{equation}
-  Ki_n\left(x\right) = \intop_0^{\frac{\pi}{2}} \cos^{n-1}\theta e^{-\frac{x}{\cos\theta}} d\theta
+  Ki_n\left(x\right) = \intop_0^{\frac{\pi}{2}} \cos^{n-1}\theta e^{-\frac{x}{\cos\theta}} d\theta\ ,
   \end{equation}
   \begin{equation}
-  \frac{dKi_n\left(x\right)}{dx} = -Ki_{n-1}\left(x\right)
+  \frac{dKi_n\left(x\right)}{dx} = -Ki_{n-1}\left(x\right)\ ,
   \end{equation}
   \begin{equation}
-  \intop_a^b Ki_n\left(y\right) dy = Ki_{n+1}\left(a\right)-Ki_{n+1}\left(b\right)
+  \intop_a^b Ki_n\left(y\right) dy = Ki_{n+1}\left(a\right)-Ki_{n+1}\left(b\right)\ .
   \end{equation}
 \end{subequations}
 
 Using Equations \ref{e:CPprobLine} and \ref{e:BickleyFunctions}, we can now determine the probability of a neutron which escapes from region $i$ having its next collision in region $j$.  This probability is given by the probability of the escaped neutron reaching the first edge of region $j$ minus the probability of reaching the second edge of $j$:
-
 \begin{equation}\label{e:CPpTauAlphaY}
-p_{ij}\left(\tau, \alpha, y\right) = Ki_2\left(\tau_{ij} + \tau_j + \tau\right) - Ki_2\left(\tau_{ij} + \tau\right)
+p_{ij}\left(\tau, \alpha, y\right) = Ki_2\left(\tau_{ij} + \tau_j + \tau\right) - Ki_2\left(\tau_{ij} + \tau\right)\ ,
 \end{equation}
-
 where $\tau_{ij}$ is the number of mean free paths between $i$ and $j$, $\tau_j$ is the number of mean free paths across $j$, and $\tau$ is the number of mean free paths from the neutron's point of emission to the edge of region $i$.  The variable $y$ is defined along an axis in the plane of the problem perpendicular to the direction of streaming.  The combination of $\tau$ and $y$ specify a specific point in region $i$ for each angle $\alpha$.
 
 Next, we define a strip in $i$ of length $t_i = \frac{\tau}{\Sigma_i}$ along the streaming direction with width $dy$.  To obtain the fraction of neutrons born in this strip that collide in $j$, we integrate the strip and divide by its length:
-
 \begin{align}
 p_{ij}\left(\alpha, y\right) &= \frac{1}{t_i} \intop_0^{t_i} p_{ij}\left(\tau, \alpha, y\right) dt \nonumber \\
 &= \frac{1}{t_i} \intop_0^{t_i} Ki_2\left(\tau_{ij} + \tau\right) - Ki_2\left(\tau_{ij} + \tau_j + \tau\right) dt \nonumber \\
-&= \frac{1}{t_i} \intop_0^{t_i} Ki_2\left(\tau_{ij} + \tau_i - \Sigma_i t\right) - Ki_2\left(\tau_{ij} + \tau_j + \tau_i - \Sigma_i t\right) dt
+&= \frac{1}{t_i} \intop_0^{t_i} Ki_2\left(\tau_{ij} + \tau_i - \Sigma_i t\right) - Ki_2\left(\tau_{ij} + \tau_j + \tau_i - \Sigma_i t\right) dt\ .
 \end{align}
-
 Now we apply a change of variables $x=\tau_{ij} + \tau_i - \Sigma_i t$.  Doing this, we obtain
-
 \begin{align}
 p_{ij}\left(\alpha, y\right) &= -\frac{1}{\Sigma_i t_i} \intop_{\tau_{ij} + \tau_i}^{\tau_{ij}} Ki_2\left(x\right) - Ki_2\left(x + \tau_j\right) dx \nonumber \\
-&= \frac{1}{\Sigma_i t_i} \left[\left(Ki_3\left(\tau_{ij}\right) - Ki_3\left(\tau_{ij} + \tau_i\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) - Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right)\right]
+&= \frac{1}{\Sigma_i t_i} \left[\left(Ki_3\left(\tau_{ij}\right) - Ki_3\left(\tau_{ij} + \tau_i\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) - Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right)\right]\ .
 \end{align}
-
-This expression can now be multiplied by the fraction of neutrons in each strip and integrated over $y$ to obtain the total fraction of neutrons born anywhere in $i$ that stream in direction $\alpha$ and collide in $j$.
-
+This expression can now be multiplied by the fraction of neutrons in each strip and integrated over $y$ to obtain the total fraction of neutrons born anywhere in $i$ that stream in direction $\alpha$ and collide in $j$:
 \begin{align}
 p_{ij}\left(\alpha\right) &= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} p_{ij}\left(\alpha,y\right) \frac{t_i}{V_i} dy \nonumber\\
-&= \frac{1}{\Sigma_i V_i} \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy
+&= \frac{1}{\Sigma_i V_i} \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy\ .
 \end{align}
 
-Finally, we obtain element $ij$ of the transport matrix by multiplying by the volume and cross-section.  When multiplied by $\phi_i$, this gives the total contribution to $\phi_j$ from region $i$.
-
+Finally, we obtain element $ij$ of the transport matrix by multiplying by the volume and cross-section.  When multiplied by $\phi_i$, this gives the total contribution to $\phi_j$ from region $i$:
 \begin{align}\label{e:CPPij}
 P_{ij}\left(\alpha\right) &= \Sigma_i V_i p_{ij}\left(\alpha\right) \nonumber \\
-&= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy
+&= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy\ .
 \end{align}
-
 Now that this probability has been derived, it can be integrated over all $\alpha$ to obtain the transport matrix elements for a specific geometry.
 
 We must also handle the self-transport case, where $i=j$.  Again we follow the same procedure and define the probability $p_{ii}\left(t, \alpha, y\right)$ as the probability the neutron reaches region $i$ minus the probability it escapes region $i$.  Since the neutron was born in region $i$, the first probability is 1.  This gives the following expressions:
-
 \begin{subequations}\label{e:CPPii}
   \begin{align}
-  p_{ii}\left(t,\alpha,y\right) &= 1 - Ki_2\left(\tau\right) \\
+  p_{ii}\left(t,\alpha,y\right) &= 1 - Ki_2\left(\tau\right)\ , \\
   p_{ii}\left(\alpha,y\right) &= \frac{1}{t_i} \intop_0^{t_i} p_{ii}\left(t,\alpha,y\right) dt \nonumber \\
-  &= 1- \frac{1}{\Sigma_i t_i} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] \\
+  &= 1- \frac{1}{\Sigma_i t_i} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right]\ , \\
   p_{ii}\left(\alpha\right) &= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} p_{ii}\left(\alpha,y\right) \frac{t_i dy}{V_i} \nonumber\\
-  &= 1 - \frac{1}{\Sigma_i V_i} \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] dy \\
+  &= 1 - \frac{1}{\Sigma_i V_i} \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] dy\ , \\
   P_{ii}\left(\alpha\right) &= \Sigma_i V_i p_{ii}\left(\alpha\right) \nonumber \\
-  &= \Sigma_i V_i - \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] dy
+  &= \Sigma_i V_i - \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] dy\ .
   \end{align}
 \end{subequations}
-
 Now this self-transport kernel can be used with the kernel in \ref{e:CPPij} to set up the full transport matrix for a problem.  This matrix is dependent on the geometry of the problem, so it must be done for each unique problem being solved.  The following section discusses the details of this process for a cylindrical pin cell.
 
 \subsection{CP in Cylindrical Coordinates}\label{appsubsec:CPcylCoord}
@@ -179,22 +158,20 @@ To obtain the transport matrix for a cylindrical pin cell, the pin cell must fir
 \end{figure}
 
 Now that the geometry is set up, we can take advantage of the symmetry of the problem and only model on quarter of the volume to simplify the calculation.  The kernels from Equations \ref{e:CPPij} and \ref{e:CPPii} can be used, but some modification is required.  The reason for these modifications is that from a ring $i$, a ring $j$ which is outside ring $i$ can be intersected from two different directions.  Two ``sub-kernels'' are defined for teh positive and negative directions.  Each covers only one of two directions, so they should be multiplied by $\frac{1}{2}$.  However, each only accounts for $\frac{1}{4}$ the total volume, so the final expression $P_{ij}\left(y\right)$ should be multiplied by 2 to account for each of these.  The sub-kernels are each multiplied by $\frac{1}{\Sigma_i V_i}$ to account for the unit source density in the volume $V_i$ as well as a $\frac{1}{\Sigma_i}$ term that comes from the change of variables during the integration over $t_i$.  The positive and negative $\tau$ terms are shown in the geometry in \ref{f:CPcylGeom}.
-
 \begin{subequations}\label{e:CPcylPij(y)}
   \begin{align}
   P_{ij}^-\left(y\right) &= \frac{1}{\Sigma_i V_i} \left(Ki_3\left(\tau_{ij-1}^-\right) + Ki_3\left(\tau_{i-1j}^-\right) - Ki_3\left(\tau_{ij}^-\right) - Ki_3\left(\tau_{i-1j-1}^-\right)\right) \\
   P_{ij}^+\left(y\right) &= \frac{1}{\Sigma_i V_i} \left(Ki_3\left(\tau_{i-1j-1}^+\right) + Ki_3\left(\tau_{ij}^+\right) - Ki_3\left(\tau_{i-1j}^+\right) - Ki_3\left(\tau_{ij-1}^+\right)\right) \\
-  P_{ij}\left(y\right) &= 2\left(P_{ij}^-\left(y\right) + P_{ij}^+\left(y\right)\right)
+  P_{ij}\left(y\right) &= 2\left(P_{ij}^-\left(y\right) + P_{ij}^+\left(y\right)\right)\ .
   \end{align}
 \end{subequations}
 
 Now we introduce notation to simplify this expression:
-
 \begin{subequations}\label{e:CPcypPij}
   \begin{align}
   S_{ij} &= \intop_0^{R_i} \left(Ki_3\left(\tau_{ij}^+\right) - Ki_3\left(\tau_{ij}^-\right)\right)dy \\
   \Rightarrow P_{ij} &= \Sigma_i V_i \intop_0^{R_i} P_{ij}\left(y\right)dy \nonumber \\
-  &= 2\left(S_{ij} + S_{i-1j-1} - S_{ij-1} - S_{i-1j}\right)
+  &= 2\left(S_{ij} + S_{i-1j-1} - S_{ij-1} - S_{i-1j}\right)\ .
   \end{align}
 \end{subequations}
 
@@ -206,68 +183,58 @@ Now we introduce notation to simplify this expression:
 
 It is useful to note at this point that the principle of reciprocity exists for these kernels.  What is meant by this is that $P_{ij} = P_{ji}$.  This is because the $S_{ij}$ terms are functions only of $\tau_{ij}^+$ and $\tau_{ij}^-$.  These variables are defined as the distance between radii $i$ and $j$, to $\tau_{ij}^+ = \tau_{ji}^+$ and $\tau_{ij}^- = \tau_{ji}^-$.  Because of this, only half of the possible combinations of $i$ and $j$ must be calculated.  Likewise, when the final transport matrix is set up, it will be symmetric, so only one of the upper and lower triangles must be explicitly calculated.  This saves some time in the computation of the matrix elements.
 
-A similar process is followed for the self-transport kernel.  Again, positive and negative directions are set up.  Additionally, the possibility of a neutron being born in $i$, escaping, then re-entering the other side of $i$ must be accounted for as well.  This is illustrated in Figure \ref{f:CPcylGeomSelf}.  This leads to the kernel in Equation \ref{e:CPcylPii}.
-
+A similar process is followed for the self-transport kernel.  Again, positive and negative directions are set up.  Additionally, the possibility of a neutron being born in $i$, escaping, then re-entering the other side of $i$ must be accounted for as well.  This is illustrated in Figure \ref{f:CPcylGeomSelf}.  This leads to the kernel in Equation \ref{e:CPcylPii}:
 \begin{subequations}\label{e:CPcylPii}
   \begin{align}
   P_{ii}^-\left(y\right) &= \frac{t_i\left(y\right)}{V_i} + \frac{1}{\Sigma_i V_i}\left(Ki_3\left(\tau_{ii-1}^-\right) + Ki_3\left(\tau_{i-1i}^-\right) - Ki_3\left(\tau_{ii}^-\right) - Ki_3\left(\tau_{i-1i-1}^-\right)\right) \\
   P_{ii}^+\left(y\right) &= \frac{t_i\left(y\right)}{V_i} + \frac{1}{\Sigma_i V_i}\left(Ki_3\left(\tau_{ii}^+\right) + Ki_3\left(\tau_{i-1i-1}^+\right) - Ki_3\left(\tau_{ii-1}^+\right) - Ki_3\left(\tau_{i-1i}^+\right)\right) \\
   P_{ii}\left(y\right) &= 2 \left(P_{ii}^-\left(y\right) + P_{ii}^+\left(y\right)\right) \\
   P_{ii} &= \Sigma_i V_i \intop_0^{R_i} P_{ii}\left(y\right) dy \nonumber \\
-  &= \Sigma_i V_i  + 2\left(S{ii} + S_{i-1i-1} - S_{ii-1} - S_{i-1i}\right)
+  &= \Sigma_i V_i  + 2\left(S{ii} + S_{i-1i-1} - S_{ii-1} - S_{i-1i}\right)\ .
   \end{align}
 \end{subequations}
 
-$P_{ij}$ is the probability that a neutron born in cell $i$ has its first collision in cell $j$.  Likewise, $P_{ii}$ is the probability that a neutron born in cell $i$ has its first collision in the same cell.  To obtain the transport matrix elements $T_{ij}$ and $T_{ii}$, we must consider the actual linear system we wish to solve.  The goal is to find the reaction rates in each cell, from which we can easily find the flux in the cell $\phi_i$.  There are two main contributions to the reaction rates in cell $i$.  The first contribution is from neutrons born in another cell $j$ which have their first collision in cell $i$.  This source is given by $\frac{Q_j}{\Sigma_{t,j}}$, which gives the contribution to the reaction rates in $i$ when multiplied by $P_{ji}$.  The second part of the source comes from neutrons which streamed into $j$ and collided, scattered, then streamed into $i$ before having their next collision.  This source is given by $P_{ji} \phi_j c_j$, where $c_j$ is the scattering ration in cell $j$, defined as $\frac{\Sigma_{s,j}}{\Sigma_{t,j}}$.  The linear sysmem which needs to be solved is then shown in Equation \ref{e:CPproblem}.
-
+$P_{ij}$ is the probability that a neutron born in cell $i$ has its first collision in cell $j$.  Likewise, $P_{ii}$ is the probability that a neutron born in cell $i$ has its first collision in the same cell.  To obtain the transport matrix elements $T_{ij}$ and $T_{ii}$, we must consider the actual linear system we wish to solve.  The goal is to find the reaction rates in each cell, from which we can easily find the flux in the cell $\phi_i$.  There are two main contributions to the reaction rates in cell $i$.  The first contribution is from neutrons born in another cell $j$ which have their first collision in cell $i$.  This source is given by $\frac{Q_j}{\Sigma_{t,j}}$, which gives the contribution to the reaction rates in $i$ when multiplied by $P_{ji}$.  The second part of the source comes from neutrons which streamed into $j$ and collided, scattered, then streamed into $i$ before having their next collision.  This source is given by $P_{ji} \phi_j c_j$, where $c_j$ is the scattering ration in cell $j$, defined as $\frac{\Sigma_{s,j}}{\Sigma_{t,j}}$.  The linear sysmem which needs to be solved is then shown in Equation \ref{e:CPproblem}:
 \begin{equation}\label{e:CPproblem}
-\Sigma_{t,i} \phi_i V_i = sum_{j=1}^{N_R} P_{ji}\left(c_j\phi_j + \frac{Q_j}{\Sigma_{t,j}}\right)
+\Sigma_{t,i} \phi_i V_i = sum_{j=1}^{N_R} P_{ji}\left(c_j\phi_j + \frac{Q_j}{\Sigma_{t,j}}\right)\ .
 \end{equation}
 
-The linear system, with the matrix and source elements, can now be explicitly defined in Equation \ref{e:CPlinsys}.
-
+The linear system, with the matrix and source elements, can now be explicitly defined in Equation \ref{e:CPlinsys}:
 \begin{subequations}\label{e:CPlinsys}
   \begin{equation}
-  \underline{\underline{\bm T}}\underline{\bm\phi} = \underline{\bm B}
+  \underline{\underline{\bm T}}\underline{\bm\phi} = \underline{\bm B}\ ,
   \end{equation}
   \begin{align}
   T_{ij} &= -P_{ji} c_j = -2 c_j \left(S_{ii} + S_{i-1j-1} - S_{ij-1} - S_{i-1j}\right) \\
-  T_{ii} &= \Sigma_{t,i} V_i - P_{ii} c_i = \Sigma_{t,i} V_i - \Sigma_{s,i} V_i - 2 c_j \left(S_{ii} + S_{i-1j-1} - S_{ij-1} - S_{i-1j}\right)
+  T_{ii} &= \Sigma_{t,i} V_i - P_{ii} c_i = \Sigma_{t,i} V_i - \Sigma_{s,i} V_i - 2 c_j \left(S_{ii} + S_{i-1j-1} - S_{ij-1} - S_{i-1j}\right)\ ,
   \end{align}
   \begin{equation}
-  B_i =\sum_{j=1}^{N_R} P_{ji} \frac{Q_j}{\Sigma_{t,j}}
+  B_i =\sum_{j=1}^{N_R} P_{ji} \frac{Q_j}{\Sigma_{t,j}}\ .
   \end{equation}
 \end{subequations}
-
 The only remaining unknowns required to construct this linear system are the $S_{ij}$ terms that involve integrals over the third-order Bickley-Naylor functions.  This will be discussed in the next section.
 
 \subsection{Bickely-Naylor Function Integration}
 
 In the previous sections, we defined the following functions which contain integrals over third-order Bickley-Naylor functions:
-
 \begin{equation}\label{e:CPSijDef}
-S_{ij} = \intop_0^{R} \left(Ki_3\left(\tau_{ij}^+\left(y\right)\right) - Ki_3\left(\tau_{ij}^-\left(y\right)\right)\right) dy
+S_{ij} = \intop_0^{R} \left(Ki_3\left(\tau_{ij}^+\left(y\right)\right) - Ki_3\left(\tau_{ij}^-\left(y\right)\right)\right) dy\ .
 \end{equation}
-
-To numerically integrate these functions, we first break them up into regions (Equation \ref{e:CPSijSubInt}).
-
+To numerically integrate these functions, we first break them up into regions:
 \begin{subequations}\label{e:CPSijSubInt}
   \begin{align}
   S_{ij} &= \sum_{k=1}^i S_{ij}^k \\
-  S_{ij}^k &= \intop_{R_{k-1}}^{R_k} \left(Ki_3\left(\tau_{ij}^+\left(y\right)\right) - Ki_3\left(\tau_{ij}^-\left(y\right)\right)\right) dy
+  S_{ij}^k &= \intop_{R_{k-1}}^{R_k} \left(Ki_3\left(\tau_{ij}^+\left(y\right)\right) - Ki_3\left(\tau_{ij}^-\left(y\right)\right)\right) dy\ .
   \end{align}
 \end{subequations}
-
 Next, we perform a coordinate transformation to change the bounds of integration to be on the interval $\left[-1, 1\right]$.  This allows us to apply a Gaussian quadrature to evaluate the integral numerically.  The results of the transformation are shown in \ref{e:CPSijCoordTrans}, where $f\left(p\right)$ is the transformed $S_{ij}^k$ and $p_i$ and $\omega_i$ are some points and weights associated with the quadrature.
-
 \begin{subequations}\label{e:CPSijCoordTrans}
   \begin{align}
-  p &= 2\frac{y - R_{k-1}}{R_k - R_{k-1}} - 1 = 2\frac{y - R_{k-1}}{\Delta_k} -1 \\
-  dp &= \frac{2}{\Delta_k}dy \\
-  \Rightarrow S_{ij}^k &= \frac{\Delta_k}{2} \intop_{-1}^1 f\left(p\right)dp = \frac{\Delta_k}{2} \sum_i \omega_i f\left(p_i\right)
+  p &= 2\frac{y - R_{k-1}}{R_k - R_{k-1}} - 1 = 2\frac{y - R_{k-1}}{\Delta_k} -1\ , \\
+  dp &= \frac{2}{\Delta_k}dy\ , \\
+  \Rightarrow S_{ij}^k &= \frac{\Delta_k}{2} \intop_{-1}^1 f\left(p\right)dp = \frac{\Delta_k}{2} \sum_i \omega_i f\left(p_i\right)\ .
   \end{align}
 \end{subequations}
-
 This can now be integrated using a standard Gaussian quadrature \cite{HandbookOfMathFunctions1972}.  Because this quadrature is being applied to sections of each integral rather than the whole integral, MPACT uses a 4-point Gaussian quadrature (shown in Table \ref{t:gaussQuad}), which is sufficient to give accurate solutions over the entire bounds of the integral.
 
 \begin{table}[h]
