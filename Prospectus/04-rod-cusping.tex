@@ -2,23 +2,17 @@ This chapter will focus specifically on control rod cusping effects, which are t
 
 \section{Background}
 
-In Section \ref{s:2d1dErrors}, some potential sources of errors for the 2D/1D scheme were introduced.  One of these was the error introduced by axial homogenization within a 2D MOC plane.  In some cases, this can be done without introducing significant errors.  For example, MPACT often homogenizes components outside the active fuel region, such as the end plugs and gaps at the end of the fuel rods.  However, when strong neutron absorbers, such as control rods, are homogenized axially in active fuel region, this has the effect of introducing absorption in regions where there should be none.  This effect is known as ``cusping,'' \cite{finnemann1977RodCuspingOrigMention} and is illustrated in Figure 
-
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{cusping_effect_Joo.png}
     \caption[Rod Cusping Illustration]{Illustration of Rod ``Cusping'' \cite{ICAPPcontrolRodDecuspingNTRACER}}\label{f:cuspingEffectJoo}
 \end{figure}
 
+In Section \ref{s:2d1dErrors}, some potential sources of errors for the 2D/1D scheme were introduced.  One of these was the error introduced by axial homogenization within a 2D MOC plane.  In some cases, this can be done without introducing significant errors.  For example, MPACT often homogenizes components outside the active fuel region, such as the end plugs and gaps at the end of the fuel rods.  However, when strong neutron absorbers, such as control rods, are homogenized axially in active fuel region, this has the effect of introducing absorption in regions where there should be none.  This effect is known as ``cusping,'' \cite{finnemann1977RodCuspingOrigMention} and is illustrated in Figure \ref{f:cuspingEffectJoo}.
+
 In some cases, this is easily handled by setting up an appropriate axial mesh which prevents the need for the homogenization, but this is not always a practical solution.  Throughout the course of an entire cycle of operation (usually about 18 months), several different control banks in the reactor may move to a variety of positions to maintain criticality in the core.  Control rods in a PWR typically have step sizes of approximately 1.5 cm, but a typical MOC plane in MPACT is about 8 cm thick in the active fuel region.  In order to prevent cusping effects for an entire cycle, the user may have to create a very detailed axial mesh to ensure that all the control rod positions used throughout the cycle align with the edge of an MOC plane.  Not only is this tedious for the user, but it also greatly increases the computational burden due to the increased number of MOC planes.  Figure \ref{f:p4cuspingEffects} shows the calculated k-eff as a function of control rod position.  The cusping effects in this figure are further complicated by a heterogeneous rod with AIC and B$_4$C poison regions and a stainless steal tip.  Thus, cusping effects occur not just at the control rod tip, but also at material interfaces throughout the rod.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\textwidth]{p4cuspingEffects.png}
-    \caption[Rod Cusping in MPACT]{Control Rod Cusping Effects in MPACT for 3x3 Assembly}\label{f:p4cuspingEffects}
-\end{figure}
-
-\section{Past Solutions}
+\section{Decusping Methods History}
 
 Before discussing the recent and proposed methods to address the rod cusping problem, it is useful to provide an overview of past methods.  These will then be used as a comparison for recent work and justification for the proposed work.  First, we will look at some of the ways rod cusping was address in older nodal codes.  Then we will look at the effects in 2D/1D codes and recent work to address them.
 
@@ -56,23 +50,35 @@ Another method which calculates axial flux profiles to improve homogenization is
 
 \subsubsection{Equivalent-Node Method}
 
-The Equivalent-Node Method \cite{dall2002nodeEquivalenceDecusping} attempts to calculate the PRN cross-sections as if the PRN were modeled as two separate nodes: one fully rodded and one fully unrodded.
+The Equivalent-Node Method \cite{dall2002nodeEquivalenceDecusping} attempts to calculate the PRN cross-sections as if the PRN were modeled as two separate nodes: one fully rodded and one fully unrodded.  This method sets up two different diffusion problems for the PRN: on with a single region and one with two regions.  This is done in combination with NEM for each of the spatial moments being calculated.  The cross-sections in the case of the single region (homogenized cross-sections) are formulated in terms weighting factors multiplied by the heterogeneous cross-sections.  It is then enforced that the integral of the reaction rates for the one- and two-region problems are equal.  This preserves the reaction rates of the two-node problem in the homogenized problem and provides correction factors for the higher-order spatial moments.  Solving these equations produces accurate, smoothly varying homogenized cross-sections.
 
-\subsubsection{Pin-by-Pin Nodal Decusping}
+\subsubsection{Inverse Spectral Index Method}
 
-\cite{yamamoto2004pinByPinNodalDecusping}
+With increased computing power, interest grew in performing full-core calculations with finer spatial discretizations by perform nodal calculations using homogenized pins instead of homogenized assemblies or quarter assemblies.  However, with the smaller spatial regions, the radial leakages become more important than before, causing many of the older rod decusping methods to become inaccurate.  In 2004, Yamamoto developed the Inverse Spectral Index (ISI) method to address rod cusping for a pin-by-pin nodal calculation \cite{yamamoto2004pinByPinNodalDecusping}.
+
+To develop this method, it must be noted that if the axial leakage is small compared to the radial leakage, the flux spectrum in a cell will be similar for an assembly calculation or a full-core calculation.  When performing assembly calculations to generate homogenized cross-sections, one quantitied which can be tabulated is the spectral index, defined as the ratio of the fast flux to the thermal flux in a pin.  Because the fast flux is smoothly varying across the core compared to the thermal flux, it can be accurately approximated using the PRN's neighbor nodes.  The spectral index from the assembly calculations, which explicitly modeled the rodded and unrodded regions, can then be used with the fast flux to calculate the thermal flux.  A flux-volume weighting is then used to average the rodded and unrodded cross-sections for the following iteration.  Because the fast flux is affected by the PRN cross-sections, iterations are performed to converge the flux and cross-sections together
+
+\subsubsection{CIAMA Nodal Method}
+
+Recently, a new nodal method known as Channel-wise Intrinsice Axial Mesh Adaptation (CIAMA) has been developed \cite{yu2015CIAMArodDecusping,lu2015CIAMAintro}.  This method eliminates all rod cusping effects implicitly by eliminating the traditional constraint of other nodal methods: all nodes must be homogeneous.  With this requirement removed, partially inserted control rods can be handled implicitly by the method, without need for any auxiliary calculations or corrections.
+
+To do this, \todo{how?}
 
 \subsection{2D/1D Codes}\label{ss:2d1d-old-decusping-methods}
 
-\subsubsection{CRX-2K}
+Unfortunately, moving away from nodal methods to higher fidelity transport codes does not eliminate the rod cusping problem, as shown in figure \ref{f:p4cuspingEffects}.  There have not been as many 2D/1D codes as there have been nodal codes, but each of them still had to contend with this problem.  This section will discuss some of the different 2D/1D codes that have been developed and how the rod cusping problem was dealt with in each of them.
 
-\cite{cho2015CRX2d1dFusionDecusping}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{p4cuspingEffects.png}
+    \caption[Rod Cusping in MPACT]{Control Rod Cusping Effects in MPACT for 3x3 Assembly}\label{f:p4cuspingEffects}
+\end{figure}
 
-\subsubsection{MPACT}
+\subsubsection{Neighbor Spectral Index Method}
 
-Several codes that have employed the 2D/1D method in recent years have also required rod decusping methods.  MPACT currently uses a simple polynomial correction to the volume fractions used to homogenize the control rod \cite{MC2015_VCS_Cycle_Depletion}.  To develop this method, a 3x3 assembly was set up with a control rod in the center assembly.  This problem was simulated with the rod tip at nine different positions in the plane.  These simulations were then repeated, but with the axial mesh refined so the rod tip aligned with a plane boundary.  The k$_{eff}$ differences between the two sets of simulations were fitted with a sixth-order polynomial which is used in MPACT to reduce the volume fraction of the control rod by an appropriate amount to offset the cusping effects.  This process was repeated for different control rod materials such as AIC, B$_4$C, and Tungsten, since each material has unique cross-sections.  This method has the advantages of being simple to implement and requiring no increase in computational requirements.  However, the results obtained from this decusping method are tied to the control rod material and reactor model used to develop the corrections, limiting its usefulness to a small subset of reactors.
+The code CRX-2K \cite{cho2015CRX2d1dFusionDecusping} uses the 2D/1D fusion method to perform LWR simulations.  To address the rod cusping problem in this code, a modified version of the ISI method is applied, called the Neighbor Spectral Index (NSI) method.  The NSI method uses the same methodology as the ISI with one modification.  Because the 2D/1D fusion method does not require standalone calculations to generate homogenized cross-sections, the spectral index must be calculated on-the-fly during the 2D/1D iteration.  To do this, the neighboring node above the PRN is used to obtain a rodded spectral index, and the neighboring node below the PRN is used to obtain an unrodded spectral index.  These two indexes are then used with the rodded and unrodded cross-sections and volume fractions to obtain homogenized cross-sections for the PRN.  This method causes significant improvements over other decusping methods and requires negligible additional computation since the fluxes are stored for every region already.
 
-\subsubsection{nTRACER}
+\subsubsection{Sub-Plane Decusping}\label{sss:ntracerDecusping}
 
 Another 2D/1D code is nTRACER, which is under active development by Seoul National University \cite{RyuBEAVRSnTRACER2015}.  To address rod cusping effects in nTRACER, Jung and Joo developed a more general method than the polynomial correction method used by MPACT \cite{ICAPPcontrolRodDecuspingNTRACER}.  This method pre-generates correction factors at the start of a simulation, rather than relying on hard-coded corrections.  To do this, the assembly that will have a partially inserted control rod is identified, and a single-plane 3x3 assembly problem is set up using the partially-rodded assembly and its neighbors.  The radial and axial cusping effects are then determined separately.  First, the radial cusping effects are determined by performing 2D MOC calculations on the 3x3 sub-domain with the rod fully inserted and fully withdrawn.  This provides radial flux profiles in the rodded assembly for both rodded and unrodded regions, as well as current coupling coefficients for CMFD for the rodded and unrodded CMFD nodes.  Once this is done, the rod is simulated at positions of 25\%, 50\%, and 75\% withdrawn from the plane.  To reduce runtime, these calculations are done using only 3D sub-plane CMFD, using the heterogeneous rodded and unrodded cross-section for the appropriate sub-planes.  This generates axial flux profiles for the full MOC plane for each of the possible rod positions.  During the full-core 2D/1D calculation, these axial flux profiles are then used to generate improved homogenized cross-sections for the MOC calculation using equation.
 
@@ -80,13 +86,17 @@ Another 2D/1D code is nTRACER, which is under active development by Seoul Nation
 \overline{\Sigma_i} = \frac{\phi_{rad,i}^R \phi_{ax,i}^R \Sigma_i^R h^R + \phi_{rad,i}^U \phi_{ax,i}^U \Sigma_i^U h^U}{\phi_{rad,i}^R \phi_{ax,i}^R h^R + \phi_{rad,i}^U \phi_{ax,i}^U h^U}
 \end{equation}
 
+\subsubsection{Polynomial Corrections}\label{sss:polynomialDecusping}
+
+MPACT currently uses a simple polynomial correction to the volume fractions used to homogenize the control rod \cite{MC2015_VCS_Cycle_Depletion}.  To develop this method, a 3x3 assembly was set up with a control rod in the center assembly.  This problem was simulated with the rod tip at nine different positions in the plane.  These simulations were then repeated, but with the axial mesh refined so the rod tip aligned with a plane boundary.  The k$_{eff}$ differences between the two sets of simulations were fitted with a sixth-order polynomial which is used in MPACT to reduce the volume fraction of the control rod by an appropriate amount to offset the cusping effects.  This process was repeated for different control rod materials such as AIC, B$_4$C, and Tungsten, since each material has unique cross-sections.  This method has the advantages of being simple to implement and requiring no increase in computational requirements.  However, the results obtained from this decusping method are tied to the control rod material and reactor model used to develop the corrections, limiting its usefulness to a small subset of reactors.
+
 \section{Recent Decusping Methods Development}
 
 This section discusses two new decusping treatments added to MPACT.  These methods rely on the sub-plane scheme described in section \ref{ss:2d1d-3dcmfd}.  The first method only treats the axial cusping effects, while the second method extends the first by also treating the radial decusping effects.
 
 \subsection{Sub-plane Decusping}
 
-In section \ref{ss:2d1d-3dcmfd}, the sub-plane scheme was introduced as a means of coarsening the 2D/1D axial mesh to improve runtime while maintaining accuracy.  However, one negative consequence of using the sub-plane scheme is that it increases the likelihood of partially inserted rods being present since there are fewer, thicker MOC planes.  To address this, two modifications were made to the sub-plane scheme to minimize cusping effects.
+In section \ref{ss:2d1d-3dcmfd}, the sub-plane scheme was introduced as a means of coarsening the 2D/1D axial mesh to improve runtime while maintaining accuracy.  However, one negative consequence of using the sub-plane scheme is that it increases the likelihood of partially inserted rods being present since there are fewer, thicker MOC planes.  To address this, two modifications were made to the sub-plane scheme to minimize cusping effects.  The resulting method shares some similarities with the one employed by nTRACER discussed in section \ref{sss:ntracerDecusping}.  However, this method is built directly into the 2D/1D iteration scheme, requiring no additional MOC calculations to inform the decusping calculations.
 
 The first modification that was made was to modify the cross-sections used for the sub-plane CMFD and axial SP$_3$ calculations.  In the most basic form of the sub-plane scheme, the same cross-sections and radial coupling coefficients are used for all sub-planes in each MOC plane.  To use sub-plane as a decusping method, the requirement for constant cross-sections was removed.  Thus, when equation \ref{e:CMFDhomogTerms} is applied, explicit rodded or unrodded cross-sections are used for the cross-section homogenization in each sub-plane, rather than a single homogenized cross-section being using in all sub-planes.  This allows the CMFD and axial solvers to capture the sharp flux gradients that occur around the edge of the control rods.
 
