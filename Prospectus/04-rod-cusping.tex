@@ -59,7 +59,7 @@ To develop this method, it must be noted that if the axial leakage is small comp
 
 \subsubsection{CIAMA Nodal Method}
 
-Recently, a new nodal method known as Channel-wise Intrinsice Axial Mesh Adaptation (CIAMA) has been developed \cite{yu2015CIAMArodDecusping,lu2015CIAMAintro}.  This method eliminates all rod cusping effects implicitly by eliminating the traditional constraint of other nodal methods: all nodes must be homogeneous.  With this requirement removed, partially inserted control rods can be handled implicitly by the method, without need for any auxiliary calculations or corrections.
+Recently, a new nodal method known as Channel-wise Intrinsic Axial Mesh Adaptation (CIAMA) has been developed \cite{yu2015CIAMArodDecusping,lu2015CIAMAintro}.  This method eliminates all rod cusping effects implicitly by eliminating the traditional constraint of other nodal methods: all nodes must be homogeneous.  With this requirement removed, partially inserted control rods can be handled implicitly by the method, without need for any auxiliary calculations or corrections.
 
 To do this, a sub-plane--like scheme is employed in the NEM formulation.  As with a traditional NEM formulation, the nodes are coupled through transverse leakage terms.  However, within each node, a refined heterogeneous axial mesh is used.  The transverse leakage terms are still calculated on the coarse mesh with a quadratic polynomial fit.  For each node, this polynomial can simply be integrated over the height of the sub-nodes to determine the sub-node leakage source.  Because the inter-node coupling is done on the coarse mesh, the axial sub-mesh can be unique for each node.  This allows the method to implicitly handle axial heterogeneities with minimal increases in runtime.
 
@@ -104,16 +104,16 @@ In order to improve the MOC calculations as well, the CMFD flux projection descr
 
 While the sub-plane decusping method is better than none, it captures only the axial effects of the partially inserted rod.  To also capture the radial effects, an additional radial calculation is needed to obtain radial flux profiles for the rodded and un-rodded regions.  In MPACT, this is done using a 1D Collision Probabilities (CP) solver.
 
-After the CMFD homogenization, but prior to the calculation itself, a 1D CP kernel is solved for the rodded and un-rodded regions to obtain a radial flux profile.  This calculation uses the MOC cross-sections in each radial zone, along with a buffer region that consists of the eight neighboring CMFD cells homogenized together.  These profiles are normalized so that the volume-average of each profile is exactly unity.  These profiles are then used with the sub-plane CMFD flux and material cross-sections to calculate improved homogenized cross-sections, as shown in Equation \ref{e:CPMxs}.  Homogenizing the cross-sections in this way allows CMFD to capture both axial and radial effects of the partially inserted rod with negligible increase in computational expense.  This process is illustrated in Figure \ref{f:CPdecusp}.
-\begin{equation}\label{e:CPMxs}
-\Sigma_{g,i}=\frac{1}{\phi_{g,i}V_i}\sum_{r=1}^{N_{rings}} \Sigma_{g,r} \phi_{CMFD,g,i} \phi_{CP,g,r} V_r\ .
-\end{equation}
-
-\begin{figure}
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{CPdecusp.png}
   \caption[Collision Probabilities Decusping]{Illustration of 1D Collision Probabilities rod decusping method}\label{f:CPdecusp}
 \end{figure}
+
+After the CMFD homogenization, but prior to the calculation itself, a 1D CP kernel is solved for the rodded and un-rodded regions to obtain a radial flux profile.  This calculation uses the MOC cross-sections in each radial zone, along with a buffer region that consists of the eight neighboring CMFD cells homogenized together.  These profiles are normalized so that the volume-average of each profile is exactly unity.  These profiles are then used with the sub-plane CMFD flux and material cross-sections to calculate improved homogenized cross-sections, as shown in Equation \ref{e:CPMxs}.  Homogenizing the cross-sections in this way allows CMFD to capture both axial and radial effects of the partially inserted rod with negligible increase in computational expense.  This process is illustrated in Figure \ref{f:CPdecusp}.
+\begin{equation}\label{e:CPMxs}
+\Sigma_{g,i}=\frac{1}{\phi_{g,i}V_i}\sum_{r=1}^{N_{rings}} \Sigma_{g,r} \phi_{CMFD,g,i} \phi_{CP,g,r} V_r\ .
+\end{equation}
 
 After the CMFD calculation, the MOC cross-sections must be modified as with the sub-plane decusping.  This is done using by using Equation \ref{e:nTRACERdecusping} directly, where the radial flux terms are the projected MOC fluxes and the axial flux terms are the results of the sub-plane CMFD calculation that used the CP-homogenized cross-sections.  The projection of the CMFD flux to the MOC mesh is unchanged from the standard sub-plane scheme.  The CMFD calculation flow when using 1D CP is shown in Figure \ref{f:1dcpm-flowchart}
 
