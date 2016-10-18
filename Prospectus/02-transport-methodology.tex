@@ -410,7 +410,9 @@ After obtaining a solution equation \ref{e:CMFDmatrix}, the solution must be use
 \end{equation}
 Performing the next transport calculation and continuing to iterate between the fine mesh transport calculations and CMFD will provide a converged solution far more quickly than performing iterations consisting only of fine mesh transport calculations.
 
-\subsection{Simplified Pn}
+\subsection{Nodal Methods}
+
+\subsubsection{Simplified Pn}
 
 One method that can be used to solve the transport equation is the Spherical Harmonics (P$_n$) method \cite{SPnEquations}.  This method is able to resolve the angle dependence of the angular flux by expanding the flux using spherical harmonic functions.  These functions are defined in equation \ref{e:SphericalHarmonicFunctions}, with the Associated Legendre Functions and Legendre Polynomials defined in equations \ref{e:AssociatedLegendreFunctions} and \ref{e:LegendrePolynomials}, respectively.
 
@@ -462,6 +464,32 @@ It is clear that if $\frac{d}{dx}$ in equation \ref{e:1DplanarP1} is replaced by
   \end{dmath}
 \end{subequations}
 Each of these equations is similar in form to the P$_1$ equation and can be solved by iterating between the the 0th moment equation (\ref{e:3DSP3-0}) and the 2nd moment equation (\ref{e:3DSP3-2}).  This results in an accurate 3D flux distribution without the expense and complexity of performing a 3D P$_N$ calculation.
+
+\subsubsection{Nodal Expansion Method}
+
+While SP$_N$ can be used to capture angular moments of the flux, the Nodal Expansion Method (NEM) \cite{finnemann1977RodCuspingOrigMention} is used to capture intra-nodal flux shapes to calculate accurate currents at the interface between two nodes.  This is done by expanding the source and flux using quadratic and quartic Polynomials, respectively:
+\begin{subequations}\label{e:NEMexpsansions}
+    \begin{equation}
+    Q\left(\xi\right) = \sum_{i=0}^2 q_i P_i\left(\xi\right)
+    \end{equation}
+    \begin{equation}
+    \phi\left(\xi\right) = \sum_{i=0}^4 \phi_i P_i\left(\xi\right)
+    \end{equation}
+\end{subequations}
+The variable $\xi$ is simply the spatial variable normalized so the problem is being solved on the interval $\left[-1,1\right]$.  To solve for these moments, five equations are required.  The first three are the moment balance equations, obtained by multiplying the diffusion equation by $P_n\left(\xi\right)$ for moments 0-2 and integrating (equation \ref{e:NEMmomentBalance}).  The other two equations are found by enforcing flux and current continuity at the interfaces between nodes (equations \ref{e:NEMfluxcontinuity}-\ref{e:NEMcurrentcontinuity}).
+\begin{subequations}
+    \begin{equation}\label{e:NEMmomentBalance}
+    \intop_{-1}^1 P_n\left(\xi\right) \left(-\frac{D}{h^2}\frac{d^2}{d\xi^2}\phi\left(\xi\right) + \Sigma_r \phi\left(\xi\right) - Q\left(\xi\right)\right)d\xi = 0,\ n=0,1,2
+    \end{equation}
+    \begin{equation}\label{e:NEMfluxcontinuity}
+    \phi_L\left(1\right) = \phi_R\left(-1\right)
+    \end{equation}
+    \begin{equation}\label{e:NEMcurrentcontinuity}
+    J_L\left(1\right) = J_R\left(-1\right)
+    \end{equation}
+\end{subequations}
+
+The source moments $q_i$ are constructed using the flux moments from the previous iteration.  Using this method, an intra-nodal flux shape can be calculated within each node, and interface currents can be calculated at the boundaries of each node.
 
 \subsection{Collision Probabilities Method}
 
