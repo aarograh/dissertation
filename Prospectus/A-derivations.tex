@@ -25,7 +25,7 @@ Substituting these expansions into the transport equation, multiplying by $P_n\l
 \frac{d}{dx}\left[\frac{n+1}{2n+1}\psi_{n+1}\left(x\right) + \frac{n}{2n+1}\psi_{n-1}\left(x\right)\right] + \Sigma_{t}\left(x\right) \psi_{n}\left(x\right) = \Sigma_{s,n}\left(x\right) \psi_n\left(x\right) + Q\left(x\right)\delta_{0,n}
 \end{equation}
 
-Now to obtain the SP$_3$ equations, we solve equation \ref{e:SPnGeneral} for moments 0-3:
+Now to obtain the SP$_3$ equations, we solve Equation \ref{e:SPnGeneral} for moments 0-3:
 
 \begin{subequations}
 \begin{align}
@@ -45,7 +45,7 @@ D_0\left(x\right) = \frac{1}{3\left(\Sigma_t\left(x\right) - \Sigma_{s1}\left(x\
 D_2\left(x\right) = \frac{9}{35\left(\Sigma_t\left(x\right) - \Sigma_{s3}\left(x\right)\right)}
 \end{equation}
 \end{subequations}
-where equation \ref{e:sp3-2} was obtained by substituting equation \ref{e:sp3-0} into it.
+where Equation \ref{e:sp3-2} was obtained by substituting Equation \ref{e:sp3-0} into it.
 
 Now we make the following definitions:
 \begin{subequations}
@@ -71,7 +71,7 @@ Substituting these expressions into each of the moment equations gives the final
   \text{n=3:}\quad & \psi_3\left(x\right) = -\frac{5}{3}D_2\left(x\right)\frac{d\Phi_2}{dx} \label{e:sp3final-3}
   \end{align}
 \end{subequations}
-Because the odd moments have been completely eliminated from the even moment equations, equations \ref{e:sp3final-0} and \ref{e:sp3final-2} can be solved by iterating between the two equations without solving explicitly for the odd moments.
+Because the odd moments have been completely eliminated from the even moment equations, Equations \ref{e:sp3final-0} and \ref{e:sp3final-2} can be solved by iterating between the two equations without solving explicitly for the odd moments.
 
 \section{Method of Collision Probabilities}\label{appsec:CP}
 
@@ -113,7 +113,7 @@ where $Ki_2\left(x\right)$ is the second-order Bickley-Naylor function.  The Bic
   \end{equation}
 \end{subequations}
 
-Using equations \ref{e:CPprobLine} and \ref{e:BickleyFunctions}, we can now determine the probability of a neutron which escapes from region $i$ having its next collision in region $j$.  This probability is given by the probability of the escaped neutron reaching the first edge of region $j$ minus the probability of reaching the second edge of $j$:
+Using Equations \ref{e:CPprobLine} and \ref{e:BickleyFunctions}, we can now determine the probability of a neutron which escapes from region $i$ having its next collision in region $j$.  This probability is given by the probability of the escaped neutron reaching the first edge of region $j$ minus the probability of reaching the second edge of $j$:
 
 \begin{equation}\label{e:CPpTauAlphaY}
 p_{ij}\left(\tau, \alpha, y\right) = Ki_2\left(\tau_{ij} + \tau_j + \tau\right) - Ki_2\left(\tau_{ij} + \tau\right)
@@ -178,7 +178,7 @@ To obtain the transport matrix for a cylindrical pin cell, the pin cell must fir
   \caption[Cylindrical Geometry Collision Probabilities]{Cylindrical Geometry Collision Probabilities \cite{NERS561CPNotes}}\label{f:CPcylGeom}
 \end{figure}
 
-Now that the geometry is set up, we can take advantage of the symmetry of the problem and only model on quarter of the volume to simplify the calculation.  The kernels from equations \ref{e:CPPij} and \ref{e:CPPii} can be used, but some modification is required.  The reason for these modifications is that from a ring $i$, a ring $j$ which is outside ring $i$ can be intersected from two different directions.  Two ``sub-kernels'' are defined for teh positive and negative directions.  Each covers only one of two directions, so they should be multiplied by $\frac{1}{2}$.  However, each only accounts for $\frac{1}{4}$ the total volume, so the final expression $P_{ij}\left(y\right)$ should be multiplied by 2 to account for each of these.  The sub-kernels are each multiplied by $\frac{1}{\Sigma_i V_i}$ to account for the unit source density in the volume $V_i$ as well as a $\frac{1}{\Sigma_i}$ term that comes from the change of variables during the integration over $t_i$.  The positive and negative $\tau$ terms are shown in the geometry in \ref{f:CPcylGeom}.
+Now that the geometry is set up, we can take advantage of the symmetry of the problem and only model on quarter of the volume to simplify the calculation.  The kernels from Equations \ref{e:CPPij} and \ref{e:CPPii} can be used, but some modification is required.  The reason for these modifications is that from a ring $i$, a ring $j$ which is outside ring $i$ can be intersected from two different directions.  Two ``sub-kernels'' are defined for teh positive and negative directions.  Each covers only one of two directions, so they should be multiplied by $\frac{1}{2}$.  However, each only accounts for $\frac{1}{4}$ the total volume, so the final expression $P_{ij}\left(y\right)$ should be multiplied by 2 to account for each of these.  The sub-kernels are each multiplied by $\frac{1}{\Sigma_i V_i}$ to account for the unit source density in the volume $V_i$ as well as a $\frac{1}{\Sigma_i}$ term that comes from the change of variables during the integration over $t_i$.  The positive and negative $\tau$ terms are shown in the geometry in \ref{f:CPcylGeom}.
 
 \begin{subequations}\label{e:CPcylPij(y)}
   \begin{align}
@@ -206,7 +206,7 @@ Now we introduce notation to simplify this expression:
 
 It is useful to note at this point that the principle of reciprocity exists for these kernels.  What is meant by this is that $P_{ij} = P_{ji}$.  This is because the $S_{ij}$ terms are functions only of $\tau_{ij}^+$ and $\tau_{ij}^-$.  These variables are defined as the distance between radii $i$ and $j$, to $\tau_{ij}^+ = \tau_{ji}^+$ and $\tau_{ij}^- = \tau_{ji}^-$.  Because of this, only half of the possible combinations of $i$ and $j$ must be calculated.  Likewise, when the final transport matrix is set up, it will be symmetric, so only one of the upper and lower triangles must be explicitly calculated.  This saves some time in the computation of the matrix elements.
 
-A similar process is followed for the self-transport kernel.  Again, positive and negative directions are set up.  Additionally, the possibility of a neutron being born in $i$, escaping, then re-entering the other side of $i$ must be accounted for as well.  This is illustrated in figure \ref{f:CPcylGeomSelf}.  This leads to the kernel in equation \ref{e:CPcylPii}.
+A similar process is followed for the self-transport kernel.  Again, positive and negative directions are set up.  Additionally, the possibility of a neutron being born in $i$, escaping, then re-entering the other side of $i$ must be accounted for as well.  This is illustrated in Figure \ref{f:CPcylGeomSelf}.  This leads to the kernel in Equation \ref{e:CPcylPii}.
 
 \begin{subequations}\label{e:CPcylPii}
   \begin{align}
@@ -218,13 +218,13 @@ A similar process is followed for the self-transport kernel.  Again, positive an
   \end{align}
 \end{subequations}
 
-$P_{ij}$ is the probability that a neutron born in cell $i$ has its first collision in cell $j$.  Likewise, $P_{ii}$ is the probability that a neutron born in cell $i$ has its first collision in the same cell.  To obtain the transport matrix elements $T_{ij}$ and $T_{ii}$, we must consider the actual linear system we wish to solve.  The goal is to find the reaction rates in each cell, from which we can easily find the flux in the cell $\phi_i$.  There are two main contributions to the reaction rates in cell $i$.  The first contribution is from neutrons born in another cell $j$ which have their first collision in cell $i$.  This source is given by $\frac{Q_j}{\Sigma_{t,j}}$, which gives the contribution to the reaction rates in $i$ when multiplied by $P_{ji}$.  The second part of the source comes from neutrons which streamed into $j$ and collided, scattered, then streamed into $i$ before having their next collision.  This source is given by $P_{ji} \phi_j c_j$, where $c_j$ is the scattering ration in cell $j$, defined as $\frac{\Sigma_{s,j}}{\Sigma_{t,j}}$.  The linear sysmem which needs to be solved is then shown in equation \ref{e:CPproblem}.
+$P_{ij}$ is the probability that a neutron born in cell $i$ has its first collision in cell $j$.  Likewise, $P_{ii}$ is the probability that a neutron born in cell $i$ has its first collision in the same cell.  To obtain the transport matrix elements $T_{ij}$ and $T_{ii}$, we must consider the actual linear system we wish to solve.  The goal is to find the reaction rates in each cell, from which we can easily find the flux in the cell $\phi_i$.  There are two main contributions to the reaction rates in cell $i$.  The first contribution is from neutrons born in another cell $j$ which have their first collision in cell $i$.  This source is given by $\frac{Q_j}{\Sigma_{t,j}}$, which gives the contribution to the reaction rates in $i$ when multiplied by $P_{ji}$.  The second part of the source comes from neutrons which streamed into $j$ and collided, scattered, then streamed into $i$ before having their next collision.  This source is given by $P_{ji} \phi_j c_j$, where $c_j$ is the scattering ration in cell $j$, defined as $\frac{\Sigma_{s,j}}{\Sigma_{t,j}}$.  The linear sysmem which needs to be solved is then shown in Equation \ref{e:CPproblem}.
 
 \begin{equation}\label{e:CPproblem}
 \Sigma_{t,i} \phi_i V_i = sum_{j=1}^{N_R} P_{ji}\left(c_j\phi_j + \frac{Q_j}{\Sigma_{t,j}}\right)
 \end{equation}
 
-The linear system, with the matrix and source elements, can now be explicitly defined in equation \ref{e:CPlinsys}.
+The linear system, with the matrix and source elements, can now be explicitly defined in Equation \ref{e:CPlinsys}.
 
 \begin{subequations}\label{e:CPlinsys}
   \begin{equation}
@@ -249,7 +249,7 @@ In the previous sections, we defined the following functions which contain integ
 S_{ij} = \intop_0^{R} \left(Ki_3\left(\tau_{ij}^+\left(y\right)\right) - Ki_3\left(\tau_{ij}^-\left(y\right)\right)\right) dy
 \end{equation}
 
-To numerically integrate these functions, we first break them up into regions (equation \ref{e:CPSijSubInt}).
+To numerically integrate these functions, we first break them up into regions (Equation \ref{e:CPSijSubInt}).
 
 \begin{subequations}\label{e:CPSijSubInt}
   \begin{align}
@@ -268,7 +268,7 @@ Next, we perform a coordinate transformation to change the bounds of integration
   \end{align}
 \end{subequations}
 
-This can now be integrated using a standard Gaussian quadrature \cite{HandbookOfMathFunctions1972}.  Because this quadrature is being applied to sections of each integral rather than the whole integral, MPACT uses a 4-point Gaussian quadrature (shown in table \ref{t:gaussQuad}), which is sufficient to give accurate solutions over the entire bounds of the integral.
+This can now be integrated using a standard Gaussian quadrature \cite{HandbookOfMathFunctions1972}.  Because this quadrature is being applied to sections of each integral rather than the whole integral, MPACT uses a 4-point Gaussian quadrature (shown in Table \ref{t:gaussQuad}), which is sufficient to give accurate solutions over the entire bounds of the integral.
 
 \begin{table}[h]
   \centering

@@ -6,65 +6,65 @@ The Boltzmann equation for neutron transport is shown below:
 \begin{subequations}\label{e:boltzmann}
 \begin{dmath}
 {\frac{1}{v} \frac{\partial \psi}{\partial t} + 
-\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E,t\right)\psi\left(\bm x,E,\bm \Omega,t\right)} = {\frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi_p\left(\bm x,E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \left(1 - \beta\left(\bm x,E'\right)\right) \nu \Sigma_f\left(\bm x,E',t\right) \psi\left(\bm x,E',\bm \Omega',t\right) d\Omega' dE'} + {\sum_{j=1}^{N_d} \frac{\chi_{d,j}\left(\bm x,E\right)}{4\pi} \lambda_j C_j\left(\bm x,t\right)} + {Q\left(\bm x,E,\bm \Omega,t\right)}
+\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E,t\right)\psi\left(\bm x,E,\bm \Omega,t\right)} = {\frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi_p\left(\bm x,E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \left(1 - \beta\left(\bm x,E'\right)\right) \nu \Sigma_f\left(\bm x,E',t\right) \psi\left(\bm x,E',\bm \Omega',t\right) d\Omega' dE'} + {\sum_{j=1}^{N_d} \frac{\chi_{d,j}\left(\bm x,E\right)}{4\pi} \lambda_j C_j\left(\bm x,t\right)} + {Q\left(\bm x,E,\bm \Omega,t\right)}\ ,
 \end{dmath}
 \begin{equation}\label{e:boltzmannBC}
-\psi\left(\bm x_b, E, \bm{\Omega},t\right) = \psi^b\left(\bm x_b, E, \bm{\Omega},t\right)\ ,\quad \bm{\Omega}\cdot \bm n < 0
+\psi\left(\bm x_b, E, \bm{\Omega},t\right) = \psi^b\left(\bm x_b, E, \bm{\Omega},t\right)\ ,\quad \bm{\Omega}\cdot \bm n < 0\ .
 \end{equation}
 \end{subequations}
 
-Before addressing the methods used to solve equation \ref{e:boltzmann}, we will briefly define each of the terms in the equation \ref{e:BTEtermsTimeDerivative}.  The first term is the time derivative term, shown in , which accounts for the change in the angular flux over time in dV about $\bm x$, dE about $E$, and d$\Omega$ about $\bm\Omega$.  
+Before addressing the methods used to solve Equation \ref{e:boltzmann}, we will briefly define each of the terms in the Equation \ref{e:BTEtermsTimeDerivative}.  The first term is the time derivative term, shown in , which accounts for the change in the angular flux over time in dV about $\bm x$, dE about $E$, and d$\Omega$ about $\bm\Omega$.  
 
 \begin{equation}\label{e:BTEtermsTimeDerivative}
-\frac{1}{v} \frac{\partial \psi}{\partial t}
+\frac{1}{v} \frac{\partial \psi}{\partial t}\ .
 \end{equation}
 
-The second term (equation \ref{e:BTEtermsStreaming} is the streaming term.  This describes neutrons with energy $E$ traveling out of the volume dV in the direction $\bm\Omega$.
+The second term (Equation \ref{e:BTEtermsStreaming} is the streaming term.  This describes neutrons with energy $E$ traveling out of the volume dV in the direction $\bm\Omega$.
 
 \begin{equation}\label{e:BTEtermsStreaming}
-\bm \Omega \cdot \bm \nabla \psi
+\bm \Omega \cdot \bm \nabla \psi\ .
 \end{equation}
 
-The third term is the total reaction rate (equation \ref{e:BTEtermsTotalRR}).  This describes the total number of collisions experienced in dV by neutrons with energy $E$ and direction $\bm\Omega$.  Equations \ref{e:BTEtermsTimeDerivative}-\ref{e:BTEtermsTotalRR} together make up the total loss of neutrons.
+The third term is the total reaction rate (Equation \ref{e:BTEtermsTotalRR}).  This describes the total number of collisions experienced in dV by neutrons with energy $E$ and direction $\bm\Omega$.  Equations \ref{e:BTEtermsTimeDerivative}-\ref{e:BTEtermsTotalRR} together make up the total loss of neutrons.
 
 \begin{equation}\label{e:BTEtermsTotalRR}
-\Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm\Omega\right)
+\Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm\Omega\right)\ .
 \end{equation}
 
 Equation \ref{e:BTEtermsScatteringSource} shows the scattering source written in a simplified form.  This is the total number of neutrons scattering into energy $E$ and direction $\bm\Omega$ from all other energies and directions $E'$ and $\bm\Omega'$ in dV.  Because scattering is symmetric around the incident angle, the scattering cross-section depends only on the dot product $\bm\Omega'\cdot\bm\Omega$ rather than each of the two angles independently.
 
 \begin{equation}\label{e:BTEtermsScatteringSource}
-\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'
+\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \cdot \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'\ .
 \end{equation}
 
 Equation \ref{e:BTEtermsFissionSource} shows the prompt fission source, neutrons entering dV with energy and direction $E$ and $\bm\Omega$ directly from a fission event.  Fission is an isotropic process, so the total fission source is calculated then distributed evenly across $4\pi$.  Furthermore, the energy distribution of fission is practically independent of incident neutron energy, so the fission neutron distribution $\chi_p\left(E\right)$ can be outside the integral over energy.  A small fraction of fission neutrons are considered ``delayed,'' meaning they are emitted by the radioactive decay of a fission product.  The prompt fission source must be adjusted by the factor $\left(1-\beta\left(\bm x,E'\right)\right)$ to account for this.  Typically $\beta$ is less than 1\% and different for each fissionable isotope.
 
 \begin{equation}\label{e:BTEtermsFissionSource}
-{\frac{\chi_p\left(\bm x,E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \left(1 - \beta\left(\bm x,E'\right)\right) \nu \Sigma_f\left(\bm x,E',t\right) \psi\left(\bm x,E',\bm \Omega',t\right) d\Omega' dE'}
+{\frac{\chi_p\left(\bm x,E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \left(1 - \beta\left(\bm x,E'\right)\right) \nu \Sigma_f\left(\bm x,E',t\right) \psi\left(\bm x,E',\bm \Omega',t\right) d\Omega' dE'}\ .
 \end{equation}
 
 Equation \ref{e:BTEtermsDelayedSource} shows the fission source due to delayed neutrons.  The precursors, fission products which emit delayed neutrons, are divided into $N_d$ groups based on the magnitude of their decay constant $\lambda_j$.  Like the prompt neutrons, delayed neutrons are isotropic and distributed in energy with some distribution $\chi_{d,j}\left(\bm x,E\right)$ based on which precursors are produced.
 
 \begin{equation}\label{e:BTEtermsDelayedSource}
-{\sum_{j=1}^{N_d} \frac{\chi_{d,j}\left(\bm x,E\right)}{4\pi} \lambda_j C_j\left(\bm x,t\right)}
+{\sum_{j=1}^{N_d} \frac{\chi_{d,j}\left(\bm x,E\right)}{4\pi} \lambda_j C_j\left(\bm x,t\right)}\ .
 \end{equation}
 
 Equation \ref{e:BTEtermsExtSource} shows external source term.  This term accounts for all neutrons entering dV with energy and direction $E$ and $\bm\Omega$ from sources other than scatter and fission.  Equation \ref{e:BTEtermsExtSource} shows the source term as a function of angle, but it is often considered to be isotropic like the fission source.
 
 \begin{equation}\label{e:BTEtermsExtSource}
-Q\left(\bm x,E,\bm\Omega\right)
+Q\left(\bm x,E,\bm\Omega\right)\ .
 \end{equation}
 
-Finally, equation \ref{e:boltzmannBC} shows the boundary condition for the transport equation.  The dot product $\bm \Omega \cdot \bm n$ is between the direction of flight and the outward normal vector on the boundary of the problem.  The angular flux boundary condition defines the angular flux entering the problem domain. for the entire surface $\bm x_b$, all energies, and all times.
+Finally, Equation \ref{e:boltzmannBC} shows the boundary condition for the transport equation.  The dot product $\bm \Omega \cdot \bm n$ is between the direction of flight and the outward normal vector on the boundary of the problem.  The angular flux boundary condition defines the angular flux entering the problem domain. for the entire surface $\bm x_b$, all energies, and all times.
 
-Many problems of interest are steady-state, allowing equation \ref{e:boltzmann} to be simplified significantly.  The time derivative becomes 0, eliminating the term in \ref{e:BTEtermsTimeDerivative}, and the precursor concentrations are unchanging in time, allowing the fission source terms in \ref{e:BTEtermsFissionSource} and \ref{e:BTEtermsDelayedSource} to be lumped into a single term.  To ensure balance between the loss and source terms without a time derivative, the equation is reformulated as an eigenvalue equation.  The fission source is multiplied by the eigenvalue $\lambda = \frac{1}{k_{eff}}$, allowing the equation to be balanced.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, providing a physically meaningful steady-state solution to the equation.  The steady-state form of the Boltzmann equation is shown below:
+Many problems of interest are steady-state, allowing Equation \ref{e:boltzmann} to be simplified significantly.  The time derivative becomes 0, eliminating the term in \ref{e:BTEtermsTimeDerivative}, and the precursor concentrations are unchanging in time, allowing the fission source terms in \ref{e:BTEtermsFissionSource} and \ref{e:BTEtermsDelayedSource} to be lumped into a single term.  To ensure balance between the loss and source terms without a time derivative, the equation is reformulated as an eigenvalue equation.  The fission source is multiplied by the eigenvalue $\lambda = \frac{1}{k_{eff}}$, allowing the equation to be balanced.  The cross-sections can then be adjusted until $\lambda = 1$ is achieved, providing a physically meaningful steady-state solution to the equation.  The steady-state form of the Boltzmann equation is shown below:
 
 \begin{subequations}\label{e:ssboltzmann}
 \begin{dmath}
-{\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm \Omega\right) = \frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E'\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE' + \frac{Q\left(\bm x,E,\bm \Omega\right)}{4\pi}}
+{\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm \Omega\right) = \frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E'\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE' + \frac{Q\left(\bm x,E,\bm \Omega\right)}{4\pi}}\ ,
 \end{dmath}
 \begin{equation}\label{e:ssboltzmannBC}
-\psi\left(\bm x_b, E, \bm{\Omega}\right) = \psi^b\left(\bm x_b, E, \bm{\Omega}\right)\ ,\quad \bm{\Omega}\cdot \bm n < 0
+\psi\left(\bm x_b, E, \bm{\Omega}\right) = \psi^b\left(\bm x_b, E, \bm{\Omega}\right)\ ,\quad \bm{\Omega}\cdot \bm n < 0\ .
 \end{equation}
 \end{subequations}
 
@@ -72,125 +72,117 @@ Many problems of interest are steady-state, allowing equation \ref{e:boltzmann} 
 
 One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.
 
-We first define the multi-group flux, cross-sections, and chi distribution in equations \ref{e:multigroupDefinitions}.  These definitions ensure that the total reaction rates are preserved in each energy interval $g$.
-
+We first define the multi-group flux, cross-sections, and chi distribution in Equations \ref{e:multigroupDefinitions}.  These definitions ensure that the total reaction rates are preserved in each energy interval $g$.
 \begin{subequations}\label{e:multigroupDefinitions}
 \begin{equation}\label{e:multigroupangflux}
-\psi_g\left(\bm x,\bm \Omega\right)=\frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(\bm x,E,\bm\Omega\right) dE
+\psi_g\left(\bm x,\bm \Omega\right)=\frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(\bm x,E,\bm\Omega\right) dE\ ,
 \end{equation}
 \begin{equation}\label{e:multigroupXS}
-\Sigma_{x,g} \psi_g = \frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE \Rightarrow \Sigma_x,g = \frac{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE}{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) dE}
+\Sigma_{x,g} \psi_g = \frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE \Rightarrow \Sigma_x,g = \frac{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right)\ . dE}{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) dE}
 \end{equation}
 \end{subequations}
-
-Using the definitions above, equation \ref{e:ssboltzmann} can be operated on by \ref{e:multigroupIntegral} to obtain the multi-group transport equation \ref{e:multigroupboltzmann}
-
+Using thee definitions above, Equation \ref{e:ssboltzmann} can be operated on by \ref{e:multigroupIntegral} to obtain the multi-group transport Equation \ref{e:multigroupboltzmann}.
 \begin{equation}\label{e:multigroupIntegral}
 \frac{1}{E_{n-1} - E_n}\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE.
 \end{equation}
-
 \begin{subequations}\label{e:multigroupboltzmann}
 \begin{dmath}
-{\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(\bm x\right)\psi_g\left(\bm x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(\bm x,\bm \Omega'\right) d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \intop_{4\pi} \nu \Sigma_{f,g'}\left(\bm x\right) \psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega' + \frac{Q_g\left(\bm x\right)}{4\pi}}.
+{\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(\bm x\right)\psi_g\left(\bm x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(\bm x,\bm \Omega'\right) d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \intop_{4\pi} \nu \Sigma_{f,g'}\left(\bm x\right) \psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega' + \frac{Q_g\left(\bm x\right)}{4\pi}}\ ,
 \end{dmath}
 \begin{equation}\label{e:multigroupboltzmannBC}
-\psi_g\left(\bm x_b, \bm{\Omega}\right) = \frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi^b\left(\bm x_b, E, \bm{\Omega}\right)dE\ ,\quad \bm{\Omega}\cdot \bm n < 0
+\psi_g\left(\bm x_b, \bm{\Omega}\right) = \frac{1}{E_{n-1}-E_n} \intop_{E_n}^{E_{n-1}} \psi^b\left(\bm x_b, E, \bm{\Omega}\right)dE\ ,\quad \bm{\Omega}\cdot \bm n < 0\ .
 \end{equation}
 \end{subequations}
 
 \subsection{Discrete Ordinates Approximation}
 
 In addition to energy discretization, it is also useful to discretize the transport equation in angle.  The angular variable $\bm\Omega$ is made up of a polar angle ($\mu_s$) and an azimuthal angle ($\alpha$), both of which can be discretized:
-
 \begin{subequations}
 \begin{align}
 \bm\Omega &= \cos\left(\alpha\right)\sqrt{1-\mu_s^2}\bm i + \sin\left(\alpha\right)\sqrt{1-\mu_s^2}\bm j + \mu_s\bm k \\
-\Rightarrow \bm\Omega_n &= \cos\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm i + \sin\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm j + \mu_{s,n}\bm k
+\Rightarrow \bm\Omega_n &= \cos\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm i + \sin\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm j + \mu_{s,n}\bm k\ .
 \end{align}
 \end{subequations}
 
-For each $\bm\Omega_n$, there is an associated weight $w_n$.  These weights and angles together make up an angular quadrature set which simplifies the integrals in equations \ref{e:quadratureIntegrals}.
-
+For each $\bm\Omega_n$, there is an associated weight $w_n$.  These weights and angles together make up an angular quadrature set which simplifies the integrals in Equations \ref{e:quadratureIntegrals}.
 \begin{subequations}\label{e:quadratureIntegrals}
 \begin{equation}
-\intop d\Omega = \sum_{n=1}^N w_n = 4\pi
+\intop d\Omega = \sum_{n=1}^N w_n = 4\pi\ ,
 \end{equation}
 \begin{equation}
-\intop \bm\Omega d\Omega = \sum_{n=1}^N \bm\Omega_n w_n = 0
+\intop \bm\Omega d\Omega = \sum_{n=1}^N \bm\Omega_n w_n = 0\ ,
 \end{equation}
 \begin{equation}
-\intop_{4\pi} f\left(\bm\Omega\right)d\Omega \approx \sum_{n=1}^N f_n w_n
+\intop_{4\pi} f\left(\bm\Omega\right)d\Omega \approx \sum_{n=1}^N f_n w_n\ .
 \end{equation}
 \end{subequations}
-
-Applying this discretization to the multi-group transport equation \ref{e:multigroupboltzmann}, we obtain the following discrete ordinates (S$_N$) equations:
-
+Applying this discretization to the multi-group transport Equation \ref{e:multigroupboltzmann}, we obtain the following discrete ordinates (S$_N$) equations:
 \begin{subequations}\label{e:SnBoltzmann}
 \begin{dmath}
-\bm\Omega_n\cdot\bm\nabla\psi_{g,n} + \Sigma_{t,g}\left(\bm x\right)\psi_{g,n}\left(\bm x\right) = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{g'\rightarrow g,n'\rightarrow n}\left(\bm x\right)\psi_{g',n'}\left(\bm x\right) w_{n'}} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \sum_{n'=1}^N \nu\Sigma_{f,g'}\left(\bm x\right)\psi_{g',n'}\left(\bm x\right) w_{n'}} + \frac{Q_{g,n}\left(\bm x\right)}{4\pi}
+\bm\Omega_n\cdot\bm\nabla\psi_{g,n} + \Sigma_{t,g}\left(\bm x\right)\psi_{g,n}\left(\bm x\right) = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{g'\rightarrow g,n'\rightarrow n}\left(\bm x\right)\psi_{g',n'}\left(\bm x\right) w_{n'}} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \sum_{n'=1}^N \nu\Sigma_{f,g'}\left(\bm x\right)\psi_{g',n'}\left(\bm x\right) w_{n'}} + \frac{Q_{g,n}\left(\bm x\right)}{4\pi}\ ,
 \end{dmath}
 \begin{equation}
-\psi_{g,n}\left(\bm x_b\right) = \psi_{g}^b\left(\bm x_b,\bm{\Omega}_n\right)\ ,\quad \bm{\Omega}_n\cdot \bm n < 0
+\psi_{g,n}\left(\bm x_b\right) = \psi_{g}^b\left(\bm x_b,\bm{\Omega}_n\right)\ ,\quad \bm{\Omega}_n\cdot \bm n < 0\ .
 \end{equation}
 \end{subequations}
 
 \subsection{Diffusion Approximation}
 
-Another approximation that can be made to the angular dependence of the transport equation is the diffusion approximation.  To derive this approximation, we again begin with the multi-group transport equation from equation \ref{e:multigroupboltzmann}.  First, we obtain the P$_1$ form of the equation by operating on it by $\intop\left(\cdot\right)d\Omega$ and $\intop\left(\cdot\right)\Omega_i d\Omega$.  To simplify these integrals, we make use of the following identities for integrating over $\bm\Omega$:
+Another approximation that can be made to the angular dependence of the transport equation is the diffusion approximation.  To derive this approximation, we again begin with the multi-group transport equation from Equation \ref{e:multigroupboltzmann}.  First, we obtain the P$_1$ form of the equation by operating on it by $\intop\left(\cdot\right)d\Omega$ and $\intop\left(\cdot\right)\Omega_i d\Omega$.  To simplify these integrals, we make use of the following identities for integrating over $\bm\Omega$:
 \begin{subequations}\label{e:omegaIdentities}
 \begin{equation}
-\intop_{4\pi} d\Omega = 4\pi
+\intop_{4\pi} d\Omega = 4\pi\ ,
 \end{equation}
 \begin{equation}
-\intop_{4\pi} \Omega_i d\Omega = 0
+\intop_{4\pi} \Omega_i d\Omega = 0\ ,
 \end{equation}
 \begin{equation}
-\intop_{4\pi} \Omega_i\Omega_j d\Omega = \frac{4\pi}{3}\delta_{i,j}
+\intop_{4\pi} \Omega_i\Omega_j d\Omega = \frac{4\pi}{3}\delta_{i,j}\ ,
 \end{equation}
 \begin{equation}
-\intop_{4\pi} \Omega_i\Omega_j\Omega_k d\Omega = 0
+\intop_{4\pi} \Omega_i\Omega_j\Omega_k d\Omega = 0\ .
 \end{equation}
 \end{subequations}
 We must also assume that the angular flux is linearly anisotropic.  This leads to the following expression of the angular flux as a function of the scalar flux $\phi$ and current $J$:
 \begin{subequations}
 \begin{equation}
-\psi_g\left(\bm x,\bm\Omega\right) \approx \frac{1}{4\pi}\left(\phi_g\left(\bm x\right) + 3\bm\Omega \cdot \bm J\left(\bm x\right)\right)
+\psi_g\left(\bm x,\bm\Omega\right) \approx \frac{1}{4\pi}\left(\phi_g\left(\bm x\right) + 3\bm\Omega \cdot \bm J\left(\bm x\right)\right)\ ,
 \end{equation}
 \begin{equation}
-\phi_g\left(\bm x\right) = \intop_{4\pi} \psi_g\left(\bm x,\bm\Omega\right) d\Omega
+\phi_g\left(\bm x\right) = \intop_{4\pi} \psi_g\left(\bm x,\bm\Omega\right) d\Omega\ ,
 \end{equation}
 \begin{equation}
-J_g\left(\bm x\right) = \intop_{4\pi} \psi_g\left(\bm x,\bm\Omega\right) \bm\Omega d\Omega
+J_g\left(\bm x\right) = \intop_{4\pi} \psi_g\left(\bm x,\bm\Omega\right) \bm\Omega d\Omega\ .
 \end{equation}
 \end{subequations}
 Applying this assumption and integrating, we obtain a coupled set of four equations for the scalar flux and the three components of the current vector.
 \begin{subequations}\label{e:P1transport}
 \begin{dmath}\label{e:P1transport-0th}
-\frac{d J_{x,g}}{dx} + \frac{d J_{y,g}}{dy} + \frac{d J_{z,g}}{dz} + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
+\frac{d J_{x,g}}{dx} + \frac{d J_{y,g}}{dy} + \frac{d J_{z,g}}{dz} + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)\ ,
 \end{dmath}
 \begin{dmath}\label{e:P1transport-1st-x}
-\frac{d\phi_g}{dx} + \Sigma_{t,g}\left(\bm x\right)J_{x,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{x,g'}\left(\bm x\right)}
+\frac{d\phi_g}{dx} + \Sigma_{t,g}\left(\bm x\right)J_{x,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{x,g'}\left(\bm x\right)}\ ,
 \end{dmath}
 \begin{dmath}\label{e:P1transport-1st-y}
-\frac{d\phi_g}{dy} + \Sigma_{t,g}\left(y\right)J_{y,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{y,g'}\left(\bm x\right)}
+\frac{d\phi_g}{dy} + \Sigma_{t,g}\left(y\right)J_{y,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{y,g'}\left(\bm x\right)}\ ,
 \end{dmath}
 \begin{dmath}\label{e:P1transport-1st-z}
-\frac{d\phi_g}{dz} + \Sigma_{t,g}\left(\bm x\right)J_{z,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{z,g'}\left(\bm x\right)}
+\frac{d\phi_g}{dz} + \Sigma_{t,g}\left(\bm x\right)J_{z,g}\left(\bm x\right)  = {\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right) J_{z,g'}\left(\bm x\right)}\ .
 \end{dmath}
 \end{subequations}
 
-Solving equations \ref{e:P1transport-1st-x}-\ref{e:P1transport-1st-z} for the components of the current, we obtain the following expression:
+Solving Equations \ref{e:P1transport-1st-x}-\ref{e:P1transport-1st-z} for the components of the current, we obtain the following expression:
 \begin{subequations}\label{e:FicksLaw}
 \begin{equation}\label{e:FicksLawCurrent}
-\bm J_g\left(\bm x\right) = -D_g\left(\bm x\right) \bm\nabla \phi_g\left(\bm x\right)
+\bm J_g\left(\bm x\right) = -D_g\left(\bm x\right) \bm\nabla \phi_g\left(\bm x\right)\ ,
 \end{equation}
 \begin{equation}\label{e:FicksLawDiffConstant}
-D_g\left(\bm x\right) = \frac{1}{3}\left(\Sigma_{t,g}-\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right)\right)^{-1}
+D_g\left(\bm x\right) = \frac{1}{3}\left(\Sigma_{t,g}-\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right)\right)^{-1}\ .
 \end{equation}
 \end{subequations}
 Substituting \ref{e:FicksLawCurrent} into \ref{e:P1transport-0th} gives us the diffusion form of the transport equation, which has only the scalar flux $\phi$ and eigenvalue $\frac{1}{k_{eff}}$ as unknowns:
 \begin{dmath}\label{e:DiffusionEquation}
--\bm\nabla \cdot D_g\left(\bm x\right) \bm \nabla\phi_g\left(\bm x\right) + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
+-\bm\nabla \cdot D_g\left(\bm x\right) \bm \nabla\phi_g\left(\bm x\right) + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)\ .
 \end{dmath}
 
 To derive boundary conditions, Equation \ref{e:multigroupboltzmannBC} is used, making the same linear anisotropy assumption as in the derivation of the diffusion equation itself:
@@ -198,11 +190,11 @@ To derive boundary conditions, Equation \ref{e:multigroupboltzmannBC} is used, m
 \intop_{\bm \Omega \cdot \bm n < 0} \bigg|\bm \Omega \cdot \bm n\bigg|\psi_g\left(\bm x_b, \bm \Omega\right) d\Omega &= \intop_{\bm \Omega \cdot \bm n < 0} \bigg|\bm \Omega \cdot \bm n\bigg|\psi_g^b\left(\bm x_b, \bm \Omega\right) d\Omega \nonumber \\
 \intop_{\bm \Omega \cdot \bm n < 0} \bigg|\bm \Omega \cdot \bm n\bigg| \frac{1}{4\pi} \left[\phi_g\left(\bm x_b\right) + 3\bm \Omega \cdot \bm J_g\left(\bm x_b\right)\right] d\Omega &= J^-\left(\bm x_b\right) \nonumber \\
 -\frac{1}{4\pi}\intop_{\bm \Omega \cdot \bm n < 0} \bm \Omega \cdot \bm n \left[\phi_g\left(\bm x_b\right) + 3\bm \Omega \cdot \bm J_g\left(\bm x_b\right)\right] d\Omega &= J^-\left(\bm x_b\right) \nonumber \\
-\frac{1}{4} \phi_g\left(\bm x_b\right) - \frac{1}{2} \bm n \cdot \bm J\left(\bm x_b\right) &= J^-\left(\bm x_b\right)
+\frac{1}{4} \phi_g\left(\bm x_b\right) - \frac{1}{2} \bm n \cdot \bm J\left(\bm x_b\right) &= J^-\left(\bm x_b\right)\ .
 \end{align}
-This is the Marshak boundary condition, which preserves the total incident flux at every point on the boundary of the system while assuming linear anisotropy.  This boundary condition can be further simplified so that the only unknown is the scalar flux $\phi_g$ by substituting equation \ref{e:FicksLawCurrent}:
+This is the Marshak boundary condition, which preserves the total incident flux at every point on the boundary of the system while assuming linear anisotropy.  This boundary condition can be further simplified so that the only unknown is the scalar flux $\phi_g$ by substituting Equation \ref{e:FicksLawCurrent}:
 \begin{equation}\label{e:DiffusionEquationBC}
-\frac{1}{4} \phi_g\left(\bm x_b\right) + \frac{D_g\left(\bm x\right)}{2} \bm \cdot \bm \nabla \phi_g\left(\bm x_b\right) = J^-\left(\bm x_b\right)
+\frac{1}{4} \phi_g\left(\bm x_b\right) + \frac{D_g\left(\bm x\right)}{2} \bm \cdot \bm \nabla \phi_g\left(\bm x_b\right) = J^-\left(\bm x_b\right)\ .
 \end{equation}
 
 \subsection{Scattering Approximations}
@@ -211,31 +203,29 @@ One of the biggest challenges to solving the transport equation is angle depende
 
 \subsubsection{P\textsubscript{N} Scattering}
 
-The first scattering approximation that can be made is P$_N$ scattering.  To make this approximation, the $\bm\Omega'\cdot\bm\Omega$ is rewritten as a single angular variable $\mu_s$, the cosine between the incoming and outgoing scattering angles.  The scattering cross-section can then be expanded in terms of Legendre polynomials, defined by equations \ref{e:LegendrePolynomials}.
-
+The first scattering approximation that can be made is P$_N$ scattering.  To make this approximation, the $\bm\Omega'\cdot\bm\Omega$ is rewritten as a single angular variable $\mu_s$, the cosine between the incoming and outgoing scattering angles.  The scattering cross-section can then be expanded in terms of Legendre polynomials, defined by Equations \ref{e:LegendrePolynomials}.
 \begin{subequations}\label{e:LegendrePolynomials}
 \begin{equation}
-P_{n+1}\left(\bm x\right) = \frac{\left(2n+1\right)xP_n\left(\bm x\right) - nP_{n-1}\left(\bm x\right)}{n+1}
+P_{n+1}\left(\bm x\right) = \frac{\left(2n+1\right)xP_n\left(\bm x\right) - nP_{n-1}\left(\bm x\right)}{n+1}\ ,
 \end{equation}
 \begin{equation}
-P_0\left(\bm x\right) = 1
+P_0\left(\bm x\right) = 1\ ,
 \end{equation}
 \begin{equation}
-P_1\left(\bm x\right) = x
+P_1\left(\bm x\right) = x\ ,
 \end{equation}
 \begin{equation}
-\intop_{-1}^1 P_n\left(\bm x\right) P_m\left(\bm x\right) dx = \frac{2}{2n+1}\delta_{n,m}
+\intop_{-1}^1 P_n\left(\bm x\right) P_m\left(\bm x\right) dx = \frac{2}{2n+1}\delta_{n,m}\ .
 \end{equation}
 \end{subequations}
 
 Equations \ref{e:PnScatteringExpansion} show the expansion of the scattering cross-section using Legendre polynomials.  Using more terms in the expansion improves the accuracy.  For most reactor problems, $N \le 3$ is sufficient.  Problems such as shielding and others may require many more terms to be kept to obtain sufficient accuracy.
-
 \begin{subequations}\label{e:PnScatteringExpansion}
 \begin{equation}
-\Sigma_s\left(\bm x,\mu_s\right) = \sum_{n=0}^N \frac{2n+1}{4\pi} P_n\left(\mu_s\right) \Sigma_{sn}\left(\bm x\right)
+\Sigma_s\left(\bm x,\mu_s\right) = \sum_{n=0}^N \frac{2n+1}{4\pi} P_n\left(\mu_s\right) \Sigma_{sn}\left(\bm x\right)\ ,
 \end{equation}
 \begin{equation}
-\Sigma_{s,n}\left(\bm x\right) = 2\pi\intop_{-1}^1 \Sigma_s\left(\bm x,\mu_s\right) P_n\left(\mu_s\right) d\mu_s
+\Sigma_{s,n}\left(\bm x\right) = 2\pi\intop_{-1}^1 \Sigma_s\left(\bm x,\mu_s\right) P_n\left(\mu_s\right) d\mu_s\ .
 \end{equation}
 \end{subequations} 
 
@@ -244,13 +234,12 @@ Equations \ref{e:PnScatteringExpansion} show the expansion of the scattering cro
 A second simplification of the scattering source that can be used is transport-corrected isotropic (TCP$_0$) scattering.  When using this approximation, the equation is solved using only the zeroth order term in \ref{e:PnScatteringExpansion}.  The cross-section data used to develop the multi-group scattering cross-sections is modified beforehand to still preserve some of the higher order scattering physics.
 
 Equations \ref{e:outscatterTCP0} show the out-scatter transport correction, which is commonly used in MPACT.  In this correction, the total cross-section and zeroth moment of the self-scatter cross-section are modified by subtracting the sum of the first-order out-scatter data.  There are several variants of the out-scatter correction as well as other completely different correction techniques \cite{StimpsonAP1000ImprovedDiffCoeffs2015} that are available in MPACT but will not be discussed in detail here.
-
 \begin{subequations}\label{e:outscatterTCP0}
 \begin{equation}
-\Sigma_{tr,g} = \Sigma_{t,g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}
+\Sigma_{tr,g} = \Sigma_{t,g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}\ ,
 \end{equation}
 \begin{equation}
-\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}
+\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}\ .
 \end{equation}
 \end{subequations}
 
@@ -262,151 +251,138 @@ This section will present some of basic numerical methods used to solve the tran
 
 One method that is commonly used to solve the transport equation is the Method of Characteristics (MOC) \cite{AskerMOCOrig1972,HalsallMOCOrigCACTUS1980}.  This method allows the transport equation to be solved along a characteristic direction with limited approximations, making it useful for complicated geometries such as those found in nuclear reactors.  Doing this along many lines for a variety of angles and integrating allows an accurate calculation of the scalar flux for large, geometrically complex problems, making MOC useful for many reactor calculations.  This section focuses on a detailed derivation of MOC.
 
-To derive MOC, we make use of both the multi-group and discrete ordinates approximations by beginning with equation \ref{e:SnBoltzmann}.  First, the right-hand side is lumped into a single source term for a given energy group $g$ and direction $n$:
-
+To derive MOC, we make use of both the multi-group and discrete ordinates approximations by beginning with Equation \ref{e:SnBoltzmann}.  First, the right-hand side is lumped into a single source term for a given energy group $g$ and direction $n$:
 \begin{subequations}\label{e:MOCqboltzmann}
 \begin{equation}
-\bm \Omega_n \cdot \bm \nabla \psi_{g,n} + \Sigma_{t,g}\left(\bm x\right)\psi_{g,n}\left(\bm x\right) = q_{g,n}\left(\bm x\right)
+\bm \Omega_n \cdot \bm \nabla \psi_{g,n} + \Sigma_{t,g}\left(\bm x\right)\psi_{g,n}\left(\bm x\right) = q_{g,n}\left(\bm x\right)\ ,
 \end{equation}
 \begin{dmath}
-{q_{g,n}\left(\bm x\right)} = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{s,g'\rightarrow g,n'\rightarrow n}\left(\bm x\right) \psi_{g',n'}\left(\bm x\right) w_{n'}} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \sum_{n'=1}^N \nu \Sigma_{f,g'}\left(\bm x\right) \psi_{g',n'}\left(\bm x\right) w_{n'} + \frac{Q_{g,n}\left(\bm x\right)}{4\pi}}
+{q_{g,n}\left(\bm x\right)} = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{s,g'\rightarrow g,n'\rightarrow n}\left(\bm x\right) \psi_{g',n'}\left(\bm x\right) w_{n'}} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \sum_{n'=1}^N \nu \Sigma_{f,g'}\left(\bm x\right) \psi_{g',n'}\left(\bm x\right) w_{n'} + \frac{Q_{g,n}\left(\bm x\right)}{4\pi}}\ .
 \end{dmath}
 \end{subequations}
 
 Now we introduce a characteristic direction $\bm r$ in the direction $\bm\Omega_n$
-
 \begin{equation}
-\bm r = \bm {r_0} + s \bm \Omega_n \Rightarrow \begin{cases} x\left(s\right) = x_0 + s\Omega_{n,x} \\ y\left(s\right) = y_0 + s\Omega_{n,y} \\ z\left(s\right) = z_0 + s\Omega_{n,z} \end{cases}
+\bm r = \bm {r_0} + s \bm \Omega_n \Rightarrow \begin{cases} x\left(s\right) = x_0 + s\Omega_{n,x} \\ y\left(s\right) = y_0 + s\Omega_{n,y} \\ z\left(s\right) = z_0 + s\Omega_{n,z} \end{cases}\ .
 \end{equation}
-
-Substituting this variable into equation \ref{e:MOCqboltzmann} gives the characteristic form of this equation:
-
+Substituting this variable into Equation \ref{e:MOCqboltzmann} gives the characteristic form of this equation:
 \begin{subequations}\label{e:characteristicboltzmann}
 \begin{equation}
-\frac{\partial \psi_{g,n}}{\partial s} + \Sigma_{t,g}\left(\bm r_0 + s\bm\Omega_n\right)\psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) = q_{g,n}\left(\bm r_0 + s\bm\Omega_n\right)
+\frac{\partial \psi_{g,n}}{\partial s} + \Sigma_{t,g}\left(\bm r_0 + s\bm\Omega_n\right)\psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) = q_{g,n}\left(\bm r_0 + s\bm\Omega_n\right)\ ,
 \end{equation}
 \begin{dmath}
-{q_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) = \frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{s,g'\rightarrow g,n'\rightarrow n}\left(\bm r_0 + s \bm\Omega_n\right) \psi_{g',n'}\left(\bm r_0 + s\bm\Omega_n\right) w_{n'}} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \sum_{n'=1}^N \nu \Sigma_{f,g'}\left(\bm r_0 + s\bm\Omega_n\right) \psi_{g',n'}\left(\bm r_0 + s\bm\Omega_n\right) w_{n'} + Q_{g,n}\left(\bm r_0 + s\bm\Omega_n\right)}
+{q_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) = \frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{s,g'\rightarrow g,n'\rightarrow n}\left(\bm r_0 + s \bm\Omega_n\right) \psi_{g',n'}\left(\bm r_0 + s\bm\Omega_n\right) w_{n'}} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \sum_{n'=1}^N \nu \Sigma_{f,g'}\left(\bm r_0 + s\bm\Omega_n\right) \psi_{g',n'}\left(\bm r_0 + s\bm\Omega_n\right) w_{n'} + Q_{g,n}\left(\bm r_0 + s\bm\Omega_n\right)}\ .
 \end{dmath}
 \end{subequations}
 
-This equation is easily solved using an integrating factor
-
+This equation is easily solved with the integrating factor
 \begin{equation}
 \exp{\left(-\intop_0^s \Sigma_{t,g}\left(\bm r_0 + s'\bm\Omega_n\right)ds'\right)}
 \end{equation}
-
 giving the following solution:
 
 \begin{dmath}\label{e:MOCexact}
-{\psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) = \psi_{g,n}\left(\bm r_0\right)\exp{\left(-\intop_0^s \Sigma_{t,g}\left(\bm r_0 + s'\bm\Omega_n\right)ds'\right)}} + {\intop_0^s q_{g,n}\left(\bm r_0 + s'\bm\Omega_n\right)\exp{\left(-\intop_0^{s'} \Sigma_{t,g}\left(\bm r_0 + s''\bm\Omega_n\right)ds''\right)}ds'}
+{\psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) = \psi_{g,n}\left(\bm r_0\right)\exp{\left(-\intop_0^s \Sigma_{t,g}\left(\bm r_0 + s'\bm\Omega_n\right)ds'\right)}} + {\intop_0^s q_{g,n}\left(\bm r_0 + s'\bm\Omega_n\right)\exp{\left(-\intop_0^{s'} \Sigma_{t,g}\left(\bm r_0 + s''\bm\Omega_n\right)ds''\right)}ds'}\ .
 \end{dmath}
-
 Now if $\bm r_0$ is on the boundary of the region of interest, the incoming flux $\psi\left(\bm r_0,E,\bm \Omega\right)$ is equal to the specified boundary condition $\psi_{in}$.  This allows the angular flux to be calculated at any point $s$ to be calculated along the characteristic direction $\bm r$.
 
-Up to this point, no approximations have been made in deriving the method of characteristics.  One approximation that is necessary to use MOC for practical problems is to assume some spatial shape for the source term $q$.  The simplest of these is the flat source approximation.  In this approximation, $q$ is assumed to be flat along $\bm r$.  Additionally, it is assumed that the cross-sections along each segment of the ray will be constant.  This simplifies equation \ref{e:MOCexact} to the following:
-
+Up to this point, no approximations have been made in deriving the method of characteristics.  One approximation that is necessary to use MOC for practical problems is to assume some spatial shape for the source term $q$.  The simplest of these is the flat source approximation.  In this approximation, $q$ is assumed to be flat along $\bm r$.  Additionally, it is assumed that the cross-sections along each segment of the ray will be constant.  This simplifies Equation \ref{e:MOCexact} to the following:
 \begin{align}\label{e:MOCflatsource}
 \psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) &= \psi_{g,n}\left(\bm r_0\right)e^{-\intop_0^s \Sigma_{t,g} ds'} + \intop_0^s q_{g,n}e^{-\intop_0^{s'} \Sigma_{t,g}ds''}ds' \nonumber\\
  &= \psi_{in}e^{-\Sigma_{t,g} s} + \intop_0^s q_{g,n} e^{-\Sigma_{t,g} s'} ds' \nonumber \\
- &= \psi_{in}e^{-\Sigma_{t,g} s} + \frac{q_{g,n}}{\Sigma_{t,g}}\left(1 - e^{-\Sigma_{t,g}s}\right)
+ &= \psi_{in}e^{-\Sigma_{t,g} s} + \frac{q_{g,n}}{\Sigma_{t,g}}\left(1 - e^{-\Sigma_{t,g}s}\right)\ .
 \end{align}
 
-For a segment of length $A$ beginning on the boundary of region $i$, traveling in direction $n$ along track $j$, equation \ref{e:MOCflatsource} allows us to solve for the outgoing angular flux at the end of track $j$ (\ref{e:MOCoutgoingFlux}), as well as the average angular flux along the characteristic direction for a specific track $j$ (\ref{e:MOCavgFlux}).
+For a segment of length $A$ beginning on the boundary of region $i$, traveling in direction $n$ along track $j$, Equation \ref{e:MOCflatsource} allows us to solve for the outgoing angular flux at the end of track $j$ (\ref{e:MOCoutgoingFlux}), as well as the average angular flux along the characteristic direction for a specific track $j$ (\ref{e:MOCavgFlux}).
 \begin{subequations}
 \begin{equation}\label{e:MOCoutgoingFlux}
-\psi_{out,g,i,n,j} = \psi_{g}\left(\bm r_0 + A_j\bm\Omega_n\right) = \psi_{in,g,i,n,j}e^{-\Sigma_{t,g,i} A_j} + \frac{q_{g,i,n}}{\Sigma_{t,g,i}}\left(1 - e^{-\Sigma_{t,g,i}A_j}\right)
+\psi_{out,g,i,n,j} = \psi_{g}\left(\bm r_0 + A_j\bm\Omega_n\right) = \psi_{in,g,i,n,j}e^{-\Sigma_{t,g,i} A_j} + \frac{q_{g,i,n}}{\Sigma_{t,g,i}}\left(1 - e^{-\Sigma_{t,g,i}A_j}\right)\ ,
 \end{equation}
 \begin{align}\label{e:MOCavgFlux}
 \overline{\psi}_{g,i,n,j} &= \frac{\intop_0^{A_j} \psi_{g}\left(\bm r_0 + s\bm\Omega_n\right) ds}{\intop_0^{A_j} ds} \nonumber\\
  &= \frac{1}{A_j}\intop_0^{A_j} \psi_{in,g,i,n,j}e^{-\Sigma_{t,g,i}s} + \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\left(1-e^{-\Sigma_{t,g,i}s}\right) ds \nonumber \\
  &= \frac{1}{A_j}\intop_0^{A_j} \frac{q_{g,n,i}}{\Sigma_{t,g,i}} + \left(\psi_{in,g,i,n,j} - \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right)e^{-\Sigma_{t,g,i}s} ds \nonumber \\
- &= \frac{q_{g,n,i}}{\Sigma_{t,g,i}} + \frac{1}{A_j\Sigma_{t,g,i}}\left(\psi_{in,g,i,n,j} - \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right)\left(1 - e^{-\Sigma_{t,g,i} A_j}\right)
+ &= \frac{q_{g,n,i}}{\Sigma_{t,g,i}} + \frac{1}{A_j\Sigma_{t,g,i}}\left(\psi_{in,g,i,n,j} - \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right)\left(1 - e^{-\Sigma_{t,g,i} A_j}\right)\ .
 \end{align}
 \end{subequations}
-
 If the transport cross-section is constant along $s$ for the region of interest, then the only approximation that has been made in this derivation is that the source is constant.  It is possible to assume higher order shapes for the source (linear, quadratic, etc.) to improve the accuracy of MOC \cite{HighOrderMOC2DUnstructuredMeshes2009}, but these will not be discussed here.
 
-Typically multiple tracks are laid down across a region in each direction and integrated, with some spacing $\delta x$ between them.  To calculate the region average angular flux for region $i$, the average angular flux from equation \ref{e:MOCavgFlux} for each track must be area-averaged, as shown below:
+Typically multiple tracks are laid down across a region in each direction and integrated, with some spacing $\delta x$ between them.  To calculate the region average angular flux for region $i$, the average angular flux from Equation \ref{e:MOCavgFlux} for each track must be area-averaged, as shown below:
 \begin{equation}\label{e:MOCareaAvgFlux}
-\overline{\psi}_{g,i,n} = \frac{\sum_j \overline{\psi}_{g,i,n,j} \delta x A_j}{\sum_j \delta x A_j}
+\overline{\psi}_{g,i,n} = \frac{\sum_j \overline{\psi}_{g,i,n,j} \delta x A_j}{\sum_j \delta x A_j}\ .
 \end{equation}
 Using this, a quadrature can be used to integrate the average region angular flux for each angle to obtain a region-averaged angular flux.
 
-Using the outgoing flux in equation \ref{e:MOCoutgoingFlux} along the edge of a region boundary as the incoming angle flux along a neighboring region allows MOC to be used to solve across entire domains regardless of geometry.  Doing this in many directions and applying equations \ref{e:MOCavgFlux} and \ref{e:MOCareaAvgFlux}.
+Using the outgoing flux in Equation \ref{e:MOCoutgoingFlux} along the edge of a region boundary as the incoming angle flux along a neighboring region allows MOC to be used to solve across entire domains regardless of geometry.  Doing this in many directions and applying Equations \ref{e:MOCavgFlux} and \ref{e:MOCareaAvgFlux}.
 
 \subsection{Coarse-Mesh Finite Difference}\label{ss:CMFD}
 
 Because transport calculations can take many iterations to solve, it is important to accelerate the convergence of the iteration scheme when possible.  The most common way of doing this is the Coarse-Mesh Finite Difference (CMFD) method \cite{SmithCMFDOrig}.  This method involves solving a diffusion problem on a coarse grid to get the average magnitude of the flux in each coarse cell.  This is then used to scale the flux solution on the fine grid.  In order to ensure consistency between the transport solution and the lower order diffusion solution, coupling coefficients are calculated on the boundaries of the coarse mesh cells to correct the leakage between the cells.
 
 To describe the CMFD method, the scalar flux, current, and cross-sections on the coarse grid must be related to the same quantities on the fine grid.  We assume the fine mesh has already been spatially discretized and solved so that quantities such as volume, cell-averaged flux, cell-averaged cross-sections, and cell-averaged source terms are known for each fine cell.  With this assumption, we can define the needed coarse mesh values for each coarse cell $i$ in terms of the fine cells it owns.  $N_f$ is the total number of fine cells owned by a coarse cell, $\left(x_i,y_i,z_i\right)$ are the coordinates for the center of coarse cell $i$, and $x_{i+\frac{1}{2}}$, $x_{i-\frac{1}{2}}$, $y_{i+\frac{1}{2}}$, $y_{i-\frac{1}{2}}$, $z_{i+\frac{1}{2}}$, and $z_{i-\frac{1}{2}}$ define the edges of the coarse cell in each direction.
-
 \begin{subequations}\label{e:CMFDhomogTerms}
 \begin{align}
-A_{x,i} &= \left(y_{i+\frac{1}{2}} - y_{i-\frac{1}{2}}\right)\left(z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}\right) \\
-A_{y,i} &= \left(x_{i+\frac{1}{2}} - x_{i-\frac{1}{2}}\right)\left(z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}\right) \\
-A_{z,i} &= \left(x_{i+\frac{1}{2}} - x_{i-\frac{1}{2}}\right)\left(y_{i+\frac{1}{2}} - y_{i-\frac{1}{2}}\right) \\
-V_i &= \sum_{j=1}^{N_f} V_j \\
-\phi_{g,i} &= \frac{1}{V_i}\sum_{j=1}^{N_f} \phi_{g,j} V_j \label{e:CMFDhomogFlux}\\
-\Sigma_{t,g,i} &= \frac{1}{\phi_{g,i} V_i}\sum_{j=1}^{N_f} \Sigma_{tr,g,j} \phi_{g,j} V_j \\
-\Sigma_{s0,g'\rightarrow g,i} &= \frac{1}{\phi_{g',i} V_i}\sum_{j=1}^{N_f} \Sigma_{s0,g'\rightarrow g,j} \phi_{g',j} V_j \\
-\nu\Sigma_{f,g,i} &= \frac{1}{\phi_{g,i} V_i}\sum_{j=1}^{N_f} \nu\Sigma_{f,g,j} \phi_{g,j} V_j \\
-\chi_{g,i} &= \frac{\sum_{j=1}^{N_f} \chi_{g,j} \sum_{g'=1}^G \nu\Sigma_{f,g',j} \phi_{g',j} V_j}{\sum_{j=1}^{N_f} \sum_{g'=1}^G \nu\Sigma_{f,g',j} \phi_{g',j} V_j} \\
-Q_{g,i} &= \frac{1}{V_i}\sum_{j=1}^{N_f} Q_{g,j} V_j
+A_{x,i} &= \left(y_{i+\frac{1}{2}} - y_{i-\frac{1}{2}}\right)\left(z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}\right) \ ,\\
+A_{y,i} &= \left(x_{i+\frac{1}{2}} - x_{i-\frac{1}{2}}\right)\left(z_{i+\frac{1}{2}} - z_{i-\frac{1}{2}}\right) \ ,\\
+A_{z,i} &= \left(x_{i+\frac{1}{2}} - x_{i-\frac{1}{2}}\right)\left(y_{i+\frac{1}{2}} - y_{i-\frac{1}{2}}\right) \ ,\\
+V_i &= \sum_{j=1}^{N_f} V_j \ ,\\
+\phi_{g,i} &= \frac{1}{V_i}\sum_{j=1}^{N_f} \phi_{g,j} V_j \label{e:CMFDhomogFlux}\ ,\\
+\Sigma_{t,g,i} &= \frac{1}{\phi_{g,i} V_i}\sum_{j=1}^{N_f} \Sigma_{tr,g,j} \phi_{g,j} V_j \ ,\\
+\Sigma_{s0,g'\rightarrow g,i} &= \frac{1}{\phi_{g',i} V_i}\sum_{j=1}^{N_f} \Sigma_{s0,g'\rightarrow g,j} \phi_{g',j} V_j \ ,\\
+\nu\Sigma_{f,g,i} &= \frac{1}{\phi_{g,i} V_i}\sum_{j=1}^{N_f} \nu\Sigma_{f,g,j} \phi_{g,j} V_j \ ,\\
+\chi_{g,i} &= \frac{\sum_{j=1}^{N_f} \chi_{g,j} \sum_{g'=1}^G \nu\Sigma_{f,g',j} \phi_{g',j} V_j}{\sum_{j=1}^{N_f} \sum_{g'=1}^G \nu\Sigma_{f,g',j} \phi_{g',j} V_j} \ ,\\
+Q_{g,i} &= \frac{1}{V_i}\sum_{j=1}^{N_f} Q_{g,j} V_j\ .
 \end{align}
 \end{subequations}
 
-Furthermore, currents must be tallied on the coarse mesh cell boundaries by the fine mesh transport calculations.  Using these definitions, we now operate on the multi-group diffusion equation (\ref{e:P1transport-0th}) by equation \ref{e:DiffVolumeIntegral} to obtain equation \ref{e:DiffusionEquationDiscretized}.
-
+Furthermore, currents must be tallied on the coarse mesh cell boundaries by the fine mesh transport calculations.  Using these definitions, we now operate on the multi-group diffusion equation (\ref{e:P1transport-0th}) by Equation \ref{e:DiffVolumeIntegral} to obtain Equation \ref{e:DiffusionEquationDiscretized}.
 \begin{subequations}
 \begin{equation}\label{e:DiffVolumeIntegral}
-\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}} \intop_{z_{i-\frac{1}{2}}}^{z_{i+\frac{1}{2}}} \left(\cdot\right) dz dy dz
+\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}} \intop_{z_{i-\frac{1}{2}}}^{z_{i+\frac{1}{2}}} \left(\cdot\right) dz dy dz\ ,
 \end{equation}
 \begin{dmath}\label{e:DiffusionEquationDiscretized}
-A_{x,i} \left(J_{x,g}\left(x_{i+\frac{1}{2}}\right) - J_{x,g}\left(x_{i-\frac{1}{2}}\right)\right) + A_{y,i} \left(J_{y,g}\left(y_{i+\frac{1}{2}}\right) - J_{y,g}\left(y_{i-\frac{1}{2}}\right)\right) + A_{z,i} \left(J_{z,g}\left(z_{i+\frac{1}{2}}\right) - J_{z,g}\left(z_{i-\frac{1}{2}}\right)\right) + {\Sigma_{tr,g,i} \phi_{g,i} V_i} = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g,i}\phi_{g',i}V_i} + \frac{1}{k_{eff}}\frac{\chi_{g,i}}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g',i}\phi_{g',i}V_i + Q_{g,i}V_i
+A_{x,i} \left(J_{x,g}\left(x_{i+\frac{1}{2}}\right) - J_{x,g}\left(x_{i-\frac{1}{2}}\right)\right) + A_{y,i} \left(J_{y,g}\left(y_{i+\frac{1}{2}}\right) - J_{y,g}\left(y_{i-\frac{1}{2}}\right)\right) + A_{z,i} \left(J_{z,g}\left(z_{i+\frac{1}{2}}\right) - J_{z,g}\left(z_{i-\frac{1}{2}}\right)\right) + {\Sigma_{tr,g,i} \phi_{g,i} V_i} = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g,i}\phi_{g',i}V_i} + \frac{1}{k_{eff}}\frac{\chi_{g,i}}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g',i}\phi_{g',i}V_i + Q_{g,i}V_i\ .
 \end{dmath}
 \end{subequations}
 
-Using equations \ref{e:FicksLaw}, we can define the interface currents in terms of the diffusion constants on the positive ($p$) and negative ($n$) sides of the interface (equation \ref{e:interfaceCurrentDiff}.  The interface diffusion coefficients are defined in \ref{e:interfaceD}-\ref{e:interfaceDnegative}.
-
+Using Equations \ref{e:FicksLaw}, we can define the interface currents in terms of the diffusion constants on the positive ($p$) and negative ($n$) sides of the interface (Equation \ref{e:interfaceCurrentDiff}.  The interface diffusion coefficients are defined in \ref{e:interfaceD}-\ref{e:interfaceDnegative}.
 \begin{subequations}\label{e:CMFDinterface}
 \begin{equation}\label{e:interfaceCurrentDiff}
-J_{g} = -D_g\left(\phi_{g,p} - \phi_{g,n}\right)
+J_{g} = -D_g\left(\phi_{g,p} - \phi_{g,n}\right)\ ,
 \end{equation}
 \begin{equation}\label{e:interfaceD}
-D_g=\frac{1}{3}\left(\left(\Delta x_p\Sigma_{tr,g,i+1} + \Delta x_n\Sigma_{tr,g,i}\right)\right)^{-1}
+D_g=\frac{1}{3}\left(\left(\Delta x_p\Sigma_{tr,g,i+1} + \Delta x_n\Sigma_{tr,g,i}\right)\right)^{-1}\ ,
 \end{equation}
 \begin{equation}\label{e:interfaceDpositive}
-D_{g,\frac{1}{2}}=\alpha\left(1 + 3\Delta x_p\alpha\Sigma_{tr,g,1}\right)^{-1}
+D_{g,\frac{1}{2}}=\alpha\left(1 + 3\Delta x_p\alpha\Sigma_{tr,g,1}\right)^{-1}\ ,
 \end{equation}
 \begin{equation}\label{e:interfaceDnegative}
-D_{g,N+\frac{1}{2}}=\alpha\left(3\Delta x_n\alpha\Sigma_{tr,g,N} + 1\right)^{-1}
+D_{g,N+\frac{1}{2}}=\alpha\left(3\Delta x_n\alpha\Sigma_{tr,g,N} + 1\right)^{-1}\ ,
 \end{equation}
 \begin{equation}\label{e:alpha}
-\alpha=\begin{cases} 0 &,\text{ reflecting} \\ 0.5 &,\text{ vacuum}\end{cases}
+\alpha=\begin{cases} 0 &,\text{ reflecting} \ ,\\ 0.5 &,\text{ vacuum}\ .\end{cases}
 \end{equation}
 \end{subequations}
 
-Defining the interface currents as in equation \ref{e:interfaceCurrentDiff} will cause inconsistency between the high-order transport solver and the diffusion-based CMFD solver.  To account for this, a correction factor can be defined in terms of the transport solution and added to the CMFD currents to enforce consistency between the two solutions.
-
+Defining the interface currents as in Equation \ref{e:interfaceCurrentDiff} will cause inconsistency between the high-order transport solver and the diffusion-based CMFD solver.  To account for this, a correction factor can be defined in terms of the transport solution and added to the CMFD currents to enforce consistency between the two solutions.
 \begin{subequations}\label{e:CMFDcouplingCoeffs}
 \begin{equation}\label{e:interfaceCurrentCMFD}
-J_{CMFD,g} = -D_g\left(\phi_{g,p} - \phi_{g,n}\right) + \hat{D}_g\left(\phi_{g,p} \phi{g,n}\right)
+J_{CMFD,g} = -D_g\left(\phi_{g,p} - \phi_{g,n}\right) + \hat{D}_g\left(\phi_{g,p} \phi{g,n}\right)\ ,
 \end{equation}
 \begin{equation}\label{e:dhat}
-\hat{D}_g = \frac{J_{trans,g} + D_g\left(\phi_{g,p} - \phi{g,n}\right)}{\left(\phi_{g,p} \phi{g,n}\right)}
+\hat{D}_g = \frac{J_{trans,g} + D_g\left(\phi_{g,p} - \phi{g,n}\right)}{\left(\phi_{g,p} \phi{g,n}\right)}\ .
 \end{equation}
 \end{subequations}
 
-Using this definition of the current, all terms in equation \ref{e:DiffusionEquationDiscretized} are defined.  This gives a system of $N\times G$ equations, where $N$ is the number of coarse nodes and $G$ is the number of energy groups in the problem, which can be written in matrix form and solved as an eigenvalue problem:
+Using this definition of the current, all terms in Equation \ref{e:DiffusionEquationDiscretized} are defined.  This gives a system of $N\times G$ equations, where $N$ is the number of coarse nodes and $G$ is the number of energy groups in the problem, which can be written in matrix form and solved as an eigenvalue problem:
 \begin{equation}\label{e:CMFDmatrix}
-\underline{\underline{M}}\underline{\phi}=\frac{1}{k}\underline{\underline{F}}\underline{\phi}
+\underline{\underline{M}}\underline{\phi}=\frac{1}{k}\underline{\underline{F}}\underline{\phi}\ .
 \end{equation}
-Using the homogenized transport solution as an initial guess on the right-hand side of equation \ref{e:CMFDmatrix}, this equation can be easily solved using a standard eigenvalue solver.  MPACT generally uses either power iteration or generalized Davidson methods to solve this problem, but these methods will not be discussed in detail here.
+Using the homogenized transport solution as an initial guess on the right-hand side of Equation \ref{e:CMFDmatrix}, this equation can be easily solved using a standard eigenvalue solver.  MPACT generally uses either power iteration or generalized Davidson methods to solve this problem, but these methods will not be discussed in detail here.
 
-After obtaining a solution equation \ref{e:CMFDmatrix}, the solution must be used to update the fine mesh solution for the next transport calculation.  To do this, a simple scaling is applied to the previous transport solution as shown in equation \ref{e:CMFDscaling}.  This scaling is applied to all fine mesh cells $j$ in each coarse mesh cell $i$ and ensures preservation of reaction rates between the CMFD and transport solutions prior to the next transport sweep.
+After obtaining a solution Equation \ref{e:CMFDmatrix}, the solution must be used to update the fine mesh solution for the next transport calculation.  To do this, a simple scaling is applied to the previous transport solution as shown in Equation \ref{e:CMFDscaling}.  This scaling is applied to all fine mesh cells $j$ in each coarse mesh cell $i$ and ensures preservation of reaction rates between the CMFD and transport solutions prior to the next transport sweep.
 \begin{equation}\label{e:CMFDscaling}
-\phi_{trans,g,j}^{k}=\frac{\phi_{CMFD,g,i}^k}{\phi_{CMFD,g,i}^{k-1}}\phi_{trans,g,j}^{k-1}
+\phi_{trans,g,j}^{k}=\frac{\phi_{CMFD,g,i}^k}{\phi_{CMFD,g,i}^{k-1}}\phi_{trans,g,j}^{k-1}\ .
 \end{equation}
 Performing the next transport calculation and continuing to iterate between the fine mesh transport calculations and CMFD will provide a converged solution far more quickly than performing iterations consisting only of fine mesh transport calculations.
 
@@ -414,53 +390,47 @@ Performing the next transport calculation and continuing to iterate between the 
 
 \subsubsection{Simplified Pn}
 
-One method that can be used to solve the transport equation is the Spherical Harmonics (P$_n$) method \cite{SPnEquations}.  This method is able to resolve the angle dependence of the angular flux by expanding the flux using spherical harmonic functions.  These functions are defined in equation \ref{e:SphericalHarmonicFunctions}, with the Associated Legendre Functions and Legendre Polynomials defined in equations \ref{e:AssociatedLegendreFunctions} and \ref{e:LegendrePolynomials}, respectively.
-
-
+One method that can be used to solve the transport equation is the Spherical Harmonics (P$_n$) method \cite{SPnEquations}.  This method is able to resolve the angle dependence of the angular flux by expanding the flux using spherical harmonic functions.  These functions are defined in Equation \ref{e:SphericalHarmonicFunctions}, with the Associated Legendre Functions and Legendre Polynomials defined in Equations \ref{e:AssociatedLegendreFunctions} and \ref{e:LegendrePolynomials}, respectively.
 \begin{subequations}
   \begin{equation}\label{e:SphericalHarmonicFunctions}
-  Y^m_n\left(\bm\Omega\right) = \left[\frac{2n + 1}{4\pi}\frac{\left(n-\left|m\right|\right)!}{\left(n+\left|m\right|\right)!}\right]^{\frac{1}{2}} P_n^{\left|m\right|}\left(\mu\right)e^{im\gamma},\quad 0 \le \left|m\right| \le n < \infty
+  Y^m_n\left(\bm\Omega\right) = \left[\frac{2n + 1}{4\pi}\frac{\left(n-\left|m\right|\right)!}{\left(n+\left|m\right|\right)!}\right]^{\frac{1}{2}} P_n^{\left|m\right|}\left(\mu\right)e^{im\gamma},\quad 0 \le \left|m\right| \le n < \infty\ ,
   \end{equation}
   \begin{equation}\label{e:AssociatedLegendreFunctions}
-  P_n^m\left(\mu\right)=\left(1-\mu^2\right)^{\frac{m}{2}}\frac{d}{d\mu}^m P_n\left(\mu\right),\quad 0 \le m \le n < \infty
+  P_n^m\left(\mu\right)=\left(1-\mu^2\right)^{\frac{m}{2}}\frac{d}{d\mu}^m P_n\left(\mu\right),\quad 0 \le m \le n < \infty\ .
   \end{equation}
 \end{subequations}
 
-The angular flux can then be expanded in terms of the spherical harmonic functions, as shown in equation \ref{e:PnFluxExpansion}.  When using the P$_n$ approximation, some integer $N$ is specified.  The first summation in equation \ref{e:PnFluxExpansion} is then truncated at $N$.  This gives $\left(N+1\right)^2 G$ expansion coefficients that must be determined.  To solve for these coefficients, the transport equation must be multiplied by $Y^{-m}_n\left(\bm{\Omega}\right)$ and integrated over $\bm{\Omega}$ for each combination of $m$, $n$, and $g$.
-
+The angular flux can then be expanded in terms of the spherical harmonic functions, as shown in Equation \ref{e:PnFluxExpansion}.  When using the P$_n$ approximation, some integer $N$ is specified.  The first summation in Equation \ref{e:PnFluxExpansion} is then truncated at $N$.  This gives $\left(N+1\right)^2 G$ expansion coefficients that must be determined.  To solve for these coefficients, the transport equation must be multiplied by $Y^{-m}_n\left(\bm{\Omega}\right)$ and integrated over $\bm{\Omega}$ for each combination of $m$, $n$, and $g$.
 \begin{equation}\label{e:PnFluxExpansion}
-\psi_g\left(\bm x,\bm \Omega\right) = \sum_{n=0}^{\infty}\sum_{m=-n}^n \psi_{n,m,g}\left(\bm x\right) Y_n^m\left(\bm{\Omega}\right)
+\psi_g\left(\bm x,\bm \Omega\right) = \sum_{n=0}^{\infty}\sum_{m=-n}^n \psi_{n,m,g}\left(\bm x\right) Y_n^m\left(\bm{\Omega}\right)\ .
 \end{equation}
 
 While the P$_n$ method can be used to solve the transport equation, this is rarely done in practice due to the increasing complexity of the equations and the quadratic growth in the number of unknowns as $N$ increases.  Instead, the more common method used in practice is the Simplified Spherical Harmonics (SP$_n$) method.  In 1D planar geometry, the angular variable $\gamma$ vanishes, leaving only $\mu$.  In this case, only the spherical harmonic functions for $m=0$ are needed, since these are the functions independent of $\gamma$.  Thus, the flux expansion reduces to a Legendre polynomial expansion:
-
 \begin{subequations}\label{e:SPnFluxExpansion}
   \begin{equation}
-  \psi_g\left(x,\mu\right) = \sum_{m=0}^\infty \frac{2m+1}{2} \psi_{m,g}\left(x\right)P_m\left(\mu\right)
+  \psi_g\left(x,\mu\right) = \sum_{m=0}^\infty \frac{2m+1}{2} \psi_{m,g}\left(x\right)P_m\left(\mu\right)\ ,
   \end{equation}
   \begin{equation}
-  \psi_{m,g}\left(x\right) = \intop_{-1}^1 P_m\left(\mu '\right)\psi_g\left(x,\mu '\right)d\mu '
+  \psi_{m,g}\left(x\right) = \intop_{-1}^1 P_m\left(\mu '\right)\psi_g\left(x,\mu '\right)d\mu '\ .
   \end{equation}
 \end{subequations}
-
-To solve, we apply the expansion in equation \ref{e:SPnFluxExpansion} to the transport equation, multiply by Legendre polynomials $P_n\left(\mu\right)$ for $0 \le n \le N$, and integrate over $\mu$.  Following this procedure results in the 1D planar geometry P$_1$ equations, shown in equation \ref{e:1DplanarP1}:
-
+To solve, we apply the expansion in Equation \ref{e:SPnFluxExpansion} to the transport equation, multiply by Legendre polynomials $P_n\left(\mu\right)$ for $0 \le n \le N$, and integrate over $\mu$.  Following this procedure results in the 1D planar geometry P$_1$ equations, shown in Equation \ref{e:1DplanarP1}:
 \begin{subequations}\label{e:1DplanarP1}
   \begin{equation}
-  \frac{d\psi_{1,g}}{dx} + \Sigma_{t,g}\left(x\right)\psi_{0,g}\left(x\right) = \sum_{g'=1}^G \sigma_{s0,g'\rightarrow g}\left(x\right)\psi_{0,g'}\left(x\right) + \frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(x\right)\psi_{0,g'}\left(x\right) + Q_g\left(x\right)
+  \frac{d\psi_{1,g}}{dx} + \Sigma_{t,g}\left(x\right)\psi_{0,g}\left(x\right) = \sum_{g'=1}^G \sigma_{s0,g'\rightarrow g}\left(x\right)\psi_{0,g'}\left(x\right) + \frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(x\right)\psi_{0,g'}\left(x\right) + Q_g\left(x\right)\ ,
   \end{equation}
   \begin{equation}
-  \frac{d\psi_{0,g}}{dx} + \Sigma_{t,g}\left(x\right)\psi_{1,g}\left(x\right) = \sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right)\psi_{1,g'}\left(x\right)
+  \frac{d\psi_{0,g}}{dx} + \Sigma_{t,g}\left(x\right)\psi_{1,g}\left(x\right) = \sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(x\right)\psi_{1,g'}\left(x\right)\ .
   \end{equation}
 \end{subequations}
 
-It is clear that if $\frac{d}{dx}$ in equation \ref{e:1DplanarP1} is replaced by $\bm{\nabla}$, then the 3D P$_1$ equations are obtained exactly as shown in equation \ref{e:P1transport}.  For any odd $N > 1$, this following this same process and making the same observation about the derivative terms will result in the 3D SP$_n$ equations.  For $N=1$, these equations are exactly equal to the P$_n$ equations.  However, for $N > 1$, this results in a simplified system of equations which still preserve much of the transport physics that are not preserved by the P$_1$ or diffusion approximations.  Appendix \ref{app:derivations} contains a detailed derivation of the SP$_3$ equations, but the final 3D SP$_3$ equations are shown in equation \ref{e:3DSP3}.
+It is clear that if $\frac{d}{dx}$ in Equation \ref{e:1DplanarP1} is replaced by $\bm{\nabla}$, then the 3D P$_1$ equations are obtained exactly as shown in Equation \ref{e:P1transport}.  For any odd $N > 1$, this following this same process and making the same observation about the derivative terms will result in the 3D SP$_n$ equations.  For $N=1$, these equations are exactly equal to the P$_n$ equations.  However, for $N > 1$, this results in a simplified system of equations which still preserve much of the transport physics that are not preserved by the P$_1$ or diffusion approximations.  Appendix \ref{app:derivations} contains a detailed derivation of the SP$_3$ equations, but the final 3D SP$_3$ equations are shown in Equation \ref{e:3DSP3}.
 \begin{subequations}\label{e:3DSP3}
   \begin{dmath}\label{e:3DSP3-0}
-  {-\bm{\nabla} \cdot D_{0,g} \left(\bm x\right) \bm \nabla \Phi_{0,g}\left(\bm x\right)} + {\left[\Sigma_{tr,g}\left(\bm x\right) - \Sigma_{s0,g}\left(\bm x\right)\right]\Phi_{0,g}\left(\bm x\right)} = {Q_g\left(\bm x\right) + 2\left[\Sigma_{tr,g}\left(\bm x\right) - \Sigma_{s0,g}\left(\bm x\right)\right]\Phi_{2,g}\left(\bm x\right)}
+  {-\bm{\nabla} \cdot D_{0,g} \left(\bm x\right) \bm \nabla \Phi_{0,g}\left(\bm x\right)} + {\left[\Sigma_{tr,g}\left(\bm x\right) - \Sigma_{s0,g}\left(\bm x\right)\right]\Phi_{0,g}\left(\bm x\right)} = {Q_g\left(\bm x\right) + 2\left[\Sigma_{tr,g}\left(\bm x\right) - \Sigma_{s0,g}\left(\bm x\right)\right]\Phi_{2,g}\left(\bm x\right)}\ ,
   \end{dmath}
   \begin{dmath}\label{e:3DSP3-2}
-  {-\bm{\nabla} \cdot D_{2,g} \left(\bm x\right) \bm \nabla \Phi_{2,g}\left(\bm x\right)} + {\left[\Sigma_{tr,g}\left(\bm x\right) - \Sigma_{s2,g}\left(\bm x\right)\right]\Phi_{2,g}\left(\bm x\right)} = {\frac{2}{5}\left\lbrace \left[\Sigma_{tr,g}\left(\bm x\right) - \Sigma_{s0,g}\left(\bm x\right)\right]\left[\Phi_{0,g}\left(\bm x\right) - 2\Phi_{2,g}\left(\bm x\right)\right] - Q_g\left(\bm x\right) \right\rbrace}
+  {-\bm{\nabla} \cdot D_{2,g} \left(\bm x\right) \bm \nabla \Phi_{2,g}\left(\bm x\right)} + {\left[\Sigma_{tr,g}\left(\bm x\right) - \Sigma_{s2,g}\left(\bm x\right)\right]\Phi_{2,g}\left(\bm x\right)} = {\frac{2}{5}\left\lbrace \left[\Sigma_{tr,g}\left(\bm x\right) - \Sigma_{s0,g}\left(\bm x\right)\right]\left[\Phi_{0,g}\left(\bm x\right) - 2\Phi_{2,g}\left(\bm x\right)\right] - Q_g\left(\bm x\right) \right\rbrace}\ .
   \end{dmath}
 \end{subequations}
 Each of these equations is similar in form to the P$_1$ equation and can be solved by iterating between the the 0th moment equation (\ref{e:3DSP3-0}) and the 2nd moment equation (\ref{e:3DSP3-2}).  This results in an accurate 3D flux distribution without the expense and complexity of performing a 3D P$_N$ calculation.
@@ -470,52 +440,51 @@ Each of these equations is similar in form to the P$_1$ equation and can be solv
 While SP$_N$ can be used to capture angular moments of the flux, the Nodal Expansion Method (NEM) \cite{finnemann1977RodCuspingOrigMention} is used to capture intra-nodal flux shapes to calculate accurate currents at the interface between two nodes.  This is done by expanding the source and flux using quadratic and quartic Polynomials, respectively:
 \begin{subequations}\label{e:NEMexpsansions}
     \begin{equation}
-    Q\left(\xi\right) = \sum_{i=0}^2 q_i P_i\left(\xi\right)
+    Q\left(\xi\right) = \sum_{i=0}^2 q_i P_i\left(\xi\right)\ ,
     \end{equation}
     \begin{equation}
-    \phi\left(\xi\right) = \sum_{i=0}^4 \phi_i P_i\left(\xi\right)
+    \phi\left(\xi\right) = \sum_{i=0}^4 \phi_i P_i\left(\xi\right)\ ,
     \end{equation}
 \end{subequations}
-The variable $\xi$ is simply the spatial variable normalized so the problem is being solved on the interval $\left[-1,1\right]$.  To solve for these moments, five equations are required.  The first three are the moment balance equations, obtained by multiplying the diffusion equation by $P_n\left(\xi\right)$ for moments 0-2 and integrating (equation \ref{e:NEMmomentBalance}).  The other two equations are found by enforcing flux and current continuity at the interfaces between nodes (equations \ref{e:NEMfluxcontinuity}-\ref{e:NEMcurrentcontinuity}).
+where the variable $\xi$ is simply the spatial variable normalized so the problem is being solved on the interval $\left[-1,1\right]$.  To solve for these moments, five equations are required.  The first three are the moment balance equations, obtained by multiplying the diffusion equation by $P_n\left(\xi\right)$ for moments 0-2 and integrating (Equation \ref{e:NEMmomentBalance}).  The other two equations are found by enforcing flux and current continuity at the interfaces between nodes (Equations \ref{e:NEMfluxcontinuity}-\ref{e:NEMcurrentcontinuity}).
 \begin{subequations}
     \begin{equation}\label{e:NEMmomentBalance}
-    \intop_{-1}^1 P_n\left(\xi\right) \left(-\frac{D}{h^2}\frac{d^2}{d\xi^2}\phi\left(\xi\right) + \Sigma_r \phi\left(\xi\right) - Q\left(\xi\right)\right)d\xi = 0,\ n=0,1,2
+    \intop_{-1}^1 P_n\left(\xi\right) \left(-\frac{D}{h^2}\frac{d^2}{d\xi^2}\phi\left(\xi\right) + \Sigma_r \phi\left(\xi\right) - Q\left(\xi\right)\right)d\xi = 0,\ n=0,1,2\ ,
     \end{equation}
     \begin{equation}\label{e:NEMfluxcontinuity}
-    \phi_L\left(1\right) = \phi_R\left(-1\right)
+    \phi_L\left(1\right) = \phi_R\left(-1\right)\ ,
     \end{equation}
     \begin{equation}\label{e:NEMcurrentcontinuity}
-    J_L\left(1\right) = J_R\left(-1\right)
+    J_L\left(1\right) = J_R\left(-1\right)\ .
     \end{equation}
 \end{subequations}
-
 The source moments $q_i$ are constructed using the flux moments from the previous iteration.  Using this method, an intra-nodal flux shape can be calculated within each node, and interface currents can be calculated at the boundaries of each node.
 
 \subsection{Collision Probabilities Method}
 
 One method that can be used to calculate flux spectra inside a pin cell is the method of Collision Probabilities (CP) \cite{NEHandbook-LatticePhysics}.  This method is used in MPACT as part of the control rod decusping methods described in Chapter \ref{chap:cusping}.  The details of the derivation will be left to Appendix \ref{app:derivations}, but a brief overview of the method will be presented here that focuses on a 1D radial calculation for a single pin cell.
 
-To begin, the multi-group transport equation \ref{e:multigroupboltzmann} can be rewritten so that the entire right-hand side is a single source term:
+To begin, the multi-group transport Equation \ref{e:multigroupboltzmann} can be rewritten so that the entire right-hand side is a single source term:
 \begin{subequations}\label{e:CPtransport}
 \begin{equation}
-\bm{\Omega} \cdot \bm \nabla \psi_g + \Sigma_{tr,g}\left(\bm x\right)\psi_g\left(\bm x, \bm \Omega\right) = q_g\left(\bm x, \bm \Omega\right)
+\bm{\Omega} \cdot \bm \nabla \psi_g + \Sigma_{tr,g}\left(\bm x\right)\psi_g\left(\bm x, \bm \Omega\right) = q_g\left(\bm x, \bm \Omega\right)\ ,
 \end{equation}
 \begin{dmath}
-{q_g\left(\bm x, \bm \Omega\right)} = {\frac{1}{4\pi} \sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x, \bm \Omega ' \rightarrow \bm \Omega\right)\psi_{g'}\left(\bm x, \bm \Omega'\right) d\Omega '} + {\frac{1}{k_{eff}} \frac{\chi_g}{4\pi} \sum_{g'=1}^G \intop_{4\pi} \nu\Sigma_{f,g'}\left(\bm x\right)\psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega'}
+{q_g\left(\bm x, \bm \Omega\right)} = {\frac{1}{4\pi} \sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x, \bm \Omega ' \rightarrow \bm \Omega\right)\psi_{g'}\left(\bm x, \bm \Omega'\right) d\Omega '} + {\frac{1}{k_{eff}} \frac{\chi_g}{4\pi} \sum_{g'=1}^G \intop_{4\pi} \nu\Sigma_{f,g'}\left(\bm x\right)\psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega'}\ .
 \end{dmath}
 \end{subequations}
-This form of the equation assumes no source of neutrons except scatter and fission.  A second assumption which can be made to simplify the source is to assume the multi-group scattering cross-sections have been transport corrected, allowing us to treat the scatter isotropically.  This gives way to a simplified isotropic source, shown in equation \ref{e:CPisoSource}:
+This form of the equation assumes no source of neutrons except scatter and fission.  A second assumption which can be made to simplify the source is to assume the multi-group scattering cross-sections have been transport corrected, allowing us to treat the scatter isotropically.  This gives way to a simplified isotropic source, shown in Equation \ref{e:CPisoSource}:
 \begin{equation}\label{e:CPisoSource}
-{q_g\left(\bm x, \bm \Omega\right) \approx q_g\left(\bm x\right)} = {\frac{1}{4\pi}\sum_{g'=1}^G \Sigma_{s,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)}
+{q_g\left(\bm x, \bm \Omega\right) \approx q_g\left(\bm x\right)} = {\frac{1}{4\pi}\sum_{g'=1}^G \Sigma_{s,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)}\ ,
 \end{equation}
 where $\phi_g$ is the scalar flux in group $g$.  At this point, we assume the problem is discretized into $R$ regions and that the cross-sections and fluxes are flat in each region, which leads to a flat source as well for each region $r$:
 \begin{equation}\label{e:CPflatSource}
-q_{g,r} = \frac{1}{4\pi}\sum_{g'=1}^G \Sigma_{s,g'\rightarrow g,r}\phi_{g',r} + \frac{1}{k_{eff}}\frac{\chi_{g,r}}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g',r}\phi_{g'}
+q_{g,r} = \frac{1}{4\pi}\sum_{g'=1}^G \Sigma_{s,g'\rightarrow g,r}\phi_{g',r} + \frac{1}{k_{eff}}\frac{\chi_{g,r}}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g',r}\phi_{g'}\ .
 \end{equation}
 
 Now the total source of neutrons in each region $r$ can be calculated by multiplying by the region volume $V_r$.  If the probability $T_{g,r'\rightarrow r}$ of a neutron born in region $r'$ reaching region $r$ is known for all regions $r'$, then the scalar flux can be calculated as follows:
 \begin{equation}\label{e:CPflux}
-\phi_{g,r} = \sum_{r'=1}^R T_{g,r'\rightarrow r} q_{g,r'} V_{r'}
+\phi_{g,r} = \sum_{r'=1}^R T_{g,r'\rightarrow r} q_{g,r'} V_{r'}\ .
 \end{equation}
 Equation \ref{e:CPflux} gives the general solution to any problem using the CP method.  The only remaining work that must be done is to calculate the transport matrix $\underline{\underline{T_g}}$ for each group, which is done in detail for a pin cell in the appendix.
 
