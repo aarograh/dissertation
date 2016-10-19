@@ -2,7 +2,7 @@ This chapter is dedicated to introducing the neutron transport equation and nume
 
 \section{Boltzmann Equation}
 
-The Boltzmann equation for neutron transport is shown below:
+The time-dependent Boltzmann equation for neutron transport is shown below:
 \begin{subequations}\label{e:boltzmann}
 \begin{dmath}
 {\frac{1}{v} \frac{\partial \psi}{\partial t} + 
@@ -81,7 +81,7 @@ We first define the multi-group flux, cross-sections, and chi distribution in Eq
 \Sigma_{x,g} \psi_g =  \intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE \Rightarrow \Sigma_x,g = \frac{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right)\ . dE}{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) dE}
 \end{equation}
 \end{subequations}
-Using thee definitions above, Equation \ref{e:ssboltzmann} can be operated on by $\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE$ to obtain the multi-group transport Equation \ref{e:multigroupboltzmann}.
+Using the definitions above, Equation \ref{e:ssboltzmann} can be operated on by $\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE$ to obtain the multi-group transport Equation \ref{e:multigroupboltzmann}.
 \begin{subequations}\label{e:multigroupboltzmann}
 \begin{dmath}
 {\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(\bm x\right)\psi_g\left(\bm x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(\bm x,\bm \Omega'\right) d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \intop_{4\pi} \nu \Sigma_{f,g'}\left(\bm x\right) \psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega' + \frac{Q_g\left(\bm x\right)}{4\pi}}\ ,
@@ -485,4 +485,4 @@ Now the total source of neutrons in each region $r$ can be calculated by multipl
 \end{equation}
 Equation \ref{e:CPflux} gives the general solution to any problem using the CP method.  The only remaining work that must be done is to calculate the transport matrix $\underline{\underline{T_g}}$ for each group, which is done in detail for a pin cell in the appendix.
 
-Several important details about this method shout be noted.  First, it is common to use a buffer region in the calculation.  When applying the CP method to a fuel pin, the buffer region is not necessary because the fuel pin has its own fission source to drive the problem.  However, when using this method on a different pin cell such as a control rod, it is useful to place a homogenized mixture of fuel and moderator around the outside of the pin cell.  This provides a source to drive the problem.  Second, because the calculation is a 1D radial calculation, the moderator region in the rectangular pin cell must be cylindricized.  This is done by transforming the moderator region into a ring with the same inner radius and volume as the rectangular moderator region.  Finally, the boundary conditions assumed on the edge of the problem are ``white'' boundary conditions.  A reflecting boundary condition assumes that all neutron exiting the problem return at the same energy and traveling in a reflected direction.  However, because the boundary of this problem is a circle, it is possible for a neutron to be born at such an angle that it continuously reflects off the boundary without ever traveling toward the fuel.  The white boundary condition takes all exiting neutrons and returns them isotropically to prevent this error.
+Several important details about this method should be noted.  First, it is common to use a buffer region in the calculation.  When applying the CP method to a fuel pin, the buffer region is not necessary because the fuel pin has its own fission source to drive the problem.  However, when using this method on a different pin cell such as a control rod, it is useful to place a homogenized mixture of fuel and moderator around the outside of the pin cell.  This provides a source to drive the problem.  Second, because the calculation is a 1D radial calculation, the moderator region in the rectangular pin cell must be cylindricized.  This is done by transforming the moderator region into a ring with the same inner radius and volume as the rectangular moderator region.  Finally, the boundary conditions assumed on the edge of the problem are ``white'' boundary conditions.  A reflecting boundary condition assumes that all neutron exiting the problem return at the same energy and traveling in a reflected direction.  However, because the boundary of this problem is a circle, it is possible for a neutron to be born at such an angle that it continuously reflects off the boundary without ever traveling toward the fuel.  The white boundary condition takes all exiting neutrons and returns them isotropically to prevent this error.

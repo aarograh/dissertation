@@ -13,7 +13,7 @@ The first of these methods was the ``2D/1D Fusion'' technique, developed by rese
 
 The second group of researchers was at Korea Atomic Energy Research Institute (KAERI).  They developed what is known more simply as the ``2D/1D'' scheme, first implemented in the DeCART code \cite{3DHetWholeCoreTransPlanarMOC,DeCARTTheoryManual,MethodsAndPerformanceOfDecart}.  This employs very similar technique to the 2D/1D Fusion method described above.  However, rather than using angular fluxes from each solver as a source term, currents are tallied on each of the six faces of each pin cell.  The currents can then be used to compute axial and radial ``transverse leakage'' sources for the radial and axial solvers, respectively.  This change allows for the storage of group-wise currents at each interface instead of storing the group-wise angular fluxes for each angle, significantly reducing the memory burden of the calculation.
 
-After some development, the DeCART code was forked into several different versions for different institutions, one of them being the University of Michigan (UM).  After some development, it was determined that there would be no further development of the DeCART code at UM and a new 2D/1D implementation would be put in MPACT \cite{2D1DApproxTo3DTransport1,StabilityAndAccuracyOf3DTransportInMPACT}.  In MPACT's implementation of 2D/1D (shown in Figure \ref{f:2d1dsubpalne}), 2D MOC is used for each of the radial planes, as with earlier 2D/1D codes.  The axial calculation done on a pin-homogenized mesh usually with SP$_3$, though a variety of other solver are available such as NEM, SENM, SP$_1$, SP$_5$, or S$_N$.  Finally, MPACT also uses 3D CMFD on the same pin-homogenized mesh to provide convergence acceleration to the calculations.  The remainder of this chapter will look at the derivation of the 2D/1D equations, the details of how they are implemented in MPACT, and some of the approximations and sources of errors related to this method.
+After some development, the DeCART code was forked into several different versions for different institutions, one of them being the University of Michigan (UM).  After some development, it was determined that there would be no further development of the DeCART code at UM and a new 2D/1D implementation would be put in MPACT \cite{2D1DApproxTo3DTransport1,StabilityAndAccuracyOf3DTransportInMPACT}.  In MPACT's implementation of 2D/1D (shown in Figure \ref{f:2d1dsubpalne}), 2D MOC is used for each of the radial planes, as with earlier 2D/1D codes.  The axial calculation done on a pin-homogenized mesh usually with SP$_3$, though a variety of other solvers are available such as NEM, SENM, SP$_1$, SP$_5$, or S$_N$.  Finally, MPACT also uses 3D CMFD on the same pin-homogenized mesh to provide convergence acceleration to the calculations.  The remainder of this chapter will look at the derivation of the 2D/1D equations, the details of how they are implemented in MPACT, and some of the approximations and sources of errors related to this method.
 
 \section{Derivation}
 
@@ -42,7 +42,7 @@ L_{g}^Z\left(x,y,\Omega_z\right) = \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k
 \end{subequations}
 where $L_{g}^Z\left(x,y,\Omega_z\right)$ is the axial transverse leakage source term for plane $z$.  To simplify the source term, the axial transverse leakage term is often handled isotropically.  This is done by averaging over angle:
 \begin{equation}
-L_{g}^Z\left(x,y\right) = \frac{1}{4\pi}\intop L_{g}^Z\left(x,y,\Omega_z\right) \approx \frac{J_{g,z_{k-\frac{1}{2}}} - J_{g,z_{k+\frac{1}{2}}}}{4\pi\Delta z_k}\ ,
+L_{g}^Z\left(x,y\right) = \frac{1}{4\pi}\intop L_{g}^Z\left(x,y,\Omega_z\right)d\Omega \approx \frac{J_{g,z_{k-\frac{1}{2}}} - J_{g,z_{k+\frac{1}{2}}}}{4\pi\Delta z_k}\ ,
 \end{equation}
 where $J_{z_{i\pm \frac{1}{2}}}$ is the current at the top ($+$) or bottom ($-$) of the plane.  This eliminates the need for storing all the angluar fluxes on the top and bottom of every plane.  Other methods exist that allow the axial transverse leakage source to maintain its angular dependence without storing the angular fluxes \cite{KelleyBlakeThesis}, but these methods are not discussed here since they were not used by this work.
 
@@ -67,8 +67,12 @@ where a superscript $XY$ now corresponds to a particular x- and y-region which e
 
 As with the radial equations, we can treat the transverse leakage source isotropically by averaging over angle:
 \begin{dmath}
-{L_{g}^{XY}\left(z\right)} = {\frac{1}{4\pi}\intop_{4\pi} L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)} \approx {\frac{1}{4\pi\\Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}}\left( J_{g,x_{i-\frac{1}{2}},y_i}\left(z\right) - J_{g,x_{i+\frac{1}{2}},y_i}\left(z\right)\right)dy} + {\frac{1}{4\pi\Delta x_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}}\left( J_{g,x_i,y_{i-\frac{1}{2}}}\left(z\right) - J_{g,x_i,y_{i+\frac{1}{2}}}\left(z\right)\right)dx}\ .
+{L_{g}^{XY}\left(z\right)} = {\frac{1}{4\pi}\intop_{4\pi} L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)} \approx {\frac{1}{4\pi\Delta x_i\Delta y_j}\intop_{y_{j-\frac{1}{2}}}^{y_{j+\frac{1}{2}}}\left( J_{g}\left(x_{i-\frac{1}{2}},y,z\right) - J_{g}\left(x_{i+\frac{1}{2}},y,z\right)\right)dy} + {\frac{1}{4\pi\Delta x_i\Delta y_j}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}}\left( J_{g}\left(x,y_{j-\frac{1}{2}},z\right) - J_{g}\left(x,y_{j+\frac{1}{2}}z\right)\right)dx}\ .
 \end{dmath}
+As an additional approximation we assume that the currents are tallied across an entire transverse surface, meaning that the current terms in the integrals above are constant over the direction of integration.  With this simplification, the final form of the radial TL is
+\begin{equation}
+L_g^{XY}\left(z\right) = \frac{J_{g,x_{i-\frac{1}{2}},y_j}\left(z\right) - J_{g,x_{i+\frac{1}{2}},y_j}\left(z\right)}{4\pi\Delta x_i} + \frac{J_{g,x_i,y_{j-\frac{1}{2}}}\left(z\right) - J_{g,x_i,y_{j+\frac{1}{2}}}\left(z\right)}{4\pi\Delta y_j}
+\end{equation}
 Again, methods have been developed to angle the angle-dependence of the radial transverse leakage source \cite{StimpsonShaneThesis}, but this work used only isotropic radial leakage.
 
 \section{Implementation}
@@ -184,7 +188,7 @@ At this time, energy decomposition is not available in MPACT.  However, when it 
 
 \section{Sources of Error}\label{s:2d1dErrors}
 
-The 2D/1D approximation as several sources of error.  Some of these are addressed by mesh, ray spacing, or quadrature refinements, but others are due to approximations made in the method itself.  The sources of error which are due to fundamental approximations in the 2D/1D method will be discussed first, followed by a brief (not comprehensive) list of some other common sources of error.
+The 2D/1D approximation has several sources of error.  Some of these are addressed by mesh, ray spacing, or quadrature refinements, but others are due to approximations made in the method itself.  The sources of error which are due to fundamental approximations in the 2D/1D method will be discussed first, followed by a brief (not comprehensive) list of some other common sources of error.
 
 \subsection{Axial Homogenization}
 
@@ -215,7 +219,7 @@ Several other sources of error in the 2D/1D method will be briefly mentioned her
   
   \item \textbf{Axial Meshing}
   
-  The axial mesh must be refined enough to capture the axial shape of the solution.  Usually MOC planes of about 8 cm thick are used for a typical PWR calculation, which some thinner planes to resolve spacer grids, burnable poison inserts, or other components.  Using thicker planes could decrease accuracy and worsen the convergence of the calculation.
+  The axial mesh must be refined enough to capture the axial shape of the solution.  Usually MOC planes of about 8 cm thick are used for a typical PWR calculation, which some thinner planes to resolve spacer grids, burnable poison inserts, or other components.  Using thicker planes could decrease accuracy and worsen the convergence of the CMFD calculations.
   
   \item \textbf{Scattering Treatment}
   
