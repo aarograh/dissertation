@@ -1,6 +1,16 @@
 \begin{frame}[t]{VERA Problem 4}
     
-    
+    \begin{figure}[h]\label{f:p4layout}
+      \centering
+      \subfigure{\label{f:p4radial}
+        \includegraphics[width=0.4\textwidth]{p4a_layout.png}
+      }
+      ~
+      \subfigure{\label{f:p4axial}
+        \includegraphics[width=0.3\textwidth]{wb_3d_assembly.png}
+      }
+      \caption{VERA Problem 4 radial (left) and axial (right) layouts}\label{f:p4}
+    \end{figure}
     
 \end{frame}
 
@@ -8,7 +18,21 @@
 
 \begin{frame}[t]{Problem 4 Results}
     
-    
+    \begin{table}[h]
+      \centering
+      \caption{VERA Problem 4 Decusping Results}\label{t:p4decusp}
+      \resizebox{\textwidth}{!}{
+        \begin{tabular}{|c|c|c|c|c|c|c|}\hline
+          \multirow{2}{*}{Case} & k-eff & \multicolumn{2}{|c|}{Pin Power Differences} & \multicolumn{2}{|c|}{Iterations} & Runtime\\\cline{3-6}
+          & Difference (pcm) & RMS & Max & 2D/1D & CMFD & (Core-Hours) \\\hline
+          Reference        & -- & --     & --      & 12 & 364 & 8.59 \\\hline
+          No Treatment     & -30 & 3.84\% & 21.81\% & 12 & 352 & 9.23 \\\hline
+          Polynomial       & -8  & 1.03\% &  6.58\% & 12 & 360 & 9.50 \\\hline
+          Sub-plane         & -7  & 1.13\% &  7.11\% & 12 & 409 & 9.26 \\\hline
+          Sub-plane + 1D-CP & -2  & 0.54\% &  4.94\% & 12 & 364 & 9.45 \\\hline
+        \end{tabular}
+      }
+    \end{table}
     
 \end{frame}
 
@@ -16,7 +40,11 @@
 
 \begin{frame}[t]{VERA Problem 5}
     
-    
+    \begin{figure}[h]
+      \centering
+      \includegraphics[width=0.9\textwidth]{WB1-cycle1-layout.png}
+      \caption{VERA Problem 5 radial layout}\label{f:p5radial}
+    \end{figure}
     
 \end{frame}
 
