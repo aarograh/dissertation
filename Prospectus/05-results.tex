@@ -1,10 +1,6 @@
-The first part of this chapter will discuss results of calculations with each of the decusping methods implemented in MPACT.  We will see which of them is best and how much room there is for improvement.  The second part of the chapter will discuss the results of some tests performed with a 1D MOC code.  These results will focus primarily on the effects that partially inserted rods have on the angular flux, rather than applying corrections to the cross-sections or scalar fluxes at the end of a calculation.
+To test MPACT's newly developed decusping methods, VERA Progression Problems 4 and 5 \cite{VERAProgressionProblems} were used.  These problems are based on Watts Bar Unit 1, and provide realistic test cases for the 2D/1D method.  The control rods and meshing were modified slightly from the specifications to introduce rod cusping effects which may not normally be there.  However, these changes will be useful in identifying the effects of cusping and improvements from each decusping method for each of the two different problems.
 
-\section{MPACT Decusping Results}
-
-To test MPACT's decusping methods, VERA Progression Problems 4 and 5 \cite{VERAProgressionProblems} were used.  These problems are based on Watts Bar Unit 1, and provide realistic test cases for the 2D/1D method.  The control rods and meshing were modified slightly from the specifications to introduce rod cusping effects which may not normally be there.
-
-\subsection{VERA Problem 4}
+\section{VERA Problem 4}
 
 Problem 4 is composed of a 3x3 set of assemblies, with a control bank in the center assembly.  The radial layout of the problem is shown in Figure \ref{f:p4radial}, and the axial layout of each assembly is shown in Figure \ref{f:p4axial}.  The control rods were placed at an axial elevation of 257.9 cm above the core plate, about one third inserted into the core.  The rod in the original problem specification is made of AIC with a B$_4$C follower and a stainless steel tip.  However, to simplify analysis of the results, this was changed so the rod was a single AIC region.
 
@@ -42,9 +38,9 @@ The ``No Treatment'' case shows the magnitude of the cusping effects for this pr
 
 As far as runtime is convergence and runtime is concerned, all cases took the same number of 2D/1D iterations.  The sub-plane--based decusping methods incurred a few more CMFD iterations, but this did not have a significant impact on runtime.  The difference in runtime between the reference and no treatment cases is due to the decomposition of the problem.  Both cases use the same sub-plane CMFD mesh (with homogeneous cross-sections in each plane).  However, the reference case was run with 2 MOC planes instead of 1.  This also means that an extra core was used in the calculation.  Because of this, the time required for the transport calculations was the same, but the CMFD solve was slower for the no treatment case since a single core was solving a portion of the CMFD system handled by two cores in the reference calculation.  Thus, the runtime increase is due only to the parallel partitioning, not the methods themselves.  This is important, because the runtimes of the decusping cases were all about the same as the no treatment case.  This implies that the runtime penalty due to the decusping solvers is negligible.  Some work simply needs to be done to improve the parallel balance when using the sub-plane scheme.
 
-\subsection{VERA Problem 5}
+\section{VERA Problem 5}
 
-To demonstrate the behavior of the decusping methods on a full-core problem, VERA Problem 5 was also run.  Problem 5 is the a beginning-of-cycle simulation of the Watts Bar Unit 1 PWR.  The model of this reactor uses the same axial layout shown in Figure \ref{f:p4axial} with the radial layout shown in Figure \ref{f:p5radial}.  For these calculations, Bank D was set to a position of 257.9 cm above the core plate while all other banks were fully withdrawn.
+To demonstrate the behavior of the decusping methods on a full-core problem, VERA Problem 5 was also run.  Problem 5 is the a beginning-of-cycle simulation of the Watts Bar Unit 1 PWR.  The model of this reactor uses the same axial layout shown in Figure \ref{f:p4axial} with the radial layout shown in Figure \ref{f:p5radial}.  For these calculations, Bank D was set to a position of 257.9 cm above the core plate while all other banks were fully withdrawn to 383.3125 cm, about 6 cm above the top of the active fuel.
 
 Like problem 4, the reference case was run with 58 planes while the decusping cases were run with 57 planes.  Radial decomposition was used with 16 cores per MOC plane.  This resulted in a slightly different number of cores for the reference case compared with the others, as seen in the Problem 4 calculations.  The accuracy and convergence data for these calculations is shown in Table \ref{t:p5decusp}.
 
@@ -65,10 +61,9 @@ Like problem 4, the reference case was run with 58 planes while the decusping ca
     No Treatment     & -22 & 2.82\% & 30.55\% & 13 & 546 & 439.8 \\\hline
     Polynomial       & -5 & 1.18\% & 11.78\% & 13 & 495 & 407.4 \\\hline
     Sub-plane         & -5 & 1.28\% & 12.06\% & 13 & 517 & 424.3 \\\hline
-    Sub-plane + 1D-CP &  &  &  &  &  &  \\\hline
+    Sub-plane + 1D-CP & -1 & 1.09\% & 12.17\% & 13 & 525 & 416.5 \\\hline
   \end{tabular}
 }
 \end{table}
 
-\hl{Problems are being run now}
-%\todo{discussion}
+Unlike Problem 4, the 1D-CP treatments do not have any discernible advantage over the polynomial treatment.  The k$_{eff}$ and RMS power differences are improved slightly, but the maximum power difference is actually slightly worse.  This indicates that the 1D CP calculation is having a significant effect over no treatment, but is not able to provide any additional accuracy beyond the polynomial corrections generated for this reactor.  Furthermore, the runtime was increased by about 8-10\% for the sub-plane--based decusping methods.  Some of this is due to parallel imbalance, but some of it is due to the increase in CMFD iterations required.  The largest increase is actually seen in the case with no decusping treatment.  Introducing decusping treatments seems to make the CMFD system more solvable.  However, given that the runtime is worse than the polynomial corrections and the accuracy is comparable, a better method is needed to justify moving away from the polynomial corrections for the full-core problem.
