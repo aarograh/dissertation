@@ -1,22 +1,59 @@
 \begin{frame}[t]{Boltzmann Transport Equation}
-    
-    
+        
+    \begin{subequations}\label{e:boltzmann}
+        \begin{dmath}
+            {\frac{1}{v} \frac{\partial \psi}{\partial t} + 
+                \bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E,t\right)\psi\left(\bm x,E,\bm \Omega,t\right)} = {\frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi_p\left(\bm x,E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \left(1 - \beta\left(\bm x,E'\right)\right) \nu \Sigma_f\left(\bm x,E',t\right) \psi\left(\bm x,E',\bm \Omega',t\right) d\Omega' dE'} + {\sum_{j=1}^{N_d} \frac{\chi_{d,j}\left(\bm x,E\right)}{4\pi} \lambda_j C_j\left(\bm x,t\right)} + {Q\left(\bm x,E,\bm \Omega,t\right)}
+        \end{dmath}
+        \begin{equation}
+        \psi\left(\bm x_b, E, \bm{\Omega},t\right) = \psi^b\left(\bm x_b, E, \bm{\Omega},t\right)\ ,\quad \bm{\Omega}\cdot \bm n < 0
+        \end{equation}
+    \end{subequations}
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[t]{Multigroup Approximation}
+\begin{frame}[t]{Steady-State Transport Equation}
+
+\begin{subequations}\label{e:ssboltzmann}
+    \begin{dmath}
+        {\bm \Omega \cdot \bm \nabla \psi + \Sigma_t\left(\bm x,E\right)\psi\left(\bm x,E,\bm \Omega\right)} = {\frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E'\right) \psi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{Q\left(\bm x,E,\bm \Omega\right)}{4\pi}}\ ,
+    \end{dmath}
+    \begin{equation}\label{e:ssboltzmannBC}
+    \psi\left(\bm x_b, E, \bm{\Omega}\right) = \psi^b\left(\bm x_b, E, \bm{\Omega}\right)\ ,\quad \bm{\Omega}\cdot \bm n < 0\ .
+    \end{equation}
+\end{subequations}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{Multi-Group Approximation}    
     
-    
-    
+    \begin{subequations}\label{e:multigroupboltzmann}
+        \begin{dmath}
+            {\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(\bm x\right)\psi_g\left(\bm x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(\bm x,\bm \Omega'\right) d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \intop_{4\pi} \nu \Sigma_{f,g'}\left(\bm x\right) \psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega' + \frac{Q_g\left(\bm x\right)}{4\pi}}
+        \end{dmath}
+        \begin{equation}\label{e:multigroupboltzmannBC}
+        \psi_g\left(\bm x_b, \bm{\Omega}\right) = \intop_{E_n}^{E_{n-1}} \psi^b\left(\bm x_b, E, \bm{\Omega}\right)dE\ ,\quad \bm{\Omega}\cdot \bm n < 0
+        \end{equation}
+    \end{subequations}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[t]{Discrete Ordinates Approximation}
     
-    
+    \begin{subequations}\label{e:SnBoltzmann}
+        \begin{dmath}
+            \bm\Omega_n\cdot\bm\nabla\psi_{g,n} + \Sigma_{t,g}\left(\bm x\right)\psi_{g,n}\left(\bm x\right) = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{g'\rightarrow g,n'\rightarrow n}\left(\bm x\right)\psi_{g',n'}\left(\bm x\right) w_{n'}} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \sum_{n'=1}^N \nu\Sigma_{f,g'}\left(\bm x\right)\psi_{g',n'}\left(\bm x\right) w_{n'}} + \frac{Q_{g,n}\left(\bm x\right)}{4\pi}
+        \end{dmath}
+        \begin{equation}
+        \psi_{g,n}\left(\bm x_b\right) = \psi_{g}^b\left(\bm x_b,\bm{\Omega}_n\right)\ ,\quad \bm{\Omega}_n\cdot \bm n < 0
+        \end{equation}
+    \end{subequations}    
     
 \end{frame}
 
@@ -24,7 +61,14 @@
 
 \begin{frame}[t]{Diffusion Approximation}
     
-    
+    \begin{subequations}
+    \begin{dmath}\label{e:DiffusionEquation}
+        -\bm\nabla \cdot D_g\left(\bm x\right) \bm \nabla\phi_g\left(\bm x\right) + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)
+    \end{dmath}
+\begin{equation}\label{e:DiffusionEquationBC}
+\frac{1}{4} \phi_g\left(\bm x_b\right) + \frac{D_g\left(\bm x\right)}{2} \bm \cdot \bm \nabla \phi_g\left(\bm x_b\right) = J^-\left(\bm x_b\right)
+\end{equation}
+\end{subequations}
     
 \end{frame}
 
@@ -32,6 +76,25 @@
 
 \begin{frame}[t]{Scattering Approximations}
     
-    
-    
+\begin{itemize}
+    \item P$_N$ Scattering
+    \begin{subequations}\label{e:PnScatteringExpansion}
+        \begin{equation}
+        \Sigma_s\left(\bm x,\mu_s\right) = \sum_{n=0}^N \frac{2n+1}{4\pi} P_n\left(\mu_s\right) \Sigma_{sn}\left(\bm x\right)\ ,
+        \end{equation}
+        \begin{equation}
+        \Sigma_{s,n}\left(\bm x\right) = 2\pi\intop_{-1}^1 \Sigma_s\left(\bm x,\mu_s\right) P_n\left(\mu_s\right) d\mu_s\ .
+        \end{equation}
+    \end{subequations} 
+    \item Transport-Corrected P$_0$ (TCP0)
+    \begin{subequations}\label{e:outscatterTCP0}
+        \begin{equation}
+        \Sigma_{tr,g} = \Sigma_{t,g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}\ ,
+        \end{equation}
+        \begin{equation}
+        \Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}\ .
+        \end{equation}
+    \end{subequations}
+\end{itemize}
+
 \end{frame}

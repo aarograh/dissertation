@@ -1,6 +1,34 @@
 \documentclass{beamer}
 
 \usepackage{beamerthemesplit}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{appendix}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{multirow}
+\usepackage{todonotes}
+\usepackage{breqn}
+\usepackage{subfigure}
+%\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{fixltx2e}
+\usepackage{color}
+\usepackage{float}
+\usetikzlibrary{shapes,arrows}
+
+% Set up flowchart stuff
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=2cm, minimum height=1cm, text centered, text width=2cm, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+% Set up graphics path
+\graphicspath{{../figs/}}
+
 \setbeamertemplate{navigation symbols}{}
 \usetheme{Darmstadt}
 \useoutertheme{infolines}

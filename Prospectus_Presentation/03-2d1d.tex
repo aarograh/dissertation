@@ -1,6 +1,10 @@
 \begin{frame}[t]{Background}
     
-    
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../figs/2d1d-subplane.png}
+    \caption[2D/1D Illustration]{The 2D/1D Method illustrated with the sub-plane scheme for the axial and CMFD calculations}
+\end{figure}    
     
 \end{frame}
 
@@ -8,7 +12,17 @@
 
 \begin{frame}[t]{Radial Equations}
     
-    
+\begin{subequations}
+    \begin{dmath}
+        {\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + \Omega_y\frac{\partial \psi_{g}^Z}{\partial y}} + {\Sigma_{t,g}\left(x,y\right)\psi_{g}^Z\left(x,y,\bm\Omega\right)} = {q_{g}^Z\left(x,y\right)} + {L_{g}^Z\left(x,y,\Omega_z\right)}
+    \end{dmath}
+    \begin{dmath}
+        {q_{g}^Z\left(x,y\right)} = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g'}^Z\left(x,y\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^Z\left(x,y\right)}{4\pi}}
+    \end{dmath}
+    \begin{align}
+    L_{g}^Z\left(x,y,\Omega_z\right) &= \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k-\frac{1}{2}}} - \psi_{g,z_{k+\frac{1}{2}}}\right) \approx \frac{J_{g,z_{k-\frac{1}{2}}} - J_{g,z_{k+\frac{1}{2}}}}{4\pi\Delta z_k}
+    \end{align}
+\end{subequations}
     
 \end{frame}
 
@@ -16,15 +30,44 @@
 
 \begin{frame}[t]{Axial Equations}
     
+    \begin{subequations}\label{e:2D1DaxialEq}
+        \begin{dmath}
+            {\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + {\Sigma_{t,g}^{XY}\left(z\right)\psi_{g}^{XY}\left(z,\bm\Omega\right)} = q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) + {L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)}
+        \end{dmath}
+        \begin{dmath}
+            {q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = \frac{1}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \Sigma_{s,g'\rightarrow g}^{XY}\left(z,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^{XY}}{4\pi}\sum_{g'=1}^G\intop_{4\pi}\nu\Sigma_{f,g'}^{XY}\left(z\right)\psi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega' + \frac{Q_{g}^{XY}\left(z\right)}{4\pi}}
+        \end{dmath}
+    \end{subequations}
     
-    
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{Axial Equations}
+
+\begin{subequations}\label{e:2D1DaxialEq}
+    \begin{dmath}
+        {\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + {\Sigma_{t,g}^{XY}\left(z\right)\psi_{g}^{XY}\left(z,\bm\Omega\right)} = q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) + {L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)}
+    \end{dmath}
+    \begin{align}
+        L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) &= {\frac{\Omega_x}{\Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}} \left(\psi_{g,x_{i-\frac{1}{2}}}\left(y\right) - \psi_{g,x_{i+\frac{1}{2}}}\left(y\right) dy\right)} \nonumber\\ 
+        &+ {\frac{\Omega_y}{\Delta x_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \left(\psi_{g,y_{i-\frac{1}{2}}}\left(x\right) - \psi_{g,y_{i+\frac{1}{2}}}\left(x\right) dx\right)} \nonumber\\
+        &\approx {\frac{J_{g,x_{i-\frac{1}{2}},y_j} - J_{g,x_{i+\frac{1}{2}},y_j}}{4\pi\Delta x_i}} +
+        \frac{J_{g,x_i,y_{j-\frac{1}{2}}} - J_{g,x_i,y_{j+\frac{1}{2}}}}{4\pi\Delta y_j}
+    \end{align}
+\end{subequations}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[t]{Calculation Flow}
 
-
+\begin{figure}[h]
+    \centering
+    \scalebox{0.4}{\input{../figs/2d1d-flowchart.tex}}
+    \caption{Calculation flow for 2D/1D scheme}\label{f:2d1d-flowchart}
+\end{figure}
 
 \end{frame}
 
@@ -32,7 +75,11 @@
 
 \begin{frame}[t]{Sub-Plane CMFD}
     
-    
+    \begin{figure}[h]
+        \centering
+        \scalebox{0.4}{\input{../figs/CMFD-flowchart.tex}}
+        \caption{Calculation flow for 3D sub-plane CMFD}\label{f:CMFD-flowchart}
+    \end{figure}
     
 \end{frame}
 
@@ -40,7 +87,11 @@
 
 \begin{frame}[t]{1D SP$_3$-NEM}
     
-    
+    \begin{figure}[h]
+        \centering
+        \scalebox{0.6}{\input{../figs/Axial-flowchart.tex}}
+        \caption{Calculation flow for 1D axial calculations in MPACT}\label{f:Axial-flowchart}
+    \end{figure}
     
 \end{frame}
 
@@ -48,6 +99,22 @@
 
 \begin{frame}[t]{2D MOC}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{modular_rays.png}
+    \caption[Modular Ray Tracing]{Modular ray tracing depiction \cite{MPACTTheoryManual}}\label{e:ModRays}
+\end{figure}
 
+\end{frame} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{2D MOC}
+
+\begin{figure}[h]
+    \centering
+    \scalebox{0.5}{\input{../figs/MOC-flowchart.tex}}
+    \caption{Calculation flow for 2D MOC calculation in MPACT}\label{f:MOC-flowchart}
+\end{figure}
 
 \end{frame} 
