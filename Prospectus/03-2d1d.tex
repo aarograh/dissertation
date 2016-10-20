@@ -89,7 +89,7 @@ Now that the general 2D/1D scheme has been described, some attention should be g
 
 The CMFD method was originally implemented in MPACT just as described in section \ref{ss:CMFD}.  To do this, each pin cell is homogenized using the quantities defined in Equation \ref{e:CMFDhomogTerms} in every plane in the model.  The radial coupling coefficients defined in Equation \ref{e:CMFDcouplingCoeffs} are obtained by calculating the current at the interface between each pair of pin cells using the 2D MOC sweeper, while the axial coupling coefficients are obtained from the axial currents calculated by the axial solve during the previous iteration.  The matrix for the 3D multi-group system can then be set up and solved, typically using the generalized Davidson eigenvalue solver.
 
-In addition to this traditional 3D CMFD, MPACT also has the capability to use the sub-plane scheme.  This scheme was first developed by Cho et al. for the DeCART code \cite{DeCARTsubplane}.  Thin MOC planes are capable of causing instability in the 2D/1D scheme, but are sometimes required to maintain accuracy.  The sub-plane scheme allows users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  Later, the developers of the nTRACER code \cite{RyuBEAVRSnTRACER2015} also used the sub-plane scheme.  In addition to how it was used in DeCART, nTRACER also uses the sub-plane scheme as part of its rod decusping methods \cite{ICAPPcontrolRodDecuspingNTRACER}.  MPACT also uses sub-plane as part of a decusping treatment, which will be discussed in greater detail in chapter \ref{chap:cusping}.  This section will deal only with the basics of the sub-plane method as it was used in DeCART.
+As part of this work, the traditional CMFD capability was extended to use the sub-plane scheme, first developed by Cho et al. for the DeCART code \cite{DeCARTsubplane} and later used in the nTRACER code \cite{RyuBEAVRSnTRACER2015}.  Thin MOC planes are capable of causing instability in the 2D/1D scheme, but are sometimes required to maintain accuracy.  The sub-plane scheme allows users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  While DeCART used the sub-plane scheme primarily to allow for thicker MOC planes, nTRACER also uses the sub-plane scheme as part of its rod decusping methods \cite{ICAPPcontrolRodDecuspingNTRACER}.  This section will focus only on the sub-plane scheme as a means of using fewer MOC planes, while chapter \ref{chap:cusping} will discuss how the sub-plane scheme has been modified to be used in decusping methods.
 
 \begin{figure}[h]
   \centering
@@ -99,7 +99,7 @@ In addition to this traditional 3D CMFD, MPACT also has the capability to use th
 
 \subsubsection{Homogenization}
 
-The difference between the sub-plane scheme and traditional CMFD is that the CMFD system is that the CMFD system is allowed to have multiple axial planes for each of the 2D planes in which the transport calculations are done.  This allows CMFD to capture sub-plane axial flux shapes that would otherwise be ignored.  To do this, a sub-plane scaling factor is introduced which will be used to provide an axial shape within a 2D plane:
+For the traditional CMFD calculations, each pin cell in an MOC plane is homogenized into a single CMFD cell.  When using the sub-plane scheme, the homogenized pin cell is divided axially into a stack of cells.  This causes the CMFD system to have multiple planes per MOC plane, allowing CMFD to capture sub-plane axial flux shapes that would otherwise be ignored.  To do this, a sub-plane scaling factor is introduced which will be used to provide an axial shape within a 2D plane:
 \begin{align}
 c_{g,i}^k &= \frac{\phi_{g,i}^{k-1}}{\overline{\phi}_{g,i}^{k-1}} \nonumber\\
  &= \frac{\phi_{g,i}^{k-1} \sum_{i'=1}^{N_{sp}} V_{i'}}{\sum_{i'=1}^{N_{sp}} \phi_{g,i'}^{k-1} V_{i'}}\ ,
@@ -219,7 +219,7 @@ Several other sources of error in the 2D/1D method will be briefly mentioned her
   
   \item \textbf{Axial Meshing}
   
-  The axial mesh must be refined enough to capture the axial shape of the solution.  Usually MOC planes of about 8 cm thick are used for a typical PWR calculation, which some thinner planes to resolve spacer grids, burnable poison inserts, or other components.  Using thicker planes could decrease accuracy and worsen the convergence of the CMFD calculations.
+  The axial mesh must be refined enough to capture the axial shape of the solution.  Usually MOC planes of about 8 cm thick are used for a typical PWR calculation, which some thinner planes to resolve spacer grids, burnable poison inserts, or other components.  Using thicker planes could decrease accuracy and worsen the convergence of the CMFD calculations.  This effect can be minimized for thick MOC planes by using the sub-plane method.
   
   \item \textbf{Scattering Treatment}
   

@@ -228,7 +228,7 @@
   volume        = {52},
   number        = {7-8},
   pages         = {961-969},
-  __markedentry = {[ag6:6]},
+  __markedentry = {[ag6:]},
   abstract      = { The BEAVRS (Benchmark for Evaluation and Validation of Reactor Simulation) benchmark is solved by the nTRACER direct whole core calculation code to assess its accuracy and to examine the solution dependence on modeling parameters. A sophisticated nTRACER core model representing the BEAVRS core is prepared after a series of sensitivity study to ensure solution accuracy. The resulting solutions for several hot-zero-power (HZP) states are compared first with the corresponding Monte Carlo solutions, which consist of the McCARD solutions for the assembly problems and the OpenMC solutions for the core problems, and then with the measured data which include the control rod worths (CRWs) and incore detector signals as well as the critical boron concentrations (CBC). The core depletion calculation is performed for the initial and second cycles with a set of approximated power histories and the calculated CBCs are compared with the measured data. The comparison results show that the criticality, control rod bank worths at HZP and the boron let-down curves of two cycles agree well with the measurements within 180 pcm and 25 ppm, respectively. },
   doi           = {10.1080/00223131.2015.1038664},
   eprint        = {http://dx.doi.org/10.1080/00223131.2015.1038664},
@@ -495,6 +495,49 @@
   journal = {School of Nuclear Engineering, Purdue University, W. Lafayette, Indiana},
   year    = {2004},
   volume  = {47907},
+}
+
+@Article{YAMAMOTO2008SimplifiedTreatmentsofAnisotropicScatteringinLWRCoreCalculations,
+  author        = {Akio Yamamoto and Yasunori Kitamura and Yoshihiro Yamane},
+  title         = {Simplified Treatments of Anisotropic Scattering in LWR Core Calculations},
+  journal       = {Journal of Nuclear Science and Technology},
+  year          = {2008},
+  volume        = {45},
+  number        = {3},
+  pages         = {217-229},
+  __markedentry = {[ag6:6]},
+  abstract      = { The validity of various simplified treatments of anisotropic scattering is investigated in typical LWR configurations that simulate PWR, BWR, and APWR. In addition to the explicit treatment of anisotropic scattering, the diagonal approximation of anisotropic scattering matrixes and the transport corrected cross section with the assumption of isotropic scattering are also tested. Calculation results indicate that the anisotropic scattering matrix of the P1 component would be explicitly treated to obtain accurate results in the present calculations. The P2 or higher order anisotropic scattering matrix could be approximated by the diagonal approximation while maintaining the calculation accuracy. In addition to the above investigation, the physical meaning of the transport corrected cross section used in a transport calculation is discussed through a simple one-group fixed-source benchmark problem with anisotropic scattering. Though the transport corrected cross section is usually used to consider the P1 scattering cross section, the calculation results and discussion clarify that the transport corrected cross section is not mathematically consistent with the consideration of the P1 scattering cross section. The transport corrected cross section always implicitly includes an infinite order of anisotropic scattering cross sections when it is used in a transport calculation. Since the higher order anisotropic scattering component tends to reduce neutron leakage from a core, the calculated k-effective with the transport corrected cross section would be overestimated. This suggests the cause of the overestimation of k-effective by transport calculation with the transport corrected cross section obtained by in-scatter approximation. },
+  doi           = {10.1080/18811248.2008.9711430},
+  eprint        = {http://www.tandfonline.com/doi/pdf/10.1080/18811248.2008.9711430},
+  url           = { 
+        http://www.tandfonline.com/doi/abs/10.1080/18811248.2008.9711430
+    
+},
+}
+
+@InProceedings{RyuIncorporationofanisotropicscatteringinnTRACER,
+  author    = {Ryu, Min and Jung, Yeon Sang and Lim, Chang Hyun and Joo, Han Gyu},
+  title     = {Incorporation of anisotropic scattering in nTRACER},
+  booktitle = {Transactions of the Korean Nuclear Society Autumn Meeting},
+  year      = {2014},
+  address   = {Pyeongchang, Korea},
+  month     = {October 30-31},
+}
+
+@TechReport{Herman2013ImproveddiffusioncoefficientsgeneratedfromMonteCarlocodes,
+  author      = {Herman, Bryan R and Forget, Benoit and Smith, Kord and Aviles, Brian N},
+  title       = {Improved diffusion coefficients generated from Monte Carlo codes},
+  institution = {American Nuclear Society, 555 North Kensington Avenue, La Grange Park, IL 60526 (United States)},
+  year        = {2013},
+}
+
+@InProceedings{Yee2016AnAnAnalyticDerivationofTransport-CorrectedP$_0$CrossSectionsandDiffusionCoefficients,
+  author    = {Yee, Ben C. and Larsen, E. W. and Kochunas, Brendan},
+  title     = {An AnAnalytic Derivation of Transport-Corrected P$_0$ Cross Sections and Diffusion Coefficients},
+  booktitle = {Proceesings of the Physics of Reactors (PHYSOR) conference},
+  year      = {2016},
+  address   = {Sun Valley, ID},
+  month     = {May 1-5},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

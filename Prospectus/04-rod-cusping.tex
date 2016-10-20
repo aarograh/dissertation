@@ -10,6 +10,12 @@ This chapter will focus specifically on control rod cusping effects, which are t
 
 In Section \ref{s:2d1dErrors}, some potential sources of errors for the 2D/1D scheme were introduced.  One of these was the error introduced by axial homogenization within a 2D MOC plane.  In some cases, this can be done without introducing significant errors.  For example, MPACT often homogenizes components outside the active fuel region, such as the end plugs and gaps at the end of the fuel rods.  However, when strong neutron absorbers, such as control rods, are homogenized axially in active fuel region, this has the effect of introducing absorption in regions where there should be none.  This effect is known as ``cusping,'' \cite{finnemann1977RodCuspingOrigMention} and is illustrated in Figure \ref{f:cuspingEffectJoo}.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{p4cuspingEffects.png}
+  \caption[Rod Cusping in MPACT]{Control Rod Cusping Effects in MPACT for 3x3 Assembly}\label{f:p4cuspingEffects}
+\end{figure}
+
 In some cases, this is easily handled by setting up an appropriate axial mesh which prevents the need for the homogenization, but this is not always a practical solution.  Throughout the course of an entire cycle of operation (usually about 18 months), several different control banks in the reactor may move to a variety of positions to maintain criticality in the core.  Control rods in a PWR typically have step sizes of approximately 1.5 cm, but a typical MOC plane in MPACT is about 8 cm thick in the active fuel region.  In order to prevent cusping effects for an entire cycle, the user may have to create a very detailed axial mesh to ensure that all the control rod positions used throughout the cycle align with the edge of an MOC plane.  Not only is this tedious for the user, but it also greatly increases the computational burden due to the increased number of MOC planes.  Figure \ref{f:p4cuspingEffects} shows the calculated k-eff as a function of control rod position.  The cusping effects in this figure are further complicated by a heterogeneous rod with AIC and B$_4$C poison regions and a stainless steal tip.  Thus, cusping effects occur not just at the control rod tip, but also at material interfaces throughout the rod.
 
 \section{Decusping Methods History}
@@ -67,12 +73,6 @@ To do this, a sub-plane--like scheme is employed in the NEM formulation.  As wit
 
 Unfortunately, moving away from nodal methods to higher fidelity transport codes does not eliminate the rod cusping problem, as shown in Figure \ref{f:p4cuspingEffects}.  There have not been as many 2D/1D codes as there have been nodal codes, but each of them still had to contend with this problem.  This section will discuss some of the different 2D/1D codes that have been developed and how the rod cusping problem was dealt with in each of them.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{p4cuspingEffects.png}
-    \caption[Rod Cusping in MPACT]{Control Rod Cusping Effects in MPACT for 3x3 Assembly}\label{f:p4cuspingEffects}
-\end{figure}
-
 \subsubsection{Neighbor Spectral Index Method}
 
 The code CRX-2K \cite{cho2015CRX2d1dFusionDecusping} uses the 2D/1D fusion method to perform LWR simulations.  To address the rod cusping problem in this code, a modified version of the ISI method is applied, called the Neighbor Spectral Index (NSI) method.  The NSI method uses the same methodology as the ISI with one modification.  Because the 2D/1D fusion method does not require standalone calculations to generate homogenized cross-sections, the spectral index must be calculated on-the-fly during the 2D/1D iteration.  To do this, the neighboring node above the PRN is used to obtain a rodded spectral index, and the neighboring node below the PRN is used to obtain an unrodded spectral index.  These two indexes are then used with the rodded and unrodded cross-sections and volume fractions to obtain homogenized cross-sections for the PRN.  This method causes significant improvements over other decusping methods and requires negligible additional computation since the fluxes are stored for every region already.
@@ -90,7 +90,7 @@ MPACT currently uses a simple polynomial correction to the volume fractions used
 
 \section{Recent Decusping Methods Development}
 
-This section discusses two new decusping treatments added to MPACT.  These methods rely on the sub-plane scheme described in section \ref{ss:2d1d-3dcmfd}.  The first method only treats the axial cusping effects, while the second method extends the first by also treating the radial decusping effects.
+This section discusses two new decusping treatments added to MPACT as part of this work.  These methods were developed to try to improve on the accuracy and flexibility of MPACT's polynomial corrections without significant runtime increases.  Both of these methods rely on the sub-plane scheme described in section \ref{ss:2d1d-3dcmfd}.  The first method modifies the sub-plane scheme to use heterogeneous cross-sections to capture the axial effects of the partially inserted rod.  The second method builds on this by also capturing some of the radial effects of the rod.
 
 \subsection{Sub-plane Decusping}
 
