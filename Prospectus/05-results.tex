@@ -42,7 +42,7 @@ As far as runtime is convergence and runtime is concerned, all cases took the sa
 
 To demonstrate the behavior of the decusping methods on a full-core problem, VERA Problem 5 was also run.  Problem 5 is the a beginning-of-cycle simulation of the Watts Bar Unit 1 PWR.  The model of this reactor uses the same axial layout shown in Figure \ref{f:p4axial} with the radial layout shown in Figure \ref{f:p5radial}.  For these calculations, Bank D was set to a position of 257.9 cm above the core plate while all other banks were fully withdrawn to 383.3125 cm, about 6 cm above the top of the active fuel.
 
-Like problem 4, the reference case was run with 58 planes while the decusping cases were run with 57 planes.  Radial decomposition was used with 16 cores per MOC plane.  This resulted in a slightly different number of cores for the reference case compared with the others, as seen in the Problem 4 calculations.  The accuracy and convergence data for these calculations is shown in Table \ref{t:p5decusp}.
+Like problem 4, the reference case was run with 58 planes while the decusping cases were run with 57 planes.  Radial decomposition was used with 16 cores per MOC plane.  This resulted in a slightly different number of cores for the reference case compared with the others, as seen in the Problem 4 calculations.  The accuracy and convergence results for the partially rodded plane are shown in Table \ref{t:p5decusp}.
 
 \begin{figure}[h]
 \centering
@@ -52,18 +52,18 @@ Like problem 4, the reference case was run with 58 planes while the decusping ca
 
 \begin{table}
 \centering
-\caption{VERA Problem 5 Decusping Results}\label{t:p5decusp}
+\caption[VERA Problem 5 Decusping Results]{VERA Problem 5 decusping results for the partially rodded plane}\label{t:p5decusp}
 \resizebox{\textwidth}{!}{
   \begin{tabular}{|c|c|c|c|c|c|c|}\hline
     \multirow{2}{*}{Case} & k-eff & \multicolumn{2}{|c|}{Pin Power Differences} & \multicolumn{2}{|c|}{Iterations} & Runtime\\\cline{3-6}
     & Difference (pcm) & RMS & Max & 2D/1D & CMFD & (Core-Hours) \\\hline
-    Reference        & -- & --     & --      & 13 & 445 & 383.3 \\\hline
-    No Treatment     & -22 & 2.82\% & 30.55\% & 13 & 546 & 439.8 \\\hline
-    Polynomial       & -5 & 1.18\% & 11.78\% & 13 & 495 & 407.4 \\\hline
-    Sub-plane         & -5 & 1.28\% & 12.06\% & 13 & 517 & 424.3 \\\hline
-    Sub-plane + 1D-CP & -1 & 1.09\% & 12.17\% & 13 & 525 & 416.5 \\\hline
+    Reference        & -- & --     & --      & 13 & 481 & 361.7 \\\hline
+    No Treatment     & -22 & 6.90\% & 30.55\% & 13 & 523 & 410.7 \\\hline
+    Polynomial       & -5 & 1.15\% & 4.85\% & 13 & 463 & 373.7 \\\hline
+    Sub-plane         & -5 & 2.09\% & 10.20\% & 13 & 499 & 399.0 \\\hline
+    Sub-plane + 1D-CP & -1 & 0.50\% & 2.74\% & 13 & 529 & 425.6 \\\hline
   \end{tabular}
 }
 \end{table}
 
-Unlike Problem 4, the 1D-CP treatments do not have any discernible advantage over the polynomial treatment.  The k$_{eff}$ and RMS power differences are improved slightly, but the maximum power difference is actually slightly worse.  This indicates that the 1D CP calculation is having a significant effect over no treatment, but is not able to provide any additional accuracy beyond the polynomial corrections generated for this reactor.  Furthermore, the runtime was increased by about 8-10\% for the sub-plane--based decusping methods.  Some of this is due to parallel imbalance, but some of it is due to the increase in CMFD iterations required.  The largest increase is actually seen in the case with no decusping treatment.  Introducing decusping treatments seems to make the CMFD system more solvable.  However, given that the runtime is worse than the polynomial corrections and the accuracy is comparable, a better method is needed to justify moving away from the polynomial corrections for the full-core problem.
+As with Problem 4, we see that the CP results are the best, with less than 3\% maximum error in the roded plane.  The sub-plane decusping without the CP treatment is worse than in Problem 4, showing the importance of correctly treating the radial effects.  The runtime increase is also between 15\% and 20\% for the sub-plane and CP decusping methods.  Some of this is due to parallel imbalance in the CMFD systems as discussed in Problem 4, but some is also due to the increase in CMFD iterations when using these methods.  Overall, the new methods perform well.  However, nearly 3\% error is still higher than desired when using the 2D/1D method, so there is still much room for improvement.
