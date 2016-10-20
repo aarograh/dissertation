@@ -6,7 +6,18 @@
     \item Faster than direct 3D transport calculations
     \item More accurate than traditional nodal methods
   \end{itemize}
-  \item Rod cusping
+  \item Control rod cusping can occur in 2D/1D
+  \begin{itemize}
+    \item Occurs when control rods are partially inserted in a 2D plane
+    \item Causes large errors due to volume homogenization
+    \item Current decusping methods have trade-off between speed and accuracy
+  \end{itemize}
+  \item New decusping methods are needed for 2D/1D
+  \begin{itemize}
+    \item Transport-based methods that are efficient and accurate
+    \item New methods can reduce the computing resources required for 2D/1D
+    \item Other axial components (spacer grids, burnable poison inserts, axial fuel blankets, etc.) could also be simulated more efficiently using advanced decusping methods
+  \end{itemize}
 \end{itemize}
 
 \end{frame}
@@ -14,13 +25,25 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[t]{Overview}
-
-\begin{itemize}
-  \item Discussion of 2D/1D and decusping methods history
-  \item Introduction of new methods based on sub-plane scheme
-  \item Results for VERA Problems 4 and 5
-  \item Proposal of modified MOC to address decusping more fundamentally
-\end{itemize}
+  
+  \begin{itemize}
+    \item Implementation of sub-plane scheme
+    \begin{itemize}
+      \item Captures sub-plane axial information for each 2D plane
+      \item Allows coarsening of axial mesh without runtime increase
+    \end{itemize}
+    \item New decusping methods
+    \begin{itemize}
+      \item Sub-plane scheme modified to use heterogeneous rodded/unrodded cross-sections
+      \item 1D Collision probabilities introduced to improve sub-plane cross-sections
+    \end{itemize}
+    \item Proposed work - ``sub-ray'' Method of Characteristics
+    \begin{itemize}
+      \item Modification to 2D MOC to resolve axial heterogeneities
+      \item Should resolve transport effects caused by partially inserted rods
+      \item Minimal runtime increase
+    \end{itemize}
+  \end{itemize}
 
 \end{frame}
 
