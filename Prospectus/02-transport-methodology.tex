@@ -81,7 +81,9 @@ We first define the multi-group flux, cross-sections, and chi distribution in Eq
 \Sigma_{x,g} \psi_g =  \intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right) dE \Rightarrow \Sigma_x,g = \frac{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) \Sigma_x\left(E\right)\ . dE}{\intop_{E_n}^{E_{n-1}} \psi\left(E\right) dE}
 \end{equation}
 \end{subequations}
-Using the definitions above, Equation \ref{e:ssboltzmann} can be operated on by $\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE$ to obtain the multi-group transport Equation \ref{e:multigroupboltzmann}.
+Using the definitions above, Equation \ref{e:ssboltzmann} can be operated on by 
+$\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE$ to obtain the multi-group 
+transport Equation \ref{e:multigroupboltzmann}.
 \begin{subequations}\label{e:multigroupboltzmann}
 \begin{dmath}
 {\bm \Omega \cdot \bm \nabla \psi_g + \Sigma_{t,g}\left(\bm x\right)\psi_g\left(\bm x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x,\bm \Omega' \rightarrow \bm \Omega\right) \psi_{g'}\left(\bm x,\bm \Omega'\right) d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \intop_{4\pi} \nu \Sigma_{f,g'}\left(\bm x\right) \psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega' + \frac{Q_g\left(\bm x\right)}{4\pi}}\ ,
@@ -203,16 +205,19 @@ One of the biggest challenges to solving the transport equation is angle depende
 The first scattering approximation that can be made is P$_N$ scattering.  To make this approximation, the $\bm\Omega'\cdot\bm\Omega$ is rewritten as a single angular variable $\mu_s$, the cosine between the incoming and outgoing scattering angles.  The scattering cross-section can then be expanded in terms of Legendre polynomials, defined by Equations \ref{e:LegendrePolynomials}.
 \begin{subequations}\label{e:LegendrePolynomials}
 \begin{equation}
-P_{n+1}\left(\bm x\right) = \frac{\left(2n+1\right)xP_n\left(\bm x\right) - nP_{n-1}\left(\bm x\right)}{n+1}\ ,
+P_{n+1}\left(\mu_s\right) = \frac{\left(2n+1\right)\mu_s P_n\left(\bm 
+\mu_s\right) - 
+nP_{n-1}\left(\mu_s\right)}{n+1}\ ,
 \end{equation}
 \begin{equation}
-P_0\left(\bm x\right) = 1\ ,
+P_0\left(\mu_s\right) = 1\ ,
 \end{equation}
 \begin{equation}
-P_1\left(\bm x\right) = x\ ,
+P_1\left(\mu_s\right) = \mu_s\ ,
 \end{equation}
 \begin{equation}
-\intop_{-1}^1 P_n\left(\bm x\right) P_m\left(\bm x\right) dx = \frac{2}{2n+1}\delta_{n,m}\ .
+\intop_{-1}^1 P_n\left(\mu_s\right) P_m\left(\mu_s\right) d\mu_s = 
+\frac{2}{2n+1}\delta_{n,m}\ .
 \end{equation}
 \end{subequations}
 
@@ -228,21 +233,43 @@ Equations \ref{e:PnScatteringExpansion} show the expansion of the scattering cro
 
 \subsubsection{Transport Correction}
 
-A second simplification of the scattering source that can be used is transport-corrected isotropic (TCP$_0$) scattering.  When using this approximation, the equation is solved using only the zeroth order term in \ref{e:PnScatteringExpansion}.  The cross-section data used to develop the multi-group scattering cross-sections is modified beforehand to still preserve some of the higher order scattering physics.
+A second simplification of the scattering source that can be used is 
+transport-corrected isotropic (TCP$_0$) scattering.  When using this 
+approximation, the equation is solved using only the zeroth order term in 
+\ref{e:PnScatteringExpansion}.  The cross-section data used to develop the 
+multi-group scattering cross-sections is modified beforehand to still preserve 
+some of the higher order scattering physics.
 
-Currently, the MPACT code uses \cite{MPACTTheoryManual} uses a combination of three transport-correction methods for its TCP$_0$ scattering treatments \cite{StimpsonAP1000ImprovedDiffCoeffs2015,Yee2016AnAnAnalyticDerivationofTransport-CorrectedP$_0$CrossSectionsandDiffusionCoefficients}.  The Neutron Leakage Conservation (NLC) method \cite{Herman2013ImproveddiffusioncoefficientsgeneratedfromMonteCarlocodes} is used for H-1; the nTRACER in-scatter method \cite{RyuIncorporationofanisotropicscatteringinnTRACER} is used for B-11, C-12, and O-16; and the out-scatter method \cite{YAMAMOTO2008SimplifiedTreatmentsofAnisotropicScatteringinLWRCoreCalculations} is used for all remaining isotopes.  The out-scatter approximation is defined as
+Currently, the MPACT code uses \cite{MPACTTheoryManual} uses a combination of 
+three transport-correction methods for its TCP$_0$ scattering treatments 
+\cite{StimpsonAP1000ImprovedDiffCoeffs2015,Yee2016AnAnAnalyticDerivationofTransport-CorrectedP$_0$CrossSectionsandDiffusionCoefficients}.
+  The Neutron Leakage Conservation (NLC) method 
+\cite{Herman2013ImproveddiffusioncoefficientsgeneratedfromMonteCarlocodes} is 
+used for H-1; the nTRACER in-scatter method 
+\cite{RyuIncorporationofanisotropicscatteringinnTRACER} is used for B-11, C-12, 
+and O-16; and the out-scatter method 
+\cite{YAMAMOTO2008SimplifiedTreatmentsofAnisotropicScatteringinLWRCoreCalculations}
+ is used for all remaining isotopes.  The out-scatter approximation is defined 
+as
 \begin{equation}\label{e:outscatterTCP0}
 \Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}\ .
 \end{equation}
 The in-scatter approximation is defined as
 \begin{equation}\label{e:inscatterTCP0}
-\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - \frac{1}{\phi_{1,g}}\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g} \phi_{1,g'}\ ,
+\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - 
+\frac{1}{\phi_{1,g}}\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g} \phi_{1,g'}\ ,
 \end{equation}
-where $\phi_{1,g}$ is the first moment of the angular flux.  Finally, the NLC correction is defined as follows:
+where $\phi_{1,g}$ is the first moment of the angular flux.  Finally, the NLC 
+correction is defined as follows:
 \begin{equation}\label{e:NLCTCP0}
-\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} + \frac{1}{3D_g} - \Sigma_{t,g}\ ,
+\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} + \frac{1}{3D_g} - 
+\Sigma_{t,g}\ ,
 \end{equation}
-where $D_g$ is a diffusion coefficient determined from leakage calculations in a 1D fixed-source transport calculation.  For each of these corrections, the same modification made to the self-scatter cross-sections in the above equations is also made to the total cross-section $\Sigma_{t,g}$ to obtain the transport cross-section $\Sigma_{tr,g}$.
+where $D_g$ is a diffusion coefficient determined from leakage calculations in 
+a 1D fixed-source transport calculation.  For each of these corrections, the 
+same modification made to the self-scatter cross-sections in the above 
+equations is also made to the total cross-section $\Sigma_{t,g}$ to obtain the 
+transport cross-section $\Sigma_{tr,g}$.
 
 \section{Numerical Methods}
 
@@ -474,7 +501,11 @@ To begin, the multi-group transport Equation \ref{e:multigroupboltzmann} can be 
 {q_g\left(\bm x, \bm \Omega\right)} = {\frac{1}{4\pi} \sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x, \bm \Omega ' \rightarrow \bm \Omega\right)\psi_{g'}\left(\bm x, \bm \Omega'\right) d\Omega '} + {\frac{1}{k_{eff}} \frac{\chi_g}{4\pi} \sum_{g'=1}^G \intop_{4\pi} \nu\Sigma_{f,g'}\left(\bm x\right)\psi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega'}\ .
 \end{dmath}
 \end{subequations}
-This form of the equation assumes no source of neutrons except scatter and fission.  It also assumes isotropic (or transport-corrected) scattering, implying that the CP method cannot resolve highly anisotropic scattering.  This gives way to a simplified isotropic source, shown in Equation \ref{e:CPisoSource}:
+This form of the equation assumes no source of neutrons except scatter and 
+fission.  It also assumes isotropic (or transport-corrected) scattering, 
+implying that the CP method cannot resolve highly anisotropic scattering.  This 
+gives way to a simplified isotropic source, shown in Equation 
+\ref{e:CPisoSource}:
 \begin{equation}\label{e:CPisoSource}
 {q_g\left(\bm x, \bm \Omega\right) \approx q_g\left(\bm x\right)} = {\frac{1}{4\pi}\sum_{g'=1}^G \Sigma_{s,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)}\ ,
 \end{equation}
@@ -489,4 +520,21 @@ Now the total source of neutrons in each region $r$ can be calculated by multipl
 \end{equation}
 Equation \ref{e:CPflux} gives the general solution to any problem using the CP method.  The only remaining work that must be done is to calculate the transport matrix $\underline{\underline{T_g}}$ for each group, which is done in detail for a pin cell in the appendix.
 
-Several important details about this method should be noted.  First, it is common to use a buffer region in the calculation.  When applying the CP method to a fuel pin, the buffer region is not necessary because the fuel pin has its own fission source to drive the problem.  However, when using this method on a different pin cell such as a control rod, it is useful to place a homogenized mixture of fuel and moderator around the outside of the pin cell.  This provides a source to drive the problem.  Second, because the calculation is a 1D radial calculation, the moderator region in the rectangular pin cell must be cylindricized.  This is done by transforming the moderator region into a ring with the same inner radius and volume as the rectangular moderator region.  Finally, the boundary conditions assumed on the edge of the problem are ``white'' boundary conditions.  A reflecting boundary condition assumes that all neutron exiting the problem return at the same energy and traveling in a reflected direction.  However, because the boundary of this problem is a circle, it is possible for a neutron to be born at such an angle that it continuously reflects off the boundary without ever traveling toward the fuel.  The white boundary condition takes all exiting neutrons and returns them isotropically to prevent this error.
+Several important details about this method should be noted.  First, it is 
+common to use a buffer region in the calculation.  When applying the CP method 
+to a fuel pin, the buffer region is not necessary because the fuel pin has its 
+own fission source to drive the problem.  However, when using this method on a 
+different pin cell such as a control rod, it is useful to place a homogenized 
+mixture of fuel and moderator around the outside of the pin cell.  This 
+provides a source to drive the problem.  Second, because the calculation is a 
+1D radial calculation, the moderator region in the rectangular pin cell must be 
+cylindricized.  This is done by transforming the moderator region into a ring 
+with the same inner radius and volume as the rectangular moderator region.  
+Finally, the boundary conditions assumed on the edge of the problem are 
+``white'' boundary conditions.  A reflecting boundary condition assumes that 
+all neutron exiting the problem return at the same energy and traveling in a 
+reflected direction.  However, because the boundary of this problem is a 
+circle, it is possible for a neutron to be born at such an angle that it 
+continuously reflects off the boundary without ever traveling toward the fuel.  
+The white boundary condition takes all exiting neutrons and returns them 
+isotropically to prevent this error.
