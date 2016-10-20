@@ -1,43 +1,62 @@
 \begin{frame}[t]{Background}
     
-\begin{figure}[h]
+\begin{itemize}
+  \item Direct 3D calculations are still usually too slow for most practical 
+  calculations
+  \item 2D/1D method was developed by researchers at Korea Atomic Energy 
+  Research Institute (KAERI) and implemented in DeCART 
+  \cite{3DHetWholeCoreTransPlanarMOC,DeCARTTheoryManual,MethodsAndPerformanceOfDecart}
+  \begin{itemize}
+    \item Decomposes problem into a stack of 2D planes
+    \item High-fidelity transport calculations used to solve 2D planes
+    \item Fast 1D calculations couple 2D planes together axially
+    \item Reactor geometry has most of its heterogeneity in the radial 
+    direction, so lower order calculations are acceptable in axial direction
+  \end{itemize}
+  \item University of Michigan (UM) developed DeCART for awhile, but decided to 
+  do a new 2D/1D implementation in MPACT \cite{MPACTTheoryManual}
+\end{itemize} 
+    
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{Background}
+  
+  \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{../figs/2d1d-subplane.png}
-    \caption[2D/1D Illustration]{The 2D/1D Method illustrated with the sub-plane scheme for the axial and CMFD calculations}
-\end{figure}    
-    
+  \end{figure}    
+  
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[t]{Radial Equations}
     
-\begin{subequations}
-    \begin{dmath}
-        {\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + \Omega_y\frac{\partial \psi_{g}^Z}{\partial y}} + {\Sigma_{t,g}\left(x,y\right)\psi_{g}^Z\left(x,y,\bm\Omega\right)} = {q_{g}^Z\left(x,y\right)} + {L_{g}^Z\left(x,y,\Omega_z\right)}
-    \end{dmath}
-    \begin{dmath}
-        {q_{g}^Z\left(x,y\right)} = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g'}^Z\left(x,y\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^Z\left(x,y\right)}{4\pi}}
-    \end{dmath}
-    \begin{align}
+    \begin{itemize}
+      \item Integrate transport equation axially from $z_{k-\frac{1}{2}}$ to 
+      $z_{k+\frac{1}{2}}$
+      \item Assume cross-sections are constant axially in region of integration
+    \end{itemize}
+    \begin{dmath*}
+        {\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + 
+        \Omega_y\frac{\partial \psi_{g}^Z}{\partial y}} + 
+        {\Sigma_{t,g}\left(x,y\right)\psi_{g}^Z\left(x,y,\bm\Omega\right)} = 
+        {q_{g}^Z\left(x,y,\bm \Omega\right)} + 
+        {L_{g}^Z\left(x,y,\Omega_z\right)}
+    \end{dmath*}
+    \begin{dmath*}
+        {q_{g}^Z\left(x,y,\bm \Omega\right)} = 
+        {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow 
+        g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'}
+         + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} 
+        \nu\Sigma_{f,g'}^Z\left(x,y\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'}
+         + {\frac{Q_{g}^Z\left(x,y\right)}{4\pi}}
+    \end{dmath*}
+    \begin{align*}
     L_{g}^Z\left(x,y,\Omega_z\right) &= \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k-\frac{1}{2}}} - \psi_{g,z_{k+\frac{1}{2}}}\right) \approx \frac{J_{g,z_{k-\frac{1}{2}}} - J_{g,z_{k+\frac{1}{2}}}}{4\pi\Delta z_k}
-    \end{align}
-\end{subequations}
-    
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}[t]{Axial Equations}
-    
-    \begin{subequations}\label{e:2D1DaxialEq}
-        \begin{dmath}
-            {\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + {\Sigma_{t,g}^{XY}\left(z\right)\psi_{g}^{XY}\left(z,\bm\Omega\right)} = q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) + {L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)}
-        \end{dmath}
-        \begin{dmath}
-            {q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = \frac{1}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \Sigma_{s,g'\rightarrow g}^{XY}\left(z,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^{XY}}{4\pi}\sum_{g'=1}^G\intop_{4\pi}\nu\Sigma_{f,g'}^{XY}\left(z\right)\psi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega' + \frac{Q_{g}^{XY}\left(z\right)}{4\pi}}
-        \end{dmath}
-    \end{subequations}
+    \end{align*}
     
 \end{frame}
 
@@ -45,17 +64,24 @@
 
 \begin{frame}[t]{Axial Equations}
 
-\begin{subequations}\label{e:2D1DaxialEq}
-    \begin{dmath}
-        {\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + {\Sigma_{t,g}^{XY}\left(z\right)\psi_{g}^{XY}\left(z,\bm\Omega\right)} = q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) + {L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)}
-    \end{dmath}
-    \begin{align}
-        L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) &= {\frac{\Omega_x}{\Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}} \left(\psi_{g,x_{i-\frac{1}{2}}}\left(y\right) - \psi_{g,x_{i+\frac{1}{2}}}\left(y\right) dy\right)} \nonumber\\ 
-        &+ {\frac{\Omega_y}{\Delta x_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \left(\psi_{g,y_{i-\frac{1}{2}}}\left(x\right) - \psi_{g,y_{i+\frac{1}{2}}}\left(x\right) dx\right)} \nonumber\\
-        &\approx {\frac{J_{g,x_{i-\frac{1}{2}},y_j} - J_{g,x_{i+\frac{1}{2}},y_j}}{4\pi\Delta x_i}} +
-        \frac{J_{g,x_i,y_{j-\frac{1}{2}}} - J_{g,x_i,y_{j+\frac{1}{2}}}}{4\pi\Delta y_j}
-    \end{align}
-\end{subequations}
+\begin{itemize}
+  \item Integrate transport equation over x from $x_{i-\frac{1}{2}}$ to 
+  $x_{i+\frac{1}{2}}$ and over y from $y_{j-\frac{1}{2}}$ to $y_{j+\frac{1}{2}}$
+  \item Assume cross-sections are constant radially in region of integration
+\end{itemize}
+\begin{dmath*}
+{\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + 
+{\Sigma_{t,g}^{XY}\left(z\right)\psi_{g}^{XY}\left(z,\bm\Omega\right)} = 
+q_{g}^{XY}\left(z,\bm\Omega\right) + 
+{L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)}
+\end{dmath*}
+\begin{equation*}
+L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) \approx 
+{\frac{J_{g,x_{i-\frac{1}{2}},y_j} - 
+  J_{g,x_{i+\frac{1}{2}},y_j}}{4\pi\Delta x_i}} +
+\frac{J_{g,x_i,y_{j-\frac{1}{2}}} - J_{g,x_i,y_{j+\frac{1}{2}}}}{4\pi\Delta 
+y_j}
+\end{equation*}
 
 \end{frame}
 
@@ -63,11 +89,32 @@
 
 \begin{frame}[t]{Calculation Flow}
 
-\begin{figure}[h]
+\begin{columns}
+  \begin{column}{0.6\textwidth}
+    \begin{itemize}
+      \item 3D CMFD
+      \begin{itemize}
+        \item Determines global flux shape to scale fine mesh solution
+        \item Calculates radial currents for 1D axial solver
+      \end{itemize}
+      \item 1D NEM-SP$_3$
+      \begin{itemize}
+        \item Calculates improved axial currents for 2D solver
+      \end{itemize}
+      \item 2D MOC
+      \begin{itemize}
+        \item Solves for fine mesh scalar flux
+        \item Calculates updated radial currents for CMFD calculation
+      \end{itemize}
+    \end{itemize}
+  \end{column}
+\begin{column}{0.4\textwidth}
+  \begin{figure}[h]
     \centering
-    \scalebox{0.4}{\input{../figs/2d1d-flowchart.tex}}
-    \caption{Calculation flow for 2D/1D scheme}\label{f:2d1d-flowchart}
-\end{figure}
+    \resizebox{!}{0.7\textheight}{\input{../figs/2d1d-flowchart.tex}}
+  \end{figure}
+\end{column}
+\end{columns}
 
 \end{frame}
 
@@ -75,23 +122,145 @@
 
 \begin{frame}[t]{Sub-Plane CMFD}
     
-    \begin{figure}[h]
+    \begin{columns}
+      \begin{column}{0.6\textwidth}
+        \begin{itemize}
+          \item Homogenize fine mesh
+          \begin{equation*}\scriptstyle
+          \phi_{g,i}^{CMFD,k} = \frac{\sum_{j=1}^{N_{fine}} 
+          \phi_{g,j}^{MOC,k-1} V_j^{MOC}}{\sum_{j=1}^{N_{fine}} V_j^{MOC}}
+          \end{equation*}
+          \begin{equation*}\scriptstyle
+          \Sigma_{x,g,i}^{CMFD,k} = \frac{\sum_{j=1}^{N_{fine}} 
+            \Sigma_{x,g,j}^{MOC,k-1} \phi_{g,j}^{MOC,k-1} 
+            V_j^{MOC}}{\sum_{j=1}^{N_{fine}} \phi_{g,j}^{MOC,k-1} V_j^{MOC}}
+          \end{equation*}
+          \begin{equation*}\scriptstyle
+          \chi_{g,i}^{CMFD,k} = \frac{\sum_{j=1}^{N_{fine}} 
+            \chi_{g,j}^{MOC,k-1} \nu\Sigma_{f,g,j}^{MOC,k-1} 
+            \phi_{g,j}^{MOC,k-1} 
+            V_j^{MOC}}{\sum_{j=1}^{N_{fine}} \nu\Sigma_{f,g,j}^{MOC,k-1} 
+            \phi_{g,j}^{MOC,k-1} V_j^{MOC}}
+          \end{equation*}
+        \end{itemize}
+      \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{figure}[h]
         \centering
-        \scalebox{0.4}{\input{../figs/CMFD-flowchart.tex}}
-        \caption{Calculation flow for 3D sub-plane CMFD}\label{f:CMFD-flowchart}
-    \end{figure}
+        \resizebox{!}{0.7\textheight}{\input{../figs/CMFD-flowchart.tex}}
+      \end{figure}
+  \end{column}
+  \end{columns}
     
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{Sub-Plane CMFD}
+
+\begin{columns}
+  \begin{column}{0.6\textwidth}
+    \begin{itemize}
+      \item Calculate $\hat{D}$ coupling coefficients
+      \begin{equation*}\scriptstyle
+      \tilde{D}_{g,s} = \frac{1}{3\left(\frac{\Delta 
+      x_p}{2}\Sigma_{tr,g,p}^{CMFD,k} + \frac{\Delta 
+      x_m}{2}\Sigma_{tr,g,m}^{CMFD,k}\right)}
+      \end{equation*}
+      \begin{equation*}\scriptstyle
+      \hat{D}_{g,s} = \frac{J_{g,s}^{MOC,k-1} + 
+      \tilde{D}_{g,s}\left(\phi_{g,p}^{CMFD,k} - 
+      \phi_{g,m}^{CMFD,k}\right)}{\left(\phi_{g,p}^{CMFD,k} + 
+      \phi_{g,m}^{CMFD,k}\right)}
+      \end{equation*}
+    \end{itemize}
+  \end{column}
+  \begin{column}{0.4\textwidth}
+    \begin{figure}[h]
+      \centering
+      \resizebox{!}{0.7\textheight}{\input{../figs/CMFD-flowchart.tex}}
+    \end{figure}
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{Sub-Plane CMFD}
+
+\begin{columns}
+  \begin{column}{0.6\textwidth}
+    \begin{itemize}
+      \item Project coarse mesh solution to fine mesh
+      \begin{equation*}\scriptstyle
+      \phi_{g,j}^{MOC,k} = c_{g,i}^k \phi_{g,j}^{MOC,k-1}
+      \end{equation*}
+      \begin{equation*}\scriptstyle
+      c_{g,i}^k = \frac{\phi_{g,i}^{CMFD,k}}{\phi_{g,i}^{CMFD,k-1}}
+      \end{equation*}
+    \end{itemize}
+  \end{column}
+  \begin{column}{0.4\textwidth}
+    \begin{figure}[h]
+      \centering
+      \resizebox{!}{0.7\textheight}{\input{../figs/CMFD-flowchart.tex}}
+    \end{figure}
+  \end{column}
+\end{columns}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[t]{1D SP$_3$-NEM}
     
-    \begin{figure}[h]
+    \begin{columns}
+      \begin{column}{0.6\textwidth}
+        \begin{itemize}
+          \item SP$_3$ used to handle angular shape
+          \begin{dmath*}\scriptstyle
+            {-\bm{\nabla} \cdot D_{0,g} \left(\bm x\right) \bm \nabla 
+            \Phi_{0,g}\left(\bm x\right) + \left[\Sigma_{tr,g}\left(\bm 
+            x\right) - \Sigma_{s0,g}\left(\bm 
+            x\right)\right]\Phi_{0,g}\left(\bm x\right)} = {Q_g\left(\bm 
+            x\right) + 2\left[\Sigma_{tr,g}\left(\bm x\right) - 
+            \Sigma_{s0,g}\left(\bm x\right)\right]\Phi_{2,g}\left(\bm 
+            x\right)}
+          \end{dmath*}
+          \begin{dmath*}\scriptstyle
+            {-\bm{\nabla} \cdot D_{2,g} \left(\bm x\right) \bm \nabla 
+            \Phi_{2,g}\left(\bm x\right) + \left[\Sigma_{tr,g}\left(\bm 
+            x\right) - \Sigma_{s2,g}\left(\bm 
+            x\right)\right]\Phi_{2,g}\left(\bm x\right)} = 
+            {\frac{2}{5}\left\lbrace \left[\Sigma_{tr,g}\left(\bm x\right) - 
+            \Sigma_{s0,g}\left(\bm x\right)\right]\left[\Phi_{0,g}\left(\bm 
+            x\right) - 2\Phi_{2,g}\left(\bm x\right)\right] - Q_g\left(\bm 
+            x\right) \right\rbrace}
+          \end{dmath*}
+          \item NEM used to handle spatial shape
+          \begin{equation*}\scriptstyle
+          Q\left(\xi\right) = \sum_{i=0}^2 q_i P_i\left(\xi\right)\ , \quad 
+          \phi\left(\xi\right) = \sum_{i=0}^4 \phi_i P_i\left(\xi\right)
+          \end{equation*}
+          \begin{equation*}\scriptstyle
+          \intop_{-1}^1 P_n\left(\xi\right) 
+          \left(-\frac{D}{h^2}\frac{d^2}{d\xi^2}\phi\left(\xi\right) + \Sigma_r 
+          \phi\left(\xi\right) - Q\left(\xi\right)\right)d\xi = 0,\ n=0,1,2
+          \end{equation*}
+          \begin{equation*}\scriptstyle
+          \phi_L\left(1\right) = \phi_R\left(-1\right)\ , \quad 
+          J_L\left(1\right) = J_R\left(-1\right)
+          \end{equation*}
+        \end{itemize}
+      \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{figure}[h]
         \centering
-        \scalebox{0.6}{\input{../figs/Axial-flowchart.tex}}
-        \caption{Calculation flow for 1D axial calculations in MPACT}\label{f:Axial-flowchart}
-    \end{figure}
+        \resizebox{!}{0.5\textheight}{\input{../figs/Axial-flowchart.tex}}
+      \end{figure}
+    \end{column}
+    \end{columns}
     
 \end{frame}
 
@@ -99,22 +268,34 @@
 
 \begin{frame}[t]{2D MOC}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{modular_rays.png}
-    \caption[Modular Ray Tracing]{Modular ray tracing depiction \cite{MPACTTheoryManual}}\label{e:ModRays}
-\end{figure}
+\begin{columns}
+  \begin{column}{0.6\textwidth}
+    content...
+  \end{column}
+  \begin{column}{0.4\textwidth}
+    \begin{figure}[h]
+      \centering
+      \includegraphics[width=\textwidth]{modular_rays.png}
+    \end{figure}
+  \end{column}
+\end{columns}
 
 \end{frame} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[t]{2D MOC}
-
-\begin{figure}[h]
-    \centering
-    \scalebox{0.5}{\input{../figs/MOC-flowchart.tex}}
-    \caption{Calculation flow for 2D MOC calculation in MPACT}\label{f:MOC-flowchart}
-\end{figure}
+  
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      content...
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{figure}[h]
+        \centering
+        \resizebox{!}{0.7\textheight}{\input{../figs/MOC-flowchart.tex}}
+      \end{figure}
+    \end{column}
+  \end{columns}
 
 \end{frame} 
