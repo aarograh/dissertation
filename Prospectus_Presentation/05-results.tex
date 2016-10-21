@@ -3,7 +3,12 @@
 \begin{columns}
     \begin{column}{0.5\textwidth}
         \begin{itemize}
-            \item 
+            \item Center 3x3 assembly cluster in Watts Bar Unit 1
+            \item AIC Control rod in center assembly placed at 257.9 cm
+            \item Test cases used 57 planes, with rod inserted 50\% into a plane
+            \item Reference used 58 planes, with extra plane boundary aligned 
+            with rod tip
+            \item All simulations used 1 core per plane
         \end{itemize}
     \end{column}
     \begin{column}{0.28\textwidth}
@@ -42,6 +47,10 @@
 
 \begin{frame}[t]{VERA Problem 5}
     
+    \begin{itemize}
+      \item Bank D inserted to 257.9 cm, other banks all out
+      \item 57 planes for tests and 58 for reference, 16 cores per plane
+    \end{itemize}
     \begin{figure}[h]
       \centering
       \includegraphics[width=0.9\textwidth]{WB1-cycle1-layout.png}
@@ -53,6 +62,22 @@
 
 \begin{frame}[t]{Problem 5 Results}
     
-    
+    \begin{table}[h]
+      \centering
+      \caption{VERA Problem 5 Decusping Results for Partially Rodded 
+      Plane}\label{t:p5decusp}
+      \resizebox{\textwidth}{!}{
+        \begin{tabular}{|c|c|c|c|c|c|c|}\hline
+          \multirow{2}{*}{Case} & k-eff & \multicolumn{2}{|c|}{Pin Power 
+          Differences} & \multicolumn{2}{|c|}{Iterations} & Runtime\\\cline{3-6}
+          & Difference (pcm) & RMS & Max & 2D/1D & CMFD & (Core-Hours) \\\hline
+          Reference         & --  & --     & --      & 13 & 481 & 362 \\\hline
+          No Treatment      & -22 & 6.90\% & 30.55\% & 13 & 523 & 411 \\\hline
+          Polynomial        & -5  & 1.15\% &  4.85\% & 13 & 463 & 374 \\\hline
+          Sub-plane         & -5  & 2.09\% & 10.20\% & 13 & 499 & 399 \\\hline
+          Sub-plane + 1D-CP & -1  & 0.50\% &  2.74\% & 13 & 529 & 426 \\\hline
+        \end{tabular}
+      }
+    \end{table}
     
 \end{frame}
