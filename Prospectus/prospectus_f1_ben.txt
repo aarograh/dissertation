@@ -1,0 +1,7 @@
+Notes from Ben
+
+Get rid of "dissertation" stuff on the title page
+Talk about TCP0 approximations before diffusion
+Just generically define diffusion coefficient in terms of transport cross-section,
+  then talk about how any of the TCP0 approximations can be used
+Move "in", "out" subscripts in MOC equations to superscripts
