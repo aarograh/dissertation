@@ -125,6 +125,81 @@ Applying this discretization to the multi-group transport Equation \ref{e:multig
 \end{equation}
 \end{subequations}
 
+\subsection{Scattering Approximations}
+
+One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.  To simplify the scattering cross-sections, there are two different types of approximations that can be made in MPACT.
+
+\subsubsection{P\textsubscript{N} Scattering}
+
+The first scattering approximation that can be made is P$_N$ scattering.  To make this approximation, the $\bm\Omega'\cdot\bm\Omega$ is rewritten as a single angular variable $\mu_s$, the cosine between the incoming and outgoing scattering angles.  The scattering cross-section can then be expanded in terms of Legendre polynomials, defined by Equations \ref{e:LegendrePolynomials}.
+\begin{subequations}\label{e:LegendrePolynomials}
+\begin{equation}
+P_{n+1}\left(\mu_s\right) = \frac{\left(2n+1\right)\mu_s P_n\left(\bm 
+    \mu_s\right) - 
+    nP_{n-1}\left(\mu_s\right)}{n+1}\ ,
+\end{equation}
+\begin{equation}
+P_0\left(\mu_s\right) = 1\ ,
+\end{equation}
+\begin{equation}
+P_1\left(\mu_s\right) = \mu_s\ ,
+\end{equation}
+\begin{equation}
+\intop_{-1}^1 P_n\left(\mu_s\right) P_m\left(\mu_s\right) d\mu_s = 
+\frac{2}{2n+1}\delta_{n,m}\ .
+\end{equation}
+\end{subequations}
+
+Equations \ref{e:PnScatteringExpansion} show the expansion of the scattering cross-section using Legendre polynomials.  Using more terms in the expansion improves the accuracy.  For most reactor problems, $N \le 3$ is sufficient.  Problems such as shielding and others may require many more terms to be kept to obtain sufficient accuracy.
+\begin{subequations}\label{e:PnScatteringExpansion}
+\begin{equation}
+\Sigma_s\left(\bm x,\mu_s\right) = \sum_{n=0}^N \frac{2n+1}{4\pi} P_n\left(\mu_s\right) \Sigma_{sn}\left(\bm x\right)\ ,
+\end{equation}
+\begin{equation}
+\Sigma_{s,n}\left(\bm x\right) = 2\pi\intop_{-1}^1 \Sigma_s\left(\bm x,\mu_s\right) P_n\left(\mu_s\right) d\mu_s\ .
+\end{equation}
+\end{subequations} 
+
+\subsubsection{Transport Correction}\label{sss:TCP0}
+
+A second simplification of the scattering source that can be used is 
+transport-corrected isotropic (TCP$_0$) scattering.  When using this 
+approximation, the equation is solved using only the zeroth order term in 
+\ref{e:PnScatteringExpansion}.  The cross-section data used to develop the 
+multi-group scattering cross-sections is modified beforehand to still preserve 
+some of the higher order scattering physics.
+
+Currently, the MPACT code uses \cite{MPACTTheoryManual} uses a combination of 
+three transport-correction methods for its TCP$_0$ scattering treatments 
+\cite{StimpsonAP1000ImprovedDiffCoeffs2015,Yee2016AnAnAnalyticDerivationofTransport-CorrectedP$_0$CrossSectionsandDiffusionCoefficients}.
+The Neutron Leakage Conservation (NLC) method 
+\cite{Herman2013ImproveddiffusioncoefficientsgeneratedfromMonteCarlocodes} is 
+used for H-1; the nTRACER in-scatter method 
+\cite{RyuIncorporationofanisotropicscatteringinnTRACER} is used for B-11, C-12, 
+and O-16; and the out-scatter method 
+\cite{YAMAMOTO2008SimplifiedTreatmentsofAnisotropicScatteringinLWRCoreCalculations}
+is used for all remaining isotopes.  The out-scatter approximation is defined 
+as
+\begin{equation}\label{e:outscatterTCP0}
+\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}\ .
+\end{equation}
+The in-scatter approximation is defined as
+\begin{equation}\label{e:inscatterTCP0}
+\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - 
+\frac{1}{\phi_{1,g}}\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g} \phi_{1,g'}\ ,
+\end{equation}
+where $\phi_{1,g}$ is the first moment of the angular flux.  Finally, the NLC 
+correction is defined as follows:
+\begin{equation}\label{e:NLCTCP0}
+\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} + \frac{1}{3D_g} - 
+\Sigma_{t,g}\ ,
+\end{equation}
+where $D_g$ is a diffusion coefficient determined from leakage calculations in 
+a 1D fixed-source transport calculation.  For each of these corrections, the 
+same modification made to the self-scatter cross-sections in the above 
+equations is also made to the total cross-section $\Sigma_{t,g}$ to obtain the 
+transport cross-section $\Sigma_{tr,g}$.
+
 \subsection{Diffusion Approximation}
 
 Another approximation that can be made to the angular dependence of the transport equation is the diffusion approximation.  To derive this approximation, we again begin with the multi-group transport equation from Equation \ref{e:multigroupboltzmann}.  First, we obtain the P$_1$ form of the equation by operating on it by $\intop\left(\cdot\right)d\Omega$ and $\intop\left(\cdot\right)\Omega_i d\Omega$.  To simplify these integrals, we make use of the following identities for integrating over $\bm\Omega$:
@@ -170,18 +245,18 @@ Applying this assumption and integrating, we obtain a coupled set of four equati
 \end{dmath}
 \end{subequations}
 
-Solving Equations \ref{e:P1transport-1st-x}-\ref{e:P1transport-1st-z} for the components of the current, we obtain the following expression:
+Solving Equations \ref{e:P1transport-1st-x}-\ref{e:P1transport-1st-z} for the components of the current, we obtain a relationship between the current and scalar flux, shown in Equation \ref{e:FicksLaw}.  Equation \ref{e:P1transport} naturally leads to the out-scatter approximation for the transport cross-section, but either of the other methods from section \ref{sss:TCP0} can be used instead.
 \begin{subequations}\label{e:FicksLaw}
 \begin{equation}\label{e:FicksLawCurrent}
-\bm J_g\left(\bm x\right) = -D_g\left(\bm x\right) \bm\nabla \phi_g\left(\bm x\right)\ ,
+\bm J_g\left(\bm x\right) = -\bm D_g\left(\bm x\right) \bm\nabla \phi_g\left(\bm x\right)\ ,
 \end{equation}
 \begin{equation}\label{e:FicksLawDiffConstant}
-D_g\left(\bm x\right) = \frac{1}{3}\left(\Sigma_{t,g}-\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\left(\bm x\right)\right)^{-1}\ .
+\bm D_g\left(\bm x\right) = \frac{1}{3}\left(\Sigma_{tr,g}\right)^{-1}\ .
 \end{equation}
 \end{subequations}
 Substituting \ref{e:FicksLawCurrent} into \ref{e:P1transport-0th} gives us the diffusion form of the transport equation, which has only the scalar flux $\phi$ and eigenvalue $\frac{1}{k_{eff}}$ as unknowns:
 \begin{dmath}\label{e:DiffusionEquation}
--\bm\nabla \cdot D_g\left(\bm x\right) \bm \nabla\phi_g\left(\bm x\right) + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)\ .
+-\bm\nabla \cdot \bm D_g\left(\bm x\right) \bm \nabla\phi_g\left(\bm x\right) + \Sigma_{t,g}\left(\bm x\right)\phi_g\left(\bm x\right) = {\sum_{g'=1}^G \Sigma_{s0,g'\rightarrow g}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + {\frac{1}{k_{eff}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \nu\Sigma_{f,g'}\left(\bm x\right)\phi_{g'}\left(\bm x\right)} + Q_g\left(\bm x\right)\ .
 \end{dmath}
 
 To derive boundary conditions, Equation \ref{e:multigroupboltzmannBC} is used, making the same linear anisotropy assumption as in the derivation of the diffusion equation itself:
@@ -193,83 +268,8 @@ To derive boundary conditions, Equation \ref{e:multigroupboltzmannBC} is used, m
 \end{align}
 This is the Marshak boundary condition, which preserves the total incident flux at every point on the boundary of the system while assuming linear anisotropy.  This boundary condition can be further simplified so that the only unknown is the scalar flux $\phi_g$ by substituting Equation \ref{e:FicksLawCurrent}:
 \begin{equation}\label{e:DiffusionEquationBC}
-\frac{1}{4} \phi_g\left(\bm x_b\right) + \frac{D_g\left(\bm x\right)}{2} \bm \cdot \bm \nabla \phi_g\left(\bm x_b\right) = J^-\left(\bm x_b\right)\ .
+\frac{1}{4} \phi_g\left(\bm x_b\right) + \frac{\bm D_g\left(\bm x\right)}{2} \bm \cdot \bm \nabla \phi_g\left(\bm x_b\right) = J^-\left(\bm x_b\right)\ .
 \end{equation}
-
-\subsection{Scattering Approximations}
-
-One of the biggest challenges to solving the transport equation is angle dependence of the scattering cross-sections and angular flux.  To simplify the scattering cross-sections, there are two different types of approximations that can be made in MPACT.
-
-\subsubsection{P\textsubscript{N} Scattering}
-
-The first scattering approximation that can be made is P$_N$ scattering.  To make this approximation, the $\bm\Omega'\cdot\bm\Omega$ is rewritten as a single angular variable $\mu_s$, the cosine between the incoming and outgoing scattering angles.  The scattering cross-section can then be expanded in terms of Legendre polynomials, defined by Equations \ref{e:LegendrePolynomials}.
-\begin{subequations}\label{e:LegendrePolynomials}
-\begin{equation}
-P_{n+1}\left(\mu_s\right) = \frac{\left(2n+1\right)\mu_s P_n\left(\bm 
-\mu_s\right) - 
-nP_{n-1}\left(\mu_s\right)}{n+1}\ ,
-\end{equation}
-\begin{equation}
-P_0\left(\mu_s\right) = 1\ ,
-\end{equation}
-\begin{equation}
-P_1\left(\mu_s\right) = \mu_s\ ,
-\end{equation}
-\begin{equation}
-\intop_{-1}^1 P_n\left(\mu_s\right) P_m\left(\mu_s\right) d\mu_s = 
-\frac{2}{2n+1}\delta_{n,m}\ .
-\end{equation}
-\end{subequations}
-
-Equations \ref{e:PnScatteringExpansion} show the expansion of the scattering cross-section using Legendre polynomials.  Using more terms in the expansion improves the accuracy.  For most reactor problems, $N \le 3$ is sufficient.  Problems such as shielding and others may require many more terms to be kept to obtain sufficient accuracy.
-\begin{subequations}\label{e:PnScatteringExpansion}
-\begin{equation}
-\Sigma_s\left(\bm x,\mu_s\right) = \sum_{n=0}^N \frac{2n+1}{4\pi} P_n\left(\mu_s\right) \Sigma_{sn}\left(\bm x\right)\ ,
-\end{equation}
-\begin{equation}
-\Sigma_{s,n}\left(\bm x\right) = 2\pi\intop_{-1}^1 \Sigma_s\left(\bm x,\mu_s\right) P_n\left(\mu_s\right) d\mu_s\ .
-\end{equation}
-\end{subequations} 
-
-\subsubsection{Transport Correction}
-
-A second simplification of the scattering source that can be used is 
-transport-corrected isotropic (TCP$_0$) scattering.  When using this 
-approximation, the equation is solved using only the zeroth order term in 
-\ref{e:PnScatteringExpansion}.  The cross-section data used to develop the 
-multi-group scattering cross-sections is modified beforehand to still preserve 
-some of the higher order scattering physics.
-
-Currently, the MPACT code uses \cite{MPACTTheoryManual} uses a combination of 
-three transport-correction methods for its TCP$_0$ scattering treatments 
-\cite{StimpsonAP1000ImprovedDiffCoeffs2015,Yee2016AnAnAnalyticDerivationofTransport-CorrectedP$_0$CrossSectionsandDiffusionCoefficients}.
-  The Neutron Leakage Conservation (NLC) method 
-\cite{Herman2013ImproveddiffusioncoefficientsgeneratedfromMonteCarlocodes} is 
-used for H-1; the nTRACER in-scatter method 
-\cite{RyuIncorporationofanisotropicscatteringinnTRACER} is used for B-11, C-12, 
-and O-16; and the out-scatter method 
-\cite{YAMAMOTO2008SimplifiedTreatmentsofAnisotropicScatteringinLWRCoreCalculations}
- is used for all remaining isotopes.  The out-scatter approximation is defined 
-as
-\begin{equation}\label{e:outscatterTCP0}
-\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - \sum_{g'=1}^G \Sigma_{s1,g\rightarrow g'}\ .
-\end{equation}
-The in-scatter approximation is defined as
-\begin{equation}\label{e:inscatterTCP0}
-\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - 
-\frac{1}{\phi_{1,g}}\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g} \phi_{1,g'}\ ,
-\end{equation}
-where $\phi_{1,g}$ is the first moment of the angular flux.  Finally, the NLC 
-correction is defined as follows:
-\begin{equation}\label{e:NLCTCP0}
-\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} + \frac{1}{3D_g} - 
-\Sigma_{t,g}\ ,
-\end{equation}
-where $D_g$ is a diffusion coefficient determined from leakage calculations in 
-a 1D fixed-source transport calculation.  For each of these corrections, the 
-same modification made to the self-scatter cross-sections in the above 
-equations is also made to the total cross-section $\Sigma_{t,g}$ to obtain the 
-transport cross-section $\Sigma_{tr,g}$.
 
 \section{Numerical Methods}
 
