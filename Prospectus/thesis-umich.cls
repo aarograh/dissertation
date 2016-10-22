@@ -362,16 +362,19 @@
    \insertauthor \\ %
    % More rubber space
    \vfill %
-   % Text from guidelines
-   A dissertation submitted in partial fulfillment \\ %
-   of the requirements for the degree of \\ %
-   % Name of degree
-   \insertdegree \\ %
-   % Department
-   (\insertdepartment) \\ %
-   in the University of Michigan \\ %
-   % Year of completion
-   \number\year %
+   % Just use "Ph.D. Prospectus" as per Ben's suggestion
+   Ph.D. Prospectus \\ %
+   October, 2016 %
+%   % Text from guidelines
+%   A dissertation submitted in partial fulfillment \\ %
+%   of the requirements for the degree of \\ %
+%   % Name of degree
+%   \insertdegree \\ %
+%   % Department
+%   (\insertdepartment) \\ %
+%   in the University of Michigan \\ %
+%   % Year of completion
+%   \number\year %
   \end{center} %
   % More rubber space
   \vfill %
