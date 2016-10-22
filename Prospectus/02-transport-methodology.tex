@@ -312,25 +312,25 @@ giving the following solution:
 \begin{dmath}\label{e:MOCexact}
 {\psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) = \psi_{g,n}\left(\bm r_0\right)\exp{\left(-\intop_0^s \Sigma_{t,g}\left(\bm r_0 + s'\bm\Omega_n\right)ds'\right)}} + {\intop_0^s q_{g,n}\left(\bm r_0 + s'\bm\Omega_n\right)\exp{\left(-\intop_0^{s'} \Sigma_{t,g}\left(\bm r_0 + s''\bm\Omega_n\right)ds''\right)}ds'}\ .
 \end{dmath}
-Now if $\bm r_0$ is on the boundary of the region of interest, the incoming flux $\psi\left(\bm r_0,E,\bm \Omega\right)$ is equal to the specified boundary condition $\psi_{in}$.  This allows the angular flux to be calculated at any point $s$ to be calculated along the characteristic direction $\bm r$.
+Now if $\bm r_0$ is on the boundary of the region of interest, the incoming flux $\psi\left(\bm r_0,E,\bm \Omega\right)$ is equal to the specified boundary condition $\psi^{in}$.  This allows the angular flux to be calculated at any point $s$ to be calculated along the characteristic direction $\bm r$.
 
 Up to this point, no approximations have been made in deriving the method of characteristics.  One approximation that is necessary to use MOC for practical problems is to assume some spatial shape for the source term $q$.  The simplest of these is the flat source approximation.  In this approximation, $q$ is assumed to be flat along $\bm r$.  Additionally, it is assumed that the cross-sections along each segment of the ray will be constant.  This simplifies Equation \ref{e:MOCexact} to the following:
 \begin{align}\label{e:MOCflatsource}
 \psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) &= \psi_{g,n}\left(\bm r_0\right)e^{-\intop_0^s \Sigma_{t,g} ds'} + \intop_0^s q_{g,n}e^{-\intop_0^{s'} \Sigma_{t,g}ds''}ds' \nonumber\\
- &= \psi_{in}e^{-\Sigma_{t,g} s} + \intop_0^s q_{g,n} e^{-\Sigma_{t,g} s'} ds' \nonumber \\
- &= \psi_{in}e^{-\Sigma_{t,g} s} + \frac{q_{g,n}}{\Sigma_{t,g}}\left(1 - e^{-\Sigma_{t,g}s}\right)\ .
+ &= \psi^{in}e^{-\Sigma_{t,g} s} + \intop_0^s q_{g,n} e^{-\Sigma_{t,g} s'} ds' \nonumber \\
+ &= \psi^{in}e^{-\Sigma_{t,g} s} + \frac{q_{g,n}}{\Sigma_{t,g}}\left(1 - e^{-\Sigma_{t,g}s}\right)\ .
 \end{align}
 
 For a segment of length $A$ beginning on the boundary of region $i$, traveling in direction $n$ along track $j$, Equation \ref{e:MOCflatsource} allows us to solve for the outgoing angular flux at the end of track $j$ (\ref{e:MOCoutgoingFlux}), as well as the average angular flux along the characteristic direction for a specific track $j$ (\ref{e:MOCavgFlux}).
 \begin{subequations}
 \begin{equation}\label{e:MOCoutgoingFlux}
-\psi_{out,g,i,n,j} = \psi_{g}\left(\bm r_0 + A_j\bm\Omega_n\right) = \psi_{in,g,i,n,j}e^{-\Sigma_{t,g,i} A_j} + \frac{q_{g,i,n}}{\Sigma_{t,g,i}}\left(1 - e^{-\Sigma_{t,g,i}A_j}\right)\ ,
+\psi^{out}_{g,i,n,j} = \psi_{g}\left(\bm r_0 + A_j\bm\Omega_n\right) = \psi^{in}_{g,i,n,j}e^{-\Sigma_{t,g,i} A_j} + \frac{q_{g,i,n}}{\Sigma_{t,g,i}}\left(1 - e^{-\Sigma_{t,g,i}A_j}\right)\ ,
 \end{equation}
 \begin{align}\label{e:MOCavgFlux}
 \overline{\psi}_{g,i,n,j} &= \frac{\intop_0^{A_j} \psi_{g}\left(\bm r_0 + s\bm\Omega_n\right) ds}{\intop_0^{A_j} ds} \nonumber\\
- &= \frac{1}{A_j}\intop_0^{A_j} \psi_{in,g,i,n,j}e^{-\Sigma_{t,g,i}s} + \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\left(1-e^{-\Sigma_{t,g,i}s}\right) ds \nonumber \\
- &= \frac{1}{A_j}\intop_0^{A_j} \frac{q_{g,n,i}}{\Sigma_{t,g,i}} + \left(\psi_{in,g,i,n,j} - \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right)e^{-\Sigma_{t,g,i}s} ds \nonumber \\
- &= \frac{q_{g,n,i}}{\Sigma_{t,g,i}} + \frac{1}{A_j\Sigma_{t,g,i}}\left(\psi_{in,g,i,n,j} - \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right)\left(1 - e^{-\Sigma_{t,g,i} A_j}\right)\ .
+ &= \frac{1}{A_j}\intop_0^{A_j} \psi^{in}_{g,i,n,j}e^{-\Sigma_{t,g,i}s} + \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\left(1-e^{-\Sigma_{t,g,i}s}\right) ds \nonumber \\
+ &= \frac{1}{A_j}\intop_0^{A_j} \frac{q_{g,n,i}}{\Sigma_{t,g,i}} + \left(\psi^{in}_{g,i,n,j} - \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right)e^{-\Sigma_{t,g,i}s} ds \nonumber \\
+ &= \frac{q_{g,n,i}}{\Sigma_{t,g,i}} + \frac{1}{A_j\Sigma_{t,g,i}}\left(\psi^{in}_{g,i,n,j} - \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right)\left(1 - e^{-\Sigma_{t,g,i} A_j}\right)\ .
 \end{align}
 \end{subequations}
 If the transport cross-section is constant along $s$ for the region of interest, then the only approximation that has been made in this derivation is that the source is constant.  It is possible to assume higher order shapes for the source (linear, quadratic, etc.) to improve the accuracy of MOC \cite{HighOrderMOC2DUnstructuredMeshes2009}, but these will not be discussed here.
