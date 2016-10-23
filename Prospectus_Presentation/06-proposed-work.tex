@@ -38,25 +38,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[t]{Fixed Total Source}
-    
-    \begin{figure}[H]
-      \centering
-      \includegraphics[width=0.7\textwidth]{../figs/1dmoc-50mix-fixedscat-scalflux7.png}
-      \caption{Group 7 scalar flux comparisons for a fixed fission and scattering source calculation}\label{f:1dmoc-fixed-50-scalflux7}
-    \end{figure}
-    
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}[t]{Fixed Total Source}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{../figs/1dmoc-50mix-fixedscat-angflux1.png}
 \end{figure}
 \begin{itemize}
-  \item Fast flux differences build up
+  \item Fast flux differences are small but build up
 \end{itemize}
 
 \end{frame}
@@ -70,8 +58,20 @@
   \includegraphics[width=0.6\textwidth]{../figs/1dmoc-50mix-fixedscat-angflux7.png}
 \end{figure}
 \begin{itemize}
-  \item Thermal flux differences dissipate quickly
+  \item Thermal flux differences are large but dissipate quickly
 \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{Fixed Total Source}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../figs/1dmoc-50mix-fixedscat-scalflux7.png}
+    \caption{Group 7 scalar flux comparisons for a fixed fission and scattering source calculation}\label{f:1dmoc-fixed-50-scalflux7}
+\end{figure}
 
 \end{frame}
 
@@ -179,9 +179,21 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[t]{Discussion}
+\begin{frame}[t]{1D MOC Summary}
     
-    
+    \begin{itemize}
+        \item Fixed total source
+        \begin{itemize}
+            \item Differences between rodded and unrodded thermal flux are only significant in partially rodded cell
+            \item Fast fluxes differences are small, but last much longer
+        \end{itemize}
+        \item Fixed fission source
+        \begin{itemize}
+            \item Scattering source in neighboring pins changes significantly depending on partially rodded cell
+            \item If angular flux exiting partially rodded cells is treated, neighboring pin cells will not be affected by cusping
+            \item Need to capture difference between rodded and unrodded angular flux
+        \end{itemize}
+    \end{itemize}
     
 \end{frame}
 
@@ -189,6 +201,17 @@
 
 \begin{frame}[t]{Sub-Ray MOC Method}
     
-    
+    \begin{itemize}
+        \item Perform standard 2D MOC calculations in pin cells with no cusping effects
+        \item For partially rodded pin cells, use multiple ``sub-rays'' to capture partially rodded effects
+        \begin{itemize}
+            \item Use sub-planes to determine sources for rodded and unrodded regions
+            \item Determine angular flux with rodded cross-section and source; repeat with unrodded values
+            \item Average rodded and unrodded angular flux for each ray segment
+        \end{itemize}
+        \item Angular flux exiting pin cell will prevent cusping effects in neighboring cells
+        \item Currents used for sub-plane CMFD $\hat{D}$ can be calculated using explicit rodded and unrodded angular fluxes
+        \item Sub-rays could be used for other reactor components such as spacer grids, burnable poison inserts, etc.
+    \end{itemize}
     
 \end{frame}
