@@ -189,7 +189,7 @@ y_j}
     \begin{columns}
       \begin{column}{0.6\textwidth}
         \begin{itemize}
-          \item SP$_3$ used to handle angular shape
+          \item SP$_3$ \cite{SPnEquations} used to handle angular shape 
           \begin{dmath*}\scriptstyle
             {-\bm{\nabla} \cdot D_{0,g} \left(\bm x\right) \bm \nabla 
             \Phi_{0,g}\left(\bm x\right) + \left[\Sigma_{tr,g}\left(\bm 
@@ -209,7 +209,7 @@ y_j}
             x\right) - 2\Phi_{2,g}\left(\bm x\right)\right] - Q_g\left(\bm 
             x\right) \right\rbrace}
           \end{dmath*}
-          \item NEM used to handle spatial shape
+          \item NEM \cite{finnemann1977RodCuspingOrigMention} used to handle spatial shape
           \begin{equation*}\scriptstyle
           Q\left(\xi\right) = \sum_{i=0}^2 q_i P_i\left(\xi\right)\ , \quad 
           \phi\left(\xi\right) = \sum_{i=0}^4 \phi_i P_i\left(\xi\right)
@@ -280,7 +280,7 @@ y_j}
       \begin{columns}
         \begin{column}{0.6\textwidth}
       \begin{align*}\scriptstyle
-      \psi_{out,g,i,n,j} &\scriptstyle = \psi_{in,g,i,n,j}e^{-\Sigma_{t,g,i} 
+      \psi^{out}_{g,i,n,j} &\scriptstyle = \psi^{in}_{g,i,n,j}e^{-\Sigma_{t,g,i} 
       L_j} 
       \\\scriptstyle
       &\scriptstyle + \frac{q_{g,i,n}}{\Sigma_{t,g,i}}\left(1 - 
@@ -289,7 +289,7 @@ y_j}
       \frac{q_{g,n,i}}{\Sigma_{t,g,i}} 
       \\\scriptstyle
       &\scriptstyle + \frac{1 - e^{-\Sigma_{t,g,i} 
-          L_j}}{L_j\Sigma_{t,g,i}}\left(\psi_{in,g,i,n,j} - 
+          L_j}}{L_j\Sigma_{t,g,i}}\left(\psi^{in}_{g,i,n,j} - 
       \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right) \\\scriptstyle
       \overline{\psi}_{g,i,n} &\scriptstyle = \frac{\sum_j 
       \overline{\psi}_{g,i,n,j} \delta x A_j}{\sum_j \delta x A_j}
