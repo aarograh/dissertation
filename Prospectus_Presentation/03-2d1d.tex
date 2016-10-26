@@ -37,7 +37,7 @@
     \begin{itemize}
       \item Average transport equation axially from $z_{k-\frac{1}{2}}$ to 
       $z_{k+\frac{1}{2}}$
-      \item Assume cross-sections are constant axially in region of integration
+      \item Assume cross-sections are axially constant in region of integration
     \end{itemize}
     \begin{dmath*}
         {\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + 
@@ -67,7 +67,7 @@
 \begin{itemize}
   \item Average transport equation over x from $x_{i-\frac{1}{2}}$ to 
   $x_{i+\frac{1}{2}}$ and over y from $y_{j-\frac{1}{2}}$ to $y_{j+\frac{1}{2}}$
-  \item Assume cross-sections are constant radially in region of integration
+  \item Assume cross-sections are radially constant in region of integration
 \end{itemize}
 \begin{dmath*}
 {\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + 
@@ -125,6 +125,7 @@ y_j}
     \begin{columns}
       \begin{column}{0.6\textwidth}
         \begin{itemize}
+          \item Diffusion-based acceleration
           \item Homogenize fine mesh flux, cross-sections, $\chi$ into coarse 
           mesh cells
           \item Calculate $\hat{D}$ coupling coefficients
@@ -165,7 +166,7 @@ y_j}
         \item Calculate shaping factor for each sub-plane cell based on 
         previous solution
         \item Apply shaping factor to fine mesh fluxes during homogenization
-        \item Flux and $\phi$ have axial shape; cross-sections are axially 
+        \item $\phi$ and $\chi$ have axial shape; cross-sections are axially 
         constant
       \end{itemize}
       \item Calculate $\hat{D}$ for entire MOC plane; apply to all sub-planes
@@ -292,7 +293,7 @@ y_j}
           L_j}}{L_j\Sigma_{t,g,i}}\left(\psi^{in}_{g,i,n,j} - 
       \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right) \\\scriptstyle
       \overline{\psi}_{g,i,n} &\scriptstyle = \frac{\sum_j 
-      \overline{\psi}_{g,i,n,j} \delta x A_j}{\sum_j \delta x A_j}
+      \overline{\psi}_{g,i,n,j} \delta x L_j}{\sum_j \delta x L_j}
       \end{align*}
     \end{column}
   \begin{column}{0.4\textwidth}
@@ -315,8 +316,8 @@ y_j}
         \item Perform ray tracing and store segment information up front
         \item Set up scattering, fission, and axial transverse leakage sources
         \begin{itemize}
+            \item Multi-group sweeping
           \item 1-group sweeping
-          \item Multi-group sweeping
         \end{itemize}
         \item Parallel Decomposition
         \begin{itemize}
