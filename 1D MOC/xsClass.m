@@ -13,6 +13,8 @@ classdef xsClass < handle
         fission
         chi
         scatter % Scatter from column into row
+        nsubxs=0
+        subxs
     end
     
     methods

@@ -20,6 +20,9 @@ classdef inputClass < handle
         conv_crit=[0, 0]
         verbose=false
         cmfd
+        nmixtures=0
+        mixtures
+        mixvoles
     end
     
     methods

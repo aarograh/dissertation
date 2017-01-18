@@ -72,6 +72,29 @@ classdef xsLibraryClass < handle
             end
             
             obj.closefile( );
+            
+            i=obj.nsets;
+            for j=1:input.nmixtures
+                i=i+1;
+                obj.xsSets(i).nsubxs = 0;
+                for k=1:length(input.mixtures(j,:))
+                    if input.mixtures(j,k) == 0
+                        break
+                    else
+                        obj.xsSets(i).nsubxs = obj.xsSets(i).nsubxs + 1;
+                        obj.xsSets(i).subxs(k) = obj.xsSets(i);
+                    end
+                end
+                obj.mix( i, input.mixvols );
+            end
+        end
+        
+        function obj = mix( obj, imix, volumes )
+            %MIX Mixes sub-cross-sections
+            %   obj     - the xsLibraryClass object
+            %   imix    - the index of the mixture being set up
+            %   volumes - the volumes of the materials being mixed
+            
         end
         
         function obj = openfile( obj, filename )
