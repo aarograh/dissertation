@@ -21,6 +21,10 @@ input.pinmesh = [ 15 2 15;
     15 2 15;
     15 2 15;
     15 2 15];
+% Mixtures
+input.nmixtures = 1;
+input.mixtures = [6, 1, 5];
+input.mixvols = [0.5, 0.5];
 % Quadrature
 input.npol = 32;
 % XS Library Info

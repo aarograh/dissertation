@@ -11,7 +11,7 @@ input.diag = 0; % flat to indicate whether pin moves through narrow (0) or wide 
 input.pinmats = [4, 2, 1; % Fuel
     5, 2, 1; % Control Rod
     1, 2, 1; % Guide Tube
-    7, 2, 1]; % 25-75 Mixture
+    6, 2, 1]; % 25-75 Mixture
 
 input.radii = [ 0.4096, 0.475;
     0.4, 0.475;
@@ -21,6 +21,10 @@ input.pinmesh = [ 15 2 15;
     15 2 15;
     15 2 15;
     15 2 15];
+% Mixtures
+input.nmixtures = 1;
+input.mixtures = [6, 1, 5];
+input.mixvols = [0.75, 0.25];
 % Quadrature
 input.npol = 32;
 % XS Library Info
