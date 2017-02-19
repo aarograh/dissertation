@@ -73,28 +73,68 @@ classdef xsLibraryClass < handle
             
             obj.closefile( );
             
-            i=obj.nsets;
             for j=1:input.nmixtures
-                i=i+1;
-                obj.xsSets(i).nsubxs = 0;
-                for k=1:length(input.mixtures(j,:))
+                id = input.mixtures(j,1);
+                name = sprintf('Mixture ');
+                for k=2:length(input.mixtures(j,:))
                     if input.mixtures(j,k) == 0
                         break
                     else
-                        obj.xsSets(i).nsubxs = obj.xsSets(i).nsubxs + 1;
-                        obj.xsSets(i).subxs(k) = obj.xsSets(i);
+                        if k > 2
+                            name = sprintf('%s;',name);
+                        end
+                        name = sprintf('%s %0.3f%% %s',name,input.mixvols(j,k-1),...
+                            obj.xsSets(input.mixtures(j,k)).name);
                     end
                 end
-                obj.mix( i, input.mixvols );
+                obj.xsSets(id) = xsClass(name);
+                obj.xsSets(id).nsubxs = 0;
+                obj.xsSets(id).subxs = xsClass();
+                for k=2:length(input.mixtures(j,:))
+                    if input.mixtures(j,k) == 0
+                        break
+                    else
+                        obj.xsSets(id).nsubxs = obj.xsSets(id).nsubxs + 1;
+                        obj.xsSets(id).subxs(k-1) = obj.xsSets(input.mixtures(j,k));
+                    end
+                end
+                obj.xsSets(id).subfracs = input.mixvols(j,:);
+                obj.mix( id );
             end
         end
         
-        function obj = mix( obj, imix, volumes )
+        function obj = mix( obj, imix )
             %MIX Mixes sub-cross-sections
             %   obj     - the xsLibraryClass object
             %   imix    - the index of the mixture being set up
-            %   volumes - the volumes of the materials being mixed
             
+            % Initialize cross-sections and get scattering order
+            obj.xsSets(imix).scatOrder = max(obj.xsSets(imix).subxs.scatOrder);
+            obj.xsSets(imix).total(1:obj.ngroups) = 0;
+            obj.xsSets(imix).transport(1:obj.ngroups) = 0;
+            obj.xsSets(imix).absorption(1:obj.ngroups) = 0;
+            obj.xsSets(imix).nufission(1:obj.ngroups) = 0;
+            obj.xsSets(imix).fission(1:obj.ngroups) = 0;
+            obj.xsSets(imix).chi(1:obj.ngroups) = 0;
+            obj.xsSets(imix).scatter(1:obj.ngroups,1:obj.ngroups, ...
+                obj.xsSets(imix).scatOrder+1) = 0;
+            for i=1:obj.xsSets(imix).nsubxs
+                
+                obj.xsSets(imix).total = obj.xsSets(imix).total + ...
+                    obj.xsSets(imix).subfracs(i)*obj.xsSets(imix).subxs(i).total;
+                obj.xsSets(imix).transport = obj.xsSets(imix).transport + ...
+                    obj.xsSets(imix).subfracs(i)*obj.xsSets(imix).subxs(i).transport;
+                obj.xsSets(imix).absorption = obj.xsSets(imix).absorption + ...
+                    obj.xsSets(imix).subfracs(i)*obj.xsSets(imix).subxs(i).absorption;
+                obj.xsSets(imix).nufission = obj.xsSets(imix).nufission + ...
+                    obj.xsSets(imix).subfracs(i)*obj.xsSets(imix).subxs(i).nufission;
+                obj.xsSets(imix).fission = obj.xsSets(imix).fission + ...
+                    obj.xsSets(imix).subfracs(i)*obj.xsSets(imix).subxs(i).fission;
+                obj.xsSets(imix).chi = obj.xsSets(imix).chi + ...
+                    obj.xsSets(imix).subfracs(i)*obj.xsSets(imix).subxs(i).chi;
+                obj.xsSets(imix).scatter = obj.xsSets(imix).scatter + ...
+                    obj.xsSets(imix).subfracs(i)*obj.xsSets(imix).subxs(i).scatter;
+            end
         end
         
         function obj = openfile( obj, filename )

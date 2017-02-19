@@ -22,7 +22,7 @@ classdef inputClass < handle
         cmfd
         nmixtures=0
         mixtures
-        mixvoles
+        mixvols
     end
     
     methods

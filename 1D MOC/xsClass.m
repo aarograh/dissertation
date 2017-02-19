@@ -15,6 +15,7 @@ classdef xsClass < handle
         scatter % Scatter from column into row
         nsubxs=0
         subxs
+        subfracs
     end
     
     methods
@@ -23,8 +24,12 @@ classdef xsClass < handle
             %   name  - name of the XS set
             %   order - Scattering order for the xsSet
             
-            obj.name = name;
-            obj.scatOrder = order;
+            if exist('name')
+                obj.name = name;
+            end
+            if exist('order')
+                obj.scatOrder = order;
+            end
             
         end
         
