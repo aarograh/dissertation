@@ -7,11 +7,12 @@ linS = {'-',':','--'};
 
 % Angular Flux Plots
 ipol=input.npol/2;
+isubmesh=1;
 for igroup=1:fssSolver(1).xsLib.ngroups
     figure(igroup);
     hold on;
     tmp = 0;
-    tmpflux=zeros(length(fssSolver(1).solution.angflux(1,igroup,ipol,:)),1);
+    tmpflux=zeros(length(fssSolver(1).solution.angflux(1,igroup,ipol,:,isubmesh)),1);
     for i=1:length(fssSolver)
         for j=1:length(fssSolver(i).solution.angflux(1,igroup,ipol,:))
             tmpflux(j)=fssSolver(i).solution.angflux(1,igroup,ipol,j);

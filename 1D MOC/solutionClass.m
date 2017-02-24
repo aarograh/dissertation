@@ -14,18 +14,25 @@ classdef solutionClass < handle
     end
     
     methods
-        function obj = solutionClass( ncells,ngroups,input )
+        function obj = solutionClass( mesh,xsLib,input )
             %SOLUTIONCLASS Constructor for solutionClass
-            %   ncells  - The number of cells in the problem
-            %   ngroups - The number of energy groups in the problem
-            %   input   - The iput Class container from which to initialize
+            %   mesh  - The mesh
+            %   xsLib - The XS library
+            %   input - The iput Class container from which to initialize
             
+            nsubmesh = 1;
+            for i=1:mesh.nfsrcells
+                if xsLib.xsSets(mesh.materials(i)).nsubxs > 0
+                    nsubmesh = xsLib.xsSets(mesh.materials(i)).nsubxs;
+                    break
+                end
+            end
             obj.keff(1:2) = 1.0;
-            obj.angflux(1:2,1:ngroups,1:input.npol,1:ncells+1) = 1.0;
-            obj.current(1:ngroups,1:ncells+1,1:2) = 0.0;
-            obj.scalflux(1:ngroups,1:ncells,1:2) = 1.0;
+            obj.angflux(1:2,1:xsLib.ngroups,1:input.npol,1:mesh.nfsrcells+1,nsubmesh) = 1.0;
+            obj.current(1:xsLib.ngroups,1:mesh.nfsrcells+1,nsubmesh,1:2) = 0.0;
+            obj.scalflux(1:xsLib.ngroups,1:mesh.nfsrcells,1:2) = 1.0;
             obj.BCond = input.BCond;
-            obj.fisssrc(1:ncells,1:2) = 1.0;
+            obj.fisssrc(1:mesh.nfsrcells,1:2) = 1.0;
         end
         
         function obj = updateBC( obj )
