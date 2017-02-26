@@ -23,6 +23,7 @@ classdef inputClass < handle
         nmixtures=0
         mixtures
         mixvols
+        subray=false
     end
     
     methods
