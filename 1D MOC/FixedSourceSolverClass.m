@@ -94,10 +94,11 @@ classdef FixedSourceSolverClass < handle
                             obj.setup( i );
                             obj.sweep( );
                         end
-                        obj.subray_postprocess( );
+                        obj.postprocess_subray( );
                     else
                         obj.setup( 0 );
                         obj.sweep( );
+                        obj.postprocess_unified( );
                     end
                 end
                 scatconv = obj.checkConv( );
@@ -168,6 +169,26 @@ classdef FixedSourceSolverClass < handle
             
         end
         
+        function obj = postprocess_unified( obj )
+            %POSTPROCESS_UNIFIED Post-rpocess the sweep result for regular MOC
+            %   obj    - The fixedsourcesolver object to post-process
+            
+            obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
+            obj.solution.scalflux(:,:,1) = 0.0;
+            
+            for j=1:obj.mesh.nfsrcells
+                for k=1:obj.quad.npol
+                    for g=1:obj.xsLib.ngroups
+                        psibar = sum(obj.solution.angflux(1,g,k,j:j+1,1));
+                        psibar = 0.5*(psibar + sum(obj.solution.angflux(2,g,k,j:j+1,1)));
+                        obj.solution.scalflux(g,j,1) = obj.solution.scalflux(g,j,1) + ...
+                            psibar*obj.quad.weights(k);
+                    end
+                end
+            end
+            
+        end
+        
         function obj = postprocess_subray( obj )
             %POSTPROCESS_SUBRAY Post-processes the sweep result for sub-ray MOC
             %   obj    - The fixedsourcesolver object to post-process
@@ -187,7 +208,7 @@ classdef FixedSourceSolverClass < handle
                         end
                         psibar = psibar*0.5;
                         obj.solution.scalflux(g,j,1) = obj.solution.scalflux(g,j,1) + ...
-                            psibar*obj.quad.weights(j);
+                            psibar*obj.quad.weights(k);
                     end
                 end
            end
@@ -199,8 +220,8 @@ classdef FixedSourceSolverClass < handle
             %   obj    - The fixedsourcesolver object to sweep
             
             isubmesh = 1;
-            obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
-            obj.solution.scalflux(:,:,1) = 0.0;
+%             obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
+%             obj.solution.scalflux(:,:,1) = 0.0;
             for i=1:obj.mesh.nfsrcells
                 k = obj.mesh.nfsrcells-i+1;
                 for j=1:obj.quad.npol
@@ -213,9 +234,9 @@ classdef FixedSourceSolverClass < handle
                             obj.solution.angflux(1,igroup,j,i,isubmesh)*exparg + ...
                             obj.mesh.source(igroup,i)/obj.mesh.xstr(igroup,i)*(1 - exparg);
 
-                        psibar = 0.5*sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh));
-                        obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
-                            psibar*obj.quad.weights(j);
+%                         psibar = 0.5*sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh));
+%                         obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
+%                             psibar*obj.quad.weights(j);
 
                         % Backward Sweep
                         exparg = exp(-obj.mesh.xstr(igroup,k)*dx2);
@@ -223,9 +244,9 @@ classdef FixedSourceSolverClass < handle
                             obj.solution.angflux(2,igroup,j,k+1,isubmesh)*exparg + ...
                             obj.mesh.source(igroup,k)/obj.mesh.xstr(igroup,k)*(1 - exparg);
 
-                        psibar = 0.5*sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh));
-                        obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
-                            psibar*obj.quad.weights(j);
+%                         psibar = 0.5*sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh));
+%                         obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
+%                             psibar*obj.quad.weights(j);
                     end
                 end
             end
