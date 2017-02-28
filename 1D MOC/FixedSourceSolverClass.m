@@ -44,11 +44,11 @@ classdef FixedSourceSolverClass < handle
             end
             if obj.subray
                 for i=1:obj.mesh.nfsrcells
-                    if obj.xsLib.xsSets(mesh.materials(i)).nsubxs > 0
+                    if obj.xsLib.xsSets(obj.mesh.materials(i)).nsubxs > 0
                         break
                     end
                 end
-                obj.submesh_vol = obj.xsLib.xsSets(mesh.materials(i)).subfracs;
+                obj.submesh_vol = obj.xsLib.xsSets(obj.mesh.materials(i)).subfracs;
             end
         end
         
@@ -92,12 +92,12 @@ classdef FixedSourceSolverClass < handle
                     if obj.subray
                         for i=1:length(obj.submesh_vol)
                             obj.setup( i );
-                            obj.sweep( );
+                            obj.sweep( i );
                         end
                         obj.postprocess_subray( );
                     else
                         obj.setup( 0 );
-                        obj.sweep( );
+                        obj.sweep( 0 );
                         obj.postprocess_unified( );
                     end
                 end
@@ -175,7 +175,6 @@ classdef FixedSourceSolverClass < handle
             
             obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
             obj.solution.scalflux(:,:,1) = 0.0;
-            
             for j=1:obj.mesh.nfsrcells
                 for k=1:obj.quad.npol
                     for g=1:obj.xsLib.ngroups
@@ -195,7 +194,6 @@ classdef FixedSourceSolverClass < handle
             
             obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
             obj.solution.scalflux(:,:,1) = 0.0;
-            
             for j=1:obj.mesh.nfsrcells
                 for k=1:obj.quad.npol
                     for g=1:obj.xsLib.ngroups
@@ -215,13 +213,14 @@ classdef FixedSourceSolverClass < handle
             
         end
         
-        function obj = sweep( obj )
+        function obj = sweep( obj, isubmesh )
             %SWEEP Performs 1D MOC sweep for a single ray with multiple polars
-            %   obj    - The fixedsourcesolver object to sweep
+            %   obj      - The fixedsourcesolver object to sweep
+            %   isubmesh - The submesh level to sweep
             
-            isubmesh = 1;
-%             obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
-%             obj.solution.scalflux(:,:,1) = 0.0;
+            if isubmesh == 0
+                isubmesh = 1;
+            end
             for i=1:obj.mesh.nfsrcells
                 k = obj.mesh.nfsrcells-i+1;
                 for j=1:obj.quad.npol
@@ -234,19 +233,11 @@ classdef FixedSourceSolverClass < handle
                             obj.solution.angflux(1,igroup,j,i,isubmesh)*exparg + ...
                             obj.mesh.source(igroup,i)/obj.mesh.xstr(igroup,i)*(1 - exparg);
 
-%                         psibar = 0.5*sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh));
-%                         obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
-%                             psibar*obj.quad.weights(j);
-
                         % Backward Sweep
                         exparg = exp(-obj.mesh.xstr(igroup,k)*dx2);
                         obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
                             obj.solution.angflux(2,igroup,j,k+1,isubmesh)*exparg + ...
                             obj.mesh.source(igroup,k)/obj.mesh.xstr(igroup,k)*(1 - exparg);
-
-%                         psibar = 0.5*sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh));
-%                         obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
-%                             psibar*obj.quad.weights(j);
                     end
                 end
             end
