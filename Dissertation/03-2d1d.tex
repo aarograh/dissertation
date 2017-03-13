@@ -1,0 +1,241 @@
+\section{Background}
+
+The Boltzmann transport equation can be solved directly in 3D to obtain 3D flux and power distributions.  One method to do this is the 3D Method of characteristics, which is implemented in MPACT \cite{KochunasThesis}.  However, performing these 3D transport calculations becomes too computationally burdensome to be of practical use, even with today's improved computing resources.  Because LWRs have most of their material heterogeneity in the radial direction with very little change in the axial direction, it was recognized that approximations could be made in the axial direction to increase the efficiency of the calculations while still performing high-fidelity transport calculations in the radial direction.  Two different groups of researchers pursued this concept and developed two different methods of solving the transport equation for LWR problems.
+
+The first of these methods was the ``2D/1D Fusion'' technique, developed by researchers at Korea Advanced Institute of Science and Technology (KAIST) and implemented in codes such as CRX \cite{Fusion2D1D,FusionMOC,cho2015CRX2d1dFusionDecusping}.  In this method, the 3D problem is decomposed into a stack of 2D planes.  These planes are solved using 2D MOC, with incoming angular fluxes on the top and bottom boundaries of the plane as source terms.  To couple the planes, the problem domain is integrated in the x- and y-directions for each pin cell.  The angular fluxes at the radial edges are obtained from the 2D MOC calculations and used as source terms.  The angular fluxes are then solved in the axial direction using the Diamond Difference method.  These results, in turn, are fed back into the radial calculations.  Iterating between the radial and axial calculations then produces a full 3D solutions.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../figs/2d1d-subplane.png}
+    \caption[2D/1D Illustration]{The 2D/1D Method illustrated with the sub-plane scheme for the axial and CMFD calculations}
+    \label{f:2d1dsubpalne}
+\end{figure}
+
+The second group of researchers was at Korea Atomic Energy Research Institute (KAERI).  They developed what is known more simply as the ``2D/1D'' scheme, first implemented in the DeCART code \cite{3DHetWholeCoreTransPlanarMOC,DeCARTTheoryManual,MethodsAndPerformanceOfDecart}.  This employs very similar technique to the 2D/1D Fusion method described above.  However, rather than using angular fluxes from each solver as a source term, currents are tallied on each of the six faces of each pin cell.  The currents can then be used to compute axial and radial ``transverse leakage'' sources for the radial and axial solvers, respectively.  This change allows for the storage of group-wise currents at each interface instead of storing the group-wise angular fluxes for each angle, significantly reducing the memory burden of the calculation.
+
+After some development, the DeCART code was forked into several different versions for different institutions, one of them being the University of Michigan (UM).  After some development, it was determined that there would be no further development of the DeCART code at UM and a new 2D/1D implementation would be put in MPACT \cite{2D1DApproxTo3DTransport1,StabilityAndAccuracyOf3DTransportInMPACT}.  In MPACT's implementation of 2D/1D (shown in Figure \ref{f:2d1dsubpalne}), 2D MOC is used for each of the radial planes, as with earlier 2D/1D codes.  The axial calculation done on a pin-homogenized mesh usually with SP$_3$, though a variety of other solvers are available such as NEM, SENM, SP$_1$, SP$_5$, or S$_N$.  Finally, MPACT also uses 3D CMFD on the same pin-homogenized mesh to provide convergence acceleration to the calculations.  The remainder of this chapter will look at the derivation of the 2D/1D equations, the details of how they are implemented in MPACT, and some of the approximations and sources of errors related to this method.
+
+\section{Derivation}
+
+\subsection{Radial Equations}\label{ss:2d1dradialEq}
+
+To derive the radial equations, we begin with the multigroup approximation in Equation \ref{e:multigroupboltzmann}  and integrate in the $z$-direction over some range $\Delta z_i = z_{k+\frac{1}{2}} - z_{k-\frac{1}{2}}$.  To do this, we assume the cross-sections are all constant in the interval $z \in \left[z_{k-\frac{1}{2}},z_{k+\frac{1}{2}}\right]$.  With this assumption, we obtain the following equation:
+\begin{subequations}
+\begin{dmath}\label{e:2D1DradialEq}
+{\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + \Omega_y\frac{\partial \psi_{g}^Z}{\partial y} + \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k+\frac{1}{2}}} - \psi_{g,z_{k-\frac{1}{2}}}\right)} + {\Sigma_{t,g}\left(x,y\right)\psi_{g}^Z\left(x,y,\bm\Omega\right)} = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g'}^Z\left(x,y\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^Z\left(x,y\right)}{4\pi}}\ ,
+\end{dmath}
+\begin{equation}
+\psi_g^Z\left(x,y,\bm{\Omega}\right) = \frac{1}{\Delta z_k} \intop_{z_{k-\frac{1}{2}}}^{z_{k+\frac{1}{2}}} \psi_g^Z\left(x,y,z,\bm{\Omega}\right) dz\ .
+\end{equation}
+\end{subequations}
+where a superscript $Z$ indicates the average of a quantity over a given plane.  The $z$-component of the streaming can now be moved to the right-hand side of the equation and treated as a source term, giving a 2D transport problem which could be solved with a variety of methods:
+\begin{subequations}
+\begin{dmath}
+{\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + \Omega_y\frac{\partial \psi_{g}^Z}{\partial y}} + {\Sigma_{t,g}\left(x,y\right)\psi_{g}^Z\left(x,y,\bm\Omega\right)} = {q_{g}^Z\left(x,y\right) + L_{g}^Z\left(x,y,\Omega_z\right)}\ ,
+\end{dmath}
+\begin{dmath}
+q_{g}^Z\left(x,y\right) = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g'}^Z\left(x,y\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^Z\left(x,y\right)}{4\pi}}\ ,
+\end{dmath}
+\begin{equation}
+L_{g}^Z\left(x,y,\Omega_z\right) = \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k-\frac{1}{2}}} - \psi_{g,z_{k+\frac{1}{2}}}\right)\ ,
+\end{equation}
+\end{subequations}
+where $L_{g}^Z\left(x,y,\Omega_z\right)$ is the axial transverse leakage source term for plane $z$.  To simplify the source term, the axial transverse leakage term is often handled isotropically.  This is done by averaging over angle:
+\begin{equation}
+L_{g}^Z\left(x,y\right) = \frac{1}{4\pi}\intop L_{g}^Z\left(x,y,\Omega_z\right)d\Omega \approx \frac{J_{g,z_{k-\frac{1}{2}}} - J_{g,z_{k+\frac{1}{2}}}}{4\pi\Delta z_k}\ ,
+\end{equation}
+where $J_{z_{i\pm \frac{1}{2}}}$ is the current at the top ($+$) or bottom ($-$) of the plane.  This eliminates the need for storing all the angluar fluxes on the top and bottom of every plane.  Other methods exist that allow the axial transverse leakage source to maintain its angular dependence without storing the angular fluxes \cite{KelleyBlakeThesis}, but these methods are not discussed here since they were not used by this work.
+
+\subsection{Axial Equations}\label{ss:2d1daxialEq}
+
+The axial equations can be derived in a manner similar to the radial equations.  Again, we begin with the multi-group approximation shown in Equation \ref{e:multigroupboltzmann}.  This time, we integrate in both the x and y directions over intervals $x \in \left[x_{i-\frac{1}{2}},x_{i+\frac{1}{2}}\right]$ and $y \in \left[y_{j-\frac{1}{2}},y_{j+\frac{1}{2}}\right]$, giving the following equations in the axial direction, which are analogous to the radial equations in the previous section:
+\begin{subequations}\label{e:2D1DaxialEq}
+\begin{dmath}
+{\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + {\Sigma_{t,g}^{XY}\left(z\right)\psi_{g}^{XY}\left(z,\bm\Omega\right)} = q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) + {L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)}\ ,
+\end{dmath}
+\begin{dmath}
+q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = {\frac{1}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \Sigma_{s,g'\rightarrow g}^{XY}\left(z,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^{XY}}{4\pi}\sum_{g'=1}^G\intop_{4\pi}\nu\Sigma_{f,g'}^{XY}\left(z\right)\psi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^{XY}\left(z\right)}{4\pi}}\ ,
+\end{dmath}
+\begin{dmath}
+L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = {\frac{\Omega_x}{\Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}} \left(\psi_{g,x_{i-\frac{1}{2}}}\left(y\right) - \psi_{g,x_{i+\frac{1}{2}}}\left(y\right) dy\right)} + {\frac{\Omega_y}{\Delta x_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \left(\psi_{g,y_{i-\frac{1}{2}}}\left(x\right) - \psi_{g,y_{i+\frac{1}{2}}}\left(x\right) dx\right)}\ ,
+\end{dmath}
+\begin{equation}\label{e:2D1DaxFluxDef}
+\psi_g^{XY} = \frac{1}{\Delta_i \Delta_j} \intop_{y_{j-\frac{1}{2}}}^{y_{j+\frac{1}{2}}} \intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \psi_g\left(x,y,z,\bm{\Omega}\right) dx dy\ ,
+\end{equation}
+\end{subequations}
+where a superscript $XY$ now corresponds to a particular x- and y-region which extends the full height of the problem in the z-direction.  Again, it is assumed that the cross-sections are constant in the x- and y-directions inside the region of integration.  How this is accomplished will be discussed in more detail when discussing MPACT's implementation of SP$_3$ and CMFD.
+
+As with the radial equations, we can treat the transverse leakage source isotropically by averaging over angle:
+\begin{dmath}
+{L_{g}^{XY}\left(z\right)} = {\frac{1}{4\pi}\intop_{4\pi} L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)} \approx {\frac{1}{4\pi\Delta x_i\Delta y_j}\intop_{y_{j-\frac{1}{2}}}^{y_{j+\frac{1}{2}}}\left( J_{g}\left(x_{i-\frac{1}{2}},y,z\right) - J_{g}\left(x_{i+\frac{1}{2}},y,z\right)\right)dy} + {\frac{1}{4\pi\Delta x_i\Delta y_j}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}}\left( J_{g}\left(x,y_{j-\frac{1}{2}},z\right) - J_{g}\left(x,y_{j+\frac{1}{2}}z\right)\right)dx}\ .
+\end{dmath}
+As an additional approximation we assume that the currents are tallied across an entire transverse surface, meaning that the current terms in the integrals above are constant over the direction of integration.  With this simplification, the final form of the radial TL is
+\begin{equation}
+L_g^{XY}\left(z\right) = \frac{J_{g,x_{i-\frac{1}{2}},y_j}\left(z\right) - J_{g,x_{i+\frac{1}{2}},y_j}\left(z\right)}{4\pi\Delta x_i} + \frac{J_{g,x_i,y_{j-\frac{1}{2}}}\left(z\right) - J_{g,x_i,y_{j+\frac{1}{2}}}\left(z\right)}{4\pi\Delta y_j}
+\end{equation}
+Again, methods have been developed to angle the angle-dependence of the radial transverse leakage source \cite{StimpsonShaneThesis}, but this work used only isotropic radial leakage.
+
+\section{Implementation}
+
+\begin{figure}[h]
+  \centering
+  \input{../figs/2d1d-flowchart.tex}
+  \caption{Calculation flow for 2D/1D scheme}\label{f:2d1d-flowchart}
+\end{figure}
+
+Now that the general 2D/1D scheme has been described, some attention should be given to the details of its implementation in MPACT.  Figure \ref{f:2d1d-flowchart} shows the calculation flow used by MPACT.  The first step is to perform a global 3D CMFD calculation to obtain pin-averaged flux and interface currents between each cell.  Next, the axial solver uses the radial currents calculated by CMFD as a radial transverse leakage source to obtain an axial transverse leakage source for the radial solver.  Finally, 2D MOC is used as the radial solver to obtain a solution with sub-pin resolution in each plane.
+
+\subsection{3D Sub-plane CMFD}\label{ss:2d1d-3dcmfd}
+
+The CMFD method was originally implemented in MPACT just as described in section \ref{ss:CMFD}.  To do this, each pin cell is homogenized using the quantities defined in Equation \ref{e:CMFDhomogTerms} in every plane in the model.  The radial coupling coefficients defined in Equation \ref{e:CMFDcouplingCoeffs} are obtained by calculating the current at the interface between each pair of pin cells using the 2D MOC sweeper, while the axial coupling coefficients are obtained from the axial currents calculated by the axial solve during the previous iteration.  The matrix for the 3D multi-group system can then be set up and solved, typically using the generalized Davidson eigenvalue solver.
+
+As part of this work, the traditional CMFD capability was extended to use the sub-plane scheme, first developed by Cho et al. for the DeCART code \cite{DeCARTsubplane} and later used in the nTRACER code \cite{RyuBEAVRSnTRACER2015}.  Thin MOC planes are capable of causing instability in the 2D/1D scheme, but are sometimes required to maintain accuracy.  The sub-plane scheme allows users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  While DeCART used the sub-plane scheme primarily to allow for thicker MOC planes, nTRACER also uses the sub-plane scheme as part of its rod decusping methods \cite{ICAPPcontrolRodDecuspingNTRACER}.  This section will focus only on the sub-plane scheme as a means of using fewer MOC planes, while chapter \ref{chap:cusping} will discuss how the sub-plane scheme has been modified to be used in decusping methods.
+
+\begin{figure}[h]
+  \centering
+  \input{../figs/CMFD-flowchart.tex}
+  \caption{Calculation flow for 3D sub-plane CMFD}\label{f:CMFD-flowchart}
+\end{figure}
+
+\subsubsection{Homogenization}
+
+For the traditional CMFD calculations, each pin cell in an MOC plane is homogenized into a single CMFD cell.  When using the sub-plane scheme, the homogenized pin cell is divided axially into a stack of cells.  This causes the CMFD system to have multiple planes per MOC plane, allowing CMFD to capture sub-plane axial flux shapes that would otherwise be ignored.  To do this, a sub-plane scaling factor is introduced which will be used to provide an axial shape within a 2D plane:
+\begin{align}
+c_{g,i}^k &= \frac{\phi_{g,i}^{k-1}}{\overline{\phi}_{g,i}^{k-1}} \nonumber\\
+ &= \frac{\phi_{g,i}^{k-1} \sum_{i'=1}^{N_{sp}} V_{i'}}{\sum_{i'=1}^{N_{sp}} \phi_{g,i'}^{k-1} V_{i'}}\ ,
+\end{align}
+where superscripts indicate which iteration the values are taken from and $N_{sp}$ is the number of sub-planes for the pin cell of interest.  Now when the homogenized values are calculated from the 2D transport solution using Equation \ref{e:CMFDhomogTerms}, the fine mesh flux is multiplied by this sub-plane scaling factor everywhere it appears.  Because the 2D/1D scheme assumes a constant material axially in each plane, this sub-plane factor has no impact on the homogenized cross-sections.  However, the homogenized flux $\phi_{g,i}$ and fission source distribution $\chi_{g,i}$ will be changed, providing an axial shape for the source term in the eigenvalue calculation.
+
+\subsubsection{Coupling Coefficients}
+
+In addition to the homogenized cell terms, the coupling coefficients described by Equations \ref{e:CMFDinterface} and \ref{e:CMFDcouplingCoeffs} must be calculated for each sub-plane.  To maintain consistency, the area-averaged current calculated by the radial sweeper must be preserved across the sub-surfaces used by the sub-plane scheme.  Thus, the current calculated by the radial sweeper at an interface is used at the corresponding interfaces for all sub-planes in that plane.  Additionally, to maintain consistency, this requires that the cell-homogenized flux used in the calculation of the diffusion coefficients be defined for the entire MOC plane as in Equation \ref{e:CMFDhomogFlux} rather than using the sub-plane scaling factor for each sub-plane.
+
+The axial coupling coefficient can be treated in a more straightforward manner.  Because the 1D axial solvers use the same pin-homogenized mesh as the CMFD solver, axial currents are naturally calculated at the top and bottom of each of the sub-planes.  Thus, these currents can be used together with the sub-planes fluxes to calculate sub-plane--dependent axial coupling coefficients.
+
+\subsubsection{Projection}
+
+The projection of the CMFD flux back to the 2D planes must also account for the presence of the sub-planes.  To do this, the solution is volume-averaged over all sub-planes for each pin cell, resulting in an equation similar to \ref{e:CMFDscaling}:
+\begin{equation}
+\phi_{trans,g,j}^k = \frac{\sum_{i'=1}^{N_{sp}} \phi_{CMFD,g,i'}^k V_i}{\sum_{i'=1}^{N_{sp}} \phi_{CMFD,g,i'}^k V_i} \phi_{trans,g,j}^{k-1}\ .
+\end{equation}
+The calculation flow for 3D CMFD is shown in Figure \ref{f:CMFD-flowchart}.
+
+\subsection{1D NEM-SP\textsubscript{3}}
+
+\begin{figure}[H]
+  \centering
+  \input{../figs/Axial-flowchart.tex}
+  \caption{Calculation flow for 1D axial calculations in MPACT}\label{f:Axial-flowchart}
+\end{figure}
+
+In MPACT, the 1D axial solvers operate on the same mesh as the 3D CMFD calculations, meaning that cell-homogenized quantities and radial currents have already been obtained from the CMFD calculation.  All the 1D axial solver must do is construct a source term from the radial currents for each cell, then perform a calculation to obtain currents on the axial interfaces at the top and bottom of each node.
+
+MPACT has a variety of 1D nodal methods that are capable of performing these calculations, including diffusion-based such as NEM and SENM and higher-order solvers such as SP$_N$ and S$_N$.  For most calculations, MPACT uses SP$_3$ wrapped in NEM kernels.  The SP$_3$ portion handles the angular dependence of the solution by calculating angular moments.  The NEM kernels then handle the spatial dependence through the fourth-order polynomial expansion.  Because the SP$_3$ equations can be written as two sets of P$_1$ equations, they naturally lend themselves to being solved this way.
+
+The SP$_3$ equations consist of equations for angular flux moments 0 through 3.  These equations can be combined into two equations for just the 0th and 2nd moments, as shown in Equations \ref{e:3DSP3}.  Formulating SP$_3$ this way makes it straightforward to use the NEM kernels for each of the two moment equations.  The iteration scheme for this procedure is shown in Figure \ref{f:Axial-flowchart}.
+
+\subsection{2D MOC}
+
+For the radial calculations, 2D MOC is used.  This allows MPACT to easily calculate scalar fluxes and currents in each plane regardless of the geometric complexity.  This section is devoted to discussing some of the details of the MOC implementation and sweeping algorithm in MPACT.
+
+\subsubsection{Ray Tracing}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{modular_rays.png}
+    \caption[Modular Ray Tracing]{Modular ray tracing depiction \cite{MPACTTheoryManual}}\label{e:ModRays}
+\end{figure}
+
+One of the key features of MPACT's MOC implementation is that of modular ray tracing.  Ray tracing is performed once at the beginning of a calculation and stored for the remainder of the calculation.  Doing this greatly reduces the runtime of the MOC sweeps since the length of each ray segment and the region it is crossing are already known ahead of time.  Furthermore, MPACT takes advantage of the repeatable nature of a reactor's geometry.  Because reactor geometry is repetitive, small portions of the geometry which repeat frequently can be ray-traced separately instead of tracing the entire core.  These smaller units of geometry are known as ray tracing modules, and in MPACT can be a full fuel assembly, a quarter fuel assembly, or a single fuel pin.  After the unique modules are identified, each of them is ray-traced in such a way that the endpoints of a ray in each module will line up with the beginning of a ray in the neighboring module.  This significantly reduces the storage requirements for the ray data since a small number of ray tracing modules can represent a full core problem.
+
+As a result of the modular ray tracing, several corrections are required.  First, to successfully perform the ray tracing the angles of the rays had to be adjusted slightly to line up.  However, because a quadrature is used to integrate the angular flux, this angle modification requires a correction to the quadrature weights as well to maintain accuracy.  Second, the spacing between the rays must also be adjusted slightly to ensure that all rays align.  Along with these corrections, there are other MOC concepts such as volume corrections, cyclic rays, and others which are important to be aware of but will be deferred to the MPACT theory manual for details \cite{MPACTTheoryManual}.
+
+\subsubsection{Sweeping Algorithm}\label{sss:2d1dMOCsweepAlgorithm}
+
+\begin{figure}[h]
+  \centering
+  \input{../figs/MOC-flowchart.tex}
+  \caption{Calculation flow for 2D MOC calculation in MPACT}\label{f:MOC-flowchart}
+\end{figure}
+
+To perform the MOC sweeps, MPACT uses a multi-group sweeping method.  To do this, multi-group sources and cross-sections are prepared for each of the fine mesh regions in each plane.  There are then four total loops for the sweeping algorithm.  From outermost to innermost, these loops are over azimuthal angle, ray (across the entire domain), polar angle, and energy group.  Each ray is divided into many segments that the MOC steps its way along as described in section \ref{ss:MOCtheory}.  As these sweeps are performed, scalar flux is tallied in each fine mesh region, and, assuming CMFD is being used, currents are tallied at the interfaces between each pin cell.  Normally only one inner MOC iteration is required per 2D/1D iteration.  This algorithm is shown in Figure \ref{f:MOC-flowchart}.
+
+MPACT also has the capability of performing the MOC sweeps with the energy loop as the outermost.  This has two advantages.  First, the previous group is used to construct the scattering source for the current group.  This means that the iteration scheme is a Gauss-Seidel iteration instead of a Jacobi iteration, which can speed up the convergence of the problem.  Secondly, the cross-sections and sources only need to be stored for one group at a time, minimizing the storage requirements for the calculations.  However, when using transport-corrected cross-sections, some instabilities have been observed in this iteration scheme when using only a single inner iteration.  Further more, having the energy loop on the inside results in some improved cache efficiency when it comes to traversing the rays, reducing the runtime for a single MOC sweep \cite{JacobiInscatterTechReport}.  For these two reasons, MPACT defaults to the Jacobi-style iteration scheme described first.
+
+\section{Parallel Decomposition}
+
+While the 2D/1D scheme greatly reduces runtime from a direct 3D transport calculation, it is still computationally expensive when compared to nodal methods traditionally used by industry.  To minimize the walltime required for 2D/1D calculations in MPACT, several different methods of decomposing the problem for parallel execution have been implemented.  These methods allow MPACT to easily scale to hundreds or thousands of CPUs.  Each of these methods will be briefly described in this section.
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Spatial Decomposition}
+
+When using this decomposition, each parallel process only has a portion of the model.  Each portion is solved locally by one process, then boundary data is communicated to all processes which own neighboring portions of the model.  The updated boundary data is then used in the following iteration.  When using spatial decomposition, planar decomposition is performed first.  This means that if the total number of parallel processes being used is less than or equal to the number of 2D MOC planes, then one or more entire planes is simulated by each process.  If more processes are used than there are planes in the model, then radial decomposition is performed.  This decomposes every plane radially into smaller pieces.  Every plane must be radially decomposed in the same way, and the smallest unit allowed in radial decomposition is a single ray-tracing module.  Because spatial decomposition does not duplicate much memory and does not decrease the computational efficiency significantly, it is usually the preferred choice of decomposition methods.
+
+\item \textbf{Angle Decomposition}
+
+For angle decomposition, each process has the entire spatial domain.  When the MOC sweeps are performed, each process only sweeps a subset of the angles in the selected quadrature.  After the sweep, a reduction is performed to get the actual scalar flux and currents on all processes.  For the CMFD calculation, the angle processes are re-purposed as spatial processes.  Each angle process owns the full domain, but only solves a portion of it as if it were spatially decomposed.
+
+It is possible to use both spatial and angle decomposition together.  When this is done, spatial decomposition is performed first, then angle decomposition is done within each spatial domain.  In general, the efficiency of angle decomposition calculations is less than that of spatial decompositions.  Furthermore, it also requires that each angle process models all of the spatial domain, increasing the total memory required for the calculation compared with finer spatial decomposition.  However, angle decomposition is still useful for reducing the runtime of cases where further spatial decomposition is not possible.
+
+\item \textbf{Ray Decomposition}
+
+A third type of decomposition that can be done is to decompose the rays in the MOC calculation.  Unlike the previous methods, the ray decomposition makes use of shared-memory threading instead of distributed memory message passing.  While performing the MOC sweeps, several threads are used to solve all the rays in each angle.  For the CMFD calculation, MPACT has internal RBSOR solvers which are capable of using threading.  However, when third-party libraries are used for the CMFD calculations, the threading will be used only during the CMFD calculation.  Threading can also be combined with both spatial and angle decomposition to further increase the parallelism of MPACT.
+
+\item \textbf{Energy Decomposition}
+
+At this time, energy decomposition is not available in MPACT.  However, when it is added, it will be similar to the angle decomposition.  For the MOC calculation, each process will solve a subset of the energy groups on the spatial domain, and for the CMFD calculation, the energy processes will be re-purposed as space processes.
+\end{enumerate}
+
+\section{Sources of Error}\label{s:2d1dErrors}
+
+The 2D/1D approximation has several sources of error.  Some of these are addressed by mesh, ray spacing, or quadrature refinements, but others are due to approximations made in the method itself.  The sources of error which are due to fundamental approximations in the 2D/1D method will be discussed first, followed by a brief (not comprehensive) list of some other common sources of error.
+
+\subsection{Axial Homogenization}
+
+When deriving the radial equations in section \ref{ss:2d1dradialEq}, it was assumed that the cross-sections were constant in the axial direction for each of the planes.  While this is often the case if an appropriate axial mesh is selected, sometimes it is impractical to mesh the problem finely enough to ensure this.  When an axial material heterogeneity is present in a plane, 2D MOC requires that these materials be homogenized.  In some cases, a simple volume-averaging is sufficient, but if a material with a large cross-section is being homogenized with a material that has a significantly different cross-section, significant errors can result.  To prevent this without refining the axial mesh, some modification to the 2D/1D scheme is required to improve the homogenization.  This will be addressed in chapter \ref{chap:cusping}.
+
+\subsection{Axial Transverse Leakage Source}
+
+Another approximation relates to the assumptions made while deriving the axial equations in section \ref{ss:2d1daxialEq}.  The SP$_3$ calculations are performed on a pin-homogenized mesh.  Because of this, the axial currents used in the axial TL source are assumed to be flat across the entire pin cell.  However, the currents will obviously be quite different in the fuel and moderator regions.  Furthermore, the axial TL is treated isotropically.  While this simplifies the axial calculations and MOC storage requirements, it does not perfectly reflect reality.  Both these spatial and angular assumptions introduce some error into the axial TL source used by MOC.
+
+\subsection{Radial Currents}
+
+The radial TL source used by the axial SP$_3$ solver has the same two approximations as the axial TL source did.  Radial currents are used to generate the source, which assumes isotropy.  Additionally, the spatial shape is flat across each pin cell.  This is corrected to some extent since the axial solver produces a quadratic source shape using the neighboring nodes, but this is not a perfect solution.
+
+Additionally, when using the sub-plane method, the $\hat{D}$ correction terms used by CMFD are assumed to be axially flat within each MOC plane.  While this assumption improves the stability of the calculations, it forces CMFD to capture any axial shape the current has within an MOC plane.  For most problems, this error is probably negligible, but for cases such as a partially inserted rod or other strong absorber, it would be beneficial to be able to have sub-plane--dependent $\hat{D}$ terms to more accurately calculate the radial currents.  Doing this would improve the radial TL source in the SP$_3$ solver, and the the overall 2D/1D results.
+
+\subsection{Other Sources of Error}
+
+Several other sources of error in the 2D/1D method will be briefly mentioned here, but not discussed in detail.
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Ray Spacing}
+  
+  The spacing between the rays in the MOC calculation is important to the accuracy of the calculation.  At minimum, one ray needs to pass through each of the fine mesh regions, but multiple rays will improve the accuracy.  A typical ray spacing is 0.05 cm, but sometimes finer spacing may be required.
+  
+  \item \textbf{Radial Meshing}
+  
+  The radial and azimuthal meshing of each of the pin cells must be fine enough to give a good solution.  In MPACT, fuel pins usually have 3 radial rings, with an extra ring in the moderator region to resolve the change in the flux near the edge of the fuel pin.  Each ring is typically divided into 8 azimuthal regions.
+  
+  \item \textbf{Axial Meshing}
+  
+  The axial mesh must be refined enough to capture the axial shape of the solution.  Usually MOC planes of about 8 cm thick are used for a typical PWR calculation, which some thinner planes to resolve spacer grids, burnable poison inserts, or other components.  Using thicker planes could decrease accuracy and worsen the convergence of the CMFD calculations.  This effect can be minimized for thick MOC planes by using the sub-plane method.
+  
+  \item \textbf{Scattering Treatment}
+  
+  Scattering in a reactor, especially off the hydrogen atoms in the moderator, is anisotropic.  To resolve this, a sufficiently high-order scattering treatment must be used in the MOC calculations.  For PWRs, $P_1$ to $P_3$ is a typical range.  MPACT is capable of going up to P$_5$ scattering treatment for libraries which have the required data.
+  
+  An alternative is to use transport-correction P$_0$ scattering.  This can capture the anisotropy without increasing the runtime of the calculations.  However, there are several methods of calculating the transport cross-sections, and none of them are perfect.  Thus, using the TCP$_0$ option in MPACT also has some non-trivial error associated with it.
+  
+  \item \textbf{Cross-Section Library}
+  
+  To perform any calculations using the 2D/1D method, a multi-group cross-section library must be available.  While this is not technically a source of error in the 2D/1D method itself, the cross-section library can be difficult to generate correctly.  Any error in any isotope in the library will cause error in the 2D/1D calculations if the isotope is used in the model.  Thus, the 2D/1D method is useless if the a bad cross-section library is being used.
+  
+  \item \textbf{Self-Shielding}
+  
+  Another potential source of error is related to spatial and energy self-shielding.  To correctly deal with resonance absorption in the fuel while also accounting for the spatial self-shielding in the fuel, MPACT uses the subgroup method \cite{SubgroupOrig1974,SelfShieldingMethodologyMPACT2013}.  Without using this method, the k$_{eff}$ calculated by MPACT is off by several percent, along with an inaccurate flux distribution.
+  
+  \item \textbf{Quadrature}
+  
+  One final source of error that can arise is in the selection of a quadrature.  It is important to select both an appropriate number of azimuthal and polar angles as well as an appropriate type of quadrature.  Typically around 16 azimuthal angles and 3 polar angles is sufficient.  There are several different types of quadratures implemented in MPACT, but generally a Tabuchi-Yamamoto quadrature is used for the polar angles \cite{YamamotoQuadrature2012} with a Chebyshev quadrature for the azimuthal angles \cite{HandbookOfMathFunctions1972}.
+\end{enumerate}
