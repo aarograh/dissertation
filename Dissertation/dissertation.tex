@@ -75,9 +75,14 @@
 % \renewcommand{\thefigure}{\textbf{Figure \arabic{section}}}
 % \renewcommand \thesection{\Roman{section}.}rand
 
-\begin{document}
+% Document Structure Commands
+\showcopyright
+\showdedication
+\showacknowledgments
+\showabstract
+\showlistofappendices
 
-%\titlepage
+\begin{document}
 
 \pagenumbering{arabic}
 
@@ -103,19 +108,14 @@
 \input{07-conclusions.tex}
 
 % appendices
-\begin{appendices}
-
+\appendix
 \chapter{Supplemental Derivations}\label{app:derivations}
 \input{A-derivations.tex}
 
 \chapter{C5G7 Cross-Sections}\label{app:c5g7xs}
 \input{B-c5g7.tex}
 
-\end{appendices}
-
 % bibliography
-\renewcommand{\bibname}{References}
-\addcontentsline{toc}{chapter}{References}
 \bibliographystyle{../bibliography}
 \bibliography{../bibliography}
 

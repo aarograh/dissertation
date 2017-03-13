@@ -311,13 +311,16 @@
 
 %% ---- TITLE PAGE -----------------------------------------------------
 % The fields to be used for the title page
-\renewcommand{\@title}{A Dynamic Control Rod Decusping Method for the 2D/1D Scheme}
+\renewcommand{\@title}{Capturing Subgrid Heterogeneities in the 2D/1D Method Using a Subray Formulation of the Method of Characteristics}
 \renewcommand{\@author}{Aaron M. Graham}
 \newcommand{\@degree}{Doctor of Philosophy}
 \newcommand{\@department}{Nuclear Engineering and Radiological Sciences and Scientific Computing}
-\newcommand{\@committee}{Professor Thoms J. Downar, Co-Chair \\ Adjunct Assistant Professor Benjamin S. Collins, Co-Chair \\ Professor Edward W. Larsen \\ Professor William R. Martin \\ Assistant Professor Shravan Veerapaneni}
-\newcommand{\@chair}{Tom Downar}
-\newcommand{\@cochair}{Ben Collins}
+\newcommand{\@committee}{Adjunct Assistant Professor Benjamin S. Collins, Co-Chair\\
+    Professor Thomas J. Downar, Co-Chair\\
+    Professor Edward W. Larsen\\
+    Professor William R. Martin\\
+    Assistant Professor Shravan Veerapaneni}
+\newcommand{\@cochair}{Thomas J. Downar, Benjamin S. Collins}
 
 % Commands to set the titlepage fields
 \renewcommand{\title}[1]{\renewcommand{\@title}{#1}}
@@ -361,20 +364,17 @@
    % Insert the author
    \insertauthor \\ %
    % More rubber space
-   \vfill %
-   % Just use "Ph.D. Prospectus" as per Ben's suggestion
-   Ph.D. Prospectus \\ %
-   October, 2016 %
-%   % Text from guidelines
-%   A dissertation submitted in partial fulfillment \\ %
-%   of the requirements for the degree of \\ %
-%   % Name of degree
-%   \insertdegree \\ %
-%   % Department
-%   (\insertdepartment) \\ %
-%   in the University of Michigan \\ %
-%   % Year of completion
-%   \number\year %
+   \vfill %\
+   % Text from guidelines
+   A dissertation submitted in partial fulfillment \\ %
+   of the requirements for the degree of \\ %
+   % Name of degree
+   \insertdegree \\ %
+   % Department
+   (\insertdepartment) \\ %
+   in the University of Michigan \\ %
+   % Year of completion
+   \insertyear %
   \end{center} %
   % More rubber space
   \vfill %
@@ -641,7 +641,9 @@
 
 %% ---- DEDICATION PAGE ------------------------------------------------
 % Command that holds the value text of the dedication
-\newcommand{\@dedication}{}
+\newcommand{\@dedication}{
+Dedication Stuff
+}
 % Command that sets the dedication style
 \newcommand{\@dedicationstyle}{\@frontpagestyle}
 % Command that sets the width of the dedication text area
@@ -668,7 +670,7 @@
  % Set the page formatting.
  \frntpg %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{Dedication}
+ \phantomsection\addcontentsline{toc}{part}{Dedication}
  % Insert the text and formatting.
  \insertfront{\@dedication %
   }{\@dedicationstyle}{Dedication}{\@dedication@width}
@@ -677,7 +679,9 @@
 
 %% ---- ACKNOWLEDGMENTS PAGE -------------------------------------------
 % Command that holds the value text of the acknowledgments
-\newcommand{\@acknowledgments}{}
+\newcommand{\@acknowledgments}{
+Acknowledgments Stuff
+}
 % Command that sets the acknowledgments style
 \newcommand{\@acknowledgmentsstyle}{\@frontpagestyle}
 % Command that sets the width of the acknowledgments text area
@@ -707,7 +711,7 @@
  % Set the page formatting.
  \frntpg %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{Acknowledgments}
+ \phantomsection\addcontentsline{toc}{part}{Acknowledgments}
  % Insert the text and formatting.
  \insertfront{\@acknowledgments %
   }{\@acknowledgmentsstyle}{Acknowledgments}{\@acknowledgments@width}
@@ -746,7 +750,7 @@
  % Set the page formatting.
  \frntpg %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{Preface}
+ \phantomsection\addcontentsline{toc}{part}{Preface}
  % Insert the text and formatting.
  \insertfront{\@preface %
   }{\@prefacestyle}{Preface}{\@preface@width}
@@ -785,7 +789,7 @@
  % Set the page formatting.
  \frntpg %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{Foreword}
+ \phantomsection\addcontentsline{toc}{part}{Foreword}
  % Insert the text and formatting.
  \insertfront{\@foreword %
   }{\@forewordstyle}{Foreword}{\@foreword@width}
@@ -824,7 +828,7 @@
  % Set the page formatting.
  \frntpg %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{Prologue}
+ \phantomsection\addcontentsline{toc}{part}{Prologue}
  % Insert the text and formatting.
  \insertfront{\@prologue %
   }{\@prologuestyle}{Prologue}{\@prologue@width}
@@ -856,6 +860,19 @@
 
 
 %% ---- TABLE OF CONTENTS ----------------------------------------------
+% This set the formatting for list of figures, tables, etc.
+% This is hacked together by using Parts instead of Chapters
+\renewcommand*\l@part[2]{ %
+ % First add some vertical space.
+ \vskip 1 ex plus 1pt minus 1pt
+ % Format the spacing and use dots between title and number.
+ \@dottedtocline{1}{0em}{1.0em} %
+ % This sets the formatting for the list name and page number.
+ {\textbf{#1}}{\textbf{#2}} %
+ % Add some space below, too.
+ \vskip 1ex}
+
+
 % This sets the formatting for chapter entries in the table of contents.
 \renewcommand*\l@chapter[2]{ %
  % First add some vertical space.
@@ -863,7 +880,7 @@
  % Format the spacing and use dots between title and number.
  \@dottedtocline{1}{0em}{1.0em} %
  % This sets the formatting for the chapter name and page number.
- {\textbf{#1}}{\textbf{#2}} %
+ {\textbf{Chapter #1}}{\textbf{#2}} %
  % Add some space below, too.
  \vskip 1ex}
 
@@ -911,7 +928,7 @@
  % Move to new page.
  \newpage %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{List of Figures} %
+ \phantomsection\addcontentsline{toc}{part}{List of Figures} %
  % Use front page styling.
  \frntpg %
  % Larger upper margin for first page of table (thesis only)
@@ -938,7 +955,7 @@
  % Move to new page.
  \newpage %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{List of Tables} %
+ \phantomsection\addcontentsline{toc}{part}{List of Tables} %
  % Use front page styling.
  \frntpg %
  % Larger upper margin for first page of table (thesis only)
@@ -970,7 +987,7 @@
  % Move to new page.
  \newpage %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{List of Maps} %
+ \phantomsection\addcontentsline{toc}{part}{List of Maps} %
  % Use front page styling.
  \frntpg %
  % Larger upper margin for first page of table (thesis only)
@@ -1002,7 +1019,7 @@
  % Move to new page.
  \newpage %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{List of Illustrations} %
+ \phantomsection\addcontentsline{toc}{part}{List of Illustrations} %
  % Use front page styling.
  \frntpg %
  % Larger upper margin for first page of table (thesis only)
@@ -1034,7 +1051,7 @@
  % Move to new page.
  \newpage %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{List of Programs} %
+ \phantomsection\addcontentsline{toc}{part}{List of Programs} %
  % Anchor for pdf
  \phantomsection %
  % Use front page styling.
@@ -1063,7 +1080,7 @@
  % Move to new page.
  \newpage %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{List of Appendices} %
+ \phantomsection\addcontentsline{toc}{part}{List of Appendices} %
  % Anchor for pdf
  \phantomsection %
  % Use front page styling.
@@ -1093,9 +1110,9 @@
  % Add a pdf anchor.
  \phantomsection %
  % Add the page to the table of contents.
- \addcontentsline{toc}{chapter}{Appendices}
+ \addcontentsline{toc}{part}{Appendices}
  % Stop adding sections to the table of contents.
- \addtocontents{toc}{\setcounter{tocdepth}{1}} %
+ \addtocontents{toc}{\protect\setcounter{tocdepth}{1}} %
  % Header for appendices.
  \renewcommand{\@chapapp}{APPENDIX} %
  % Renew the chapter and section labels.
@@ -1150,7 +1167,7 @@
  % Move to new page.
  \newpage %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{List of Abbreviations} %
+ \phantomsection\addcontentsline{toc}{part}{List of Abbreviations} %
  % Use front page styling.
  \frntpg %
  % Larger upper margin for first page of table (thesis only)
@@ -1189,7 +1206,7 @@
  % Move to new page.
  \newpage %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{List of Acronyms} %
+ \phantomsection\addcontentsline{toc}{part}{List of Acronyms} %
  % Use front page styling.
  \frntpg %
  % Larger upper margin for first page of table (thesis only)
@@ -1228,7 +1245,7 @@
  % Move to new page.
  \newpage %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{List of Symbols} %
+ \phantomsection\addcontentsline{toc}{part}{List of Symbols} %
  % Use front page styling.
  \frntpg %
  % Larger upper margin for first page of table (thesis only)
@@ -1281,7 +1298,7 @@
  % Move to new page.
  \newpage %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{Nomenclature} %
+ \phantomsection\addcontentsline{toc}{part}{Nomenclature} %
 % Use front page styling.
  \frntpg %
  % Larger upper margin for first page of table (thesis only)
@@ -1302,7 +1319,23 @@
 
 %% ---- ABSTRACT -------------------------------------------------------
 % Command to hold the text of the abstract.
-\newcommand{\@abstract}{}
+\newcommand{\@abstract}{
+Abstract Stuff
+
+Abstract Stuff
+
+Abstract Stuff
+
+Abstract Stuff
+
+Abstract Stuff
+
+Abstract Stuff
+
+Abstract Stuff
+
+Abstract Stuff
+}
 
 % Command to set it.
 \renewcommand{\abstract}[1]{
@@ -1338,7 +1371,7 @@
   \thispagestyle{empty} %
  \fi %
  % Add this page to the table of contents.
- \phantomsection\addcontentsline{toc}{chapter}{Abstract} %
+ \phantomsection\addcontentsline{toc}{part}{Abstract} %
  % Extra vertical space
  \begin{minipage}{0.8\textwidth} \vspace{1in} \end{minipage} \\ %
  % Center the title area.
@@ -1346,24 +1379,24 @@
   % Formatting
   \large \bfseries
   % Add the heading.
-  ABSTRACT \\[5ex] %
-  % Add the title of the dissertation.
-  \normalsize %
-  \inserttitle \\[2ex] %
-  % Add the word 'by'
-  by \\[2ex]
-  % Add the author.
-  \insertauthor
+  ABSTRACT% \\[5ex] %
+%  % Add the title of the dissertation.
+%  \normalsize %
+%  \inserttitle \\[2ex] %
+%  % Add the word 'by'
+%  by \\[2ex]
+%  % Add the author.
+%  \insertauthor
  \end{center} %
- % Vertical rubber space
- \vspace*{\stretch{2}} %
- % Insert the chair info
- \ifthenelse{\equal{\@cochair}{}}{
-  % No co-chairs; insert the chair.
-  {\bf Chair: \insertchair} %
- }{ %
-  % Use co-chairs.
-  {\bf Co-Chairs: \insertcochair}} %
+% % Vertical rubber space
+% \vspace*{\stretch{2}} %
+% % Insert the chair info
+% \ifthenelse{\equal{\@cochair}{}}{
+%  % No co-chairs; insert the chair.
+%  {\bf Chair: \insertchair} %
+% }{ %
+%  % Use co-chairs.
+%  {\bf Co-Chairs: \insertcochair}} %
  % Vertical rubber space
  \vspace*{\stretch{2}} %
  % Insert the text as a quotation
@@ -1402,7 +1435,7 @@
  % Create a pdf anchor.
  \phantomsection %
  % Add to table of contents.
- \addcontentsline{toc}{chapter}{Bibliography} %
+ \addcontentsline{toc}{part}{Bibliography} %
  % Load the bibliography.
  \@tex@bibliography{#1} %
 }
