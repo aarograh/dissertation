@@ -1,9 +1,11 @@
-Prospectus/build
-Prospectus_Presentation/build
-Dissertation/build
 *.asv
+*.bak
+Prospectus/build
 Prospectus/prospectus.synctex.gz
 Prospectus/prospectus.pdf
-*.bak
+Prospectus_Presentation/build
 Prospectus_Presentation/prospectus-presentation.pdf
 Prospectus_Presentation/prospectus-presentation.synctex.gz
+Dissertation/build
+Dissertation/dissertation.synctex.gz
+Dissertation/dissertation.pdf
