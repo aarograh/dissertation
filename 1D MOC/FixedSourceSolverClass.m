@@ -13,6 +13,7 @@ classdef FixedSourceSolverClass < handle
         relax=0.25
         subray=false
         submesh_vol
+        homog=0 %0 mixes subray scalar fluxes, 1 mixes cross-sections and re-solves
     end
     
     methods
@@ -34,6 +35,7 @@ classdef FixedSourceSolverClass < handle
                 obj.initFromEigenSolver( varargin{2});
                 obj.verbose = varargin{1}.verbose;
                 obj.subray = varargin{1}.subray;
+                obj.homog = varargin{1}.homog;
             elseif nargin == 3
                 obj.xsLib = varargin{1};
                 obj.quad = varargin{2};
@@ -41,6 +43,7 @@ classdef FixedSourceSolverClass < handle
                 obj.solution = solutionClass(obj.mesh, obj.xsLib, varargin{3});
                 obj.verbose = varargin{3}.verbose;
                 obj.subray = varargin{3}.subray;
+                obj.homog = varargin{3}.homog;
             end
             if obj.subray
                 for i=1:obj.mesh.nfsrcells
@@ -49,6 +52,11 @@ classdef FixedSourceSolverClass < handle
                     end
                 end
                 obj.submesh_vol = obj.xsLib.xsSets(obj.mesh.materials(i)).subfracs;
+                if obj.homog == 1
+                    i = length(obj.solution.angflux(1,1,1,1,:))+1;
+                    obj.solution.angflux(:,:,:,:,i) = 0.0;
+                    obj.solution.current(:,:,i,:) = 0.0;
+                end
             end
         end
         
@@ -60,7 +68,15 @@ classdef FixedSourceSolverClass < handle
             
             obj.solution.keff(:) = eig.fss.solution.keff(:);
             obj.solution.scalflux(:) = eig.fss.solution.scalflux(:);
-            obj.solution.angflux(:) = eig.fss.solution.angflux(:);
+            if (length(obj.solution.angflux(1,1,1,1,:)) == 1)
+                obj.solution.angflux(:,:,:,:,1)=eig.fss.solution.angflux(:,:,:,:,1);
+            elseif (length(eig.fss.solution.angflux(1,1,1,1,:)) == 1)
+                for i=1:length(obj.solution.angflux(1,1,1,1,:))
+                    obj.solution.angflux(:,:,:,:,i) = eig.fss.solution.angflux(:,:,:,:,1);
+                end
+            else
+                obj.solution.angflux(:) = eig.fss.solution.angflux(:);
+            end
             obj.solution.fisssrc(:) = eig.fss.solution.fisssrc(:);
             
         end
@@ -81,6 +97,7 @@ classdef FixedSourceSolverClass < handle
             
             while ~obj.converged
                 inner = inner + 1;
+                obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
                 if wCur && inner == ninners
                     obj.setup( 0 );
                     obj.sweep_wCur( );
@@ -94,7 +111,14 @@ classdef FixedSourceSolverClass < handle
                             obj.setup( i );
                             obj.sweep( i );
                         end
-                        obj.postprocess_subray( );
+                        if obj.homog == 1
+                            obj.setup_subrayHomog( );
+                            nsubmesh = length(obj.submesh_vol)+1;
+                            obj.sweep( nsubmesh );
+                            obj.postprocess_unified( nsubmesh );
+                        else
+                            obj.postprocess_subray( );
+                        end
                     else
                         obj.setup( 0 );
                         obj.sweep( 0 );
@@ -116,7 +140,7 @@ classdef FixedSourceSolverClass < handle
         end
         
         function obj = setup( obj, level )
-            %SETUPFSP Sets up source and XS mesh for fixed source MOC problem
+            %SETUP Sets up source and XS mesh for fixed source MOC problem
             %   obj    - The FixedSourceSolverClass object to set up
             %   level  - The submesh level being set up
             
@@ -127,7 +151,7 @@ classdef FixedSourceSolverClass < handle
                     for j=1:obj.xsLib.ngroups
                         % Use old scalar flux to do Jacobi style iteration
                         obj.mesh.source(j,i) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
-                            obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,1))*0.5;
+                            obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
                         obj.mesh.xstr(j,i) = obj.xsLib.xsSets(matID).transport(j);
                     end
                 end
@@ -138,15 +162,53 @@ classdef FixedSourceSolverClass < handle
                         % Use old scalar flux to do Jacobi style iteration
                         if obj.xsLib.xsSets(matID).nsubxs > 0
                             obj.mesh.source(j,i) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).subxs(level).chi(j)/obj.solution.keff(1) + ...
-                                obj.xsLib.xsSets(matID).subxs(level).scatter(j,:)*obj.solution.scalflux(:,i,1))*0.5;
+                                obj.xsLib.xsSets(matID).subxs(level).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
                             obj.mesh.xstr(j,i) = obj.xsLib.xsSets(matID).subxs(level).transport(j);
                         else
                             obj.mesh.source(j,i) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
-                                obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,1))*0.5;
+                                obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
                             obj.mesh.xstr(j,i) = obj.xsLib.xsSets(matID).transport(j);
                         end
                     end
                 end
+            end
+            
+        end
+        
+        function obj = setup_subrayHomog( obj )
+            %SETUP_SUBRAYHOMOG Sets up source and XS mesh for final fixed source MOC problem after subray
+            %sweeps
+            %   obj - The FixedSourceSolverClass object to set up
+            
+            obj.mesh.source(:) = 0.0;
+            nsubmesh = length(obj.submesh_vol);
+            
+            for k=1:nsubmesh
+                obj.postprocess_unified( 1 );
+                scalflux = obj.solution.scalflux(:,:,1)*obj.submesh_vol(k);
+                fisssrc = obj.solution.fisssrc(:,1)*obj.submesh_vol(k);
+                for i=1:obj.mesh.nfsrcells
+                    matID = obj.mesh.materials(i);
+                    for j=1:obj.xsLib.ngroups
+                        if obj.xsLib.xsSets(matID).nsubxs > 0
+                            obj.mesh.source(j,i) = obj.mesh.source(j,i) + ...
+                                (fisssrc(i)*obj.xsLib.xsSets(matID).subxs(k).chi(j)/obj.solution.keff(1) + ...
+                                obj.xsLib.xsSets(matID).subxs(k).scatter(j,:)*scalflux(:,i))*0.5;
+                            obj.mesh.xstr(j,i) = obj.mesh.xstr(j,i) + ...
+                                fisssrc(i)*obj.xsLib.xsSets(matID).subxs(k).transport(j)*scalflux(j,i);
+                        else
+                            obj.mesh.source(j,i) = obj.mesh.source(j,i) + ...
+                                (fisssrc(i)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
+                                obj.xsLib.xsSets(matID).scatter(j,:)*scalflux(:,i))*0.5;
+                            obj.mesh.xstr(j,i) = obj.mesh.xstr(j,i) + ...
+                                fisssrc(i)*obj.xsLib.xsSets(matID).transport(j)*scalflux(j,i);
+                        end
+                    end
+                end
+            end
+            
+            for i=1:obj.mesh.nfsrcells
+                obj.mesh.xstr(:,i) = obj.mesh.xstr(:,i)./scalflux(:,i);
             end
             
         end
@@ -161,25 +223,29 @@ classdef FixedSourceSolverClass < handle
                 newsource = zeros(obj.mesh.nfsrcells,1);
                 for i=1:obj.mesh.nfsrcells
                     matID = obj.mesh.materials(i);
-                    oldsource(i,1) = obj.xsLib.xsSets(matID).scatter(igroup,:)*obj.solution.scalflux(:,i,2);
-                    newsource(i,1) = obj.xsLib.xsSets(matID).scatter(igroup,:)*obj.solution.scalflux(:,i,1);
+                    oldsource(i) = obj.xsLib.xsSets(matID).scatter(igroup,:)*obj.solution.scalflux(:,i,2);
+                    newsource(i) = obj.xsLib.xsSets(matID).scatter(igroup,:)*obj.solution.scalflux(:,i,1);
                 end
                 maxdiff = max(max(abs((oldsource - newsource)./oldsource)),maxdiff);
+                [oldsource(1:10),newsource(1:10)]
             end
             
         end
         
-        function obj = postprocess_unified( obj )
+        function obj = postprocess_unified( obj, level )
             %POSTPROCESS_UNIFIED Post-rpocess the sweep result for regular MOC
             %   obj    - The fixedsourcesolver object to post-process
+            %   level  - The submesh level to use
             
-            obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
+            if ~exist('level','var')
+                level = 1;
+            end
             obj.solution.scalflux(:,:,1) = 0.0;
             for j=1:obj.mesh.nfsrcells
                 for k=1:obj.quad.npol
                     for g=1:obj.xsLib.ngroups
-                        psibar = sum(obj.solution.angflux(1,g,k,j:j+1,1));
-                        psibar = 0.5*(psibar + sum(obj.solution.angflux(2,g,k,j:j+1,1)));
+                        psibar = sum(obj.solution.angflux(1,g,k,j:j+1,level));
+                        psibar = 0.5*(psibar + sum(obj.solution.angflux(2,g,k,j:j+1,level)));
                         obj.solution.scalflux(g,j,1) = obj.solution.scalflux(g,j,1) + ...
                             psibar*obj.quad.weights(k);
                     end
@@ -192,7 +258,6 @@ classdef FixedSourceSolverClass < handle
             %POSTPROCESS_SUBRAY Post-processes the sweep result for sub-ray MOC
             %   obj    - The fixedsourcesolver object to post-process
             
-            obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
             obj.solution.scalflux(:,:,1) = 0.0;
             for j=1:obj.mesh.nfsrcells
                 for k=1:obj.quad.npol
