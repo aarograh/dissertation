@@ -42,16 +42,16 @@ classdef solutionClass < handle
             % Set angular flux BC
             if ischar(obj.BCond(1))
                 if strcmp(strtrim(obj.BCond(1,:)),'vacuum')
-                    obj.angflux(1,:,:,1) = 0.0;
+                    obj.angflux(1,:,:,1,:) = 0.0;
                 elseif strcmp(strtrim(obj.BCond(1,:)),'reflecting')
-                    obj.angflux(1,:,:,1) = obj.angflux(2,:,:,1);
+                    obj.angflux(1,:,:,1,:) = obj.angflux(2,:,:,1,:);
                 end
             end
             if ischar(obj.BCond(2))
                 if strcmp(strtrim(obj.BCond(2,:)),'vacuum')
-                    obj.angflux(2,:,:,end) = 0.0;
+                    obj.angflux(2,:,:,end,:) = 0.0;
                 elseif strcmp(strtrim(obj.BCond(2,:)),'reflecting')
-                    obj.angflux(2,:,:,end) = obj.angflux(1,:,:,end);
+                    obj.angflux(2,:,:,end,:) = obj.angflux(1,:,:,end,:);
                 end
             end
             
