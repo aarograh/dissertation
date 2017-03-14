@@ -17,10 +17,14 @@ input.radii = [ 0.4096, 0.475;
     0.4, 0.475;
     0.4, 0.475;
     0.4, 0.475];
-input.pinmesh = [ 20 3 20;
-    20 3 20;
-    20 3 20;
-    20 3 20];
+input.pinmesh = [ 15 2 15;
+    15 2 15;
+    15 2 15;
+    15 2 15];
+% Mixtures
+input.nmixtures = 1;
+input.mixtures = [6, 1, 5];
+input.mixvols = [0.5, 0.5];
 % Quadrature
 input.npol = 32;
 % XS Library Info
@@ -31,75 +35,30 @@ input.BCond = ['vacuum';'vacuum'];
 % Convergence
 input.nouters = 2000;
 input.conv_crit = [1.0e-6 1.0e-6];
+input.verbose = false;
 
 %% Case 1 - 50-50 Mixutre Eigenvalue Case
 input.pinmap = [1, 4, 1, 1, 1, 1, 1, 1, 1, 1];
-solver = MOC_1D(input);
-names(1) = {sprintf('Mixed       - %g',solver(1).solution.keff(1))};
-
-%% Case 2 - Control Rod Case
-% pinmap_rodded = 1;
-input.pinmap = [1, 2, 1, 1, 1, 1, 1, 1, 1, 1];
-solver(2) = eigensolverClass(input);
-% Copy source, angular flux
-solver(2).solution.fisssrc(:) = solver(1).solution.fisssrc(:);
-solver(2).solution.scalflux(:) = solver(1).solution.scalflux(:);
-solver(2).solution.angflux(:) = solver(1).solution.angflux(:); 
-solver(2).step(true);
-names(2) = {sprintf('Rodded    - %g',solver(1).solution.keff(1))};
-
-%% Case 2 - Guide Tube Case
-input.pinmap = [1, 3, 1, 1, 1, 1, 1, 1, 1, 1];
-solver(3) = eigensolverClass(input);
-% Copy source, angular flux
-solver(3).solution.fisssrc(:) = solver(1).solution.fisssrc(:);
-solver(3).solution.scalflux(:) = solver(1).solution.scalflux(:);
-solver(3).solution.angflux(:) = solver(1).solution.angflux(:);
-solver(3).step(true);
-names(3) = {sprintf('Unrodded - %g',solver(1).solution.keff(1))};
-
-%% Generate Plots
-
-% Angular Flux Plots
-ipol=1;
-for igroup=1:solver(1).xsLib.ngroups
-    figure(igroup);
-    hold on;
-    tmp = 0;
-    for i=1:length(solver)
-        plot(solver(i).mesh.fsredges,solver(i).solution.angflux(:,ipol,1,igroup),'linewidth',2);
-        tmp = max(tmp,max(solver(i).solution.angflux(:,ipol,1,igroup)));
-    end
-    ax = gca;
-    ax.XAxis.TickValues = solver(1).mesh.xsedges;
-    ax.XAxis.MinorTickValues = solver(1).mesh.fsredges;
-    ax.XTickLabelRotation = 45;
-    axis([min(solver(1).mesh.xsedges), max(solver(1).mesh.xsedges), 0.0, 1.05*tmp]);
-    xlabel('Position (cm)');
-    ylabel('Angular Flux');
-    title(sprintf('Right-going Angular Flux vs. Position, Group %i',igroup));
-    legend(names);
-    grid on;
-end
-
-
-% Scalar Flux Plots
-figure(8);
-hold on;
-igroup = 7;
-cellcenter = 0.5*(solver(1).mesh.fsredges(1:end-1) + solver(1).mesh.fsredges(2:end));
-tmp = 0;
-for i=1:length(solver)
-    plot(cellcenter,solver(i).solution.scalflux(:,igroup,1),'linewidth',2);
-    tmp = max(tmp,max(solver(i).solution.scalflux(:,igroup,1)));
-end
-ax = gca;
-ax.XAxis.TickValues = solver(1).mesh.xsedges;
-ax.XAxis.MinorTickValues = solver(1).mesh.fsredges;
-ax.XTickLabelRotation = 45;
-axis([min(solver(1).mesh.xsedges), max(solver(1).mesh.xsedges), 0.0, 1.05*tmp]);
-xlabel('Position (cm)')
-ylabel('Scalar Flux')
-title(sprintf('Scalar Flux vs. Position, Group %i',igroup));
-legend(names);
-grid on;
+% solver = MOC_1D(input);
+% names(1) = {sprintf('Mixed       - %g',solver(1).solution.keff(1))};
+% 
+% %% Case 2 - Control Rod Case
+% % pinmap_rodded = 1;
+% input.pinmap = [1, 2, 1, 1, 1, 1, 1, 1, 1, 1];
+% solver(2) = eigensolverClass(input);
+% % Copy source, angular flux
+% solver(2).solution.fisssrc(:) = solver(1).solution.fisssrc(:);
+% solver(2).solution.scalflux(:) = solver(1).solution.scalflux(:);
+% solver(2).solution.angflux(:) = solver(1).solution.angflux(:); 
+% solver(2).step(true);
+% names(2) = {sprintf('Rodded    - %g',solver(1).solution.keff(1))};
+% 
+% %% Case 3 - Guide Tube Case
+% input.pinmap = [1, 3, 1, 1, 1, 1, 1, 1, 1, 1];
+% solver(3) = eigensolverClass(input);
+% % Copy source, angular flux
+% solver(3).solution.fisssrc(:) = solver(1).solution.fisssrc(:);
+% solver(3).solution.scalflux(:) = solver(1).solution.scalflux(:);
+% solver(3).solution.angflux(:) = solver(1).solution.angflux(:);
+% solver(3).step(true);
+% names(3) = {sprintf('Unrodded - %g',solver(1).solution.keff(1))};
