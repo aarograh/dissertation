@@ -24,6 +24,7 @@ classdef inputClass < handle
         mixtures
         mixvols
         subray=false
+        homog=0; %0 mixes subray scalar fluxes, 1 mixes cross-sections and resolves
     end
     
     methods
