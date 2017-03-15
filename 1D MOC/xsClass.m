@@ -4,6 +4,7 @@ classdef xsClass < handle
     %   a single type of material.
     
     properties
+        ID
         name
         scatOrder
         total
@@ -19,11 +20,15 @@ classdef xsClass < handle
     end
     
     methods
-        function obj = xsClass( name, order )
+        function obj = xsClass( ID, name, order )
             %XSCLASS Consructor for xsClass
+            %   ID    - ID for this XSSet
             %   name  - name of the XS set
             %   order - Scattering order for the xsSet
-            
+          
+            if exist('ID')
+                obj.ID = ID;
+            end  
             if exist('name')
                 obj.name = name;
             end

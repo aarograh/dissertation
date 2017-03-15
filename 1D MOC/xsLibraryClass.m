@@ -48,9 +48,9 @@ classdef xsLibraryClass < handle
                 setorder = strread(strtrim(cell2mat(tmpstr(3))));
                 % This branching is needed to prevent matlab from assuming xsSets is a double array
                 if i == 1
-                    obj.xsSets = xsClass(setname, setorder);
+                    obj.xsSets = xsClass(i, setname, setorder);
                 else
-                    obj.xsSets(i) = xsClass(setname, setorder);
+                    obj.xsSets(i) = xsClass(i, setname, setorder);
                 end
                 
                 % Read in absorption, nufission, fission, and chi
@@ -87,7 +87,7 @@ classdef xsLibraryClass < handle
                             obj.xsSets(input.mixtures(j,k)).name);
                     end
                 end
-                obj.xsSets(id) = xsClass(name);
+                obj.xsSets(id) = xsClass(id, name);
                 obj.xsSets(id).nsubxs = 0;
                 obj.xsSets(id).subxs = xsClass();
                 for k=2:length(input.mixtures(j,:))
