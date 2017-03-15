@@ -227,7 +227,6 @@ classdef FixedSourceSolverClass < handle
                     newsource(i) = obj.xsLib.xsSets(matID).scatter(igroup,:)*obj.solution.scalflux(:,i,1);
                 end
                 maxdiff = max(max(abs((oldsource - newsource)./oldsource)),maxdiff);
-                [oldsource(1:10),newsource(1:10)]
             end
             
         end
