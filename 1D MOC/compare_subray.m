@@ -5,6 +5,7 @@ function [ ] = compare_subray( input )
 
 %% Setup
 OnePin7group_mix_fuel_rodded
+oldmap = input.pinmap;
 
 %% Eigensolve
 eSolver = eigensolverClass(input);
@@ -14,16 +15,28 @@ eSolver.solve();
 fssMixed = FixedSourceSolverClass(input, eSolver);
 fssMixed.solve(0,0);
 
-input.pinmap = 3;
+for i=1:length(input.pinmap)
+    if oldmap(i) == 1
+        input.pinmap(i) = 3;
+    end
+end
 fssCR = FixedSourceSolverClass(input, eSolver);
 fssCR.solve(0,0);
 
-input.pinmap = 2;
+for i=1:length(input.pinmap)
+    if oldmap(i) == 1
+        input.pinmap(i) = 2;
+    end
+end
 fssNoCR = FixedSourceSolverClass(input, eSolver);
 fssNoCR.solve(0,0);
 
 %% Sub-ray fixed source solve
-input.pinmap = 1;
+for i=1:length(input.pinmap)
+    if oldmap(i) == 1
+        input.pinmap(i) = 1;
+    end
+end
 input.subray = true;
 fssSubray = FixedSourceSolverClass(input, eSolver);
 fssSubray.solve(0,0);
