@@ -4,7 +4,6 @@ function [ ] = compare_subray( input )
 %is the mixed pin, 2 is the unrodded pin, and 3 is the control rod pin
 
 %% Setup
-OnePin7group_mix_fuel_rodded
 oldmap = input.pinmap;
 
 %% Eigensolve
