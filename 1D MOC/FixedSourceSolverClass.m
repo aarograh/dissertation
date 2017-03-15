@@ -108,8 +108,9 @@ classdef FixedSourceSolverClass < handle
                 else
                     if obj.subray
                         for i=1:length(obj.submesh_vol)
-                            obj.setup( i );
+                            obj.setup_subray( i );
                             obj.sweep( i );
+                            obj.postprocess_subray( i );
                         end
                         if obj.homog == 1
                             obj.setup_subrayHomog( );
@@ -120,8 +121,8 @@ classdef FixedSourceSolverClass < handle
                             obj.postprocess_subray( );
                         end
                     else
-                        obj.setup( 0 );
-                        obj.sweep( 0 );
+                        obj.setup( );
+                        obj.sweep( );
                         obj.postprocess_unified( );
                     end
                 end
@@ -145,34 +146,39 @@ classdef FixedSourceSolverClass < handle
             %   level  - The submesh level being set up
             
             obj.mesh.source(:) = 0.0;
-            if level == 0
-                for i=1:obj.mesh.nfsrcells
-                    matID = obj.mesh.materials(i);
-                    for j=1:obj.xsLib.ngroups
-                        % Use old scalar flux to do Jacobi style iteration
+            for i=1:obj.mesh.nfsrcells
+                matID = obj.mesh.materials(i);
+                for j=1:obj.xsLib.ngroups
+                    % Use old scalar flux to do Jacobi style iteration
+                    obj.mesh.source(j,i) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
+                        obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
+                    obj.mesh.xstr(j,i) = obj.xsLib.xsSets(matID).transport(j);
+                end
+            end
+            
+        end
+
+        function obj = setup_subray( obj, level )
+            %SETUP_SUBRAY Sets up source and XS mesh for fixed source sub-ray MOC problem
+            %   obj   - The FixedSourceSolverClass object to set up
+            %   level - The submesh level being set up
+
+            obj.mesh.source(:) = 0.0;
+            for i=1:obj.mesh.nfsrcells
+                matID = obj.mesh.materials(i);
+                for j=1:obj.xsLib.ngroups
+                    if obj.xsLib.xsSets(matID).nsubxs > 0
+                        obj.mesh.source(j,i) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).subxs(level).chi(j)/obj.solution.keff(1) + ...
+                            obj.xsLib.xsSets(matID).subxs(level).scatter(j,:)*obj.solution.submesh_scalflux(:,i,level))*0.5;
+                        obj.mesh.xstr(j,i) = obj.xsLib.xsSets(matID).subxs(level).transport(j);
+                    else
                         obj.mesh.source(j,i) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
                             obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
                         obj.mesh.xstr(j,i) = obj.xsLib.xsSets(matID).transport(j);
                     end
                 end
-            else
-                for i=1:obj.mesh.nfsrcells
-                    matID = obj.mesh.materials(i);
-                    for j=1:obj.xsLib.ngroups
-                        % Use old scalar flux to do Jacobi style iteration
-                        if obj.xsLib.xsSets(matID).nsubxs > 0
-                            obj.mesh.source(j,i) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).subxs(level).chi(j)/obj.solution.keff(1) + ...
-                                obj.xsLib.xsSets(matID).subxs(level).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
-                            obj.mesh.xstr(j,i) = obj.xsLib.xsSets(matID).subxs(level).transport(j);
-                        else
-                            obj.mesh.source(j,i) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
-                                obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
-                            obj.mesh.xstr(j,i) = obj.xsLib.xsSets(matID).transport(j);
-                        end
-                    end
-                end
             end
-            
+
         end
         
         function obj = setup_subrayHomog( obj )
@@ -213,24 +219,6 @@ classdef FixedSourceSolverClass < handle
             
         end
         
-        function maxdiff = checkConv( obj )
-            %CHECKCONV Checks for convergence of the scattering source
-            %   obj - FixedSourceSolverClass object whose convergence is being checked
-            
-            maxdiff = 0.0;
-            for igroup=1:obj.xsLib.ngroups
-                oldsource = zeros(obj.mesh.nfsrcells,1);
-                newsource = zeros(obj.mesh.nfsrcells,1);
-                for i=1:obj.mesh.nfsrcells
-                    matID = obj.mesh.materials(i);
-                    oldsource(i) = obj.xsLib.xsSets(matID).scatter(igroup,:)*obj.solution.scalflux(:,i,2);
-                    newsource(i) = obj.xsLib.xsSets(matID).scatter(igroup,:)*obj.solution.scalflux(:,i,1);
-                end
-                maxdiff = max(max(abs((oldsource - newsource)./oldsource)),maxdiff);
-            end
-            
-        end
-        
         function obj = postprocess_unified( obj, level )
             %POSTPROCESS_UNIFIED Post-rpocess the sweep result for regular MOC
             %   obj    - The fixedsourcesolver object to post-process
@@ -253,27 +241,32 @@ classdef FixedSourceSolverClass < handle
             
         end
         
-        function obj = postprocess_subray( obj )
+        function obj = postprocess_subray( obj, level )
             %POSTPROCESS_SUBRAY Post-processes the sweep result for sub-ray MOC
             %   obj    - The fixedsourcesolver object to post-process
             
-            obj.solution.scalflux(:,:,1) = 0.0;
-            for j=1:obj.mesh.nfsrcells
-                for k=1:obj.quad.npol
-                    for g=1:obj.xsLib.ngroups
-                        psibar = 0.0;
-                        for i=1:length(obj.submesh_vol)
-                            psibar = psibar+obj.submesh_vol(i)*...
-                                sum(obj.solution.angflux(1,g,k,j:j+1,i));
-                            psibar = psibar+obj.submesh_vol(i)*...
-                                sum(obj.solution.angflux(2,g,k,j:j+1,i));
+            if ~exist('level','var')
+                level = 0;
+            end
+
+            if level == 0
+                obj.solution.scalflux(:,:,1) = 0.0;
+                for i=1:length(obj.submesh_vol)
+                    obj.solution.scalflux(:,:,1) = obj.solution.scalflux(:,:,1) + ...
+                    obj.submesh_vol(i)*obj.solution.submesh_scalflux(:,:,i);
+                end
+            else
+                obj.solution.submesh_scalflux(:,:,level) = 0.0;
+                for j=1:obj.mesh.nfsrcells
+                    for k=1:obj.quad.npol
+                        for g=1:obj.xsLib.ngroups
+                            psibar = sum(sum(obj.solution.angflux(1:2,g,k,j:j+1,level),4),1)*0.5;
+                            obj.solution.submesh_scalflux(g,j,level) = obj.solution.submesh_scalflux(g,j,level) + ...
+                                psibar*obj.quad.weights(k);
                         end
-                        psibar = psibar*0.5;
-                        obj.solution.scalflux(g,j,1) = obj.solution.scalflux(g,j,1) + ...
-                            psibar*obj.quad.weights(k);
                     end
                 end
-           end
+            end
             
         end
         
@@ -282,6 +275,9 @@ classdef FixedSourceSolverClass < handle
             %   obj      - The fixedsourcesolver object to sweep
             %   isubmesh - The submesh level to sweep
             
+            if ~exist('isubmesh','var')
+                isubmesh = 0;
+            end
             if isubmesh == 0
                 isubmesh = 1;
             end
@@ -358,6 +354,25 @@ classdef FixedSourceSolverClass < handle
                     end
                 end
             end
+        end
+        
+        function maxdiff = checkConv( obj )
+            %CHECKCONV Checks for convergence of the scattering source
+            %   obj - FixedSourceSolverClass object whose convergence is being checked
+            
+            maxdiff = 0.0;
+            for igroup=1:obj.xsLib.ngroups
+                oldsource = zeros(obj.mesh.nfsrcells,1);
+                newsource = zeros(obj.mesh.nfsrcells,1);
+                for i=1:obj.mesh.nfsrcells
+                    matID = obj.mesh.materials(i);
+                    oldsource(i) = obj.xsLib.xsSets(matID).scatter(igroup,:)*obj.solution.scalflux(:,i,2);
+                    newsource(i) = obj.xsLib.xsSets(matID).scatter(igroup,:)*obj.solution.scalflux(:,i,1);
+                end
+                % [oldsource,newsource]
+                maxdiff = max(max(abs((oldsource - newsource)./oldsource)),maxdiff);
+            end
+            
         end
     end
     

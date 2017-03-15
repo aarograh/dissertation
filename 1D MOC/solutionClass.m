@@ -11,6 +11,7 @@ classdef solutionClass < handle
         current
         scalflux % First index is current, second is previous iteration
         fisssrc
+        submesh_scalflux
     end
     
     methods
@@ -33,6 +34,9 @@ classdef solutionClass < handle
             obj.scalflux(1:xsLib.ngroups,1:mesh.nfsrcells,1:2) = 1.0;
             obj.BCond = input.BCond;
             obj.fisssrc(1:mesh.nfsrcells,1:2) = 1.0;
+            if nsubmesh > 1
+                obj.submesh_scalflux(1:xsLib.ngroups,1:mesh.nfsrcells,nsubmesh) = 0.0;
+            end
         end
         
         function obj = updateBC( obj )
