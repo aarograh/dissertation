@@ -1,3 +1,5 @@
+function [ ] = postprocess_subrayFSS( input, fssSolver, names)
+%POSTPROCESS_SUBRAYFSS Generates plots for fixed source solves to compare
 
 %% Generate Plots
 close all;
@@ -26,3 +28,5 @@ ylabel('Scalar Flux')
 legend(names);
 grid on;
 grid minor;
+
+end

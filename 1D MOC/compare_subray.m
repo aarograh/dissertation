@@ -1,6 +1,7 @@
-close all;
-clear all;
-clc;
+function [ ] = compare_subray( input )
+%COMPARE_SUBRAY Runs mixed, fully rodded, fully unrodded, and sub-ray
+%calculations for the input case.  It is assumed that pin 1 in the pinmap
+%is the mixed pin, 2 is the unrodded pin, and 3 is the control rod pin
 
 %% Setup
 OnePin7group_mix_fuel_rodded
@@ -18,8 +19,8 @@ fssCR = FixedSourceSolverClass(input, eSolver);
 fssCR.solve(0,0);
 
 input.pinmap = 2;
-fssFuel = FixedSourceSolverClass(input, eSolver);
-fssFuel.solve(0,0);
+fssNoCR = FixedSourceSolverClass(input, eSolver);
+fssNoCR.solve(0,0);
 
 %% Sub-ray fixed source solve
 input.pinmap = 1;
@@ -29,8 +30,10 @@ fssSubray.solve(0,0);
 
 % Post-process
 fssSolver(1) = fssMixed;
-fssSolver(2) = fssFuel;
+fssSolver(2) = fssNoCR;
 fssSolver(3) = fssCR;
 fssSolver(4) = fssSubray;
-names = {'Volume-Homogenized','Fuel','Control Rod','Sub-Ray'};
-postprocess_subray
+names = {'Volume-Mixed','Unrodded','Rodded','Subray'};
+postprocess_subrayFSS(input, fssSolver, names);
+
+end
