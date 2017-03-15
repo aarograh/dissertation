@@ -274,7 +274,6 @@ classdef FixedSourceSolverClass < handle
             if isubmesh == 0
                 obj.solution.scalflux(:,:,1) = 0.0;
                 for i=1:obj.nsubmesh
-                    i
                     obj.solution.scalflux(:,:,1) = obj.solution.scalflux(:,:,1) + ...
                     obj.submesh_vol(i)*obj.solution.submesh_scalflux(:,:,i);
                 end
