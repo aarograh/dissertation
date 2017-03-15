@@ -23,7 +23,7 @@ input.mixvols = [0.5, 0.5];
 % Quadrature
 input.npol = 8;
 % XS Library Info
-input.xsfilename = '1group.xsl';
+input.xsfilename = 'c5g7.xsl';
 input.scattype = 'P0';
 % Boundary Conditions
 input.BCond = ['vacuum';'vacuum'];
