@@ -22,10 +22,12 @@ classdef solutionClass < handle
             %   input - The iput Class container from which to initialize
             
             nsubmesh = 1;
-            for i=1:mesh.nfsrcells
-                if xsLib.xsSets(mesh.materials(i)).nsubxs > 0
-                    nsubmesh = xsLib.xsSets(mesh.materials(i)).nsubxs;
-                    break
+            if input.subray
+                for i=1:mesh.nfsrcells
+                    if xsLib.xsSets(mesh.materials(i)).nsubxs > 0
+                        nsubmesh = xsLib.xsSets(mesh.materials(i)).nsubxs;
+                        break
+                    end
                 end
             end
             obj.keff(1:2) = 1.0;
