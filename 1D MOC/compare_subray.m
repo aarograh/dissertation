@@ -1,5 +1,6 @@
 %% Setup
 oldmap = input.pinmap;
+ninners = 0;
 
 %% Eigensolve
 eSolver = eigensolverClass(input);
@@ -8,7 +9,7 @@ eSolver.solve();
 %% Fixed Source Solves
 % Volume-homogenized solve
 fssMixed = FixedSourceSolverClass(input, eSolver);
-fssMixed.solve(0,0);
+fssMixed.solve(0,ninners);
 
 % Fully rodded solve
 for i=1:length(input.pinmap)
@@ -17,7 +18,7 @@ for i=1:length(input.pinmap)
     end
 end
 fssCR = FixedSourceSolverClass(input, eSolver);
-fssCR.solve(0,0);
+fssCR.solve(0,ninners);
 
 % Fully unrodded solve
 for i=1:length(input.pinmap)
@@ -26,7 +27,7 @@ for i=1:length(input.pinmap)
     end
 end
 fssNoCR = FixedSourceSolverClass(input, eSolver);
-fssNoCR.solve(0,0);
+fssNoCR.solve(0,ninners);
 
 %% Sub-ray fixed source solve
 for i=1:length(input.pinmap)
@@ -36,7 +37,7 @@ for i=1:length(input.pinmap)
 end
 input.subray = true;
 fssSubray = FixedSourceSolverClass(input, eSolver);
-fssSubray.solve(0,0);
+fssSubray.solve(0,ninners);
 
 % Post-process
 fssSolver(1) = fssMixed;
