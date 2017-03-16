@@ -11,7 +11,7 @@ input.pinmap = 1;
 input.pitch = 10.0;
 input.diag = 0; % flat to indicate whether pin moves through narrow (0) or wide (1) water
 % Pin information
-input.pinmats = 1;
+input.pinmats = 4;
 
 input.radii = [ ];
 input.pinmesh = 10;
