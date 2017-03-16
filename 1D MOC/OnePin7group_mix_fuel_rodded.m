@@ -1,3 +1,7 @@
+close all;
+clear all;
+clc;
+
 %% General Input Data
 % 1: Fuel Pin
 % 2: Control Pin
@@ -26,7 +30,7 @@ input.npol = 8;
 input.xsfilename = 'c5g7.xsl';
 input.scattype = 'P0';
 % Boundary Conditions
-input.BCond = ['vacuum';'vacuum'];
+input.BCond = ['reflecting';'reflecting'];
 % Convergence
 input.nouters = 2000;
 input.conv_crit = [1.0e-6 1.0e-6];
