@@ -17,24 +17,24 @@ input.radii = [ 0.4096, 0.475;
     0.4, 0.475;
     0.4, 0.475;
     0.4, 0.475];
-input.pinmesh = [ 15 2 15;
-    15 2 15;
-    15 2 15;
-    15 2 15];
+input.pinmesh = [ 5 1 5;
+    5 1 5;
+    5 1 5;
+    5 1 5];
 % Mixtures
 input.nmixtures = 1;
 input.mixtures = [6, 1, 5];
 input.mixvols = [0.5, 0.5];
 % Quadrature
-input.npol = 32;
+input.npol = 4;
 % XS Library Info
 input.xsfilename = 'c5g7.xsl';
 input.scattype = 'P0';
 % Boundary Conditions
-input.BCond = ['vacuum';'vacuum'];
+input.BCond = ['reflecting';'reflecting'];
 % Convergence
 input.nouters = 2000;
-input.conv_crit = [1.0e-6 1.0e-6];
+input.conv_crit = [1.0e-4 1.0e-4];
 input.verbose = true;
 
 %% Case 1 - 50-50 Mixutre Eigenvalue Case
