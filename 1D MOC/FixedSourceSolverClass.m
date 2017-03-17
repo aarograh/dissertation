@@ -114,7 +114,7 @@ classdef FixedSourceSolverClass < handle
             obj.converged = false;
             inner=0;
             if ~exist('convcrit','var')
-                convcrit=1.0e-3;
+                convcrit=1.0e-4;
             end
             
             while ~obj.converged
@@ -191,10 +191,16 @@ classdef FixedSourceSolverClass < handle
                     if obj.xsLib.xsSets(matID).nsubxs > 0
                         obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).subxs(isubmesh).chi(j)/obj.solution.keff(1) + ...
                             obj.xsLib.xsSets(matID).subxs(isubmesh).scatter(j,:)*obj.solution.submesh_scalflux(:,i,isubmesh))*0.5;
+                        % Commented out bit uses source from homogenized scalar flux, gives terrible results
+                        % obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).subxs(isubmesh).chi(j)/obj.solution.keff(1) + ...
+                        %     obj.xsLib.xsSets(matID).subxs(isubmesh).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
                         obj.mesh.xstr(j,i,isubmesh) = obj.xsLib.xsSets(matID).subxs(isubmesh).transport(j);
                     else
                         obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
-                            obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
+                            obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.submesh_scalflux(:,i,isubmesh))*0.5;
+                        % Commented out bit uses source from homogenized scalar flux, gives terrible results
+                        % obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
+                        %     obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
                         obj.mesh.xstr(j,i,isubmesh) = obj.xsLib.xsSets(matID).transport(j);
                     end
                 end
@@ -207,7 +213,6 @@ classdef FixedSourceSolverClass < handle
             %sweeps
             %   obj - The FixedSourceSolverClass object to set up
             
-            %TODO: update the mesh to have nsubmesh levels
             obj.mesh.source(:) = 0.0;
             nsubmesh = obj.nsubmesh;
             
