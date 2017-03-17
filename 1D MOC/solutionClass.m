@@ -21,23 +21,25 @@ classdef solutionClass < handle
             %   xsLib - The XS library
             %   input - The iput Class container from which to initialize
             
-            nsubmesh = 1;
-            if input.subray
-                for i=1:mesh.nfsrcells
-                    if xsLib.xsSets(mesh.materials(i)).nsubxs > 0
-                        nsubmesh = xsLib.xsSets(mesh.materials(i)).nsubxs;
-                        break
+            if nargin == 3
+                nsubmesh = 1;
+                if input.subray
+                    for i=1:mesh.nfsrcells
+                        if xsLib.xsSets(mesh.materials(i)).nsubxs > 0
+                            nsubmesh = xsLib.xsSets(mesh.materials(i)).nsubxs;
+                            break
+                        end
                     end
                 end
-            end
-            obj.keff(1:2) = 1.0;
-            obj.angflux(1:2,1:xsLib.ngroups,1:input.npol,1:mesh.nfsrcells+1,nsubmesh) = 1.0;
-            obj.current(1:xsLib.ngroups,1:mesh.nfsrcells+1,nsubmesh,1:2) = 0.0;
-            obj.scalflux(1:xsLib.ngroups,1:mesh.nfsrcells,1:2) = 1.0;
-            obj.BCond = input.BCond;
-            obj.fisssrc(1:mesh.nfsrcells,1:2) = 1.0;
-            if nsubmesh > 1
-                obj.submesh_scalflux(1:xsLib.ngroups,1:mesh.nfsrcells,nsubmesh) = 0.0;
+                obj.keff(1:2) = 1.0;
+                obj.angflux(1:2,1:xsLib.ngroups,1:input.npol,1:mesh.nfsrcells+1,nsubmesh) = 1.0;
+                obj.current(1:xsLib.ngroups,1:mesh.nfsrcells+1,nsubmesh,1:2) = 0.0;
+                obj.scalflux(1:xsLib.ngroups,1:mesh.nfsrcells,1:2) = 1.0;
+                obj.BCond = input.BCond;
+                obj.fisssrc(1:mesh.nfsrcells,1:2) = 1.0;
+                if nsubmesh > 1
+                    obj.submesh_scalflux(1:xsLib.ngroups,1:mesh.nfsrcells,nsubmesh) = 0.0;
+                end
             end
         end
         
