@@ -2,31 +2,37 @@
 % externally.  It also assumes that an array of pin IDs swappinids
 % has been set up.  The first index is the mixed pin, the second
 % the absorber pin, and the third the replacement pin
+% Also assums that a getref variable has been set to true or false.
+% True will cause the fully rodded/unrodded cases to run, while false
+% will skip them.  This is used when this script is called repeatedly
+% by another script.
 
 %% Setup
 oldmap = input.pinmap;
 
 %% Volume-homogenized solve
-eSolver = eigensolverClass(input);
-eSolver.solve();
+eSolver(1) = eigensolverClass(input);
+eSolver(1).solve();
 
-%% Fully rodded solve
-for i=1:length(input.pinmap)
-    if oldmap(i) == 1
-        input.pinmap(i) = swappinids(2);
-    end
-end
-eSolver(2) = eigensolverClass(input);
-eSolver(2).solve();
+if getref
+	%% Fully rodded solve
+	for i=1:length(input.pinmap)
+	    if oldmap(i) == 1
+	        input.pinmap(i) = swappinids(2);
+	    end
+	end
+	eSolver(2) = eigensolverClass(input);
+	eSolver(2).solve();
 
-%% Fully unrodded solve
-for i=1:length(input.pinmap)
-    if oldmap(i) == 1
-        input.pinmap(i) = swappinids(3);
-    end
+	%% Fully unrodded solve
+	for i=1:length(input.pinmap)
+	    if oldmap(i) == 1
+	        input.pinmap(i) = swappinids(3);
+	    end
+	end
+	eSolver(3) = eigensolverClass(input);
+	eSolver(3).solve();
 end
-eSolver(3) = eigensolverClass(input);
-eSolver(3).solve();
 
 %% Sub-ray fixed source solve
 for i=1:length(input.pinmap)

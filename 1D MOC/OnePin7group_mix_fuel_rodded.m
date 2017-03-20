@@ -33,7 +33,7 @@ input.scattype = 'P0';
 input.BCond = ['reflecting';'reflecting'];
 % Convergence
 input.nouters = 500;
-input.conv_crit = [1.0e-5 1.0e-5];
+input.conv_crit = [1.0e-4 1.0e-4];
 input.verbose = true;
 
 %% Case 1 - 50-50 Mixutre Eigenvalue Case
