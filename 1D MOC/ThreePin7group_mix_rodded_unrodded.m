@@ -17,9 +17,9 @@ input.pinmats = [6, 2, 1; % Mixture
     1, 2, 1; % Guide Tube
     4, 2, 1]; % Fuel
 
-input.radii = [ 0.4096, 0.475;
-    0.4096, 0.475;
-    0.4096, 0.475;
+input.radii = [ 0.4, 0.475;
+    0.4, 0.475;
+    0.4, 0.475;
     0.4096, 0.475];
 input.pinmesh = [ 5 1 5;
     5 1 5;
