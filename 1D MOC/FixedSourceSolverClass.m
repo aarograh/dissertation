@@ -68,6 +68,10 @@ classdef FixedSourceSolverClass < handle
                         obj.mesh.materials(i,1:obj.nsubmesh) = matID;
                     end
                 end
+                % Initialize submesh flux to the scalar flux
+                for j=1:obj.nsubmesh
+                    obj.solution.submesh_scalflux(:,:,:,j) = obj.solution.scalflux(:,:,:);
+                end
                 obj.mesh.xstr(:,:,1:obj.nsubmesh) = 0.0;
                 obj.mesh.source(:,:,1:obj.nsubmesh) = 0.0;
                 if obj.homog == 1
@@ -214,9 +218,8 @@ classdef FixedSourceSolverClass < handle
             %   obj - The FixedSourceSolverClass object to set up
             
             obj.mesh.source(:) = 0.0;
-            nsubmesh = obj.nsubmesh;
             
-            for k=1:nsubmesh
+            for k=1:obj.nsubmesh
                 obj.postprocess_unified( 1 );
                 scalflux = obj.solution.scalflux(:,:,1)*obj.submesh_vol(k);
                 fisssrc = obj.solution.fisssrc(:,1)*obj.submesh_vol(k);
