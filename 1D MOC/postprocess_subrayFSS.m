@@ -5,6 +5,8 @@ function [ ] = postprocess_subrayFSS( input, fssSolver, names)
 close all;
 xgrid = min(fssSolver(1).mesh.xsedges):input.pitch:max(fssSolver(1).mesh.xsedges);
 xgridminor = min(fssSolver(1).mesh.xsedges):input.pitch:max(fssSolver(1).mesh.xsedges);
+cellcenter = 0.5*(fssSolver(1).mesh.fsredges(1:end-1) + fssSolver(1).mesh.fsredges(2:end));
+celledges = fssSolver(1).mesh.fsredges(1:end);
 linS = {'-',':','--','-.'};
 
 
@@ -12,7 +14,6 @@ linS = {'-',':','--','-.'};
 for igroup=1:fssSolver(1).xsLib.ngroups
 	figure(igroup);
 	hold on;
-	cellcenter = 0.5*(fssSolver(1).mesh.fsredges(1:end-1) + fssSolver(1).mesh.fsredges(2:end));
 	tmp = 0;
 	for i=1:length(fssSolver)
 	    plot(cellcenter,fssSolver(i).solution.scalflux(igroup,:,1),'linestyle',linS{i},'linewidth',2);
