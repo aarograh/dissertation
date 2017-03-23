@@ -14,7 +14,8 @@ classdef FixedSourceSolverClass < handle
         subray=false
         submesh_vol
         nsubmesh=0
-        homog=0 %0 mixes subray scalar fluxes, 1 mixes cross-sections and re-solves
+        npinSubTrack
+        accel=false
     end
     
     methods
@@ -36,7 +37,7 @@ classdef FixedSourceSolverClass < handle
                 obj.initFromEigenSolver( varargin{2});
                 obj.verbose = varargin{1}.verbose;
                 obj.subray = varargin{1}.subray;
-                obj.homog = varargin{1}.homog;
+                obj.npinSubTrack = varargin{1}.npinSubTrack;
             elseif nargin == 3
                 obj.xsLib = varargin{1};
                 obj.quad = varargin{2};
@@ -44,9 +45,9 @@ classdef FixedSourceSolverClass < handle
                 obj.solution = solutionClass(obj.mesh, obj.xsLib, varargin{3});
                 obj.verbose = varargin{3}.verbose;
                 obj.subray = varargin{3}.subray;
-                obj.homog = varargin{3}.homog;
+                obj.npinSubTrack = varargin{3}.npinSubTrack;
             end
-            if obj.subray
+            if obj.subray > 0
                 % Get number of submeshes.  Assume the same number or 0 everywhere
                 for i=1:obj.mesh.nfsrcells
                     if obj.xsLib.xsSets(obj.mesh.materials(i)).nsubxs > 0
@@ -64,23 +65,24 @@ classdef FixedSourceSolverClass < handle
                         for j=1:nsubmesh
                             obj.mesh.materials(i,j) = obj.xsLib.xsSets(matID).subxs(j).ID;
                         end
+                        obj.mesh.ipin(i) = -obj.mesh.ipin(i);
                     else
                         obj.mesh.materials(i,1:obj.nsubmesh) = matID;
                     end
                 end
                 % Initialize submesh flux to the scalar flux
                 for j=1:obj.nsubmesh
-                    obj.solution.submesh_scalflux(:,:,:,j) = obj.solution.scalflux(:,:,:);
+                    obj.solution.submesh_scalflux(:,:,j) = obj.solution.scalflux(:,:,1);
                 end
                 obj.mesh.xstr(:,:,1:obj.nsubmesh) = 0.0;
                 obj.mesh.source(:,:,1:obj.nsubmesh) = 0.0;
-                if obj.homog == 1
-                    i = length(obj.solution.angflux(1,1,1,1,:))+1;
-                    obj.solution.angflux(:,:,:,:,i) = 0.0;
-                    obj.solution.current(:,:,i,:) = 0.0;
-                end
             % Initialize xstr since the mesh doesn't know how many groups there are
             else
+                obj.nsubmesh = 1;
+                obj.submesh_vol = 1.0;
+                for j=1:obj.nsubmesh
+                    obj.solution.submesh_scalflux(:,:,j) = obj.solution.scalflux(:,:,1);
+                end
                 obj.mesh.xstr(1:obj.xsLib.ngroups,1:obj.mesh.nfsrcells,1) = 0.0;
                 obj.mesh.source(1:obj.xsLib.ngroups,1:obj.mesh.nfsrcells,1) = 0.0;
             end
@@ -123,33 +125,39 @@ classdef FixedSourceSolverClass < handle
             
             while ~obj.converged
                 inner = inner + 1;
+                if wCur && ninners == inner
+                    obj.accel = true;
+                else
+                    obj.accel = false;
+                end
                 obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
-                if wCur && inner == ninners
-                    obj.setup( 0 );
-                    obj.sweep_wCur( );
+                if obj.accel
+                    obj.solution.current(:,:,2) = obj.solution.current(:,:,1);
+                end
+                if obj.subray
+                    for i=1:obj.nsubmesh
+                        obj.setup( i );
+                    end
+                    if obj.subray == 1
+                        for i=1:obj.nsubmesh
+                            obj.sweep( i );
+                            obj.postprocess( i );
+                        end
+                        obj.postprocess( 0 );
+                    elseif obj.subray == 2
+                        obj.sweep_subray( );
+                    end
+                else
+                    obj.setup( );
+                    obj.sweep( );
+                    obj.postprocess( );
+                    obj.postprocess( 0 );
+                end
+                if obj.accel
                     obj.solution.scalflux(:,:,1) = obj.relax*obj.solution.scalflux(:,:,1) + ...
                         (1.0-obj.relax)*obj.solution.scalflux(:,:,2);
                     obj.solution.current(:,:,:,1) = obj.relax*obj.solution.current(:,:,:,1) + ...
                         (1.0-obj.relax)*obj.solution.current(:,:,:,2);
-                else
-                    if obj.subray
-                        for i=1:obj.nsubmesh
-                            obj.setup_subray( i );
-                            obj.sweep( i );
-                            obj.postprocess_subray( i );
-                        end
-                        if obj.homog == 1
-                            obj.setup_subrayHomog( );
-                            obj.sweep( obj.nsubmesh+1 );
-                            obj.postprocess_unified( obj.nsubmesh+1 );
-                        else
-                            obj.postprocess_subray( );
-                        end
-                    else
-                        obj.setup( );
-                        obj.sweep( );
-                        obj.postprocess_unified( );
-                    end
                 end
                 scatconv = obj.checkConv( );
                 if obj.verbose
@@ -164,119 +172,36 @@ classdef FixedSourceSolverClass < handle
             end
             
         end
-        
-        function obj = setup( obj, isubmesh )
-            %SETUP Sets up source and XS mesh for fixed source MOC problem
-            %   obj    - The FixedSourceSolverClass object to set up
-            %   isubmesh  - The submesh level being set up
-            
-            obj.mesh.source(:) = 0.0;
-            for i=1:obj.mesh.nfsrcells
-                matID = obj.mesh.materials(i,1);
-                for j=1:obj.xsLib.ngroups
-                    % Use old scalar flux to do Jacobi style iteration
-                    obj.mesh.source(j,i,1) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
-                        obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
-                    obj.mesh.xstr(j,i,1) = obj.xsLib.xsSets(matID).transport(j);
-                end
-            end
-            
-        end
 
-        function obj = setup_subray( obj, isubmesh )
+        function obj = setup( obj, isubmesh )
             %SETUP_SUBRAY Sets up source and XS mesh for fixed source sub-ray MOC problem
             %   obj   - The FixedSourceSolverClass object to set up
             %   isubmesh - The submesh level being set up
 
+            if ~exist('isubmesh','var')
+                isubmesh = 1;
+            end
             obj.mesh.source(:,:,isubmesh) = 0.0;
             for i=1:obj.mesh.nfsrcells
                 matID = obj.mesh.materials(i,isubmesh);
                 for j=1:obj.xsLib.ngroups
-                    if obj.xsLib.xsSets(matID).nsubxs > 0
-                        obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).subxs(isubmesh).chi(j)/obj.solution.keff(1) + ...
-                            obj.xsLib.xsSets(matID).subxs(isubmesh).scatter(j,:)*obj.solution.submesh_scalflux(:,i,isubmesh))*0.5;
-                        % Commented out bit uses source from homogenized scalar flux, gives terrible results
-                        % obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).subxs(isubmesh).chi(j)/obj.solution.keff(1) + ...
-                        %     obj.xsLib.xsSets(matID).subxs(isubmesh).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
-                        obj.mesh.xstr(j,i,isubmesh) = obj.xsLib.xsSets(matID).subxs(isubmesh).transport(j);
-                    else
-                        obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
-                            obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.submesh_scalflux(:,i,isubmesh))*0.5;
-                        % Commented out bit uses source from homogenized scalar flux, gives terrible results
-                        % obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
-                        %     obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
-                        obj.mesh.xstr(j,i,isubmesh) = obj.xsLib.xsSets(matID).transport(j);
-                    end
+                    obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
+                        obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.submesh_scalflux(:,i,isubmesh))*0.5;
+                    % Commented out bit uses source from homogenized scalar flux, gives terrible results
+                    % obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
+                    %     obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
+                    obj.mesh.xstr(j,i,isubmesh) = obj.xsLib.xsSets(matID).transport(j);
                 end
             end
 
         end
         
-        function obj = setup_subrayHomog( obj )
-            %SETUP_SUBRAYHOMOG Sets up source and XS mesh for final fixed source MOC problem after subray
-            %sweeps
-            %   obj - The FixedSourceSolverClass object to set up
-            
-            obj.mesh.source(:) = 0.0;
-            
-            for k=1:obj.nsubmesh
-                obj.postprocess_unified( 1 );
-                scalflux = obj.solution.scalflux(:,:,1)*obj.submesh_vol(k);
-                fisssrc = obj.solution.fisssrc(:,1)*obj.submesh_vol(k);
-                for i=1:obj.mesh.nfsrcells
-                    matID = obj.mesh.materials(i);
-                    for j=1:obj.xsLib.ngroups
-                        if obj.xsLib.xsSets(matID).nsubxs > 0
-                            obj.mesh.source(j,i) = obj.mesh.source(j,i) + ...
-                                (fisssrc(i)*obj.xsLib.xsSets(matID).subxs(k).chi(j)/obj.solution.keff(1) + ...
-                                obj.xsLib.xsSets(matID).subxs(k).scatter(j,:)*scalflux(:,i))*0.5;
-                            obj.mesh.xstr(j,i) = obj.mesh.xstr(j,i) + ...
-                                fisssrc(i)*obj.xsLib.xsSets(matID).subxs(k).transport(j)*scalflux(j,i);
-                        else
-                            obj.mesh.source(j,i) = obj.mesh.source(j,i) + ...
-                                (fisssrc(i)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
-                                obj.xsLib.xsSets(matID).scatter(j,:)*scalflux(:,i))*0.5;
-                            obj.mesh.xstr(j,i) = obj.mesh.xstr(j,i) + ...
-                                fisssrc(i)*obj.xsLib.xsSets(matID).transport(j)*scalflux(j,i);
-                        end
-                    end
-                end
-            end
-            
-            for i=1:obj.mesh.nfsrcells
-                obj.mesh.xstr(:,i) = obj.mesh.xstr(:,i)./scalflux(:,i);
-            end
-            
-        end
-        
-        function obj = postprocess_unified( obj, isubmesh )
-            %POSTPROCESS_UNIFIED Post-rpocess the sweep result for regular MOC
-            %   obj    - The fixedsourcesolver object to post-process
-            %   isubmesh  - The submesh level to use
-            
-            if ~exist('isubmesh','var')
-                isubmesh = 1;
-            end
-            obj.solution.scalflux(:,:,1) = 0.0;
-            for j=1:obj.mesh.nfsrcells
-                for k=1:obj.quad.npol
-                    for g=1:obj.xsLib.ngroups
-                        psibar = sum(obj.solution.angflux(1,g,k,j:j+1,isubmesh));
-                        psibar = 0.5*(psibar + sum(obj.solution.angflux(2,g,k,j:j+1,isubmesh)));
-                        obj.solution.scalflux(g,j,1) = obj.solution.scalflux(g,j,1) + ...
-                            psibar*obj.quad.weights(k);
-                    end
-                end
-            end
-            
-        end
-        
-        function obj = postprocess_subray( obj, isubmesh )
+        function obj = postprocess( obj, isubmesh )
             %POSTPROCESS_SUBRAY Post-processes the sweep result for sub-ray MOC
             %   obj    - The fixedsourcesolver object to post-process
             
             if ~exist('isubmesh','var')
-                isubmesh = 0;
+                isubmesh = 1;
             end
 
             if isubmesh == 0
@@ -296,6 +221,19 @@ classdef FixedSourceSolverClass < handle
                         end
                     end
                 end
+                if obj.accel
+                    obj.solution.current(:,:,:,1) = 0.0;
+                    for j=1:obj.mesh.nfsrcells+1;
+                        for k=1:obj.quad.npol
+                            for g=1:obj.xsLib.ngroups
+                                psibar = (obj.solution.angflux(1,g,k,j,isubmesh)- ...
+                                    obj.solution.angflux(2,g,k,j,isubmesh))*0.5;
+                                obj.solution.current(g,j,isubmesh,1) = obj.solution.current(g,j,isubmesh,1) + ...
+                                    psibar*obj.quad.cosines(k)*obj.quad.weights(k);
+                            end
+                        end
+                    end
+                end
             end
             
         end
@@ -306,9 +244,6 @@ classdef FixedSourceSolverClass < handle
             %   isubmesh - The submesh level to sweep
             
             if ~exist('isubmesh','var')
-                isubmesh = 0;
-            end
-            if isubmesh == 0
                 isubmesh = 1;
             end
             for i=1:obj.mesh.nfsrcells
@@ -333,58 +268,295 @@ classdef FixedSourceSolverClass < handle
             end
         end
         
-        function obj = sweep_wCur( obj )
-            %SWEEP_wCur Performs 1D MOC sweep for a single ray with multiple polars while
-            %           tallying currents for cmfd acceleration
-            %   obj    - The eigensolver object to sweep
+%         function obj = sweep( obj )
+%             %SWEEP_SUBRAY Performs 1D MOC sweep using subray
+%             %   obj - The fixedsourcesolver object to sweep
+%             
+%             % Some initialization
+%             obj.solution.scalflux(:,:,1) = 0.0;
+%             obj.solution.submesh_scalflux(:) = 0.0;
+%             psi_in(1:obj.nsubmesh,1:2,1:obj.xsLib.ngroups,1:obj.quad.npol) = 0.0;
+%             fthispin = 0;
+%             bthispin = max(obj.mesh.ipin)+1;
+%             fpinspast = obj.npinSubTrack+1;
+%             bpinspast = obj.npinSubTrack+1;
+%             
+%             % Loop over all regions
+%             for i=1:obj.mesh.nfsrcells
+%                 k = obj.mesh.nfsrcells-i+1;
+%                 % Figure out if subray splitting should be done.  obj.mesh.ipin contains the pin
+%                 % index for each FSR.  If the index is negative, then sub meshes are present in that
+%                 % pin and we always do subray.  If it is positive, then we increment a counter each
+%                 % time a new pin is entered.  If that counter is <= npinSubTrack, then we continue
+%                 % doing subray.  Otherwise, the boundary condition is combined and single rays are
+%                 % used instead.
+%                 flastpin = fthispin;
+%                 blastpin = bthispin;
+%                 fthispin = -abs(obj.mesh.ipin(i)); % Uncommented provides separate solutions
+%                 bthispin = -abs(obj.mesh.ipin(k)); % Commented gives true subray solution
+%                 if fthispin < 0
+%                     fpinspast = 0;
+%                 elseif fthispin ~= abs(flastpin)
+%                     fpinspast = fpinspast + 1;
+%                 end
+%                 if fpinspast <= obj.npinSubTrack
+%                     lforwardSub = true;
+%                 else
+%                     lforwardSub = false;
+%                 end
+%                 if bthispin < 0
+%                     bpinspast = 0;
+%                 elseif bthispin ~= abs(blastpin)
+%                     bpinspast = bpinspast + 1;
+%                 end
+%                 if bpinspast <= obj.npinSubTrack
+%                     lbackwardSub = true;
+%                 else
+%                     lbackwardSub = false;
+%                 end
+%                 % Set boundary conditions
+%                 for j=1:obj.quad.npol
+%                     for igroup=1:obj.xsLib.ngroups
+%                         for isubmesh=1:obj.nsubmesh
+%                             psi_in(isubmesh,1,igroup,j) = obj.solution.angflux(1,igroup,j,i,isubmesh);
+%                             psi_in(isubmesh,2,igroup,j) = obj.solution.angflux(2,igroup,j,k+1,isubmesh);
+%                         end
+%                     end
+%                 end
+%                 for j=1:obj.quad.npol
+%                     dx1 = (obj.mesh.fsredges(i+1) - obj.mesh.fsredges(i))/obj.quad.cosines(j);
+%                     dx2 = (obj.mesh.fsredges(k+1) - obj.mesh.fsredges(k))/obj.quad.cosines(j);
+%                     for igroup=1:obj.xsLib.ngroups
+%                         i
+%                         j
+%                         igroup
+%                         % Forward sweep with submeshes
+%                         if lforwardSub
+%                             for isubmesh=1:obj.nsubmesh
+%                                 isubmesh
+%                                 % Forward Sweep
+%                                 exparg = exp(-obj.mesh.xstr(igroup,i,isubmesh)*dx1);
+%                                 obj.solution.angflux(1,igroup,j,i+1,isubmesh) = ...
+%                                     psi_in(isubmesh,1,igroup,j)*exparg + ...
+%                                     obj.mesh.source(igroup,i,isubmesh)/obj.mesh.xstr(igroup,i,isubmesh)*(1.0-exparg);
+% 
+%                                 psibar = sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh),4)*0.5;
+%                                 contribution = psibar*obj.quad.weights(j);
+%                                 obj.solution.submesh_scalflux(igroup,i,isubmesh) = ...
+%                                     obj.solution.submesh_scalflux(igroup,i,isubmesh) + contribution;
+%                                 obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
+%                                     contribution*obj.submesh_vol(isubmesh);
+%                                 exparg
+%                                 psi_in(isubmesh,1,igroup,j)
+%                                 obj.solution.angflux(1,igroup,j,i+1,isubmesh)
+%                                 psibar
+%                                 contribution
+%                                 obj.solution.submesh_scalflux(igroup,i,isubmesh)
+%                             end
+%                         % Forward sweep without submeshes
+%                         else
+%                             % Forward Sweep
+%                             exparg = exp(-obj.mesh.xstr(igroup,i,1)*dx1);
+%                             obj.solution.angflux(1,igroup,j,i+1,:) = ...
+%                                 (obj.submesh_vol*psi_in(:,1,igroup,j))*exparg + ...
+%                                 obj.mesh.source(igroup,i,1)/obj.mesh.xstr(igroup,i,1)*(1.0 - exparg);
+%                             
+%                             psibar = sum(obj.solution.angflux(1,igroup,j,i:i+1,1),4)*0.5;
+%                             contribution = psibar*obj.quad.weights(j);
+%                             obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
+%                                 contribution;
+%                             obj.solution.submesh_scalflux(igroup,i,:) = obj.solution.submesh_scalflux(igroup,i,:) + ...
+%                                 contribution;
+%                             exparg
+%                             obj.submesh_vol*psi_in(:,1,igroup,j),obj.submesh_vol,psi_in(:,1,igroup,j)
+%                             obj.solution.angflux(1,igroup,j,i+1,:)
+%                             psibar
+%                             contribution
+%                             obj.solution.submesh_scalflux(igroup,i,:)
+%                         end
+%                             obj.solution.scalflux(igroup,i,1)
+%                         
+%                         % Backward sweep with submeshes
+%                         if lbackwardSub
+%                             for isubmesh=1:obj.nsubmesh
+%                                 isubmesh
+%                                 % Backward Sweep
+%                                 exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
+%                                 obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
+%                                     psi_in(isubmesh,2,igroup,j)*exparg + ...
+%                                     obj.mesh.source(igroup,k,isubmesh)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
+% 
+%                                 psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh),4)*0.5;
+%                                 contribution = psibar*obj.quad.weights(j);
+%                                 obj.solution.submesh_scalflux(igroup,k,isubmesh) = ...
+%                                     obj.solution.submesh_scalflux(igroup,k,isubmesh) + contribution;
+%                                 obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
+%                                     contribution*obj.submesh_vol(isubmesh);
+%                                 exparg
+%                                 psi_in(isubmesh,2,igroup,j)
+%                                 obj.solution.angflux(2,igroup,j,k,isubmesh)
+%                                 psibar
+%                                 contribution
+%                                 obj.solution.submesh_scalflux(igroup,k,isubmesh)
+%                             end
+%                         % Backward sweep without submeshes
+%                         else
+%                             % Backward Sweep
+%                             exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
+%                             obj.solution.angflux(2,igroup,j,k,:) = ...
+%                                 (obj.submesh_vol*psi_in(:,2,igroup,j))*exparg + ...
+%                                 obj.mesh.source(igroup,k,1)/obj.mesh.xstr(igroup,k,1)*(1.0 - exparg);
+%                             
+%                             psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,1),4)*0.5;
+%                             contribution = psibar*obj.quad.weights(j);
+%                             obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
+%                                 contribution;
+%                             obj.solution.submesh_scalflux(igroup,k,:) = obj.solution.submesh_scalflux(igroup,k,:) + ...
+%                                 contribution;
+%                             exparg
+%                             obj.submesh_vol*psi_in(:,1,igroup,j)
+%                             obj.solution.angflux(2,igroup,j,k,:)
+%                             psibar
+%                             contribution
+%                             obj.solution.submesh_scalflux(igroup,k,:)
+%                         end
+%                             obj.solution.scalflux(igroup,k,1)
+%                     end
+%                 end
+%             end
+%             
+%         end
+        
+        function obj = sweep_subray( obj )
+            %SWEEP_SUBRAY Performs 1D MOC sweep using subray
+            %   obj - The fixedsourcesolver object to sweep
             
-            %TODO: update to handle sub-ray
-            isubmesh = 1;
-            obj.solution.scalflux(:,:,2) = obj.solution.scalflux(:,:,1);
-            obj.solution.current(:,:,2) = obj.solution.current(:,:,1);
+            % Some initialization
             obj.solution.scalflux(:,:,1) = 0.0;
-            obj.solution.current(:,:,1) = 0.0;
-            for j = 1:obj.quad.npol
-                for igroup=1:obj.xsLib.ngroups
-                    obj.solution.current(igroup,1,isubmesh,1) = obj.solution.current(igroup,1,isubmesh,1) + ...
-                        obj.solution.angflux(1,igroup,j,1,isubmesh)*obj.quad.cosines(j)*obj.quad.weights(j);
-                    obj.solution.current(igroup,end,isubmesh,1) = obj.solution.current(igroup,end,isubmesh,1) - ...
-                        obj.solution.angflux(2,igroup,j,end,isubmesh)*obj.quad.cosines(j)*obj.quad.weights(j);
-                end
-            end
-
+            obj.solution.submesh_scalflux(:) = 0.0;
+            psi_in(1:obj.nsubmesh,1:2,1:obj.xsLib.ngroups,1:obj.quad.npol) = 0.0;
+            fthispin = 0;
+            bthispin = max(obj.mesh.ipin)+1;
+            fpinspast = obj.npinSubTrack+1;
+            bpinspast = obj.npinSubTrack+1;
+            
+            % Loop over all regions
             for i=1:obj.mesh.nfsrcells
                 k = obj.mesh.nfsrcells-i+1;
+                % Figure out if subray splitting should be done.  obj.mesh.ipin contains the pin
+                % index for each FSR.  If the index is negative, then sub meshes are present in that
+                % pin and we always do subray.  If it is positive, then we increment a counter each
+                % time a new pin is entered.  If that counter is <= npinSubTrack, then we continue
+                % doing subray.  Otherwise, the boundary condition is combined and single rays are
+                % used instead.
+                flastpin = fthispin;
+                blastpin = bthispin;
+                fthispin = obj.mesh.ipin(i);
+                bthispin = obj.mesh.ipin(k);
+                if fthispin < 0
+                    fpinspast = 0;
+                elseif fthispin ~= abs(flastpin)
+                    fpinspast = fpinspast + 1;
+                end
+                if fpinspast <= obj.npinSubTrack
+                    lforwardSub = true;
+                else
+                    lforwardSub = false;
+                end
+                if bthispin < 0
+                    bpinspast = 0;
+                elseif bthispin ~= abs(blastpin)
+                    bpinspast = bpinspast + 1;
+                end
+                if bpinspast <= obj.npinSubTrack
+                    lbackwardSub = true;
+                else
+                    lbackwardSub = false;
+                end
+                % Set boundary conditions
+                for j=1:obj.quad.npol
+                    for igroup=1:obj.xsLib.ngroups
+                        for isubmesh=1:obj.nsubmesh
+                            psi_in(isubmesh,1,igroup,j) = obj.solution.angflux(1,igroup,j,i,isubmesh);
+                            psi_in(isubmesh,2,igroup,j) = obj.solution.angflux(2,igroup,j,k+1,isubmesh);
+                        end
+                    end
+                end
                 for j=1:obj.quad.npol
                     dx1 = (obj.mesh.fsredges(i+1) - obj.mesh.fsredges(i))/obj.quad.cosines(j);
                     dx2 = (obj.mesh.fsredges(k+1) - obj.mesh.fsredges(k))/obj.quad.cosines(j);
                     for igroup=1:obj.xsLib.ngroups
-                        % Forward Sweep
-                        exparg = exp(-obj.mesh.xstr(igroup,i)*dx1);
-                        obj.solution.angflux(1,igroup,j,i+1,isubmesh) = ...
-                            obj.solution.angflux(1,igroup,j,i,isubmesh)*exparg + ...
-                            obj.mesh.source(igroup,i)/obj.mesh.xstr(igroup,i)*(1 - exparg);
+                        % Forward sweep with submeshes
+                        if lforwardSub
+                            for isubmesh=1:obj.nsubmesh
+                                % Forward Sweep
+                                exparg = exp(-obj.mesh.xstr(igroup,i,isubmesh)*dx1);
+                                obj.solution.angflux(1,igroup,j,i+1,isubmesh) = ...
+                                    psi_in(isubmesh,1,igroup,j)*exparg + ...
+                                    obj.mesh.source(igroup,i,isubmesh)/obj.mesh.xstr(igroup,i,isubmesh)*(1.0-exparg);
 
-                        psibar = 0.5*sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh));
-                        obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
-                            psibar*obj.quad.weights(j);
-                        obj.solution.current(igroup,i+1,isubmesh,1) = obj.solution.current(igroup,i+1,isubmesh,1) + ...
-                            obj.solution.angflux(1,igroup,j,i+1,isubmesh)*obj.quad.cosines(j)*obj.quad.weights(j);
+                                psibar = sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh),4)*0.5;
+                                contribution = psibar*obj.quad.weights(j);
+                                obj.solution.submesh_scalflux(igroup,i,isubmesh) = ...
+                                    obj.solution.submesh_scalflux(igroup,i,isubmesh) + contribution;
+                                obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
+                                    contribution*obj.submesh_vol(isubmesh);
+                            end
+                        % Forward sweep without submeshes
+                        else
+                            for isubmesh=1:obj.nsubmesh
+                                % Forward Sweep
+                                exparg = exp(-obj.mesh.xstr(igroup,i,isubmesh)*dx1);
+                                obj.solution.angflux(1,igroup,j,i+1,isubmesh) = ...
+                                    psi_in(isubmesh,1,igroup,j)*exparg + ...
+                                    obj.mesh.source(igroup,i,isubmesh)/obj.mesh.xstr(igroup,i,isubmesh)*(1.0-exparg);
 
-                        % Backward Sweep
-                        exparg = exp(-obj.mesh.xstr(igroup,k)*dx2);
-                        obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
-                            obj.solution.angflux(2,igroup,j,k+1,isubmesh)*exparg + ...
-                            obj.mesh.source(igroup,k)/obj.mesh.xstr(igroup,k)*(1 - exparg);
+                                psibar = sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh),4)*0.5;
+                                contribution = psibar*obj.quad.weights(j);
+                                obj.solution.submesh_scalflux(igroup,i,isubmesh) = ...
+                                    obj.solution.submesh_scalflux(igroup,i,isubmesh) + contribution;
+                                obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
+                                    contribution*obj.submesh_vol(isubmesh);
+                            end
+                        end
+                        
+                        % Backward sweep with submeshes
+                        if lbackwardSub
+                            for isubmesh=1:obj.nsubmesh
+                                % Backward Sweep
+                                exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
+                                obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
+                                    psi_in(isubmesh,2,igroup,j)*exparg + ...
+                                    obj.mesh.source(igroup,k,isubmesh)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
 
-                        psibar = 0.5*sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh));
-                        obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
-                            psibar*obj.quad.weights(j);
-                        obj.solution.current(igroup,k,isubmesh,1) = obj.solution.current(igroup,k,isubmesh,1) - ...
-                            obj.solution.angflux(2,igroup,j,k,isubmesh)*obj.quad.cosines(j)*obj.quad.weights(j);
+                                psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh),4)*0.5;
+                                contribution = psibar*obj.quad.weights(j);
+                                obj.solution.submesh_scalflux(igroup,k,isubmesh) = ...
+                                    obj.solution.submesh_scalflux(igroup,k,isubmesh) + contribution;
+                                obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
+                                    contribution*obj.submesh_vol(isubmesh);
+                            end
+                        % Backward sweep without submeshes
+                        else
+                            for isubmesh=1:obj.nsubmesh
+                                % Backward Sweep
+                                exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
+                                obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
+                                    psi_in(isubmesh,2,igroup,j)*exparg + ...
+                                    obj.mesh.source(igroup,k,isubmesh)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
+
+                                psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh),4)*0.5;
+                                contribution = psibar*obj.quad.weights(j);
+                                obj.solution.submesh_scalflux(igroup,k,isubmesh) = ...
+                                    obj.solution.submesh_scalflux(igroup,k,isubmesh) + contribution;
+                                obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
+                                    contribution*obj.submesh_vol(isubmesh);
+                            end
+                        end
                     end
                 end
             end
+            
         end
         
         function maxdiff = checkConv( obj )

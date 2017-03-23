@@ -32,7 +32,7 @@ classdef solutionClass < handle
                     end
                 end
                 obj.keff(1:2) = 1.0;
-                obj.angflux(1:2,1:xsLib.ngroups,1:input.npol,1:mesh.nfsrcells+1,nsubmesh) = 1.0;
+                obj.angflux(1:2,1:xsLib.ngroups,1:input.npol/2,1:mesh.nfsrcells+1,1:nsubmesh) = 1.0;
                 obj.current(1:xsLib.ngroups,1:mesh.nfsrcells+1,nsubmesh,1:2) = 0.0;
                 obj.scalflux(1:xsLib.ngroups,1:mesh.nfsrcells,1:2) = 1.0;
                 obj.BCond = input.BCond;

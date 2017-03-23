@@ -23,8 +23,8 @@ classdef inputClass < handle
         nmixtures=0
         mixtures
         mixvols
-        subray=false
-        homog=0; %0 mixes subray scalar fluxes, 1 mixes cross-sections and resolves
+        subray=0
+        npinSubTrack=10000000
     end
     
     methods

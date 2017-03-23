@@ -16,6 +16,7 @@ classdef meshClass < handle
         nxscells
         nfsrcells
         materials
+        ipin
         xsedges
         fsredges
         xstr
@@ -73,6 +74,7 @@ classdef meshClass < handle
                     % Set fine mesh
                     obj.fsredges(oldnfinecells+1:nfinecells+1,1) = obj.xsedges(ncoarsecells):width/...
                         input.pinmesh(input.pinmap(i),j):obj.xsedges(ncoarsecells+1);
+                    obj.ipin(oldnfinecells+1:nfinecells+1) = i;
                 end
                 % Loop in -> out over cell descriptions
                 for j=1:nreg
@@ -98,6 +100,7 @@ classdef meshClass < handle
                     % Set fine mesh
                     obj.fsredges(oldnfinecells+1:nfinecells+1,1) = obj.xsedges(ncoarsecells):width/...
                         input.pinmesh(input.pinmap(i),j):obj.xsedges(ncoarsecells+1);
+                    obj.ipin(oldnfinecells+1:nfinecells+1) = i;
                 end
             end
             obj.nxscells = ncoarsecells;
