@@ -6,7 +6,6 @@ close all;
 xgrid = min(fssSolver(1).mesh.xsedges):input.pitch:max(fssSolver(1).mesh.xsedges);
 xgridminor = min(fssSolver(1).mesh.xsedges):input.pitch:max(fssSolver(1).mesh.xsedges);
 cellcenter = 0.5*(fssSolver(1).mesh.fsredges(1:end-1) + fssSolver(1).mesh.fsredges(2:end));
-celledges = fssSolver(1).mesh.fsredges(1:end);
 linS = {'-',':','--','-.'};
 
 
