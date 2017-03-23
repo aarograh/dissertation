@@ -23,7 +23,7 @@ input.scattype = 'P0';
 % Boundary Conditions
 input.BCond = ['vacuum';'vacuum'];
 % Convergence
-input.nouters = 89;
+input.nouters = 152;
 if exist('verbose','var')
     input.verbose = verbose;
 else
@@ -35,7 +35,7 @@ solver = eigensolverClass(input);
 solver.solve( );
 
 %% Test Solution
-ref = 0.2926313;
+ref = 0.4277943;
 if abs(solver.fss.solution.keff(1) - ref) < 1.0e-6 && solver.converged
     display(sprintf('Test Passed!'));
     result = 1;
