@@ -21,10 +21,10 @@ input.radii = [ 0.4, 0.475;
     0.4, 0.475;
     0.4, 0.475;
     0.4096, 0.475];
-input.pinmesh = [ 5 1 5;
-    5 1 5;
-    5 1 5;
-    5 1 5];
+input.pinmesh = [ 2 1 1;
+    2 1 1;
+    2 1 1;
+    2 1 1];
 % Quadrature
 input.npol = 16;
 % XS Library Info
@@ -36,6 +36,7 @@ input.BCond = ['reflecting';'reflecting'];
 input.nouters = 2000;
 input.conv_crit = [1.0e-5 1.0e-5];
 input.verbose = true;
+input.npinSubTrack = 3;
 
 %% Case 1 - 50-50 Mixutre Eigenvalue Case
 input.pinmap = [4, 4, 1, 4, 1, 4, 1, 4, 4, 4];

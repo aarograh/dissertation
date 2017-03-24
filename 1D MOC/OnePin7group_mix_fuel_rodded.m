@@ -21,13 +21,13 @@ input.pinmats = [6, 2, 1; % Mixture
 input.radii = [ 0.4096, 0.475;
     0.4096, 0.475;
     0.4096, 0.475];
-input.pinmesh = [ 5 1 5;
+input.pinmesh = [ 2 1 1;
     5 1 5;
     5 1 5];
 % Quadrature
-input.npol = 16;
+input.npol = 2;
 % XS Library Info
-input.xsfilename = 'c5g7.xsl';
+input.xsfilename = '1group.xsl';
 input.scattype = 'P0';
 % Boundary Conditions
 input.BCond = ['reflecting';'reflecting'];
