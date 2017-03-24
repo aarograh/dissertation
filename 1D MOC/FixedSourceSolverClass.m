@@ -310,7 +310,7 @@ classdef FixedSourceSolverClass < handle
                 bthispin = obj.mesh.ipin(k);
                 if fthispin < 0
                     fpinspast = 0;
-                elseif fthispin ~= abs(flastpin)
+                elseif fthispin ~= flastpin
                     fpinspast = fpinspast + 1;
                 end
                 if fpinspast <= obj.npinSubTrack
@@ -320,7 +320,7 @@ classdef FixedSourceSolverClass < handle
                 end
                 if bthispin < 0
                     bpinspast = 0;
-                elseif bthispin ~= abs(blastpin)
+                elseif bthispin ~= blastpin
                     bpinspast = bpinspast + 1;
                 end
                 if bpinspast <= obj.npinSubTrack
