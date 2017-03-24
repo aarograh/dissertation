@@ -70,6 +70,20 @@ classdef FixedSourceSolverClass < handle
                         obj.mesh.materials(i,1:obj.nsubmesh) = matID;
                     end
                 end
+                % Set pin index flag to turn subray on and off
+                if obj.nsubmesh > 1
+                    pinids = zeros(max(obj.mesh.ipin),1);
+                    for i=1:obj.mesh.nfsrcells
+                        if obj.mesh.ipin(i) < 0
+                            pinids(abs(obj.mesh.ipin(i))) = 1;
+                        end
+                    end
+                    for i=1:obj.mesh.nfsrcells
+                            if pinids(abs(obj.mesh.ipin(i)))
+                            obj.mesh.ipin(i) = -abs(obj.mesh.ipin(i));
+                        end
+                    end
+                end
                 % Initialize submesh flux to the scalar flux
                 for j=1:obj.nsubmesh
                     obj.solution.submesh_scalflux(:,:,j) = obj.solution.scalflux(:,:,1);
@@ -268,165 +282,6 @@ classdef FixedSourceSolverClass < handle
             end
         end
         
-%         function obj = sweep( obj )
-%             %SWEEP_SUBRAY Performs 1D MOC sweep using subray
-%             %   obj - The fixedsourcesolver object to sweep
-%             
-%             % Some initialization
-%             obj.solution.scalflux(:,:,1) = 0.0;
-%             obj.solution.submesh_scalflux(:) = 0.0;
-%             psi_in(1:obj.nsubmesh,1:2,1:obj.xsLib.ngroups,1:obj.quad.npol) = 0.0;
-%             fthispin = 0;
-%             bthispin = max(obj.mesh.ipin)+1;
-%             fpinspast = obj.npinSubTrack+1;
-%             bpinspast = obj.npinSubTrack+1;
-%             
-%             % Loop over all regions
-%             for i=1:obj.mesh.nfsrcells
-%                 k = obj.mesh.nfsrcells-i+1;
-%                 % Figure out if subray splitting should be done.  obj.mesh.ipin contains the pin
-%                 % index for each FSR.  If the index is negative, then sub meshes are present in that
-%                 % pin and we always do subray.  If it is positive, then we increment a counter each
-%                 % time a new pin is entered.  If that counter is <= npinSubTrack, then we continue
-%                 % doing subray.  Otherwise, the boundary condition is combined and single rays are
-%                 % used instead.
-%                 flastpin = fthispin;
-%                 blastpin = bthispin;
-%                 fthispin = -abs(obj.mesh.ipin(i)); % Uncommented provides separate solutions
-%                 bthispin = -abs(obj.mesh.ipin(k)); % Commented gives true subray solution
-%                 if fthispin < 0
-%                     fpinspast = 0;
-%                 elseif fthispin ~= abs(flastpin)
-%                     fpinspast = fpinspast + 1;
-%                 end
-%                 if fpinspast <= obj.npinSubTrack
-%                     lforwardSub = true;
-%                 else
-%                     lforwardSub = false;
-%                 end
-%                 if bthispin < 0
-%                     bpinspast = 0;
-%                 elseif bthispin ~= abs(blastpin)
-%                     bpinspast = bpinspast + 1;
-%                 end
-%                 if bpinspast <= obj.npinSubTrack
-%                     lbackwardSub = true;
-%                 else
-%                     lbackwardSub = false;
-%                 end
-%                 % Set boundary conditions
-%                 for j=1:obj.quad.npol
-%                     for igroup=1:obj.xsLib.ngroups
-%                         for isubmesh=1:obj.nsubmesh
-%                             psi_in(isubmesh,1,igroup,j) = obj.solution.angflux(1,igroup,j,i,isubmesh);
-%                             psi_in(isubmesh,2,igroup,j) = obj.solution.angflux(2,igroup,j,k+1,isubmesh);
-%                         end
-%                     end
-%                 end
-%                 for j=1:obj.quad.npol
-%                     dx1 = (obj.mesh.fsredges(i+1) - obj.mesh.fsredges(i))/obj.quad.cosines(j);
-%                     dx2 = (obj.mesh.fsredges(k+1) - obj.mesh.fsredges(k))/obj.quad.cosines(j);
-%                     for igroup=1:obj.xsLib.ngroups
-%                         i
-%                         j
-%                         igroup
-%                         % Forward sweep with submeshes
-%                         if lforwardSub
-%                             for isubmesh=1:obj.nsubmesh
-%                                 isubmesh
-%                                 % Forward Sweep
-%                                 exparg = exp(-obj.mesh.xstr(igroup,i,isubmesh)*dx1);
-%                                 obj.solution.angflux(1,igroup,j,i+1,isubmesh) = ...
-%                                     psi_in(isubmesh,1,igroup,j)*exparg + ...
-%                                     obj.mesh.source(igroup,i,isubmesh)/obj.mesh.xstr(igroup,i,isubmesh)*(1.0-exparg);
-% 
-%                                 psibar = sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh),4)*0.5;
-%                                 contribution = psibar*obj.quad.weights(j);
-%                                 obj.solution.submesh_scalflux(igroup,i,isubmesh) = ...
-%                                     obj.solution.submesh_scalflux(igroup,i,isubmesh) + contribution;
-%                                 obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
-%                                     contribution*obj.submesh_vol(isubmesh);
-%                                 exparg
-%                                 psi_in(isubmesh,1,igroup,j)
-%                                 obj.solution.angflux(1,igroup,j,i+1,isubmesh)
-%                                 psibar
-%                                 contribution
-%                                 obj.solution.submesh_scalflux(igroup,i,isubmesh)
-%                             end
-%                         % Forward sweep without submeshes
-%                         else
-%                             % Forward Sweep
-%                             exparg = exp(-obj.mesh.xstr(igroup,i,1)*dx1);
-%                             obj.solution.angflux(1,igroup,j,i+1,:) = ...
-%                                 (obj.submesh_vol*psi_in(:,1,igroup,j))*exparg + ...
-%                                 obj.mesh.source(igroup,i,1)/obj.mesh.xstr(igroup,i,1)*(1.0 - exparg);
-%                             
-%                             psibar = sum(obj.solution.angflux(1,igroup,j,i:i+1,1),4)*0.5;
-%                             contribution = psibar*obj.quad.weights(j);
-%                             obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
-%                                 contribution;
-%                             obj.solution.submesh_scalflux(igroup,i,:) = obj.solution.submesh_scalflux(igroup,i,:) + ...
-%                                 contribution;
-%                             exparg
-%                             obj.submesh_vol*psi_in(:,1,igroup,j),obj.submesh_vol,psi_in(:,1,igroup,j)
-%                             obj.solution.angflux(1,igroup,j,i+1,:)
-%                             psibar
-%                             contribution
-%                             obj.solution.submesh_scalflux(igroup,i,:)
-%                         end
-%                             obj.solution.scalflux(igroup,i,1)
-%                         
-%                         % Backward sweep with submeshes
-%                         if lbackwardSub
-%                             for isubmesh=1:obj.nsubmesh
-%                                 isubmesh
-%                                 % Backward Sweep
-%                                 exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
-%                                 obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
-%                                     psi_in(isubmesh,2,igroup,j)*exparg + ...
-%                                     obj.mesh.source(igroup,k,isubmesh)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
-% 
-%                                 psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh),4)*0.5;
-%                                 contribution = psibar*obj.quad.weights(j);
-%                                 obj.solution.submesh_scalflux(igroup,k,isubmesh) = ...
-%                                     obj.solution.submesh_scalflux(igroup,k,isubmesh) + contribution;
-%                                 obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
-%                                     contribution*obj.submesh_vol(isubmesh);
-%                                 exparg
-%                                 psi_in(isubmesh,2,igroup,j)
-%                                 obj.solution.angflux(2,igroup,j,k,isubmesh)
-%                                 psibar
-%                                 contribution
-%                                 obj.solution.submesh_scalflux(igroup,k,isubmesh)
-%                             end
-%                         % Backward sweep without submeshes
-%                         else
-%                             % Backward Sweep
-%                             exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
-%                             obj.solution.angflux(2,igroup,j,k,:) = ...
-%                                 (obj.submesh_vol*psi_in(:,2,igroup,j))*exparg + ...
-%                                 obj.mesh.source(igroup,k,1)/obj.mesh.xstr(igroup,k,1)*(1.0 - exparg);
-%                             
-%                             psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,1),4)*0.5;
-%                             contribution = psibar*obj.quad.weights(j);
-%                             obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
-%                                 contribution;
-%                             obj.solution.submesh_scalflux(igroup,k,:) = obj.solution.submesh_scalflux(igroup,k,:) + ...
-%                                 contribution;
-%                             exparg
-%                             obj.submesh_vol*psi_in(:,1,igroup,j)
-%                             obj.solution.angflux(2,igroup,j,k,:)
-%                             psibar
-%                             contribution
-%                             obj.solution.submesh_scalflux(igroup,k,:)
-%                         end
-%                             obj.solution.scalflux(igroup,k,1)
-%                     end
-%                 end
-%             end
-%             
-%         end
-        
         function obj = sweep_subray( obj )
             %SWEEP_SUBRAY Performs 1D MOC sweep using subray
             %   obj - The fixedsourcesolver object to sweep
@@ -482,76 +337,51 @@ classdef FixedSourceSolverClass < handle
                         end
                     end
                 end
+                if ~lforwardSub
+                    for j=1:obj.quad.npol
+                        for igroup=1:obj.xsLib.ngroups
+                            psi_in(:,1,igroup,j) = obj.submesh_vol*psi_in(:,1,igroup,j);
+                        end
+                    end
+                end
+                if ~lbackwardSub
+                    for j=1:obj.quad.npol
+                        for igroup=1:obj.xsLib.ngroups
+                            psi_in(:,2,igroup,j) = obj.submesh_vol*psi_in(:,2,igroup,j);
+                        end
+                    end
+                end
                 for j=1:obj.quad.npol
                     dx1 = (obj.mesh.fsredges(i+1) - obj.mesh.fsredges(i))/obj.quad.cosines(j);
                     dx2 = (obj.mesh.fsredges(k+1) - obj.mesh.fsredges(k))/obj.quad.cosines(j);
                     for igroup=1:obj.xsLib.ngroups
                         % Forward sweep with submeshes
-                        if lforwardSub
-                            for isubmesh=1:obj.nsubmesh
-                                % Forward Sweep
-                                exparg = exp(-obj.mesh.xstr(igroup,i,isubmesh)*dx1);
-                                obj.solution.angflux(1,igroup,j,i+1,isubmesh) = ...
-                                    psi_in(isubmesh,1,igroup,j)*exparg + ...
-                                    obj.mesh.source(igroup,i,isubmesh)/obj.mesh.xstr(igroup,i,isubmesh)*(1.0-exparg);
+                        for isubmesh=1:obj.nsubmesh
+                            % Forward Sweep
+                            exparg = exp(-obj.mesh.xstr(igroup,i,isubmesh)*dx1);
+                            obj.solution.angflux(1,igroup,j,i+1,isubmesh) = ...
+                                psi_in(isubmesh,1,igroup,j)*exparg + ...
+                                obj.mesh.source(igroup,i,isubmesh)/obj.mesh.xstr(igroup,i,isubmesh)*(1.0-exparg);
 
-                                psibar = sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh),4)*0.5;
-                                contribution = psibar*obj.quad.weights(j);
-                                obj.solution.submesh_scalflux(igroup,i,isubmesh) = ...
-                                    obj.solution.submesh_scalflux(igroup,i,isubmesh) + contribution;
-                                obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
-                                    contribution*obj.submesh_vol(isubmesh);
-                            end
-                        % Forward sweep without submeshes
-                        else
-                            for isubmesh=1:obj.nsubmesh
-                                % Forward Sweep
-                                exparg = exp(-obj.mesh.xstr(igroup,i,isubmesh)*dx1);
-                                obj.solution.angflux(1,igroup,j,i+1,isubmesh) = ...
-                                    psi_in(isubmesh,1,igroup,j)*exparg + ...
-                                    obj.mesh.source(igroup,i,isubmesh)/obj.mesh.xstr(igroup,i,isubmesh)*(1.0-exparg);
+                            psibar = sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh),4)*0.5;
+                            contribution = psibar*obj.quad.weights(j);
+                            obj.solution.submesh_scalflux(igroup,i,isubmesh) = ...
+                                obj.solution.submesh_scalflux(igroup,i,isubmesh) + contribution;
+                            obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
+                                contribution*obj.submesh_vol(isubmesh);
+                            
+                            % Backward Sweep
+                            exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
+                            obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
+                                psi_in(isubmesh,2,igroup,j)*exparg + ...
+                                obj.mesh.source(igroup,k,isubmesh)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
 
-                                psibar = sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh),4)*0.5;
-                                contribution = psibar*obj.quad.weights(j);
-                                obj.solution.submesh_scalflux(igroup,i,isubmesh) = ...
-                                    obj.solution.submesh_scalflux(igroup,i,isubmesh) + contribution;
-                                obj.solution.scalflux(igroup,i,1) = obj.solution.scalflux(igroup,i,1) + ...
-                                    contribution*obj.submesh_vol(isubmesh);
-                            end
-                        end
-                        
-                        % Backward sweep with submeshes
-                        if lbackwardSub
-                            for isubmesh=1:obj.nsubmesh
-                                % Backward Sweep
-                                exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
-                                obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
-                                    psi_in(isubmesh,2,igroup,j)*exparg + ...
-                                    obj.mesh.source(igroup,k,isubmesh)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
-
-                                psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh),4)*0.5;
-                                contribution = psibar*obj.quad.weights(j);
-                                obj.solution.submesh_scalflux(igroup,k,isubmesh) = ...
-                                    obj.solution.submesh_scalflux(igroup,k,isubmesh) + contribution;
-                                obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
-                                    contribution*obj.submesh_vol(isubmesh);
-                            end
-                        % Backward sweep without submeshes
-                        else
-                            for isubmesh=1:obj.nsubmesh
-                                % Backward Sweep
-                                exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
-                                obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
-                                    psi_in(isubmesh,2,igroup,j)*exparg + ...
-                                    obj.mesh.source(igroup,k,isubmesh)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
-
-                                psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh),4)*0.5;
-                                contribution = psibar*obj.quad.weights(j);
-                                obj.solution.submesh_scalflux(igroup,k,isubmesh) = ...
-                                    obj.solution.submesh_scalflux(igroup,k,isubmesh) + contribution;
-                                obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
-                                    contribution*obj.submesh_vol(isubmesh);
-                            end
+                            psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh),4)*0.5;
+                            contribution = psibar*obj.quad.weights(j);
+                            obj.solution.submesh_scalflux(igroup,k,isubmesh) = ...
+                                obj.solution.submesh_scalflux(igroup,k,isubmesh) + contribution;
+                            obj.solution.scalflux(igroup,k,1) = obj.solution.scalflux(igroup,k,1) + ...
+                                contribution*obj.submesh_vol(isubmesh);
                         end
                     end
                 end
