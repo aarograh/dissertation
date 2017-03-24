@@ -290,6 +290,7 @@ classdef FixedSourceSolverClass < handle
             obj.solution.scalflux(:,:,1) = 0.0;
             obj.solution.submesh_scalflux(:) = 0.0;
             psi_in(1:obj.nsubmesh,1:2,1:obj.xsLib.ngroups,1:obj.quad.npol) = 0.0;
+            source(1:obj.nsubmesh,1:2,1:obj.xsLib.ngroups) = 0.0;
             fthispin = 0;
             bthispin = max(obj.mesh.ipin)+1;
             fpinspast = obj.npinSubTrack+1;
@@ -328,7 +329,7 @@ classdef FixedSourceSolverClass < handle
                 else
                     lbackwardSub = false;
                 end
-                % Set boundary conditions
+                % Set boundary conditions and source
                 for j=1:obj.quad.npol
                     for igroup=1:obj.xsLib.ngroups
                         for isubmesh=1:obj.nsubmesh
@@ -337,11 +338,20 @@ classdef FixedSourceSolverClass < handle
                         end
                     end
                 end
+                for igroup=1:obj.xsLib.ngroups
+                    for isubmesh=1:obj.nsubmesh
+                        source(isubmesh,:,igroup) = obj.mesh.source(igroup,i,isubmesh);
+                    end
+                end
+                % Modify source and boundary condition if subray shouldn't be used
                 if ~lforwardSub
                     for j=1:obj.quad.npol
                         for igroup=1:obj.xsLib.ngroups
                             psi_in(:,1,igroup,j) = obj.submesh_vol*psi_in(:,1,igroup,j);
                         end
+                    end
+                    for igroup=1:obj.xsLib.ngroups
+                        source(:,1,igroup) = obj.submesh_vol*source(:,1,igroup);
                     end
                 end
                 if ~lbackwardSub
@@ -349,6 +359,9 @@ classdef FixedSourceSolverClass < handle
                         for igroup=1:obj.xsLib.ngroups
                             psi_in(:,2,igroup,j) = obj.submesh_vol*psi_in(:,2,igroup,j);
                         end
+                    end
+                    for igroup=1:obj.xsLib.ngroups
+                        source(:,2,igroup) = obj.submesh_vol*source(:,2,igroup);
                     end
                 end
                 for j=1:obj.quad.npol
@@ -361,7 +374,7 @@ classdef FixedSourceSolverClass < handle
                             exparg = exp(-obj.mesh.xstr(igroup,i,isubmesh)*dx1);
                             obj.solution.angflux(1,igroup,j,i+1,isubmesh) = ...
                                 psi_in(isubmesh,1,igroup,j)*exparg + ...
-                                obj.mesh.source(igroup,i,isubmesh)/obj.mesh.xstr(igroup,i,isubmesh)*(1.0-exparg);
+                                source(isubmesh,1,igroup)/obj.mesh.xstr(igroup,i,isubmesh)*(1.0-exparg);
 
                             psibar = sum(obj.solution.angflux(1,igroup,j,i:i+1,isubmesh),4)*0.5;
                             contribution = psibar*obj.quad.weights(j);
@@ -374,7 +387,7 @@ classdef FixedSourceSolverClass < handle
                             exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
                             obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
                                 psi_in(isubmesh,2,igroup,j)*exparg + ...
-                                obj.mesh.source(igroup,k,isubmesh)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
+                                source(isubmesh,1,igroup)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
 
                             psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh),4)*0.5;
                             contribution = psibar*obj.quad.weights(j);
