@@ -40,14 +40,24 @@ for i=1:length(input.pinmap)
         input.pinmap(i) = swappinids(1);
     end
 end
-input.subray = true;
+input.subray = 1;
 eSolver(4) = eigensolverClass(input);
 eSolver(4).solve();
 
+input.subray = 2;
+input.npinSubTrack = 0;
+eSolver(5) = eigensolverClass(input);
+eSolver(5).solve();
+input.npinSubTrack = 1;
+eSolver(6) = eigensolverClass(input);
+eSolver(6).solve();
+input.npinSubTrack = 2;
+eSolver(7) = eigensolverClass(input);
+eSolver(7).solve();
+
 % Post-process
-fssSolver(1) = eSolver(1).fss;
-fssSolver(2) = eSolver(2).fss;
-fssSolver(3) = eSolver(3).fss;
-fssSolver(4) = eSolver(4).fss;
-names = {'Volume-Mixed','Rodded','Unrodded','Subray'};
-postprocess_subrayFSS(input, fssSolver, names);
+for i=1:length(eSolver)
+    fssSolver(i) = eSolver(i).fss;
+end
+names = {'Volume-Mixed','Rodded','Unrodded','Subray','Subray - Recombination'};
+% postprocess_subrayFSS(input, fssSolver, names);
