@@ -1,5 +1,6 @@
 TenPin7group_mix_rodded_unrodded
-percent = 1;
+% ThreePin7group_mix_rodded_unrodded
+percent = 10;
 ncase = 0;
 for i=percent:percent:100-percent
 	ncase = ncase + 1;
@@ -11,11 +12,12 @@ for i=percent:percent:100-percent
 	input.mixvols = [i/100, (100-i)/100];
 	input.subray = false;
 	compare_subrayES;
-	solutions(1,ncase) = fssSolver(1).solution;
-	solutions(2,ncase) = fssSolver(2).solution;
-	solutions(3,ncase) = fssSolver(3).solution;
-	solutions(4,ncase) = fssSolver(4).solution;
+    for j=1:length(fssSolver)
+        solutions(j,ncase) = fssSolver(j).solution;
+    end
 	close all;
 end
 
-save workspaces/TenPin_withdrawal.mat;
+afsdiasdf
+
+% save workspaces/TenPin_withdrawal.mat;
