@@ -340,7 +340,8 @@ classdef FixedSourceSolverClass < handle
                 end
                 for igroup=1:obj.xsLib.ngroups
                     for isubmesh=1:obj.nsubmesh
-                        source(isubmesh,:,igroup) = obj.mesh.source(igroup,i,isubmesh);
+                        source(isubmesh,1,igroup) = obj.mesh.source(igroup,i,isubmesh);
+                        source(isubmesh,2,igroup) = obj.mesh.source(igroup,k,isubmesh);
                     end
                 end
                 % Modify source and boundary condition if subray shouldn't be used
@@ -387,7 +388,7 @@ classdef FixedSourceSolverClass < handle
                             exparg = exp(-obj.mesh.xstr(igroup,k,isubmesh)*dx2);
                             obj.solution.angflux(2,igroup,j,k,isubmesh) = ...
                                 psi_in(isubmesh,2,igroup,j)*exparg + ...
-                                source(isubmesh,1,igroup)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
+                                source(isubmesh,2,igroup)/obj.mesh.xstr(igroup,k,isubmesh)*(1.0 - exparg);
 
                             psibar = sum(obj.solution.angflux(2,igroup,j,k:k+1,isubmesh),4)*0.5;
                             contribution = psibar*obj.quad.weights(j);
