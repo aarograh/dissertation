@@ -54,7 +54,6 @@ classdef solutionClass < handle
                 elseif strcmp(strtrim(obj.BCond(1,:)),'reflecting')
                     obj.angflux(1,:,:,1,:) = obj.angflux(2,:,:,1,:);
                 end
-                obj.angflux(1,:,:,2:end,:) = 0.0;
             end
             if ischar(obj.BCond(2))
                 if strcmp(strtrim(obj.BCond(2,:)),'vacuum')
@@ -62,8 +61,9 @@ classdef solutionClass < handle
                 elseif strcmp(strtrim(obj.BCond(2,:)),'reflecting')
                     obj.angflux(2,:,:,end,:) = obj.angflux(1,:,:,end,:);
                 end
-                obj.angflux(2,:,:,1:end-1,:) = 0.0;
             end
+            obj.angflux(1,:,:,2:end,:) = 0.0;
+            obj.angflux(2,:,:,1:end-1,:) = 0.0;
             
         end
         
