@@ -89,9 +89,9 @@ classdef FixedSourceSolverClass < handle
                     obj.bipin(1:obj.mesh.nfsrcells) = obj.mesh.ipin(:);
                     k = obj.mesh.nfsrcells+1;
                     fthispin = 0;
-                    bthispin = max(abs(obj.bipin));
-                    fpinspast = 0;
-                    bpinspast = 0;
+                    bthispin = max(abs(obj.bipin))+1;
+                    fpinspast = obj.npinSubTrack+1;
+                    bpinspast = obj.npinSubTrack+1;
                     for i=1:obj.mesh.nfsrcells
                         k = k-1;
                         flastpin = fthispin;
@@ -104,7 +104,7 @@ classdef FixedSourceSolverClass < handle
                             fpinspast = fpinspast + 1;
                         end
                         if fpinspast <= obj.npinSubTrack
-                            obj.fipin(i) = -obj.fipin(i);
+                            obj.fipin(i) = -abs(obj.fipin(i));
                         end
                         if bthispin < 0
                             bpinspast = 0;
@@ -112,7 +112,7 @@ classdef FixedSourceSolverClass < handle
                             bpinspast = bpinspast + 1;
                         end
                         if bpinspast <= obj.npinSubTrack
-                            obj.bipin(k) = -obj.bipin(k);
+                            obj.bipin(k) = -abs(obj.bipin(k));
                         end
                     end
                 end
@@ -240,9 +240,6 @@ classdef FixedSourceSolverClass < handle
                         obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
                             obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
                     end
-                    % Commented out bit uses source from homogenized scalar flux, gives terrible results
-                    % obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
-                    %     obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
                     obj.mesh.xstr(j,i,isubmesh) = obj.xsLib.xsSets(matID).transport(j);
                 end
             end
@@ -330,58 +327,22 @@ classdef FixedSourceSolverClass < handle
             obj.solution.submesh_scalflux(:) = 0.0;
             psi_in(1:obj.nsubmesh,1:2,1:obj.xsLib.ngroups,1:obj.quad.npol) = 0.0;
             source(1:obj.nsubmesh,1:2,1:obj.xsLib.ngroups) = 0.0;
-            fthispin = 0;
-            bthispin = max(obj.mesh.ipin)+1;
-            fpinspast = obj.npinSubTrack+1;
-            bpinspast = obj.npinSubTrack+1;
             
             % Loop over all regions
             for i=1:obj.mesh.nfsrcells
                 k = obj.mesh.nfsrcells-i+1;
-                % Figure out if subray splitting should be done.  obj.mesh.ipin contains the pin
-                % index for each FSR.  If the index is negative, then sub meshes are present in that
-                % pin and we always do subray.  If it is positive, then we increment a counter each
-                % time a new pin is entered.  If that counter is <= npinSubTrack, then we continue
-                % doing subray.  Otherwise, the boundary condition is combined and single rays are
-                % used instead.
-                flastpin = fthispin;
-                blastpin = bthispin;
-                fthispin = obj.fipin(i);
-                bthispin = obj.bipin(k);
-                if fthispin < 0
+                % If fipin is negative, we do subray in the forward direction
+                if obj.fipin(i) < 0
                     lforwardSub = true;
                 else
                     lforwardSub = false;
                 end
-                if bthispin < 0
+                % If bipin is negative, we do subray in the backward direction
+                if obj.bipin(k) < 0
                     lbackwardSub = true;
                 else
                     lbackwardSub = false;
                 end
-%                 flastpin = fthispin;
-%                 blastpin = bthispin;
-%                 fthispin = obj.mesh.ipin(i);
-%                 bthispin = obj.mesh.ipin(k);
-%                 if fthispin < 0
-%                     fpinspast = 0;
-%                 elseif fthispin ~= flastpin
-%                     fpinspast = fpinspast + 1;
-%                 end
-%                 if fpinspast <= obj.npinSubTrack
-%                     lforwardSub = true;
-%                 else
-%                     lforwardSub = false;
-%                 end
-%                 if bthispin < 0
-%                     bpinspast = 0;
-%                 elseif bthispin ~= blastpin
-%                     bpinspast = bpinspast + 1;
-%                 end
-%                 if bpinspast <= obj.npinSubTrack
-%                     lbackwardSub = true;
-%                 else
-%                     lbackwardSub = false;
-%                 end
                 % Set boundary conditions and source
                 for j=1:obj.quad.npol
                     for igroup=1:obj.xsLib.ngroups
