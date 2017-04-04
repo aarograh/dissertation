@@ -16,6 +16,8 @@ classdef FixedSourceSolverClass < handle
         nsubmesh=0
         npinSubTrack
         accel=false
+        fipin
+        bipin
     end
     
     methods
@@ -79,8 +81,38 @@ classdef FixedSourceSolverClass < handle
                         end
                     end
                     for i=1:obj.mesh.nfsrcells
-                            if pinids(abs(obj.mesh.ipin(i)))
+                        if pinids(abs(obj.mesh.ipin(i)))
                             obj.mesh.ipin(i) = -abs(obj.mesh.ipin(i));
+                        end
+                    end
+                    obj.fipin(1:obj.mesh.nfsrcells) = obj.mesh.ipin(:);
+                    obj.bipin(1:obj.mesh.nfsrcells) = obj.mesh.ipin(:);
+                    k = obj.mesh.nfsrcells+1;
+                    fthispin = 0;
+                    bthispin = max(abs(obj.bipin));
+                    fpinspast = 0;
+                    bpinspast = 0;
+                    for i=1:obj.mesh.nfsrcells
+                        k = k-1;
+                        flastpin = fthispin;
+                        blastpin = bthispin;
+                        fthispin = obj.mesh.ipin(i);
+                        bthispin = obj.mesh.ipin(k);
+                        if fthispin < 0
+                            fpinspast = 0;
+                        elseif fthispin ~= flastpin
+                            fpinspast = fpinspast + 1;
+                        end
+                        if fpinspast <= obj.npinSubTrack
+                            obj.fipin(i) = -obj.fipin(i);
+                        end
+                        if bthispin < 0
+                            bpinspast = 0;
+                        elseif bthispin ~= blastpin
+                            bpinspast = bpinspast + 1;
+                        end
+                        if bpinspast <= obj.npinSubTrack
+                            obj.bipin(k) = -obj.bipin(k);
                         end
                     end
                 end
@@ -99,6 +131,8 @@ classdef FixedSourceSolverClass < handle
                 end
                 obj.mesh.xstr(1:obj.xsLib.ngroups,1:obj.mesh.nfsrcells,1) = 0.0;
                 obj.mesh.source(1:obj.xsLib.ngroups,1:obj.mesh.nfsrcells,1) = 0.0;
+                obj.fipin(1:obj.mesh.nfsrcells) = 0;
+                obj.bipin(1:obj.mesh.nfsrcells) = 0;
             end
         end
         
@@ -199,8 +233,13 @@ classdef FixedSourceSolverClass < handle
             for i=1:obj.mesh.nfsrcells
                 matID = obj.mesh.materials(i,isubmesh);
                 for j=1:obj.xsLib.ngroups
-                    obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
-                        obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.submesh_scalflux(:,i,isubmesh))*0.5;
+                    if obj.fipin(i) < 0 || obj.bipin(i) < 0
+                        obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
+                            obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.submesh_scalflux(:,i,isubmesh))*0.5;
+                    else
+                        obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
+                            obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
+                    end
                     % Commented out bit uses source from homogenized scalar flux, gives terrible results
                     % obj.mesh.source(j,i,isubmesh) = (obj.solution.fisssrc(i,1)*obj.xsLib.xsSets(matID).chi(j)/obj.solution.keff(1) + ...
                     %     obj.xsLib.xsSets(matID).scatter(j,:)*obj.solution.scalflux(:,i,2))*0.5;
@@ -307,28 +346,42 @@ classdef FixedSourceSolverClass < handle
                 % used instead.
                 flastpin = fthispin;
                 blastpin = bthispin;
-                fthispin = obj.mesh.ipin(i);
-                bthispin = obj.mesh.ipin(k);
+                fthispin = obj.fipin(i);
+                bthispin = obj.bipin(k);
                 if fthispin < 0
-                    fpinspast = 0;
-                elseif fthispin ~= flastpin
-                    fpinspast = fpinspast + 1;
-                end
-                if fpinspast <= obj.npinSubTrack
                     lforwardSub = true;
                 else
                     lforwardSub = false;
                 end
                 if bthispin < 0
-                    bpinspast = 0;
-                elseif bthispin ~= blastpin
-                    bpinspast = bpinspast + 1;
-                end
-                if bpinspast <= obj.npinSubTrack
                     lbackwardSub = true;
                 else
                     lbackwardSub = false;
                 end
+%                 flastpin = fthispin;
+%                 blastpin = bthispin;
+%                 fthispin = obj.mesh.ipin(i);
+%                 bthispin = obj.mesh.ipin(k);
+%                 if fthispin < 0
+%                     fpinspast = 0;
+%                 elseif fthispin ~= flastpin
+%                     fpinspast = fpinspast + 1;
+%                 end
+%                 if fpinspast <= obj.npinSubTrack
+%                     lforwardSub = true;
+%                 else
+%                     lforwardSub = false;
+%                 end
+%                 if bthispin < 0
+%                     bpinspast = 0;
+%                 elseif bthispin ~= blastpin
+%                     bpinspast = bpinspast + 1;
+%                 end
+%                 if bpinspast <= obj.npinSubTrack
+%                     lbackwardSub = true;
+%                 else
+%                     lbackwardSub = false;
+%                 end
                 % Set boundary conditions and source
                 for j=1:obj.quad.npol
                     for igroup=1:obj.xsLib.ngroups
