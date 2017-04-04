@@ -332,13 +332,13 @@ classdef FixedSourceSolverClass < handle
             for i=1:obj.mesh.nfsrcells
                 k = obj.mesh.nfsrcells-i+1;
                 % If fipin is negative, we do subray in the forward direction
-                if obj.fipin(i) < 0
+                if obj.fipin(i) < 0 || obj.bipin(i) < 0
                     lforwardSub = true;
                 else
                     lforwardSub = false;
                 end
                 % If bipin is negative, we do subray in the backward direction
-                if obj.bipin(k) < 0
+                if obj.bipin(k) < 0 || obj.fipin(k) < 0
                     lbackwardSub = true;
                 else
                     lbackwardSub = false;
