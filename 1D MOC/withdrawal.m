@@ -1,5 +1,6 @@
-TenPin7group_mix_rodded_unrodded
+% TenPin7group_mix_rodded_unrodded
 % ThreePin7group_mix_rodded_unrodded
+p4a_centerAssem
 percent = 10;
 ncase = 0;
 for i=percent:percent:100-percent
@@ -18,6 +19,4 @@ for i=percent:percent:100-percent
 	close all;
 end
 
-afsdiasdf
-
-% save workspaces/TenPin_withdrawal.mat;
+postprocess_withdrawal
