@@ -59,5 +59,3 @@ eSolver(7).solve();
 for i=1:length(eSolver)
     fssSolver(i) = eSolver(i).fss;
 end
-names = {'Volume-Mixed','Rodded','Unrodded','Subray','Subray - Recombination'};
-% postprocess_subrayFSS(input, fssSolver, names);
