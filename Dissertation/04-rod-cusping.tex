@@ -77,48 +77,17 @@ Unfortunately, moving away from nodal methods to higher fidelity transport codes
 
 The code CRX-2K \cite{cho2015CRX2d1dFusionDecusping} uses the 2D/1D fusion method to perform LWR simulations.  To address the rod cusping problem in this code, a modified version of the ISI method is applied, called the Neighbor Spectral Index (NSI) method.  The NSI method uses the same methodology as the ISI with one modification.  Because the 2D/1D fusion method does not require standalone calculations to generate homogenized cross-sections, the spectral index must be calculated on-the-fly during the 2D/1D iteration.  To do this, the neighboring node above the PRN is used to obtain a rodded spectral index, and the neighboring node below the PRN is used to obtain an unrodded spectral index.  These two indexes are then used with the rodded and unrodded cross-sections and volume fractions to obtain homogenized cross-sections for the PRN.  This method causes significant improvements over other decusping methods and requires negligible additional computation since the fluxes are stored for every region already.
 
-\subsubsection{Sub-Plane Decusping}\label{sss:ntracerDecusping}
+\subsubsection{Subplane Decusping}\label{sss:ntracerDecusping}
 
 Another 2D/1D code is nTRACER, which is under active development by Seoul National University \cite{RyuBEAVRSnTRACER2015}.  To address rod cusping effects in nTRACER, Jung and Joo developed a more general method than the polynomial correction method used by MPACT \cite{ICAPPcontrolRodDecuspingNTRACER}.  This method pre-generates correction factors at the start of a simulation, rather than relying on hard-coded corrections.  To do this, the assembly that will have a partially inserted control rod is identified, and a single-plane 3x3 assembly problem is set up using the partially-rodded assembly and its neighbors.  The radial and axial cusping effects are then determined separately.  First, the radial cusping effects are determined by performing 2D MOC calculations on the 3x3 sub-domain with the rod fully inserted and fully withdrawn.  This provides radial flux profiles in the rodded assembly for both rodded and unrodded regions, as well as current coupling coefficients for CMFD for the rodded and unrodded CMFD nodes.  Once this is done, the rod is simulated at positions of 25\%, 50\%, and 75\% withdrawn from the plane.  To reduce runtime, these calculations are done using only 3D sub-plane CMFD, using the heterogeneous rodded and unrodded cross-section for the appropriate sub-planes.  This generates axial flux profiles for the full MOC plane for each of the possible rod positions.  During the full-core 2D/1D calculation, these axial flux profiles are then used to generate improved homogenized cross-sections for the MOC calculation using equation.
 \begin{equation}\label{e:nTRACERdecusping}
 \overline{\Sigma_i} = \frac{\phi_{rad,i}^R \phi_{ax,i}^R \Sigma_i^R h^R + \phi_{rad,i}^U \phi_{ax,i}^U \Sigma_i^U h^U}{\phi_{rad,i}^R \phi_{ax,i}^R h^R + \phi_{rad,i}^U \phi_{ax,i}^U h^U}\ .
 \end{equation}
 
-\subsubsection{Polynomial Corrections}\label{sss:polynomialDecusping}
+\subsubsection{Approximate Flux Weighting Method}\label{sss:gehinAFW}
 
-MPACT currently uses a simple polynomial correction to the volume fractions used to homogenize the control rod \cite{MC2015_VCS_Cycle_Depletion}.  To develop this method, a 3x3 assembly was set up with a control rod in the center assembly.  This problem was simulated with the rod tip at nine different positions in the plane.  These simulations were then repeated, but with the axial mesh refined so the rod tip aligned with a plane boundary.  The k$_{eff}$ differences between the two sets of simulations were fitted with a sixth-order polynomial which is used in MPACT to reduce the volume fraction of the control rod by an appropriate amount to offset the cusping effects.  This process was repeated for different control rod materials such as AIC, B$_4$C, and Tungsten, since each material has unique cross-sections.  This method has the advantages of being simple to implement and requiring no increase in computational requirements.  However, the results obtained from this decusping method are tied to the control rod material and reactor model used to develop the corrections, limiting its usefulness to a small subset of reactors.
+Talk about Jess's method here.  Used originally for nodal codes, but also in Min Ryu's 2017 M\&C paper about nTRACER
 
-\section{Recent Decusping Methods Development}
+\section{Summary}
 
-This section discusses two new decusping treatments added to MPACT as part of this work.  These methods were developed to try to improve on the accuracy and flexibility of MPACT's polynomial corrections without significant runtime increases.  Both of these methods rely on the sub-plane scheme described in section \ref{ss:2d1d-3dcmfd}.  The first method modifies the sub-plane scheme to use heterogeneous cross-sections to capture the axial effects of the partially inserted rod.  The second method builds on this by also capturing some of the radial effects of the rod.
-
-\subsection{Sub-plane Decusping}
-
-In section \ref{ss:2d1d-3dcmfd}, the sub-plane scheme was introduced as a means of coarsening the 2D/1D axial mesh to improve runtime while maintaining accuracy.  However, one negative consequence of using the sub-plane scheme is that it increases the likelihood of partially inserted rods being present since there are fewer, thicker MOC planes.  To address this, two modifications were made to the sub-plane scheme to minimize cusping effects.  The resulting method shares some similarities with the one employed by nTRACER discussed in section \ref{sss:ntracerDecusping}.  However, this method is built directly into the 2D/1D iteration scheme, requiring no additional MOC calculations to inform the decusping calculations.
-
-The first modification that was made was to modify the cross-sections used for the sub-plane CMFD and axial SP$_3$ calculations.  In the most basic form of the sub-plane scheme, the same cross-sections and radial coupling coefficients are used for all sub-planes in each MOC plane.  To use sub-plane as a decusping method, the requirement for constant cross-sections was removed.  Thus, when Equation \ref{e:CMFDhomogTerms} is applied, explicit rodded or unrodded cross-sections are used for the cross-section homogenization in each sub-plane, rather than a single homogenized cross-section being using in all sub-planes.  This allows the CMFD and axial solvers to capture the sharp flux gradients that occur around the edge of the control rods.
-
-In order to improve the MOC calculations as well, the CMFD flux projection described in Equation \ref{e:CMFDscaling} is extended to also include a cross-section projection for the partially rodded pin cells.  This is done using Equation \ref{e:nTRACERdecusping} with $\phi_{rad,i}^R = \phi_{rad,i}^U$.  This allows the 2D MOC calculations to also capture some of the axial effects of the partially inserted rod.
-
-\subsection{Auxiliary 1D Collision Probabilities}
-
-While the sub-plane decusping method is better than none, it captures only the axial effects of the partially inserted rod.  To also capture the radial effects, an additional radial calculation is needed to obtain radial flux profiles for the rodded and un-rodded regions.  In MPACT, this is done using a 1D Collision Probabilities (CP) solver.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{CPdecusp.png}
-  \caption[Collision Probabilities Decusping]{Illustration of 1D Collision Probabilities rod decusping method}\label{f:CPdecusp}
-\end{figure}
-
-After the CMFD homogenization, but prior to the calculation itself, a 1D CP kernel is solved for the rodded and un-rodded regions to obtain a radial flux profile.  This calculation uses the MOC cross-sections in each radial zone, along with a buffer region that consists of the eight neighboring CMFD cells homogenized together.  These profiles are normalized so that the volume-average of each profile is exactly unity.  These profiles are then used with the sub-plane CMFD flux and material cross-sections to calculate improved homogenized cross-sections, as shown in Equation \ref{e:CPMxs}.  Homogenizing the cross-sections in this way allows CMFD to capture both axial and radial effects of the partially inserted rod with negligible increase in computational expense.  This process is illustrated in Figure \ref{f:CPdecusp}.
-\begin{equation}\label{e:CPMxs}
-\Sigma_{g,i}=\frac{1}{\phi_{g,i}V_i}\sum_{r=1}^{N_{rings}} \Sigma_{g,r} \phi_{CMFD,g,i} \phi_{CP,g,r} V_r\ .
-\end{equation}
-
-After the CMFD calculation, the MOC cross-sections must be modified as with the sub-plane decusping.  This is done using by using Equation \ref{e:nTRACERdecusping} directly, where the radial flux terms are the projected MOC fluxes and the axial flux terms are the results of the sub-plane CMFD calculation that used the CP-homogenized cross-sections.  The projection of the CMFD flux to the MOC mesh is unchanged from the standard sub-plane scheme.  The CMFD calculation flow when using 1D CP is shown in Figure \ref{f:1dcpm-flowchart}
-
-\begin{figure}
-  \centering
-  \input{../figs/1DCPM-flowchart.tex}
-  \caption[Stuff]{Calculation flow for CMFD calculation in MPACT with 1D CP decusping treatment}\label{f:1dcpm-flowchart}
-\end{figure}
+Some summarizing words
