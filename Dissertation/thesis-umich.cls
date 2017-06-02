@@ -311,13 +311,13 @@
 
 %% ---- TITLE PAGE -----------------------------------------------------
 % The fields to be used for the title page
-\renewcommand{\@title}{Capturing Subgrid Heterogeneities in the 2D/1D Method Using a Subray Formulation of the Method of Characteristics}
+\renewcommand{\@title}{Subgrid Methods for Resolving Control Rod Cusping in the 2D/1D Method}
 \renewcommand{\@author}{Aaron M. Graham}
 \newcommand{\@degree}{Doctor of Philosophy}
 \newcommand{\@department}{Nuclear Engineering and Radiological Sciences and Scientific Computing}
 \newcommand{\@committee}{Adjunct Assistant Professor Benjamin S. Collins, Co-Chair\\
     Professor Thomas J. Downar, Co-Chair\\
-    Professor Edward W. Larsen\\
+    Professor Brian C. Kiedrowski\\
     Professor William R. Martin\\
     Assistant Professor Shravan Veerapaneni}
 \newcommand{\@cochair}{Thomas J. Downar, Benjamin S. Collins}
