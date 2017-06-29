@@ -198,52 +198,75 @@ In addition to the eigenvalue calculations, the scalar flux differences are show
 
 \subsection{2D C5G7}
 
+\begin{figure}[h]
+    \centering
+    \subfigure{
+        \centering
+        \includegraphics[width=0.8\textwidth]{c5g7-core-radial.png}
+    }
+    ~
+    \subfigure{
+        \centering
+        \includegraphics[width=0.8\textwidth]{c5g7-core-axial.png}
+    }
+    \caption{Description of C5G7 Core\cite{EELewisC5G7extended2005}}\label{f:c5g7-core}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{c5g7-assemblies-radial.png}
+    \caption{C5G7 Assembly Description\cite{EELewisC5G7extended2005}}\label{f:c5g7-assemblies}
+\end{figure}
+
+To test the mechanics of subray MOC in MPACT, 2D variations of the C5G7 benchmark problems were used.  These problems consist of 17$\times$17 UO$_2$ and MOX assemblies with control rods and a radial reflector region.  Figure \ref{f:c5g7-core} shows an illustration of the core layout, and Figure \ref{f:c5g7-assemblies} shows the assembly layout.  This section will present results for subray MOC using 3 different 2D problems derived from these descriptions.
+
 \subsubsection{UO\texorpdfstring{$_2$}{2} Assembly}
 
-\begin{table}
+\begin{table}[h]
     \centering
-    \caption{2D C5G7 Eigenvalue and Pin Power Differences}\label{t:c5g7-2d-asy-methods}
+    \caption{2D C5G7 UO$_2$ eigenvalue and pin power differences for subray recombination parameter sensitivity}\label{t:c5g7-2d-asy-recomb}
     \resizebox{\textwidth}{!}{
         \begin{tabular}{l c c l l c l l c l l c l l}
         \toprule
-        Rod & Reference & \multicolumn{3}{c}{None} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} & \multicolumn{3}{c}{Subray-0} \\
+        Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{Subray-1} & \multicolumn{3}{c}{Subray-2} & \multicolumn{3}{c}{Subray-3} \\
         Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
         &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
         \midrule
         1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-        2 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-        3 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-        4 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-        5 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-        6 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-        7 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-        8 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+2 & 0.76151 & -81 & 0.07\% & 0.28\% & -12   & 0.02\% & 0.07\%  & 18    & 0.06\% & 0.39\% & 23   & 0.07\% & 0.42\% \\
+3 & 0.78819 & -89 & 0.07\% & 0.26\% & -8    & 0.02\% & 0.09\%  & 28    & 0.06\% & 0.35\% & 34   & 0.06\% & 0.36\% \\
+4 & 0.81420 & -93 & 0.06\% & 0.24\% & -13   & 0.02\% & 0.10\%  & 25    & 0.05\% & 0.31\% & 31   & 0.05\% & 0.31\% \\
+5 & 0.83931 & -94 & 0.06\% & 0.23\% & -24   & 0.02\% & 0.10\%  & 13    & 0.05\% & 0.27\% & 18   & 0.05\% & 0.27\% \\
+6 & 0.86362 & -93 & 0.06\% & 0.21\% & -40   & 0.03\% & 0.11\%  & -7    & 0.04\% & 0.24\% & -2   & 0.04\% & 0.25\% \\
+7 & 0.88736 & -90 & 0.05\% & 0.21\% & -59   & 0.04\% & 0.16\%  & -33   & 0.04\% & 0.22\% & -29  & 0.04\% & 0.24\% \\
+8 & 0.91103 & -90 & 0.05\% & 0.21\% & -83   & 0.05\% & 0.21\%  & -64   & 0.05\% & 0.20\% & -61  & 0.05\% & 0.24\% \\
         9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
         \midrule
-        Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Average &  -- &   &  &  &  &  &  &  &  &  &  &  &  \\
         \bottomrule
     \end{tabular}
     }
 \end{table}
 
-\begin{table}
+
+\begin{table}[h]
 \centering
-\caption{2D C5G7 Eigenvalue and Pin Power Differences}\label{t:c5g7-2d-asy-recomb}
+\caption{2D C5G7 UO$_2$ Eigenvalue and pin power differences for each decusping method}\label{t:c5g7-2d-asy-methods}
 \resizebox{\textwidth}{!}{
     \begin{tabular}{l c c l l c l l c l l c l l}
     \toprule
-    Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{Subray-1} & \multicolumn{3}{c}{Subray-2} & \multicolumn{3}{c}{Subray-3} \\
+    Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{None} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} \\
     Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
     &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
     \midrule
     1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-    2 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-    3 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-    4 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-    5 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-    6 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-    7 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-    8 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+2 & 0.76151 & -81 & 0.07\% & 0.28\% & -2310 & 2.12\% &  9.79\% & -929  & 0.82\% & 3.78\% & -423 & 0.31\% & 1.53\% \\
+3 & 0.78819 & -89 & 0.07\% & 0.26\% & -3521 & 3.03\% & 13.84\% & -1147 & 0.92\% & 4.21\% & -307 & 0.19\% & 0.91\% \\
+4 & 0.81420 & -93 & 0.06\% & 0.24\% & -4443 & 3.57\% & 16.20\% & -1209 & 0.89\% & 4.02\% & -222 & 0.11\% & 0.53\% \\
+5 & 0.83931 & -94 & 0.06\% & 0.23\% & -5001 & 3.76\% & 16.90\% & -1172 & 0.79\% & 3.56\% & -157 & 0.07\% & 0.29\% \\
+6 & 0.86362 & -93 & 0.06\% & 0.21\% & -5127 & 3.60\% & 16.03\% & -1064 & 0.67\% & 2.98\% & -105 & 0.05\% & 0.15\% \\
+7 & 0.88736 & -90 & 0.05\% & 0.21\% & -4740 & 3.10\% & 13.67\% & -902  & 0.53\% & 2.34\% & -60  & 0.05\% & 0.19\% \\
+8 & 0.91103 & -90 & 0.05\% & 0.21\% & -3732 & 2.26\% &  9.87\% & -704  & 0.39\% & 1.71\% & -21  & 0.06\% & 0.23\% \\
     9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
     \midrule
     Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
@@ -252,37 +275,17 @@ In addition to the eigenvalue calculations, the scalar flux differences are show
 }
 \end{table}
 
+The first 2D problem is a single UO$_2$ assembly with control rods added to it.  A similar procedure was followed as with the 1D calculations with the problem being simulated at 10\% increments during the rod withdrawal.  The reference for these calculations was generated by dividing the MOC plane into two separate planes with their boundary aligned with the control rod.  Comparisons could then be made between the decusping methods and the reference solution for k-eff and the radial power distribution.
+
+Table \ref{t:c5g7-2d-asy-recomb} shows the results for the 2D assembly case for recombination factor values of 0, 1, 2, and 3. \hl{Discussion}
+
+Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the sublpane-based decusping methods described earlier.  The polynomial method is not compared because the data required to use them fo C5G7 has not been generated. \hl{Discussion}
+
 \subsubsection{2D Core -- Rodded Center Assembly}
 
 \begin{table}
     \centering
-    \caption{2D C5G7 Eigenvalue and Pin Power Differences}\label{t:c5g7-2d-center-methods}
-    \resizebox{\textwidth}{!}{
-        \begin{tabular}{l c c l l c l l c l l c l l}
-            \toprule
-            Rod & Reference & \multicolumn{3}{c}{None} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} & \multicolumn{3}{c}{Subray-0} \\
-            Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
-            &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
-            \midrule
-            1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            2 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            3 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            4 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            5 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            6 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            7 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            8 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            \midrule
-            Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            \bottomrule
-        \end{tabular}
-    }
-\end{table}
-
-\begin{table}
-    \centering
-    \caption{2D C5G7 Eigenvalue and Pin Power Differences}\label{t:c5g7-2d-center-recomb}
+    \caption{2D C5G7 center assembly rod withdrawal eigenvalue and pin power differences for subray recombination parameter sensitivity}\label{t:c5g7-2d-center-recomb}
     \resizebox{\textwidth}{!}{
         \begin{tabular}{l c c l l c l l c l l c l l}
             \toprule
@@ -291,13 +294,13 @@ In addition to the eigenvalue calculations, the scalar flux differences are show
             &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
             \midrule
             1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            2 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            3 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            4 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            5 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            6 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            7 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            8 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+2 & 1.07567 & -18 & 0.092\% & 0.269\% & 5   & 0.031\% & 0.091\% &   9 & 0.072\% & 0.339\% & 9   & 0.080\% & 0.360\% \\
+3 & 1.08597 & -18 & 0.088\% & 0.285\% & 11  & 0.059\% & 0.156\% & 17  & 0.112\% & 0.436\% & 18  & 0.123\% & 0.463\% \\
+4 & 1.09735 & -20 & 0.089\% & 0.306\% & 12  & 0.058\% & 0.161\% & 20  & 0.117\% & 0.439\% & 20  & 0.127\% & 0.459\% \\
+5 & 1.10968 & -24 & 0.102\% & 0.355\% & 6   & 0.030\% & 0.119\% & 15  & 0.091\% & 0.360\% & 16  & 0.101\% & 0.380\% \\
+6 & 1.12292 & -30 & 0.125\% & 0.420\% & -6  & 0.030\% & 0.115\% & 4   & 0.037\% & 0.208\% & 5   & 0.045\% & 0.229\% \\
+7 & 1.13709 & -37 & 0.147\% & 0.475\% & -23 & 0.095\% & 0.301\% & -14 & 0.047\% & 0.154\% & -13 & 0.041\% & 0.142\% \\
+8 & 1.15239 & -48 & 0.178\% & 0.554\% & -46 & 0.175\% & 0.558\% & -38 & 0.139\% & 0.443\% & -37 & 0.134\% & 0.434\% \\
             9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
             \midrule
             Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
@@ -305,27 +308,57 @@ In addition to the eigenvalue calculations, the scalar flux differences are show
         \end{tabular}
     }
 \end{table}
+
+\begin{table}
+    \centering
+    \caption{2D C5G7 center assembly rod withdrawal eigenvalue and pin power differences for each decusping method}\label{t:c5g7-2d-center-methods}
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{l c c l l c l l c l l c l l}
+            \toprule
+            Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{None} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} \\
+            Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
+            &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
+            \midrule
+            1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+2 & 1.07567 & -18 & 0.092\% & 0.269\% & -809  & 4.537\%  & 11.882\% & -327 & 1.809\% & 4.782\% & -150 & 0.803\% & 2.019\% \\
+3 & 1.08597 & -18 & 0.088\% & 0.285\% & -1353 & 7.313\%  & 19.716\% & -451 & 2.369\% & 6.472\% & -114 & 0.573\% & 1.468\% \\
+4 & 1.09735 & -20 & 0.089\% & 0.306\% & -1883 & 9.733\%  & 26.996\% & -531 & 2.636\% & 7.431\% & -83  & 0.393\% & 1.045\% \\
+5 & 1.10968 & -24 & 0.102\% & 0.355\% & -2341 & 11.483\% & 32.767\% & -573 & 2.669\% & 7.750\% & -57  & 0.254\% & 0.717\% \\
+6 & 1.12292 & -30 & 0.125\% & 0.420\% & -2652 & 12.239\% & 35.946\% & -574 & 2.500\% & 7.466\% & -35  & 0.149\% & 0.466\% \\
+7 & 1.13709 & -37 & 0.147\% & 0.475\% & -2709 & 11.634\% & 35.210\% & -534 & 2.160\% & 6.627\% & -16  & 0.071\% & 0.277\% \\
+8 & 1.15239 & -48 & 0.178\% & 0.554\% & -2357 & 9.277\%  & 28.996\% & -455 & 1.703\% & 5.365\% & 0    & 0.040\% & 0.220\% \\
+            9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            \midrule
+            Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            \bottomrule
+        \end{tabular}
+    }
+\end{table}
+
+The second problem uses the full radial core layout from Figures \ref{f:c5g7-core} and \ref{f:c5g7-assemblies}.  A control rod was added to the northwest UO$_2$ assembly, and the same procedure was followed as for the 2D assembly.  Table \ref{t:c5g7-2d-center-recomb} shows the results for subray MOC as a function of recombination value. \hl{Discussion}
+
+Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. \hl{Discussion}
 
 \subsubsection{2D Core -- Rodded Corner Assembly}
 
 \begin{table}
     \centering
-    \caption{2D C5G7 Eigenvalue and Pin Power Differences}\label{t:c5g7-2d-corner-methods}
+    \caption{2D C5G7 corner assembly rod withdrawal eigenvalue and pin power differences for subray recombination parameter sensitivity}\label{t:c5g7-2d-corner-recomb}
     \resizebox{\textwidth}{!}{
         \begin{tabular}{l c c l l c l l c l l c l l}
             \toprule
-            Rod & Reference & \multicolumn{3}{c}{None} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} & \multicolumn{3}{c}{Subray-0} \\
+            Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{Subray-1} & \multicolumn{3}{c}{Subray-2} & \multicolumn{3}{c}{Subray-3} \\
             Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
             &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
             \midrule
             1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            2 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            3 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            4 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            5 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            6 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            7 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            8 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+2 & 1.18565 & -2 & 0.020\% & 0.057\% & 0  & 0.014\% & 0.055\% & 1  & 0.021\% & 0.070\% & 1  & 0.021\% & 0.071\% \\
+3 & 1.18657 & -3 & 0.016\% & 0.048\% & 1  & 0.026\% & 0.094\% & 1  & 0.036\% & 0.117\% & 1  & 0.037\% & 0.118\% \\
+4 & 1.18754 & -3 & 0.016\% & 0.049\% & 1  & 0.028\% & 0.105\% & 2  & 0.041\% & 0.132\% & 2  & 0.043\% & 0.136\% \\
+5 & 1.18855 & -3 & 0.020\% & 0.057\% & 0  & 0.023\% & 0.088\% & 1  & 0.037\% & 0.119\% & 2  & 0.039\% & 0.122\% \\
+6 & 1.18962 & -3 & 0.026\% & 0.070\% & -1 & 0.009\% & 0.047\% & 1  & 0.022\% & 0.077\% & 1  & 0.024\% & 0.080\% \\
+7 & 1.19075 & -4 & 0.036\% & 0.090\% & -2 & 0.016\% & 0.036\% & -1 & 0.004\% & 0.015\% & -1 & 0.003\% & 0.017\% \\
+8 & 1.19198 & -5 & 0.051\% & 0.123\% & -4 & 0.046\% & 0.107\% & -3 & 0.035\% & 0.083\% & -3 & 0.033\% & 0.081\% \\
             9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
             \midrule
             Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
@@ -336,22 +369,22 @@ In addition to the eigenvalue calculations, the scalar flux differences are show
 
 \begin{table}
     \centering
-    \caption{2D C5G7 Eigenvalue and Pin Power Differences}\label{t:c5g7-2d-corner-recomb}
+    \caption{2D C5G7 corner assembly rod withdrawal eigenvalue and pin power differences for each decusping method}\label{t:c5g7-2d-corner-methods}
     \resizebox{\textwidth}{!}{
         \begin{tabular}{l c c l l c l l c l l c l l}
             \toprule
-            Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{Subray-1} & \multicolumn{3}{c}{Subray-2} & \multicolumn{3}{c}{Subray-3} \\
+            Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{None} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} \\
             Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
             &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
             \midrule
             1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            2 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            3 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            4 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            5 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            6 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            7 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-            8 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+2 & 1.18565 & -2 & 0.020\% & 0.057\% & -78  & 1.166\% & 3.298\% & -32 & 0.462\% & 1.292\% & -15 & 0.209\% & 0.555\% \\
+3 & 1.18657 & -3 & 0.016\% & 0.048\% & -124 & 1.864\% & 5.186\% & -42 & 0.601\% & 1.639\% & -12 & 0.149\% & 0.380\% \\
+4 & 1.18754 & -3 & 0.016\% & 0.049\% & -166 & 2.485\% & 6.797\% & -47 & 0.675\% & 1.798\% & -9  & 0.104\% & 0.262\% \\
+5 & 1.18855 & -3 & 0.020\% & 0.057\% & -199 & 2.972\% & 7.986\% & -49 & 0.701\% & 1.827\% & -7  & 0.069\% & 0.180\% \\
+6 & 1.18962 & -3 & 0.026\% & 0.070\% & -220 & 3.257\% & 8.588\% & -49 & 0.685\% & 1.746\% & -5  & 0.042\% & 0.122\% \\
+7 & 1.19075 & -4 & 0.036\% & 0.090\% & -221 & 3.242\% & 8.374\% & -45 & 0.627\% & 1.565\% & -3  & 0.021\% & 0.082\% \\
+8 & 1.19198 & -5 & 0.051\% & 0.123\% & -191 & 2.777\% & 7.007\% & -38 & 0.532\% & 1.312\% & -1  & 0.013\% & 0.085\% \\
             9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
             \midrule
             Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
@@ -359,5 +392,10 @@ In addition to the eigenvalue calculations, the scalar flux differences are show
         \end{tabular}
     }
 \end{table}
+
+The final 2D problem is the same as the previous one, except that the southeast corner UO$_2$ assembly is rodded instead of the northwest assembly.  Tables \ref{t:c5g7-2d-corner-recomb} and \ref{t:c5g7-2d-corner-methods} show similar results to the previous two problems.  The primary reason to show this problem is that because the rods are in the center of the model, the long rays duplicated for the subray MOC calculation are longer for some angles, especially those between the northeast and southwest corners of the model.  Thus, while the total number of rays duplicated \hl{is the same} for each of the 2 full core problems, the amount of work done for the duplicated rays is different.  This can help to provide an estimate of how well the subray MOC method scales as more regions require the subray treatment.
+
+\hl{Discussion}
+\hl{Tables}
 
 \subsection{3D C5G7}
