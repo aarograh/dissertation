@@ -311,7 +311,7 @@
 
 %% ---- TITLE PAGE -----------------------------------------------------
 % The fields to be used for the title page
-\renewcommand{\@title}{Subgrid Methods for Resolving Control Rod Cusping in the 2D/1D Method}
+\renewcommand{\@title}{Subgrid Methods for Resolving Axial Heterogeneity in Planar Synthesis Solutions for the Boltzmann Transport Equation}
 \renewcommand{\@author}{Aaron M. Graham}
 \newcommand{\@degree}{Doctor of Philosophy}
 \newcommand{\@department}{Nuclear Engineering and Radiological Sciences and Scientific Computing}
