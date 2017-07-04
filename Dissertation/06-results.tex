@@ -140,7 +140,7 @@ Like problem 4, the reference case was run with 58 planes while the decusping ca
 \caption{VERA Problem 5 radial geometry (left) and rod bank positions (right)}\label{f:p5radial}
 \end{figure}
 
-\begin{table}
+\begin{table}[h]
 \centering
 \caption[VERA Problem 5 Decusping Results]{VERA Problem 5 decusping results for the partially rodded plane}\label{t:p5decusp}
 \resizebox{\textwidth}{!}{
@@ -220,6 +220,8 @@ In addition to the eigenvalue calculations, the scalar flux differences are show
 
 To test the mechanics of subray MOC in MPACT, 2D variations of the C5G7 benchmark problems were used.  These problems consist of 17$\times$17 UO$_2$ and MOX assemblies with control rods and a radial reflector region.  Figure \ref{f:c5g7-core} shows an illustration of the core layout, and Figure \ref{f:c5g7-assemblies} shows the assembly layout.  This section will present results for subray MOC using 3 different 2D problems derived from these descriptions.
 
+All calculations in this section used 0.03 cm ray spacing, 16 azmiuthals and 3 polars per octant with a Chebyshev-Yamamoto quadrature \hl{cite}, and a 1D P$_3$ axial solver unless otherwise noted.  The calculations were converged until the change in both the eigenvalue and fission source were less than $10^{-6}$.  All pin meshes in the fuel assemblies used 
+
 \subsubsection{UO\texorpdfstring{$_2$}{2} Assembly}
 
 \begin{table}[h]
@@ -286,11 +288,11 @@ Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the su
     \caption{Long Ray Data for 2D C5G7 UO\texorpdfstring{$_2$}{2} Rodded Assembly}\label{t:subray-data-2dassembly}
     \begin{tabular}{l l l}\toprule
         Method & Number of Long Rays & Increase \\\midrule
-        Reference &  & -- \\
-        Subray-0 &  &  \\
-        Subray-1 &  &  \\
-        Subray-2 &  &  \\
-        Subray-3 &  &  \\
+        Reference & 29480 & -- \\
+        Subray-0 & 48440 & 64\% \\
+        Subray-1 & 52832 & 79\% \\
+        Subray-2 & 56304 & 91\% \\
+        Subray-3 & 58960 & 100\% \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -376,11 +378,11 @@ Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. \
     \caption{Long Ray Data for 2D C5G7 Core}\label{t:subray-data-2dcore}
     \begin{tabular}{l l l }\toprule
         Method & Number of Long Rays & Increase \\\midrule
-        Reference &  & -- \\
-        Subray-0 &  &  \\
-        Subray-1 &  &  \\
-        Subray-2 &  &  \\
-        Subray-3 &  &  \\
+        Reference & 88440 & -- \\
+        Subray-0 & 107400 & 21\% \\
+        Subray-1 & 111792 & 26\% \\
+        Subray-2 & 115264 & 30\% \\
+        Subray-3 & 117920 & 33\% \\
         \bottomrule
     \end{tabular}
 \end{table}
