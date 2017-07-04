@@ -281,9 +281,41 @@ Table \ref{t:c5g7-2d-asy-recomb} shows the results for the 2D assembly case for 
 
 Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the sublpane-based decusping methods described earlier.  The polynomial method is not compared because the data required to use them fo C5G7 has not been generated. \hl{Discussion}
 
+\begin{table}[h]
+    \centering
+    \caption{Long Ray Data for 2D C5G7 UO\texorpdfstring{$_2$}{2} Rodded Assembly}\label{t:subray-data-2dassembly}
+    \begin{tabular}{l l l}\toprule
+        Method & Number of Long Rays & Increase \\\midrule
+        Reference &  & -- \\
+        Subray-0 &  &  \\
+        Subray-1 &  &  \\
+        Subray-2 &  &  \\
+        Subray-3 &  &  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \caption{Average Performance and Convergence Data for 2D C5G7 Rodded UO\texorpdfstring{$_2$}{2} Assembly}\label{t:subray-performance-2dassembly}
+    \begin{tabular}{l l l l}\toprule
+        Method & Iterations & Runtime & Speedup \\\midrule
+        Reference &  &  & -- \\
+        Subplane &  &  &  \\
+        Subplane+CP &  &  &  \\
+        Subray-0 &  &  &  \\
+        Subray-1 &  &  &  \\
+        Subray-2 &  &  &  \\
+        Subray-3 &  &  &  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\hl{Discussion}
+
 \subsubsection{2D Core -- Rodded Center Assembly}
 
-\begin{table}
+\begin{table}[h]
     \centering
     \caption{2D C5G7 center assembly rod withdrawal eigenvalue and pin power differences for subray recombination parameter sensitivity}\label{t:c5g7-2d-center-recomb}
     \resizebox{\textwidth}{!}{
@@ -309,7 +341,7 @@ Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the su
     }
 \end{table}
 
-\begin{table}
+\begin{table}[h]
     \centering
     \caption{2D C5G7 center assembly rod withdrawal eigenvalue and pin power differences for each decusping method}\label{t:c5g7-2d-center-methods}
     \resizebox{\textwidth}{!}{
@@ -339,9 +371,41 @@ The second problem uses the full radial core layout from Figures \ref{f:c5g7-cor
 
 Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. \hl{Discussion}
 
+\begin{table}[h]
+    \centering
+    \caption{Long Ray Data for 2D C5G7 Core}\label{t:subray-data-2dcore}
+    \begin{tabular}{l l l }\toprule
+        Method & Number of Long Rays & Increase \\\midrule
+        Reference &  & -- \\
+        Subray-0 &  &  \\
+        Subray-1 &  &  \\
+        Subray-2 &  &  \\
+        Subray-3 &  &  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \caption{Average Performance and Convergence Data for 2D C5G7 Core with Rodded NW Assembly}\label{t:subray-performance-2dcoreNW}
+    \begin{tabular}{l l l l}\toprule
+        Method & Iterations & Runtime & Speedup \\\midrule
+        Reference &  &  & -- \\
+        Subplane &  &  &  \\
+        Subplane+CP &  &  &  \\
+        Subray-0 &  &  &  \\
+        Subray-1 &  &  &  \\
+        Subray-2 &  &  &  \\
+        Subray-3 &  &  &  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\hl{Discussion}
+
 \subsubsection{2D Core -- Rodded Corner Assembly}
 
-\begin{table}
+\begin{table}[h]
     \centering
     \caption{2D C5G7 corner assembly rod withdrawal eigenvalue and pin power differences for subray recombination parameter sensitivity}\label{t:c5g7-2d-corner-recomb}
     \resizebox{\textwidth}{!}{
@@ -367,7 +431,7 @@ Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. \
     }
 \end{table}
 
-\begin{table}
+\begin{table}[h]
     \centering
     \caption{2D C5G7 corner assembly rod withdrawal eigenvalue and pin power differences for each decusping method}\label{t:c5g7-2d-corner-methods}
     \resizebox{\textwidth}{!}{
@@ -396,6 +460,47 @@ Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. \
 The final 2D problem is the same as the previous one, except that the southeast corner UO$_2$ assembly is rodded instead of the northwest assembly.  Tables \ref{t:c5g7-2d-corner-recomb} and \ref{t:c5g7-2d-corner-methods} show similar results to the previous two problems.  The primary reason to show this problem is that because the rods are in the center of the model, the long rays duplicated for the subray MOC calculation are longer for some angles, especially those between the northeast and southwest corners of the model.  Thus, while the total number of rays duplicated \hl{is the same} for each of the 2 full core problems, the amount of work done for the duplicated rays is different.  This can help to provide an estimate of how well the subray MOC method scales as more regions require the subray treatment.
 
 \hl{Discussion}
-\hl{Tables}
 
-\subsection{3D C5G7}
+\begin{table}[h]
+    \centering
+    \caption{Average Performance and Convergence Data for 2D C5G7 Core with Rodded SE Assembly}\label{t:subray-performance-2dcoreSE}
+    \begin{tabular}{l l l l}\toprule
+        Method & Iterations & Runtime & Speedup \\\midrule
+        Reference &  &  & -- \\
+        Subplane &  &  &  \\
+        Subplane+CP &  &  &  \\
+        Subray-0 &  &  &  \\
+        Subray-1 &  &  &  \\
+        Subray-2 &  &  &  \\
+        Subray-3 &  &  &  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\hl{Discussion}
+
+\subsection{3D C5G7 UO\texorpdfstring{$_2$}{2} Assembly}
+
+One 3D problem was also used to test subray MOC.  This problem consists of the NW UO$_2$ assembly.  As shown in figure \ref{f:c5g7-core}, this assembly has a 42.84 cm active fuel height with a 21.42 cm axial reflector on top.  The control rods at full insertion extend from the bottom of the active fuel all the way to the top of the reflector.  In MPACT, this was modeled using 4 MOC planes: 3 in the active fuel region and 1 for the axial refelctor.  The rod was withdrawn from the bottom of the fuel to the top in 30 steps of 1.428 cm.  At each position, a reference solution was generated using the same method as the 2D calculations by adding an extra MOC plane boundary that aligned with the rod position to eliminate all cusping effects.
+
+\hl{Tables for results}
+
+\hl{Discussion}
+
+\begin{table}[h]
+    \centering
+    \caption{Average Performance and Convergence Data for 2D C5G7 Core with Rodded SE Assembly}\label{t:subray-performance-3Dassembly}
+    \begin{tabular}{l l l l}\toprule
+        Method & Iterations & Runtime & Speedup \\\midrule
+        Reference &  &  & -- \\
+        Subplane &  &  &  \\
+        Subplane+CP &  &  &  \\
+        Subray-0 &  &  &  \\
+        Subray-1 &  &  &  \\
+        Subray-2 &  &  &  \\
+        Subray-3 &  &  &  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\hl{Discussion}
