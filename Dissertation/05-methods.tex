@@ -4,7 +4,7 @@ This chapter will describe three control rod decusping methods developed as part
 
 The polynomial decusping technique was developed to provide a fast, simple correction to the cusping problem in the MPACT code.  This technique assumes that the reactivity and power around the partially inserted rod have a predictable shape as functions of the rod position within the MOC plane.  Based on this assumption, correction factors were developed to reduce the volume fraction of control rod material and reduce the magnitude of the cusping effects.
 
-To do this, a 3$\times$3 assembly problem with a control rod in the center assembly was used (this problem is described in more detail in Section \hl{number}).  
+To do this, a 3$\times$3 assembly problem with a control rod in the center assembly was used (this problem is described in more detail in Section \ref{s:vera4}).  
 
 \section{Subplane Collision Probabilities}
 
@@ -18,7 +18,7 @@ To resolve this issue, the subplanes with the control rod use the rod cross sect
 
 \subsection{Radial Correction}
 
-Using axially heterogeneous cross sections within an MOC plane corrects some of the cusping effects, but it does not accurately capture the radial effects of the partially inserted rod.  In reality, the radial flux shape in the rodded subplanes is completely different from the shape in the unrodded subplanes.  The MOC calculations are done on the thicker MOC planes using axially homogenized cross sections in the partially rodded regions.  This produces a radial flux shape that is not representative of either the rodded or unrodded region, as illustrated in figure \hl{number}.  Thus, using this radial flux shape to calculate the pin-homogenized cross sections for CMFD P$_3$ introduces some error in the cross sections.
+Using axially heterogeneous cross sections within an MOC plane corrects some of the cusping effects, but it does not accurately capture the radial effects of the partially inserted rod.  In reality, the radial flux shape in the rodded subplanes is completely different from the shape in the unrodded subplanes.  The MOC calculations are done on the thicker MOC planes using axially homogenized cross sections in the partially rodded regions.  This produces a radial flux shape that is not representative of either the rodded or unrodded region.  Thus, using this radial flux shape to calculate the pin-homogenized cross sections for CMFD P$_3$ introduces some error in the cross sections.
 
 \begin{figure}
     \centering
@@ -39,7 +39,7 @@ The final step in this decusping technique is to use the subplane information fr
 
 \section{Subray Method of Characteristics}
 
-The previous two methods are each effective in reducing the effects of rod cusping, as will be shown in Chapter \hl{number}.  Despite these improvements, each method has significant drawbacks:
+The previous two methods are each effective in reducing the effects of rod cusping, as will be shown in Chapter \ref{chap:results}.  Despite these improvements, each method has significant drawbacks:
 \begin{itemize}[leftmargin=*]
     \item \textbf{Polynomial Decusping}
     
@@ -59,7 +59,7 @@ The previous two methods are each effective in reducing the effects of rod cuspi
 \end{itemize}
 The most important inaccuracy in the subplane CP method is the final point.  To fully address the partially inserted rod, it is desirable to account for the rod in the 2D MOC calculations themselves using heterogeneous cross sections.  Doing so will greatly improve the overall accuracy of the 2D/1D calculation by improving the accuracy of the transport itself.
 
-\subsection{1D MOC Code and Problem Description}
+\subsection{1D MOC Code and Problem Description}\label{ss:1dcode}
 
 To develop this new method, a 1D MOC code was developed to investigate the behavior of angular and scalar flux near a partially inserted control rod.  This code was written in Matlab \hl{citation?} and is set up to take in a description of pins and materials to be used for the calculations.  For the geometry, a pin pitch is specified which is used for all pins.  Each pin consists of a list of radii.  Assuming a square pin cell, these pins are then transformed from cylindrical geometry to slab geometry while preserving the volume fraction of each material.  Thus, the thickness of the pin slab is equal to the pin pitch, but the width of the fuel material will not be equal to input radius, since the volume fractions are preserved.  This transormation can be done assuming along one of two directions: side-to-side through the center of the square pin cell or corner-to-corner, allowing the two extremes of azimuthal angles to be considered.
 
@@ -81,7 +81,7 @@ The problem used for these calculations was a 1D variation of VERA Problem 4, il
 
 The first set of calculations performed were done using a specified total source.  To do this, the guide tubes were filled with 50\% control rod and 50\% moderator volume fraction mixture, and a full eigenvalue calculation was performed.  The total source distribution (fission and scattering) from this calculation were then passed to the the fixed source solver.  A single iteration was run using this source on three different variations of the problem: the 50-50 mixture, fully rodded, and fully unrodded.  Because the multi-group source is set up before performing any MOC sweeps, this resulted in all three of those calculations having an identical source for the MOC sweep.  The only difference between them was the cross-sections used in the guide tubes.
 
-Figure \ref{f:1dmoc-fixed-50-scalflux7} shows the scalar flux resulting from these three calculations.  The most important thing to note in this data is that the effects of the rod are very local in the MOC calculation.  Moving through the rodded pin cell, the rodded, unrodded, and mixed cases have converged back to the same shape by the time the edge of the partially rodded pin cell is reached.  Because of the exponential nature of the MOC solution in equation \hl{number}, if the sources are the same the two different solutions converge to each other quickly as you move away from the rod.
+Figure \ref{f:1dmoc-fixed-50-scalflux7} shows the scalar flux resulting from these three calculations.  The most important thing to note in this data is that the effects of the rod are very local in the MOC calculation.  Moving through the rodded pin cell, the rodded, unrodded, and mixed cases have converged back to the same shape by the time the edge of the partially rodded pin cell is reached.  Because of the exponential nature of the MOC solution in equation \ref{e:MOCavgFlux}, if the sources are the same the two different solutions converge to each other quickly as you move away from the rod.
 
 \begin{figure}[H]
     \centering
@@ -168,13 +168,13 @@ These calculations provide several insights into what a new decusping method mus
 
 \subsection{Subray MOC Description}
 
-Using the results of the 1D MOC investigation described above, a new method has been developed called the subray methods of characteristics, illustrated in Figure \ref{f:subrayMOC}.  For the majority of a domain, this method will behave the same as traditional MOC.  However, when approaching a region with a partially inserted rod, the ray along which the angular flux is being solved can be split into two (or more) separate rays.  One ray will use the control rod cross section while the other will use the cross section for the material below the control rod.  In each region where subray MOC is used, the scalar flux can be tallied using a modified form of equation \hl{number}:
+Using the results of the 1D MOC investigation described above, a new method has been developed called the subray methods of characteristics, illustrated in Figure \ref{f:subrayMOC}.  For the majority of a domain, this method will behave the same as traditional MOC.  However, when approaching a region with a partially inserted rod, the ray along which the angular flux is being solved can be split into two (or more) separate rays.  One ray will use the control rod cross section while the other will use the cross section for the material below the control rod.  In each region where subray MOC is used, the scalar flux can be tallied using a modified form of equation \ref{e:MOCavgFlux}:
 \begin{equation}
-stuff
+\overline{\psi}_{g,i,n,j} = \sum_{z=1}^Z V_z \left(\frac{q_{g,n,i,z}}{\Sigma_{t,g,i,z}} + \frac{1}{A_j\Sigma_{t,g,i,z}}\left(\psi^{in}_{g,i,n,j,z} - \frac{q_{g,n,i,z}}{\Sigma_{t,g,i,z}}\right)\left(1 - e^{-\Sigma_{t,g,i,z} A_j}\right)\right)\ ,
 \end{equation}
-This equation averages the angular flux for each subray segment to obtain an axially-averaged, segment-averaged angular flux, which is then used to calculate the scalar flux.  Furthermore, the subray angular fluxes can also be used to calculate the scalar flux for these subregions to generate subregion source terms for the subsequent iteration.
+where $Z$ is the number of subrays used in region $i$ and $V_z$ is the volume fraction associated with subray level $z$.  If the previous region also used subray, $\psi^{in}_{g,i,n,j,z}$ is unique for each subray; otherwise, it is the same.  This equation averages the angular flux for each subray segment to obtain an axially-averaged, segment-averaged angular flux, which is then used to calculate the scalar flux.  Furthermore, the subray angular fluxes can also be used to calculate the scalar flux for these subregions to generate subregion source terms for the subsequent iteration.
 
-After passing completely through the partially rodded regions, the subray angular fluxes can be recombined into a single ray using the volume fractions associated with each subray.  The errors introduced from this are minimal do to the exponential nature of the MOC ray calculations.  After the rod, both subrays have the same cross section again and the axial shape of the sources begins to flatten out.  Based on equation \hl{number}, the rays then exponentially converge toward each other.  Thus, as long as an appropriate amount of distance is left between the end of the partially rodded region and the recombination point, minimal errors are introduced.  This is discussed in more detail in section \hl{number}.
+After passing completely through the partially rodded regions, the subray angular fluxes can be recombined into a single ray using the volume fractions associated with each subray.  The errors introduced from this are minimal do to the exponential nature of the MOC ray calculations.  After the rod, both subrays have the same cross section again and the axial shape of the sources begins to flatten out.  Because of this, the rays then exponentially converge toward each other.  Thus, as long as an appropriate amount of distance is left between the end of the partially rodded region and the recombination point, minimal errors are introduced.  This is discussed in more detail in Section \ref{sss:recombination}.
 
 \begin{figure}
     \centering
@@ -194,11 +194,11 @@ Implementing a subray MOC sweeper in MPACT presents some difficulties since MPAC
 
 To get around this, an extra loop was added just inside the loop over long rays.  This loop goes from one to the number of subrays for that long ray.  For most long rays, this number will just be one, meaning that long ray gets swept exactly one time.  The results of the sweep for those long rays is exactly the same as if subray MOC were not being used.  For the long rays that intersect with a partially rodded region, the ray is constructed and swept multiple times.  During the sweep, volume fractions are used to tally the surface currents for CMFD and the region-wise scalar fluxes outside the partially rodded region.  Inside the partially rodded region, the scalar fluxes are tallied into two separate regions (one rodded, one unrodded).  This allows these subregion scalar fluxes to construct the scattering source for the next iteration.  After the sweep of the full plane is complete, the subregion scalar fluxes are combined using volume fractions as a post-processing step.
 
-This approach has the drawback of duplicating several of the long rays.  For problems discussed in chapter \hl{number}, we can reasonably expect around 20-30\% of the long rays to intersect a partially rodded region.  However, this approach allows the MOC sweeper kernels to maintain a high degree of efficiency during the calculations.  Furthermore, based on duplicating 30\% of the long rays, we could expect a 30-40\% speedup compared with simply having 2 separate MOC planes to resolve the partially inserted rod.  Thus, taking this approach allows subray MOC to be implemented and tested without rewriting MPACT while still attaining significant speedup.
+This approach has the drawback of duplicating several of the long rays.  For problems discussed in Chapter \ref{chap:results}, we can reasonably expect around 20-30\% of the long rays to intersect a partially rodded region.  However, this approach allows the MOC sweeper kernels to maintain a high degree of efficiency during the calculations.  Furthermore, based on duplicating 30\% of the long rays, we could expect a 30-40\% speedup compared with simply having 2 separate MOC planes to resolve the partially inserted rod.  Thus, taking this approach allows subray MOC to be implemented and tested without rewriting MPACT while still attaining significant speedup.
 
-\subsubsection{Subregion and Recombination Selection}
+\subsubsection{Subregion and Recombination Selection}\label{sss:recombination}
 
-Before performing the subray MOC sweeps, it must be determined which long rays will be duplicated.  This is done by examining the mesh for partially rodded regions.  Due to the source effects described in section \hl{number}, whenever a partially rodded region is identified, all other regions in that pin cell are also flagged as partially rodded.  This allows the axial shape of the source in the surrounding moderator region to also be resolved.
+Before performing the subray MOC sweeps, it must be determined which long rays will be duplicated.  This is done by examining the mesh for partially rodded regions.  Due to the source effects described previously, whenever a partially rodded region is identified, all other regions in that pin cell are also flagged as partially rodded.  This allows the axial shape of the source in the surrounding moderator region to also be resolved.
 
 \begin{figure}
     \centering
@@ -210,7 +210,7 @@ After identifying these regions, neighboring pins can also be flagged.  As more 
 
 \subsubsection{Subplane CMFD and \texorpdfstring{P$_3$}{P3}}
 
-Another consideration that must be made is that of the subplane scheme and its interactions with subray MOC.  While subray MOC could conceivably be used without the subplane scheme, having subplane should greatly improve its usefulness.  When projecting the CMFD solution back to the MOC mesh, the MOC fluxes are scaled by averaging the CMFD fluxes over the full height of the MOC plane, as discussed in section \hl{number}.  However, because the subplane CMFD solution has subgrid data, it can also be used to scale the subregion scalar fluxes from the subray MOC calculation, improving the accuracy and convergence of the subregion scattering and fission sources used for subray MOC.
+Another consideration that must be made is that of the subplane scheme and its interactions with subray MOC.  While subray MOC could conceivably be used without the subplane scheme, having subplane should greatly improve its usefulness.  When projecting the CMFD solution back to the MOC mesh, the MOC fluxes are scaled by averaging the CMFD fluxes over the full height of the MOC plane, as discussed in Section \ref{sss:cmfdProj}.  However, because the subplane CMFD solution has subgrid data, it can also be used to scale the subregion scalar fluxes from the subray MOC calculation, improving the accuracy and convergence of the subregion scattering and fission sources used for subray MOC.
 
 Furthermore, the axial P$_3$ calculations are also done on the subplane scheme.  The regular MOC regions will use currents at the top and bottom of the MOC plane to calculate the axial TL source.  If the subplanes are aligned with the control rod, then currents are also available at the top and bottom of each of the subregions used by subray MOC.  This allows a more accurate axial shape for the axial TL source, which cahnges especially quickly in the vicinity of a control rod tip.  Thus, using the subplane scheme will greatly improve the accuracy of all three sources used by MOC in the 2D/1D method: scattering, fission, and axial TL.
 

@@ -86,8 +86,8 @@ Another 2D/1D code is nTRACER, which is under active development by Seoul Nation
 
 \subsubsection{Approximate Flux Weighting Method}\label{sss:gehinAFW}
 
-Talk about Jess's method here.  Used originally for nodal codes, but also in Min Ryu's 2017 M\&C paper about nTRACER
+Because nTRACER's subplane decusping method required up-front calculations for use, the total runtime of the 2D/1D calculations increased significantly.  Because of this, the Approximate Flux Weighting Method was implemented \hl{cite Min Ryu}.  This method was originally developed for nodal methods \cite{gehinThesis1992quasi}, but also proved effective for 2D/1D as well.  In this method, it is assumed that the flux in the rodded and unrodded parts of the partially rodded node are close to the fluxes in the rodded node above and unrodded node below, respectively.  This assumption is not far from reality, and it provides approximate values for the flux that can be used to homogenize the cross sections in the partially rodded node.  This method is popular in a variety of nodal codes because it is relatively accurate and quite simple to implement \hl{Would benefit from citations here showing that people like it}.
 
 \section{Summary}
 
-\hl{Some summarizing words}
+The rod cusping problem has been shown to occur in both nodal codes and direct whole-core transport codes.  Many methods have been developed over the years to address cusping.  Many of these methods are deal with tabulating cross sections for nodal codes, and are therefore irrelevant for more modern planar synthesis methods.  Others have either failed in fully eliminating the effects of the partially inserted rod or require enough additional calculation that they were abandoned in favor of faster methods, as seen with the nTRACER code in Section \ref{sss:gehinAFW}.  Because of this, research into advanced, novel subgrid methods to deal with this problem is still required.  The following chapter will present three methods which attempt to deal with rod cusping in varying degrees of complexity.

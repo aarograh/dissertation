@@ -112,7 +112,7 @@ In addition to the homogenized cell terms, the coupling coefficients described b
 
 The axial coupling coefficient can be treated in a more straightforward manner.  Because the 1D axial solvers use the same pin-homogenized mesh as the CMFD solver, axial currents are naturally calculated at the top and bottom of each of the sub-planes.  Thus, these currents can be used together with the sub-planes fluxes to calculate sub-plane--dependent axial coupling coefficients.
 
-\subsubsection{Projection}
+\subsubsection{Projection}\label{sss:cmfdProj}
 
 The projection of the CMFD flux back to the 2D planes must also account for the presence of the sub-planes.  To do this, the solution is volume-averaged over all sub-planes for each pin cell, resulting in an equation similar to \ref{e:CMFDscaling}:
 \begin{equation}
