@@ -395,10 +395,10 @@ D_{g,N+\frac{1}{2}}=\alpha\left(3\Delta x_n\alpha\Sigma_{tr,g,N} + 1\right)^{-1}
 Defining the interface currents as in Equation \ref{e:interfaceCurrentDiff} will cause inconsistency between the high-order transport solver and the diffusion-based CMFD solver.  To account for this, a correction factor can be defined in terms of the transport solution and added to the CMFD currents to enforce consistency between the two solutions.
 \begin{subequations}\label{e:CMFDcouplingCoeffs}
 \begin{equation}\label{e:interfaceCurrentCMFD}
-J_{CMFD,g} = -D_g\left(\phi_{g,p} - \phi_{g,n}\right) + \hat{D}_g\left(\phi_{g,p} \phi{g,n}\right)\ ,
+J_{CMFD,g} = -D_g\left(\phi_{g,p} - \phi_{g,n}\right) + \hat{D}_g\left(\phi_{g,p} + \phi_{g,n}\right)\ ,
 \end{equation}
 \begin{equation}\label{e:dhat}
-\hat{D}_g = \frac{J_{trans,g} + D_g\left(\phi_{g,p} - \phi{g,n}\right)}{\left(\phi_{g,p} \phi{g,n}\right)}\ .
+\hat{D}_g = \frac{J_{trans,g} + D_g\left(\phi_{g,p} - \phi{g,n}\right)}{\left(\phi_{g,p} + \phi_{g,n}\right)}\ .
 \end{equation}
 \end{subequations}
 

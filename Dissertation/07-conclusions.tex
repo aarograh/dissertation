@@ -1,34 +1,54 @@
-\section{Summary of Work}
+\section{Summary}
 
-\hl{Discussion}
+To motivate the need to improve planar synthesis solutions to the transport method using subgrid methods, an overview of relevant discretizations, approximations, and numerical methods used to solve the Boltzmann transport equation was presented.  Using this foundation in transport methods, an in depth description of the 2D/1D method was provided.  This discussion provided a context to show the cause of the control rod cusping problem, which is the most severe axial heterogeneity observed in planar synthesis methods.  While rod decusping methods have an extensive history, none of them have fully addressed the problem, necessitating the research presented here.
+
+With the groundwork laid for 2D/1D and rod cusping, three methods developed during this research were presented.  The first, polynomial decusping, is reminiscent of those used in nodal codes.  Pregenerated data is functionalized and used to adjust the weighting of rodded and unrodded cross sections during the 2D/1D calculation.  This is similar to cross section tabulation methods used by nodal codes and is specific to certain control rod types.  It was shown that compared to no decusping method, this polynomial decusping caused significant improvement for most cases.  However, the results were still worse than desired for a direct transport calculation such as 2D/1D, while a few results were unacceptably bad.  Furthermore, additional data collection would be required to extend this method, making it cumbersome as a long-term, general solution to the rod cusping problem.  This was shown in the fact that the polynomial decusping could not resolve the stainless steel tip in the VERA Progression Problems and could not be used at all for the C5G7 benchmark problems.
+
+The second method was the subplane collision probabilities method.  This method uses an auxiliary solver to generate improved flux profiles which are then used in the subplane CMFD and P$_3$ calculations to solve the problem on a refined axial mesh.  This method significantly improved on the results of the polynomial decusping.  Furthermore, because the axial and radial effects are handled directly during the 2D/1D iteration, this method was less susceptible to changes in rod type.  The results for every problem showed that it performed consistently, significantly reducing the errors in power distribution caused by the control rods.
+
+The final method is the subray method of characteristics.  This method sought to address the fundamental quantity for which MOC is solving: the angular flux.  By accounting for the rod during the MOC sweep and obtaining a more correct angular flux, the scalar flux and other derived quantities are more accurate as well.  This method was then tested using the C5G7 Benchmark in 1D, 2D, and 3D.  In 1D, subray MOC fully resolved the effects of the partially rodded cells.  In 2D, the results using subray MOC were better than those with either of the other two methods.  Furthermore, the speedup over the multi-plane reference case was equal to or greater than the predicted values for this implementation.  Finally, the 3D results were good, but not as good as the subplane collision probabilities results.  The interaction with the 1D solver for 3D calculations hindered both the accuracy and convergence behavior for subray MOC.
+
+Several conclusions can be reached about the methods presented in this research:
+
+\begin{itemize}
+    \item The polynomial decusping method is limited in its ability to resolve partially inserted control rods.  The rod materials in the model must have polynomials generated for them and implemented in the code for the method to work.  Furthermore, it was shown that even with the appropriate materials, the the polynomial method was limited in its accuracy.  It typically did well in predicting \keff{} since the curves were generated based on reactivity, but the power distribution predictions suffered.  However, its simplicity makes it an option to address rod cusping effects in the near term.
+    
+    \item The subplane collision probabilities proved to be able to handle a variety of rod types and provide good results for both \keff{} and power distributions.  The method was less susceptible to rod position in the core than the polynomial method as well, shown by the more consistent behavior of its differential rod worth curve.
+    
+    \item Subplane-based methods introduce some changes in the convergence and runtime behavior of the 2D/1D calculations.  Subplane collision probabilities consistently saw an increase in the number of CMFD iterations required for each 2D/1D iteration.  The issue of load balance in parallel can also be important when using the subplane scheme with large radial partitions.
+    
+    \item It is possible to nearly eliminate the effects of rod cusping.  The 1D and 2D assembly results showed almost negligible error between subray MOC and the reference solution.
+    
+    \item Subray MOC needs further development to achieve results matching expectations.  When used on 3D problems or larger 2D problems, the results began to suffer compared with the 2D assembly calculations.
+\end{itemize}
+
+Based on these conclusions, recommendations can be made regarding the pursuit of subgrid methods.  The polynomial method is not recommended except to deal with urgent rod cusping errors.  It is not useful in dealing with other axial heterogeneities, and its accuracy is no reliable enough to be a long-term solution.  The subplane collision probabilities method is suggested for a long-term solution to subgrid heterogeneity.  This method can be applied to a wide variety of axial heterogeneity and performs relatively consistently from one problem to the next.  There are also ways in which it can be further improved (discussed below), making it a reliable option that also has potential research topics available.  Finally, subray MOC is recommended primarily as a continued topic.  The work presented here indicates that it should be effective in practically eliminating rod cusping effects altogether, but further improvements are needed for that accuracy to be realized across a variety of problems.  Furthermore, subray MOC should only be applied to control rods or other similar heterogeneities which exist at specific points in a 2D plane.  For axial heterogeneities that could exist in most of a 2D plane, it makes more sense to use the faster subplane collision probabilities method or simply switch to multiple MOC planes instead of using subray MOC in the entire MOC plane.
 
 \section{Future Work}
 
-\begin{itemize}
-    \item Subplane/CP
-    \begin{itemize}
-        \item Apply it to other heterogeneities, such as subplane temperature/density distributions, end caps, etc.
-        \item More advanced solver: 2D R/Z CP, 2D MOC in each level, etc.
-    \end{itemize}
-    \item Subray MOC
-    \begin{itemize}
-        \item Incorporate other things MPACT can already do with regular MOC:
-        \begin{itemize}
-            \item Parallelism
-            \item Pn Scattering
-            \item Subgroup - Somewhat more interesting with subray, but probably pretty easy still
-        \end{itemize}
-        \item Imrpove algorithms and data structures
-        \begin{itemize}
-            \item Incorporate concept of subregions directly into storage and ray tracing so we don't have to duplicate long rays to do subray MOC
-            \item Logic to determine how long the subrays should remain separate after the control rod (based on mean free path or something) instead of doing it by pin cells.  This could be interesting since it could be different from each ray, angle, and energy group
-        \end{itemize}
-        \item Radial TL - Tally currents/surface fluxes directly onto subplane mesh.  Tried it and it seemed unstable, but maybe there's a way to do it
-        \item Axial TL - Spatially flat in each pin cell right now.  Mike's results seem to indicate it's not that important, but that's kind of hard to believe.  Would be cool to improve on this approximation while using subray MOC
-        \item Improvements to nodal solver
-        \begin{itemize}
-            \item Stability (currently under way by Shane)
-            \item Accuracy for subray
-        \end{itemize}
-    \end{itemize}
-\end{itemize}
+\subsection{Subgrid Method Applications}
+
+There are two primary types of applications that could be made with these subgrid methods that have not been investigated in this dissertation. First, these methods were developed and analyzed in the framework of 2D/1D.  However, the 2D/3D method also uses 2D MOC planes to inform its 3D sweep.  Because of this, 2D/3D can also realize performance improvements by reducing the number of MOC planes used in the calculation.  Applying any of these subgrid methods to the MOC planes in 2D/3D should have results in benefits similar to those observed with the 2D/1D method.
+
+Another topic of interest is applying these methods to other axial heterogeneities.  Geometric components such as fuel end caps or spacer grids could be treated differently using subray MOC or subplane collision probabilities.  Reactors with non-uniform fuel heights would also be a good opportunity to use some of these methods without introduce thin MOC planes.  Enabling thermal-hydraulic feedback would also present the opportunity to use these methods to capture subgrid temperature and density distributions.  Any heterogeneity that exists in many locations in the core would be a good application for the subplane collision probabilities method, while severe heterogeneities that tend to be only in specific regions of the core are good applications for subray MOC.
+
+\subsection{Polynomial Decusping Improvements}
+
+The polynomial decusping method could be extended primarily by adding more control rod types.  This would allow it to become more flexible and applied to a wider variety of problems.  One example would be adding a curve for stainless steel, allowing the method to resolve the stainless steel tip used in many PWRs.  Other control rods have followers that cannot currently be account for, some of which are even fuel.  Generating more data for the polynomial decusping method would make it more flexible and provide an easy, efficient means of handling cusping effects for a variety of problems.
+
+
+\subsection{Subplane Collision Probabilities}
+
+Several improvements could be made to the subplane collision probabilities method.  First, other solvers could be used to generate the pin cell flux profiles.  The current 1D CP solver could be replaced by a 2D CP kernel that solves in the radial and axial directions to account for the local 3D effects of the rod; a 2D MOC pin cell solver could be used in each level to account for corner effects in the pin cell and incorporate higher order scattering; a fast 3D CP or MOC solver could even be used to obtain a 3D flux shape around the tip of the control rod.  Any of these solvers would likely improve the solutions.
+
+Second, the current CP implementation in MPACT solves only in cylindrical coordinates.  This works well for most geometric components in PWRs, but there are situations where other geometries would be necessary.  Expanding the CP kernel to be able to handle some other common geometries would also make it useful in more situations.
+
+\subsection{Subray MOC}
+
+Finally, there are a number of improvements that can be made to subray MOC.  The first few improvements are features which have been implemented in 2D/1D codes already for regular 2D MOC.  The current implementation in MPACT does not use any parallelism.  Subray MOC could be decomposed by angle, space, or energy using distributed memory, or by ray using threading.  Doing this would present some interesting challenges concerning parallel load balance for both subray MOC and subplane CMFD/P$_3$.  Higher order scattering could also be introduced instead of assuming P$_0$/TCP$_0$ scattering.  Cross section shielding calculations will also be required if subray MOC is to be used for more realistic problems.  When subray MOC is used for the main solve, it should also be used for the shielding calculations to obtain shielding data for the subregions used by the subrays.  This would allow subray MOC to be used on realistic problems such as the VERA Progression Problems instead of being limited to macroscopic cross sections such as those used in the C5G7 problems.
+
+Another area in which subray MOC could be improved is the sweep algorithm and data structures.  Because MPACT was intended for a more traditional 2D/1D approach, implementing subray MOC required duplication of the long rays.  This introduces a significant amount of unnecessary calculation.  Redesigning the ray tracing data to account for subrays would then allow the implementation of more efficient algorithms for the subray MOC sweep that do not duplicate calculations unnecessarily.
+
+There are also improvements that could be made to the axial and radial transverse leakage sources.  For the radial TL source, the $\hat{D}$ coupling coefficients are calculated on the full-height MOC plane when subplane CMFD is used to ensure stability.  With subray MOC, the currents could conceivably be tallied on the subplane surfaces instead, providing a more accurate shape for these coefficients and improving the radial TL source for the axial solver.  The axial TL source could be improved through the use of better approximations.  The current approximation is a flat TL source, meaning that the source is the same for all flat source regions belonging to a pin cell.  It is clear that the actual TL source would be very different in the fuel regions than in the moderator regions.  Devising a strategy to account for this would improve all 2D/1D calculations (including those using the subgrid methods developed in this work), especially in the vicinity of a strongly absorbing control rod.
+
+Finally, improvements can be made to the interaction between subray MOC and the 1D P$_3$ calculations.  As shown in Chapter \ref{chap:results}, subray MOC performs better than the other methods for all the 2D calculations.  The 3D calculations are not as impressive.  When using P$_3$ axially, the differences between the subray MOC calculations and the reference solution are greater than if both calculations use finite difference axially.  While the results with subray MOC are not bad, they are not as good as the subplane collision probabilities results.  Improvements to the 2D/1D iteration to resolve this issue would greatly increase the effectiveness of subray MOC.
