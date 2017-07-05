@@ -13,7 +13,7 @@ The first of these methods was the ``2D/1D Fusion'' technique, developed by rese
 
 The second group of researchers was at Korea Atomic Energy Research Institute (KAERI).  They developed what is known more simply as the ``2D/1D'' scheme, first implemented in the DeCART code \cite{3DHetWholeCoreTransPlanarMOC,DeCARTTheoryManual,MethodsAndPerformanceOfDecart}.  This employs very similar technique to the 2D/1D Fusion method described above.  However, rather than using angular fluxes from each solver as a source term, currents are tallied on each of the six faces of each pin cell.  The currents can then be used to compute axial and radial ``transverse leakage'' sources for the radial and axial solvers, respectively.  This change allows for the storage of group-wise currents at each interface instead of storing the group-wise angular fluxes for each angle, significantly reducing the memory burden of the calculation.
 
-After some development, the DeCART code was forked into several different versions for different institutions, one of them being the University of Michigan (UM).  After some development, it was determined that there would be no further development of the DeCART code at UM and a new 2D/1D implementation would be put in MPACT \cite{2D1DApproxTo3DTransport1,StabilityAndAccuracyOf3DTransportInMPACT}.  In MPACT's implementation of 2D/1D (shown in Figure \ref{f:2d1dsubpalne}), 2D MOC is used for each of the radial planes, as with earlier 2D/1D codes.  The axial calculation done on a pin-homogenized mesh usually with SP$_3$, though a variety of other solvers are available such as NEM, SENM, SP$_1$, SP$_5$, or S$_N$.  Finally, MPACT also uses 3D CMFD on the same pin-homogenized mesh to provide convergence acceleration to the calculations.  The remainder of this chapter will look at the derivation of the 2D/1D equations, the details of how they are implemented in MPACT, and some of the approximations and sources of errors related to this method.
+After some development, the DeCART code was forked into several different versions for different institutions, one of them being the University of Michigan (UM).  After some development, it was determined that there would be no further development of the DeCART code at UM and a new 2D/1D implementation would be put in MPACT \cite{2D1DApproxTo3DTransport1,StabilityAndAccuracyOf3DTransportInMPACT}.  In MPACT's implementation of 2D/1D (shown in Figure \ref{f:2d1dsubpalne}), 2D MOC is used for each of the radial planes, as with earlier 2D/1D codes.  The axial calculation done on a pin-homogenized mesh usually with P$_3$ wrapper in an NEM kernel.  A variety of other solvers are available, such as SENM, P$_1$, P$_3$, and S$_N$, but these will not be used in this work.Finally, MPACT also uses 3D CMFD on the same pin-homogenized mesh to provide convergence acceleration to the calculations.  The remainder of this chapter will look at the derivation of the 2D/1D equations, the details of how they are implemented in MPACT, and some of the approximations and sources of errors related to this method.
 
 \section{Derivation}
 
@@ -63,7 +63,7 @@ L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = {\frac{\Omega_x}{\Delta y_i}\intop_
 \psi_g^{XY} = \frac{1}{\Delta_i \Delta_j} \intop_{y_{j-\frac{1}{2}}}^{y_{j+\frac{1}{2}}} \intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \psi_g\left(x,y,z,\bm{\Omega}\right) dx dy\ ,
 \end{equation}
 \end{subequations}
-where a superscript $XY$ now corresponds to a particular x- and y-region which extends the full height of the problem in the z-direction.  Again, it is assumed that the cross-sections are constant in the x- and y-directions inside the region of integration.  How this is accomplished will be discussed in more detail when discussing MPACT's implementation of SP$_3$ and CMFD.
+where a superscript $XY$ now corresponds to a particular x- and y-region which extends the full height of the problem in the z-direction.  Again, it is assumed that the cross-sections are constant in the x- and y-directions inside the region of integration.  How this is accomplished will be discussed in more detail when discussing MPACT's implementation of P$_3$ and CMFD.
 
 As with the radial equations, we can treat the transverse leakage source isotropically by averaging over angle:
 \begin{dmath}
@@ -120,7 +120,7 @@ The projection of the CMFD flux back to the 2D planes must also account for the 
 \end{equation}
 The calculation flow for 3D CMFD is shown in Figure \ref{f:CMFD-flowchart}.
 
-\subsection{1D NEM-SP\textsubscript{3}}
+\subsection{1D NEM-P\textsubscript{3}}
 
 \begin{figure}[H]
   \centering
@@ -130,9 +130,9 @@ The calculation flow for 3D CMFD is shown in Figure \ref{f:CMFD-flowchart}.
 
 In MPACT, the 1D axial solvers operate on the same mesh as the 3D CMFD calculations, meaning that cell-homogenized quantities and radial currents have already been obtained from the CMFD calculation.  All the 1D axial solver must do is construct a source term from the radial currents for each cell, then perform a calculation to obtain currents on the axial interfaces at the top and bottom of each node.
 
-MPACT has a variety of 1D nodal methods that are capable of performing these calculations, including diffusion-based such as NEM and SENM and higher-order solvers such as SP$_N$ and S$_N$.  For most calculations, MPACT uses SP$_3$ wrapped in NEM kernels.  The SP$_3$ portion handles the angular dependence of the solution by calculating angular moments.  The NEM kernels then handle the spatial dependence through the fourth-order polynomial expansion.  Because the SP$_3$ equations can be written as two sets of P$_1$ equations, they naturally lend themselves to being solved this way.
+MPACT has a variety of 1D nodal methods that are capable of performing these calculations, including diffusion-based such as NEM and SENM and higher-order solvers such as P$_N$ and S$_N$.  For most calculations, MPACT uses P$_3$ wrapped in NEM kernels.  The P$_3$ portion handles the angular dependence of the solution by calculating angular moments.  The NEM kernels then handle the spatial dependence through the fourth-order polynomial expansion.  Because the P$_3$ equations can be written as two sets of P$_1$ equations, they naturally lend themselves to being solved this way.
 
-The SP$_3$ equations consist of equations for angular flux moments 0 through 3.  These equations can be combined into two equations for just the 0th and 2nd moments, as shown in Equations \ref{e:3DSP3}.  Formulating SP$_3$ this way makes it straightforward to use the NEM kernels for each of the two moment equations.  The iteration scheme for this procedure is shown in Figure \ref{f:Axial-flowchart}.
+The P$_3$ equations consist of equations for angular flux moments 0 through 3.  These equations can be combined into two equations for just the 0th and 2nd moments, as shown in Equations \ref{e:3DSP3}.  Formulating P$_3$ this way makes it straightforward to use the NEM kernels for each of the two moment equations.  The iteration scheme for this procedure is shown in Figure \ref{f:Axial-flowchart}.
 
 \subsection{2D MOC}
 
@@ -196,13 +196,13 @@ When deriving the radial equations in section \ref{ss:2d1dradialEq}, it was assu
 
 \subsection{Axial Transverse Leakage Source}
 
-Another approximation relates to the assumptions made while deriving the axial equations in section \ref{ss:2d1daxialEq}.  The SP$_3$ calculations are performed on a pin-homogenized mesh.  Because of this, the axial currents used in the axial TL source are assumed to be flat across the entire pin cell.  However, the currents will obviously be quite different in the fuel and moderator regions.  Furthermore, the axial TL is treated isotropically.  While this simplifies the axial calculations and MOC storage requirements, it does not perfectly reflect reality.  Both these spatial and angular assumptions introduce some error into the axial TL source used by MOC.
+Another approximation relates to the assumptions made while deriving the axial equations in section \ref{ss:2d1daxialEq}.  The P$_3$ calculations are performed on a pin-homogenized mesh.  Because of this, the axial currents used in the axial TL source are assumed to be flat across the entire pin cell.  However, the currents will obviously be quite different in the fuel and moderator regions.  Furthermore, the axial TL is treated isotropically.  While this simplifies the axial calculations and MOC storage requirements, it does not perfectly reflect reality.  Both these spatial and angular assumptions introduce some error into the axial TL source used by MOC.
 
 \subsection{Radial Currents}
 
-The radial TL source used by the axial SP$_3$ solver has the same two approximations as the axial TL source did.  Radial currents are used to generate the source, which assumes isotropy.  Additionally, the spatial shape is flat across each pin cell.  This is corrected to some extent since the axial solver produces a quadratic source shape using the neighboring nodes, but this is not a perfect solution.
+The radial TL source used by the axial P$_3$ solver has the same two approximations as the axial TL source did.  Radial currents are used to generate the source, which assumes isotropy.  Additionally, the spatial shape is flat across each pin cell.  This is corrected to some extent since the axial solver produces a quadratic source shape using the neighboring nodes, but this is not a perfect solution.
 
-Additionally, when using the sub-plane method, the $\hat{D}$ correction terms used by CMFD are assumed to be axially flat within each MOC plane.  While this assumption improves the stability of the calculations, it forces CMFD to capture any axial shape the current has within an MOC plane.  For most problems, this error is probably negligible, but for cases such as a partially inserted rod or other strong absorber, it would be beneficial to be able to have sub-plane--dependent $\hat{D}$ terms to more accurately calculate the radial currents.  Doing this would improve the radial TL source in the SP$_3$ solver, and the the overall 2D/1D results.
+Additionally, when using the sub-plane method, the $\hat{D}$ correction terms used by CMFD are assumed to be axially flat within each MOC plane.  While this assumption improves the stability of the calculations, it forces CMFD to capture any axial shape the current has within an MOC plane.  For most problems, this error is probably negligible, but for cases such as a partially inserted rod or other strong absorber, it would be beneficial to be able to have sub-plane--dependent $\hat{D}$ terms to more accurately calculate the radial currents.  Doing this would improve the radial TL source in the P$_3$ solver, and the the overall 2D/1D results.
 
 \subsection{Other Sources of Error}
 
@@ -233,7 +233,7 @@ Several other sources of error in the 2D/1D method will be briefly mentioned her
   
   \item \textbf{Self-Shielding}
   
-  Another potential source of error is related to spatial and energy self-shielding.  To correctly deal with resonance absorption in the fuel while also accounting for the spatial self-shielding in the fuel, MPACT uses the subgroup method \cite{SubgroupOrig1974,SelfShieldingMethodologyMPACT2013}.  Without using this method, the k$_{eff}$ calculated by MPACT is off by several percent, along with an inaccurate flux distribution.
+  Another potential source of error is related to spatial and energy self-shielding.  To correctly deal with resonance absorption in the fuel while also accounting for the spatial self-shielding in the fuel, MPACT uses the subgroup method \cite{SubgroupOrig1974,SelfShieldingMethodologyMPACT2013}.  Without using this method, the \keff{} calculated by MPACT is off by several percent, along with an inaccurate flux distribution.
   
   \item \textbf{Quadrature}
   

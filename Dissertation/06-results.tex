@@ -16,7 +16,7 @@ In the second half of the chapter, results for the subray method of characterist
     \caption{VERA Problem 4 radial (left) and axial (right) layouts}\label{f:p4}
 \end{figure}
 
-VERA Progression Problem 4 is composed of a 3x3 set of Westinghouse 17$\times$17 fuel assemblies with an active fuel height of 365.76 cm and a control bank in the center assembly.  The radial layout of the problem is shown in Figure \ref{f:p4radial}, and the axial layout of each assembly is shown in Figure \ref{f:p4axial}.  The control rods were placed at an axial elevation of 257.9 cm above the core plate, about one third inserted into the core.  The rod in the original problem specification is made of AIC with a B$_4$C follower and a stainless steel tip.  First, results will be presented which use several difference uniform rods to simplify the analysis, then results will be presented with the heterogeneous rod.  Lastly, a differential rod worth developed with the heterogeneous rod is shown with comparisons to KENO-VI reference solutions at regular intervals along the curve.
+VERA Progression Problem 4 is composed of a 3x3 set of Westinghouse 17$\times$17 fuel assemblies with an active fuel height of 365.76 cm and a control bank in the center assembly.  The radial layout of the problem is shown in Figure \ref{f:p4radial}, and the axial layout of each assembly is shown in Figure \ref{f:p4axial}.  The control rods were placed at an axial elevation of 257.9 cm above the core plate, about one third inserted into the core.  The rod in the original problem specification is made of AIC with a \bfc{} follower and a stainless steel tip.  First, results will be presented which use several difference uniform rods to simplify the analysis, then results will be presented with the heterogeneous rod.  Lastly, a differential rod worth developed with the heterogeneous rod is shown with comparisons to KENO-VI reference solutions at regular intervals along the curve.
 
 \subsection{Homogeneous Control Rods}
 
@@ -27,39 +27,43 @@ For the reference solution, 58 MOC planes were used with 49 of them in the activ
     \caption{Comparison of Rod Decusping Methods in MPACT for VERA Progression 
         Problem 4 for Homogeneous Control Rods}
     \resizebox{\textwidth}{!}{\begin{tabular}{l l S[table-format=3.1,table-number-alignment=left] 
-            S[table-format=1.3,table-number-alignment=left] 
-            S[table-format=2.3,table-number-alignment=left] 
+            S[table-format=1.2,table-number-alignment=left] 
+            S[table-format=2.2,table-number-alignment=left] 
             S[table-format=2.1,table-number-alignment=left] l}\toprule
-        \multirow{2}{*}{Rod Material} & \multirow{2}{*}{{Case}} & {k$_{eff}$} & 
+        Rod & \multirow{2}{*}{{Case}} & {\keff{}} & 
         \multicolumn{2}{l}{{Pin Power 
                 Differences}} & \multirow{2}{*}{{2D/1D Iterations}} & {Runtime}\\
-        & & {Difference (pcm)} & {RMS} & {Max} &  & {(Core-Hours)} \\\midrule
+        Material & & {Difference (pcm)} & {RMS} & {Max} &  & {(Core-Hours)} \\\midrule
         \multirow{5}{*}{AIC}      & Reference        & {--}  &    {--} &     {--} & 15 & 19.6 \\
-                                  & No treatment     & -29.5 & 1.531\% & 11.839\% & 12 & 14.7 \\
-                                  & Polynomial       &  -0.3 & 0.444\% &  4.081\% & 12 & 14.3 \\
-                                  & Subplane         & -11.5 & 0.726\% &  8.209\% & 12 & 14.2 \\
-                                  & Subplane + CP    &  -5.6 & 0.368\% &  4.248\% & 12 & 15.3\\\midrule
-        \multirow{5}{*}{B$_4$C}   & Reference        & {--}  &    {--} &     {--} & 15 & 16.9 \\
-                                  & No treatment     & 112.0 & 6.978\% & 69.372\% & 12 & 12.7 \\
-                                  & Polynomial       & 112.6 & 6.886\% & 66.731\% & 12 & 12.1 \\
-                                  & Subplane         & -17.9 & 1.142\% & 11.357\% & 13 & 15.2 \\
-                                  & Subplane + 1D-CP & -11.0 & 0.687\% &  6.367\% & 12 & 13.4 \\\midrule
+                                  & No treatment     & -29.5 & 1.53\% & 11.84\% & 12 & 14.7 \\
+                                  & Polynomial       &  -0.3 & 0.44\% &  4.08\% & 12 & 14.3 \\
+                                  & Subplane         & -11.5 & 0.73\% &  8.21\% & 12 & 14.2 \\
+                                  & Subplane + CP    &  -5.6 & 0.37\% &  4.25\% & 12 & 15.3\\\midrule
+        \multirow{5}{*}{\bfc{}}   & Reference        & {--}  &    {--} &     {--} & 15 & 16.9 \\
+                                  & No treatment     & 112.0 & 6.98\% & 69.37\% & 12 & 12.7 \\
+                                  & Polynomial       & 112.6 & 6.89\% & 66.73\% & 12 & 12.1 \\
+                                  & Subplane         & -17.9 & 1.14\% & 11.36\% & 13 & 15.2 \\
+                                  & Subplane + CP & -11.0 & 0.69\% &  6.37\% & 12 & 13.4 \\\midrule
         \multirow{5}{*}{Tungsten} & Reference        & {--}  & {--}   &      {--} & 15 & 23.5 \\
-                                  & No treatment     &  -8.4 & 0.370\% &  3.374\% & 12 & 15.5 \\
-                                  & Polynomial       &  -4.4 & 0.239\% &  2.720\% & 12 & 14.5 \\
-                                  & Subplane         &   1.6 & 0.069\% &  0.598\% & 12 & 13.9 \\
-                                  & Subplane + CP    &  -0.9 & 0.055\% &  0.941\% & 12 & 15.6 \\\bottomrule
+                                  & No treatment     &  -8.4 & 0.37\% &  3.37\% & 12 & 15.5 \\
+                                  & Polynomial       &  -4.4 & 0.24\% &  2.72\% & 12 & 14.5 \\
+                                  & Subplane         &   1.6 & 0.07\% &  0.60\% & 12 & 13.9 \\
+                                  & Subplane + CP    &  -0.9 & 0.06\% &  0.94\% & 12 & 15.6 \\\bottomrule
     \end{tabular}}
     \label{t:homoDecusp}
 \end{table}
 
-\hl{The ``No Treatment'' case shows the magnitude of the cusping effects for this problem.  The k$_{eff}$ difference is 30 pcm, which is not too alarming.  However, the RMS and maximum power differences are almost 4\% and over 20\%, respectively, which is an unacceptable level of error.  The polynomial decusping significantly reduces these errors to about 1\% and 6.5\% respectively.  This is much better, but still quite high.  The sub-plane decusping with no radial treatment performs similarly to the polynomial decusping, but slightly worse.  Because the polynomials were generated using this problem, it is expected that they would perform well.  Thus, the fact that the sub-plane decusping is comparable indicates that it is capturing the axial shape well.  Finally, the CP-based decusping gives the best results, with an RMS of about 0.5\% and a maximum error just under 5\%.  The maximum error is still larger than what is typically desired from the 2D/1D method, but is better than the old decusping treatment and far better than no treatment at all.}
+The ``No Treatment'' cases show the magnitude of the cusping effects for each of the rod types.  The largest cusping errors occur for the \bfc{} rod, which is a strong thermal absorber.  For this rod, the polynomial treatment has very little effect, leaving large errors in the solution.  The subplane method reduces the error in \keff{} to an almost negligible -18 pcm, but still leaves significant power distribution errors of 1.14\% RMS and 11.36\% Max.  Introduing the 1D CP calculations brings the maximum error below 7\%.  These results indicate that the polynomial method is not capable of accurately resolving the \bfc{} rod.  Because it is a strong thermal absorber, smearing the rod material throughout the plane at all introduces large errors that cannot be correct just by reducing the volume fraction.  The subplane-based methods are both able to resolve the rod more accurately since they actually modify the cross sections used in the CMFD and P$_3$ calculations.
 
-\hl{As far as runtime is convergence and runtime is concerned, all cases took the same number of 2D/1D iterations.  The sub-plane--based decusping methods incurred a few more CMFD iterations, but this did not have a significant impact on runtime.  The difference in runtime between the reference and no treatment cases is due to the decomposition of the problem.  Both cases use the same sub-plane CMFD mesh (with homogeneous cross-sections in each plane).  However, the reference case was run with two MOC planes instead of one.  This also means that an extra core was used in the calculation.  Because of this, the time required for the transport calculations was the same, but the CMFD solve was slower for the no treatment case since a single core was solving a portion of the CMFD system handled by two cores in the reference calculation.  Thus, the runtime increase is due only to the parallel partitioning, not the methods themselves.  This is important, because the runtimes of the decusping cases were all about the same as the no treatment case.  This implies that the runtime penalty due to the decusping solvers is negligible.  Some work simply needs to be done to improve the parallel balance when using the sub-plane scheme.}
+For the AIC rod, the polynomial correction performs much better than for the \bfc{} rod, reducing the maximum error from 12\% to 4\%.  The subplane treatment only reduces the error to 8.21\%, while adding the CP calculations reduces the errors to about the same point as the polynomial treatment.  The AIC rod has resonance absorption and is not as strongly absorbing in the thermal energy ranges as the \bfc{} rod, causing some differences in behavior of these methods.  The polynomial method does a better job with the AIC rod since the complex effects are accounted for in the polynomial generation.  However, the subplane treatment does not perform well since it does nothing to account for the radial effects of the AIC rod.  For both rod types, the subplane treatment with radial CP calculations performs well since it is able to capture both radial and axial effects of the rod.
+
+For the tungsten rod, the errors are not nearly as high as for the AIC or \bfc{} rods.  However, the subplane-based treatments still perform significantly better than the polynomial treatment, bringing the \keff{} error to negligible levels and reducing the maximum power errors under 1\%.
+
+For all 3 rod types, Table \ref{t:homoDecusp} also shows the convergence and runtime data for each calculation.  The decusping treatments consistently converge in fewer iterations than the reference.  This is due to the fact that the reference has an additional thin MOC plane that the other cases do not have.  This thin plane requires underrelaxation for 2D/1D to converge, causing a small increase in the number of 2D/1D iterations required.  Because of the difference in iterations, all decusping methods also require less runtime by about 25\% on average.  The subplane-based methods are generally a bit slower than the polynomial method, despite requiring the same number of 2D/1D iterations.  The reason for this is that the subplane-based methods modify the CMFD system, which results in more CMFD inner iterations to converge during each outer 2D/1D iteration.  This increases the total runtime of the problem even though 2D/1D itself converges the same.  However, in most cases the trade-off between runtime and accuracy would favor the use of the subplane-based 
 
 \subsection{Heterogeneous Control Rod}
 
-Next, the same set of results can be shown again, but with the heterogeneous rod.  The same 58-plane reference mesh was used for these results.  However, the decusping cases have only 55 planes instead of 57.  This is needed to account for all three material interfaces in the heterogeneous rod: B$_4$C/AIC, AIC/SS, and SS/moderator.  The decusping methods are applied at all three of these locations simultaneously.  The results are shown in Table \ref{t:hetDecusp}.
+Next, the same set of results can be shown again, but with the heterogeneous rod.  The same 58-plane reference mesh was used for these results.  However, the decusping cases have only 55 planes instead of 57.  Three additional planes are eneded in the reference case to account for all three material interfaces in the heterogeneous rod: \bfc{}/AIC, AIC/SS, and SS/moderator.  The decusping methods are applied at all three of these locations simultaneously, with the exception of the SS/moderator interface for the polynomial decusping since there is no SS polynomial data.  The results are shown in Table \ref{t:hetDecusp}.
 
 \begin{table}[ht]
     \centering
@@ -67,19 +71,21 @@ Next, the same set of results can be shown again, but with the heterogeneous rod
         Problem 4 for Heterogeneous Control Rod}
     \begin{tabular}{l S[table-format=2.1,table-number-alignment=left] l 
             S[table-format=2.3,table-number-alignment=left] l l}\toprule
-        \multirow{2}{*}{Case} & {k$_{eff}$} & \multicolumn{2}{l}{{Pin Power 
+        \multirow{2}{*}{Case} & {\keff{}} & \multicolumn{2}{l}{{Pin Power 
                 Differences}} & \multirow{2}{*}{{2D/1D Iterations}} & {Runtime}\\
         & {Difference (pcm)} & {RMS} & {Max} &  & {(Core-Hours)} \\\midrule
         Reference        &  {--} &    {--} &     {--} & 15 & 16.6 \\
-        No treatment     & -45.9 & 2.427\% & 20.450\% & 12 & 13.8 \\
-        Polynomial       &  -2.5 & 0.457\% &  5.067\% & 12 & 13.0 \\
-        Subplane         & -17.3 & 1.101\% & 11.771\% & 13 & 14.9 \\
-        Subplane + CP    &  -5.5 & 0.415\% &  3.866\% & 12 & 14.7 \\\bottomrule
+        No treatment     & -45.9 & 2.43\% & 20.45\% & 12 & 13.8 \\
+        Polynomial       &  -2.5 & 0.46\% &  5.07\% & 12 & 13.0 \\
+        Subplane         & -17.3 & 1.10\% & 11.77\% & 13 & 14.9 \\
+        Subplane + CP    &  -5.5 & 0.42\% &  3.87\% & 12 & 14.7 \\\bottomrule
     \end{tabular}
     \label{t:hetDecusp}
 \end{table}
 
-\hl{Say some things about this}
+With no treatment, the maximum error is over 20\%.  The oplynomial method performs wells, reducing the error to about 5\%, with an RMS power error under 0.5\% and \keff{} error of -2.5 pcm.  This behavior is consistent with what is expected based on the homogeneous results.  The primary location of rod cusping effects is at the AIC/SS interface, and the errors obtained from the polynomial decusping method are comparable to those observed in the homogeneous AIC rod calculations.  Following this trend, the subplane treatment without radial CP does not perform as well as the polynomial treatment, reducing the maximum error to just under 12\%.  Finally, the subplane treatment with radial CP generates the most accurate results, with a maximum power error under 4\%.  This method makes no assumptions about which materials are next to each other, can handle all three control rod materials, and accounts for both radial and axial effects of the rod, making it the most consistent and accurate of the methods across a variety of cases.
+
+The trends in the convergence and runtime data are similar to those observed with the homogeneous rods.  The decusping treatment calculations take fewer 2D/1D iterations because fewer thin planes are used in the model, requiring less underrelaxation than the reference case.  Furthermore, some increase in runtime is seen in the subplane-based methods over the polynomial method due to changes in the convergence of the CMFD system during each 2D/1D iteration.  The CP calculations themselves are negligible since they consist only of inverting an 8$\times$8 matrix for each energy group, which can be done very quickly.  Again, the trade-off between runtime and accuracy for this problem favors using the subplane treatment with radial CP if the fine mesh solution's accuracy is not required.
 
 \subsection{Differential Rod Worth Curve}
 
@@ -90,7 +96,9 @@ Next, the same set of results can be shown again, but with the heterogeneous rod
         techniques.}\label{f:rodworth}
 \end{figure}
 
-To show the effectiveness of each decusping technique as the rod moves upward through the reactor, a differential rod worth curve was developed for each method.  This curve is shown in Figure \ref{f:rodworth}.  \hl{Say some things}
+To show the effectiveness of each decusping technique as the rod moves upward through the reactor, a differential rod worth curve was developed for each method.  This curve is shown in Figure \ref{f:rodworth}.  With no decusping method, the errors in the rodworth approach 50\% at some positions.  The polynomial treatment greatly reduces these errors, but does not fully smooth the curve.  Especially near the peak of the curve, some oscillation about the true solution can be seen when using the polynomial treatment.  The subplane treatment behaves similarly to the polynomial treatment, but with slightly larger errors in most places.  Finally, adding the radial CP calculations generates a smooth curve at almost every rod position.
+
+The exception to the good behavior of the subplane + CP method occurs when the rod is almost fully inserted.  At such positions, all methods fail to produce a smooth rod worth curve due to the severe power shape.  The polynomial method is always limited in its ability to resolve the partially inserted rod if the local power shape differs significantly from the one with which the polynomial data was generated.  The subplane-based treatments struggle with the fully inserted rod because each subplane in an MOC plane uses the same MOC solution data for the CMFD and P$_3$ solutions.  In the cases where MOC planes are near both the control rod tip and the boundary of the problem, the radial solution is changing more quickly than normal and cannot be resolved as well by the subplane scheme.
 
 \subsection{KENO-VI Comparisons}
 
@@ -100,31 +108,31 @@ To show the effectiveness of each decusping technique as the rod moves upward th
         4}\label{t:keno}
     \sisetup{separate-uncertainty=true,table-text-alignment=left,table-number-alignment=left}
     \begin{tabular}{l l 
-            S[table-format=3.1,table-figures-uncertainty=3,table-number-alignment=left] 
+            S[table-format=3.1,table-number-alignment=left] 
             S[table-format=1.3,table-number-alignment=left] 
-            S[table-format=2.3,table-figures-uncertainty=3,table-number-alignment=left]}\toprule
-        \multirow{2}{*}{Cases} & \multirow{2}{*}{{Decusping Method}} & \multirow{2}{*}{{$k_{eff}$ 
+            S[table-format=2.3,table-number-alignment=left]}\toprule
+        \multirow{2}{*}{Cases} & \multirow{2}{*}{{Decusping Method}} & \multirow{2}{*}{{\keff{} 
                 Difference}} & 
         \multicolumn{2}{l}{{Pin Power Difference}} \\
         &  &  & {RMS} & {Max} \\\midrule
-        \multirow{4}{*}{Average}       & None              &   -24.9(6) &  5.380\% & 25.902(097)\% \\
-                                       & Polynomial        &    34.8(6) &  1.502\% &  8.957(109)\% \\
-                                       & Subplane          &    34.6(6) &  0.984\% &  4.597(094)\% \\
-                                       & Subplane + CP     &    41.4(6) &  0.763\% &  3.386(104)\% 
+        \multirow{4}{*}{Average}       & None              &   -24.9 &  5.380\% & 25.902\% \\
+                                       & Polynomial        &    34.8 &  1.502\% &  8.957\% \\
+                                       & Subplane          &    34.6 &  0.984\% &  4.597\% \\
+                                       & Subplane + CP     &    41.4 &  0.763\% &  3.386\% 
         \\\midrule
-        \multirow{2}{*}{Worst -- 20\%} & None              & -176.0(16) & 14.709\% & 63.929(233)\% \\
-                                       & Polynomial        & 13.9(16)   &  3.344\% & 25.373(233)\% \\
-                                       & Subplane          & 9.6(16)    &  1.921\% &  9.900(108)\% \\
-                                       & Subplane + CP     & 45.9(16)   &  1.324\% &  4.921(155)\% \\
+        \multirow{2}{*}{Worst -- 20\%} & None              & -176.0 & 14.709\% & 63.929\% \\
+                                       & Polynomial        & 13.9   &  3.344\% & 25.373\% \\
+                                       & Subplane          & 9.6    &  1.921\% &  9.900\% \\
+                                       & Subplane + CP     & 45.9   &  1.324\% &  4.921\% \\
         \midrule
-        Fully Withdrawn                & --                & 40.5(13)   & 0.34\%   & 1.493(285)\% \\
+        Fully Withdrawn                & --                & 40.5   & 0.34\%   & 1.493\% \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-For the rod worth curves in the previous sections, KENO-VI calculations were done in 10\% intervals along the curve, giving a total of 11 KENO-VI data sets that can be used as a reference for MPACT.  Each KENO-VI calculation was run for \hl{number} inactive generations and \hl{number} active generations.  Each generation had \hl{number} particles in it, for a total of \hl{number} particles contributing to the final solution and statistics.  \hl{Maybe say something about statistics here and leave the +/- out of the table}.  For the first ten sets of KENO-VI data along the curve, each decusping method was compared.  Table \ref{t:keno} shows the average results for all 10 of these points, along with results for the worst of the 10, which occurs at 20\% (46 steps withdrawn) where the differential rod worth curve is steepest.  The table also shows a comparison for the 100\% withdrawn data set.  This final data set occurs for the tip of the control rod above the top of the active fuel, so there are no cusping effects.  This serves to give an idea of how accurate MPACT is compared to Monte Carlo when there are no control rod cusping effects.
+For the rod worth curves in the previous section, KENO-VI calculations were done in 10\% intervals along the curve, giving a total of 11 KENO-VI data sets that can be used as a reference for MPACT.  Each KENO-VI calculation was run for \hl{number} inactive generations and \hl{number} active generations.  Each generation had \hl{number} particles in it, for a total of \hl{number} particles contributing to the final solution and statistics.  The uncertainty in the KENO-VI results was about 1 pcm for the eigenvalue and less than 0.3\% for the power distribution.  While the uncertainty in the power distribution is a bit higher than would normally be used, it is more than sufficiently converged to discuss the relative accuracy of rod cusping treatments.  For the first ten sets of KENO-VI data along the curve, each decusping method was compared.  Table \ref{t:keno} shows the average results for all 10 of these points, along with results for the worst of the 10, which occurs at 20\% (46 steps withdrawn) where the differential rod worth curve is steepest.  The table also shows a comparison for the 100\% withdrawn data set.  This final data set occurs for the tip of the control rod above the top of the active fuel, so there are no cusping effects.  This serves to give an idea of how accurate MPACT is compared to Monte Carlo when there are no control rod cusping effects.
 
-\hl{Talk about the results themselves}
+The fully withdrawn case shows that when no cusping effects are present, MPACT can be expected to have less than 0.5\% RMS power difference and approximately 1.5\% maximum power difference compared with a Monte Carlo solution.  When cusping is introduced, these errors jump to around 25\% on average, with a maximum error over 60\%.  For both the average and maximum cases, the polynomial treatment compares worst with KENO-VI and the subplane treatment with 1D CP performs best, reducing the maximum power errors to about 5\% in the worst case scenario.  While these errors are still larger than desired for 2D/1D, they are much closer to acceptable levels than some of the 20-30\% errors observed in many calculations.  However, these KENO-VI comparisons do indicate that use of the polynomial decusping treatment should be restricted to specific cases in which it is known to perform well.  Using it for everything could easily and unknowingly result in unacceptably large errors in the 2D/1D solution.
 
 \section{VERA Problem 5}
 
@@ -144,19 +152,20 @@ Like problem 4, the reference case was run with 58 planes while the decusping ca
 \centering
 \caption[VERA Problem 5 Decusping Results]{VERA Problem 5 decusping results for the partially rodded plane}\label{t:p5decusp}
 \resizebox{\textwidth}{!}{
-  \begin{tabular}{|c|c|c|c|c|c|c|}\hline
-    \multirow{2}{*}{Case} & k-eff & \multicolumn{2}{|c|}{Pin Power Differences} & \multicolumn{2}{|c|}{Iterations} & Runtime\\\cline{3-6}
-    & Difference (pcm) & RMS & Max & 2D/1D & CMFD & (Core-Hours) \\\hline
-    Reference        &  -- & --     & --      & 13 & 481 & 361.7 \\\hline
-    No Treatment     & -22 & 6.90\% & 30.55\% & 13 & 523 & 410.7 \\\hline
-    Polynomial       &  -5 & 1.15\% &  4.85\% & 13 & 463 & 373.7 \\\hline
-    Subplane         &  -5 & 2.09\% & 10.20\% & 13 & 499 & 399.0 \\\hline
-    Subplane + CP    &  -1 & 0.50\% &  2.74\% & 13 & 529 & 425.6 \\\hline
+  \begin{tabular}{c c c c c c c}\toprule
+    \multirow{2}{*}{Case} & \keff{} & \multicolumn{2}{|c|}{Pin Power Differences} & \multicolumn{2}{|c|}{Iterations} & Runtime\\
+    & Difference (pcm) & RMS & Max & 2D/1D & CMFD & (Core-Hours) \\\midrule
+    Reference        &  -- & --     & --      & 13 & 481 & 361.7 \\
+    No Treatment     & -22 & 6.90\% & 30.55\% & 13 & 523 & 410.7 \\
+    Polynomial       &  -5 & 1.15\% &  4.85\% & 13 & 463 & 373.7 \\
+    Subplane         &  -5 & 2.09\% & 10.20\% & 13 & 499 & 399.0 \\
+    Subplane + CP    &  -1 & 0.50\% &  2.74\% & 13 & 529 & 425.6 \\
+    \bottomrule
   \end{tabular}
 }
 \end{table}
 
-As with Problem 4, we see that the CP results are the best, with less than 3\% maximum error in the roded plane.  The maximum errors occur in the partially rodded assembly, as expected.  The sub-plane decusping without the CP treatment is worse than in Problem 4, showing the importance of correctly treating the radial effects.  The runtime increase is also between 15\% and 20\% for the sub-plane and CP decusping methods.  Some of this is due to parallel imbalance in the CMFD systems as discussed in Problem 4, but some is also due to the increase in CMFD iterations when using these methods.  Overall, the new methods perform well.  However, nearly 3\% error is still higher than desired when using the 2D/1D method, so there is still room for improvement.
+As seen in most variations of Problem 4, we see that the CP results are the best, with less than 3\% maximum error in the roded plane.  The maximum errors occur in the partially rodded assembly, as expected.  The sublpane decusping without the CP treatment is worse than in Problem 4, showing the importance of correctly treating the radial effects.  The runtime increase is also between 15\% and 20\% for the sublpane and CP decusping methods.  This is due primarily to two effects.  The first is that the convergence of the CMFD system can require more iterations using the subplane-based treatments, as discussed in the Problem 4 results.  The second effect is that there is an imbalance in the parallel partitioning of the CMFD system.  The parallel partitioning in MPACT is tied to MOC planes, so MOC planes with a larger number of subplanes will take longer to be solved than others, leaving some compute cores waiting on others to finish their calculations.  This effect would have also occurred some Problem 4, but is more significant in Problem 5 due to its larger size.  A more clever strategy for parallel decomposition would help to alleviate this imbalance and reduce the runtime of the subplane-based methods without any impact on their accuracy.
 
 \section{C5G7 Results}
 
@@ -178,9 +187,7 @@ The 1D subray MOC results were generated using the code described in section \hl
     \caption{Eigenvalue comparisons for 1D rod withdrawal}\label{f:1d-subray-keff}
 \end{figure}
 
-In Figure \ref{f:1d-subray-keff}, the red line is subray without recombination, meaning that two completely separate solves were done each iteration and the resulting scalar fluxes were mixed using volume fractions.  The rodded and unrodded solves have separate angular flux boundary conditions which are saved for each subsequent iteration.  This provides the reference solution.  The volume homogenization solution is a traditional MOC calculation without treating the partially inserted rod.  As is evident, the errors from this method are large, nearing 15\% around 50-60\% withdrawal.  Using subray MOC in only the partially rodded pin cells, indicated in the figure by ``Subray w/ Recomb. - 0'', corrects a significant amount of the error and brings the maximum difference closer to 5\%.  Using a recombination factor of 1 means that subray is now used in all the pin cells between the control rods, correctly resolving the interference effects of the rods and eliminating almost all of the remaining error.  Finally, a recombination factor of 2 extends the subrays all the way to the problem boundary, effectively performing the same calculation as the reference solution.
-
-\begin{figure}[h]
+\begin{figure}[!htb]
     \centering
     \subfigure[Group 1]{
         \centering
@@ -193,6 +200,8 @@ In Figure \ref{f:1d-subray-keff}, the red line is subray without recombination, 
     }
     \caption{Scalar flux distributions for 1D subray MOC calculations}\label{f:1d-subray-scalflux}
 \end{figure}
+
+In Figure \ref{f:1d-subray-keff}, the red line is subray without recombination, meaning that two completely separate solves were done each iteration and the resulting scalar fluxes were mixed using volume fractions.  The rodded and unrodded solves have separate angular flux boundary conditions which are saved for each subsequent iteration.  This provides the reference solution.  The volume homogenization solution is a traditional MOC calculation without treating the partially inserted rod.  As is evident, the errors from this method are large, nearing 15\% around 50-60\% withdrawal.  Using subray MOC in only the partially rodded pin cells, indicated in the figure by ``Subray w/ Recomb. - 0'', corrects a significant amount of the error and brings the maximum difference closer to 5\%.  Using a recombination factor of 1 means that subray is now used in all the pin cells between the control rods, correctly resolving the interference effects of the rods and eliminating almost all of the remaining error.  Finally, a recombination factor of 2 extends the subrays all the way to the problem boundary, effectively performing the same calculation as the reference solution.
 
 In addition to the eigenvalue calculations, the scalar flux differences are shown for groups 1 and 7 at 50\% rod withdrawal in Figure \ref{f:1d-subray-scalflux}.  For both groups, it is evident that subray MOC effectively reduces the error caused by the partially inserted rod.  Only performing subray MOC in the rodded pin cells eliminates the majority of the error, but for both the eigenvalue and scalar flux distributions, it is necessary to delay recombination of the angular fluxes for at least one neighboring pin cell to capture the effects of the rod on the source in neighboring pin cells.  This effect is exaggerated by the 1D geometry since the solve is being performed exlusively in the direction that minimizes the distance between pins.  Furthermore, most PWR geometries have at least 2 pins between control rodlets, which further diminishes the effects of rod interference.  While these 1D results do not definitively indicate that recombination should be extended beyond the edge of the partially rodded pin cell, it is important to keep this in mind in the 2D and 3D calculations.
 
@@ -220,31 +229,31 @@ In addition to the eigenvalue calculations, the scalar flux differences are show
 
 To test the mechanics of subray MOC in MPACT, 2D variations of the C5G7 benchmark problems were used.  These problems consist of 17$\times$17 UO$_2$ and MOX assemblies with control rods and a radial reflector region.  Figure \ref{f:c5g7-core} shows an illustration of the core layout, and Figure \ref{f:c5g7-assemblies} shows the assembly layout.  This section will present results for subray MOC using 3 different 2D problems derived from these descriptions.
 
-All calculations in this section used 0.03 cm ray spacing, 16 azmiuthals and 3 polars per octant with a Chebyshev-Yamamoto quadrature \hl{cite}, and a 1D P$_3$ axial solver unless otherwise noted.  The calculations were converged until the change in both the eigenvalue and fission source were less than $10^{-6}$.  All pin meshes in the fuel assemblies used 
+All calculations in this section used 0.03 cm ray spacing and a Chebyshev-Yamamoto angular quadrature \hl{cite} with 16 azmiuthals and 3 polars per octant.  A 1D P$_3$ solver was used for the subplane axial calculations unless otherwise noted.  The calculations were converged until the change in both the eigenvalue and fission source were less than $10^{-6}$.  All pin meshes in the fuel assemblies used 5 radial rings in the fuel, 2 rings in the moderator, and 8 azimuthal divisions in every radial region for a total of 64 flat source regions in each pin cell.  This mesh was also used for the rodded pin cells in the axial reflector region.  The remaining axial reflector pin cells and all radial reflector pin cells used a Cartesian grid with 5 x- and y- divisions, for a total of 25 equal-volume flat source regions.
 
 \subsubsection{UO\texorpdfstring{$_2$}{2} Assembly}
 
 \begin{table}[h]
     \centering
-    \caption{2D C5G7 UO$_2$ eigenvalue and pin power differences for subray recombination parameter sensitivity}\label{t:c5g7-2d-asy-recomb}
+    \caption{2D C5G7 UO$_2$ assembly eigenvalue and power distribution differences for subray recombination parameter sensitivity.  A * indicates that finite difference was used axially instead of P$_3$}\label{t:c5g7-2d-asy-recomb}
     \resizebox{\textwidth}{!}{
         \begin{tabular}{l c c l l c l l c l l c l l}
         \toprule
         Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{Subray-1} & \multicolumn{3}{c}{Subray-2} & \multicolumn{3}{c}{Subray-3} \\
-        Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
+        Position & \keff{} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} \\
         &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
         \midrule
-        1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-2 & 0.76151 & -81 & 0.07\% & 0.28\% & -12 & 0.02\% & 0.07\% & 18  & 0.06\% & 0.39\% & 23 & 0.07 \% & 0.42\% \\
-3 & 0.78819 & -89 & 0.07\% & 0.26\% & -8 & 0.02 \% & 0.09\% & 28  & 0.06\% & 0.35\% & 34 & 0.06 \% & 0.36\% \\
-4 & 0.81420 & -93 & 0.06\% & 0.24\% & -13 & 0.02\% & 0.10\% & 25  & 0.05\% & 0.31\% & 31 & 0.05 \% & 0.31\% \\
-5 & 0.83931 & -94 & 0.06\% & 0.23\% & -24 & 0.02\% & 0.10\% & 13  & 0.05\% & 0.27\% & 18 & 0.05 \% & 0.27\% \\
-6 & 0.86362 & -93 & 0.06\% & 0.21\% & -40 & 0.03\% & 0.11\% & -7  & 0.04\% & 0.24\% & -2 & 0.04 \% & 0.25\% \\
-7 & 0.88736 & -90 & 0.05\% & 0.21\% & -59 & 0.04\% & 0.16\% & -33 & 0.04\% & 0.22\% & -29 & 0.04\% & 0.24\% \\
-8 & 0.91103 & -90 & 0.05\% & 0.21\% & -83 & 0.05\% & 0.21\% & -64 & 0.05\% & 0.20\% & -61 & 0.05\% & 0.24\% \\
-        9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+1 & 1.02555  & -65  & 0.04\% & 0.08\% & -55  & 0.03\% & 0.06\% & -55  & 0.04\% & 0.11\% & -55  & 0.04\% & 0.10\% \\
+2 & 1.06065  & -241 & 0.13\% & 0.27\% & -149 & 0.07\% & 0.16\% & -137 & 0.13\% & 0.37\% & -136 & 0.13\% & 0.41\% \\
+3 & 1.09578  & -304 & 0.15\% & 0.31\% & -200 & 0.08\% & 0.20\% & -183 & 0.13\% & 0.38\% & -181 & 0.14\% & 0.43\% \\
+4 & 1.13011  & -330 & 0.16\% & 0.31\% & -230 & 0.09\% & 0.22\% & -211 & 0.13\% & 0.36\% & -209 & 0.14\% & 0.41\% \\
+5 & 1.16334  & -331 & 0.15\% & 0.29\% & -246 & 0.09\% & 0.22\% & -226 & 0.12\% & 0.31\% & -224 & 0.12\% & 0.37\% \\
+6 & 1.19557  & -311 & 0.13\% & 0.26\% & -249 & 0.09\% & 0.21\% & -231 & 0.11\% & 0.26\% & -229 & 0.11\% & 0.32\% \\
+7 & 1.22711  & -275 & 0.11\% & 0.22\% & -244 & 0.08\% & 0.19\% & -227 & 0.09\% & 0.21\% & -226 & 0.10\% & 0.26\% \\
+8 & 1.25858  & -231 & 0.09\% & 0.17\% & -229 & 0.08\% & 0.17\% & -217 & 0.08\% & 0.17\% & -216 & 0.08\% & 0.20\% \\
+        9* & 1.29513 & -66 & 0.02\% & 0.04\% & -74 & 0.02\% & 0.05\% & -74 & 0.02\% & 0.05\% & -74 & 0.03\% & 0.05\% \\
         \midrule
-        Average &  -- &   &  &  &  &  &  &  &  &  &  &  &  \\
+        Average &  -- & 239 & 0.11\% & 0.22\% & 186 & 0.07\% & 0.16\% & 173 & 0.09\% & 0.25\% & 172 & 0.10\% & 0.28\% \\
         \bottomrule
     \end{tabular}
     }
@@ -253,35 +262,41 @@ All calculations in this section used 0.03 cm ray spacing, 16 azmiuthals and 3 p
 
 \begin{table}[h]
 \centering
-\caption{2D C5G7 UO$_2$ Eigenvalue and pin power differences for each decusping method}\label{t:c5g7-2d-asy-methods}
+\caption{2D C5G7 UO$_2$ eigenvalue and power distribution differences for each decusping method.  A * indicates that finite difference was used axially instead of P$_3$}\label{t:c5g7-2d-asy-methods}
 \resizebox{\textwidth}{!}{
     \begin{tabular}{l c c l l c l l c l l c l l}
     \toprule
     Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{None} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} \\
-    Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
+    Position & \keff{} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} \\
     &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
     \midrule
-    1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
-2 & 0.76151 & -81 & 0.07\% & 0.28\% & -2310 & 2.12\% & 9.79 \% & -929  & 0.82\% & 3.78\% & -423 & 0.31\% & 1.53\% \\
-3 & 0.78819 & -89 & 0.07\% & 0.26\% & -3521 & 3.03\% & 13.84\% & -1147 & 0.92\% & 4.21\% & -307 & 0.19\% & 0.91\% \\
-4 & 0.81420 & -93 & 0.06\% & 0.24\% & -4443 & 3.57\% & 16.20\% & -1209 & 0.89\% & 4.02\% & -222 & 0.11\% & 0.53\% \\
-5 & 0.83931 & -94 & 0.06\% & 0.23\% & -5001 & 3.76\% & 16.90\% & -1172 & 0.79\% & 3.56\% & -157 & 0.07\% & 0.29\% \\
-6 & 0.86362 & -93 & 0.06\% & 0.21\% & -5127 & 3.60\% & 16.03\% & -1064 & 0.66\% & 2.98\% & -105 & 0.05\% & 0.15\% \\
-7 & 0.88736 & -90 & 0.05\% & 0.21\% & -4740 & 3.10\% & 13.67\% & -902  & 0.53\% & 2.34\% & -60  & 0.05\% & 0.19\% \\
-8 & 0.91103 & -90 & 0.05\% & 0.21\% & -3732 & 2.26\% & 9.87 \% & -704  & 0.39\% & 1.71\% & -21  & 0.06\% & 0.23\% \\
-    9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+1 & 1.02555  & -65  & 0.04\% & 0.08\% & -1230 & 0.70\% & 1.46\% & -370  & 0.21\% & 0.43\% & -707 & 0.35\% & 0.79\% \\
+2 & 1.06065  & -241 & 0.13\% & 0.27\% & -3123 & 1.71\% & 3.55\% & -1299 & 0.70\% & 1.45\% & -626 & 0.30\% & 0.65\% \\
+3 & 1.09578  & -304 & 0.15\% & 0.31\% & -4777 & 2.49\% & 5.11\% & -1645 & 0.83\% & 1.69\% & -574 & 0.26\% & 0.56\% \\
+4 & 1.13011  & -330 & 0.16\% & 0.31\% & -6053 & 2.98\% & 6.09\% & -1771 & 0.83\% & 1.69\% & -522 & 0.23\% & 0.48\% \\
+5 & 1.16334  & -331 & 0.15\% & 0.29\% & -6848 & 3.19\% & 6.47\% & -1745 & 0.77\% & 1.55\% & -465 & 0.20\% & 0.40\% \\
+6 & 1.19557  & -311 & 0.13\% & 0.26\% & -7067 & 3.11\% & 6.26\% & -1606 & 0.66\% & 1.33\% & -400 & 0.16\% & 0.33\% \\
+7 & 1.22711  & -275 & 0.11\% & 0.22\% & -6588 & 2.73\% & 5.45\% & -1375 & 0.53\% & 1.07\% & -327 & 0.13\% & 0.25\% \\
+8 & 1.25858  & -231 & 0.09\% & 0.17\% & -5245 & 2.04\% & 4.03\% & -1079 & 0.39\% & 0.79\% & -242 & 0.09\% & 0.18\% \\
+        9* & 1.29513 & -66 & 0.02\% & 0.04\% & -3251 & 1.17\% & 2.28\% & -445 & 0.15\% & 0.30\% & -120 & 0.04\% & 0.08\% \\
     \midrule
-    Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+    Average & -- & 239 & 0.11\% & 0.22\% & 4909 & 2.24\% & 4.52\% & 1259 & 0.56\% & 1.14\% & 443 & 0.20\% & 0.41\% \\
     \bottomrule
     \end{tabular}
 }
 \end{table}
 
-The first 2D problem is a single UO$_2$ assembly with control rods added to it.  A similar procedure was followed as with the 1D calculations with the problem being simulated at 10\% increments during the rod withdrawal.  The reference for these calculations was generated by dividing the MOC plane into two separate planes with their boundary aligned with the control rod.  Comparisons could then be made between the decusping methods and the reference solution for k-eff and the radial power distribution.
+The first 2D problem is a single UO$_2$ assembly with control rods added to it.  A similar procedure was followed as with the 1D calculations with the problem being simulated at 10\% increments during the rod withdrawal.  The reference for these calculations was generated by dividing the MOC plane into two separate planes with their boundary aligned with the control rod.  Comparisons could then be made between the decusping methods and the reference solution for \keff{} and the radial power distribution.
 
-Table \ref{t:c5g7-2d-asy-recomb} shows the results for the 2D assembly case for recombination factor values of 0, 1, 2, and 3. \hl{Discussion}
+Table \ref{t:c5g7-2d-asy-recomb} shows the results for the 2D assembly case for recombination factor values of 0, 1, 2, and 3.  The \keff{} differences trend toward 0 as the recombination factor is increased.  This is to be expected since using subray MOC in a larger number of regions surrounding the control rodlets should increase the resolution of the axial shape of the solution.  However, for the single assembly case, the \keff{} differences are still large even for the Subray-3 calculations.  The power distribution differences show a different trend.  The Subray-1 option improves significantly on the Subray-0 option for both RMS and maximum power differences.  However, the Subray-2 and Subray-3 calculations are both worse than Subray-1 and give solutions comparable to the Subray-0 option.
 
-Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the sublpane-based decusping methods described earlier.  The polynomial method is not compared because the data required to use them fo C5G7 has not been generated. \hl{Discussion}
+Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the sublpane-based decusping methods described earlier.  The polynomial method is not compared because the data required to use them fo C5G7 has not been generated.  The subplane decusping method performs better with CP than without, as expected.  Overall, its performance is good, reducing the maximum power error to around 0.5\% on average and reducing the \keff{} error from an average of almost 5\% to under 500 pcm.  However, the Subray-0 treatment performs better than the Subplane + CP method, reducing the maximum power error to less than 0.3\% for almost every case.  The \keff{} error is also reduced to an average of -239 pcm.
+
+This relationship between Subplane + CP and Subray-0 is expected.  Both of them are improving the solution in a single pin cell by solving the rodded and unrodded levels separately.  However, Subplane + CP does this after the MOC calculation, improving only the CMFD and 1D P$_3$ cross sections.  The Subray-0 calculation uses 2D MOC, which should provide a solution superior to 1D CP.  It also calculates improved radial currents, and improves the solution in pins neighboring the control rodlets by improving the angular flux exiting the control rod pin cells.  Thus, it is expected that Subray-0 would consistently provide a better solution than the Subplane + CP decusing method.
+
+It should be noted at this point that certain calculations whose results are shown in these and following tables failed to converge using the axial P$_3$ solver.  This occurred for all calculations that had multiple planes or used the subplane scheme.  This is a known issue with the axial solvers caused by the interpolation of the radial TL source.  Whenever a thin plane is next to a thick plane and a very large change in the radial TL occurs from the thin plane to the thick plane, the quadratic interpolation of the radial TL can cause shapes that make the P$_3$ solver unstable.  This can be shown to be the source of the instability by limiting the magnitude of the linear and quadratic components of the shape.
+
+One of the other MPACT developers is currently implementing a new solver that employs a different technique to solve the P$_3$ equations, and is expected to resolve this instability.  Since that solver is not yet ready for use and limiting the linear and/or quadratic moments of the radial TL interpolation can have significant effects on accuracy, the cases which did not converge for either the reference or decusping method calculations simply used the axial currents from the CMFD calculation with no 1D axial solver.  While the actual accuracy of the calculations is worse when using finite difference, the behavior is predictable and allows for consistent comparisons of the subray MOC with multi-plane calculations.  The results that used finite difference instead of P$_3$ will be denoted with an asterisk (*) in all tables in this section.
 
 \begin{table}[h]
     \centering
@@ -313,21 +328,23 @@ Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the su
     \end{tabular}
 \end{table}
 
-\hl{Discussion}
+While the subray MOC method is more accurate than the previous decusping methods, it is also more expensive.  Table \ref{t:subray-data-2dassembly} shows the long ray data for the reference case and each variation of the subray MOC calculations.  The first column is the total number of long rays including those duplicated for subray MOC.  The second column shows the percent increase in the number of long rays.  This value can be used to approximate the savings obtained by using subray MOC to resolve partially inserted rods instead of 2 separate MOC planes.  For the single assembly case, it is expected that Subray-3 and the reference case would take about the same amount of time for each MOC sweep since every long ray was duplicated for Subray-3.
+
+Table \ref{t:subray-performance-2dassembly} shows the convergence and runtime data for each decusping method averaged over all 9 rod positions. \hl{Discussion}
 
 \subsubsection{2D Core -- Rodded Center Assembly}
 
 \begin{table}[h]
     \centering
-    \caption{2D C5G7 center assembly rod withdrawal eigenvalue and pin power differences for subray recombination parameter sensitivity}\label{t:c5g7-2d-center-recomb}
+    \caption{2D C5G7 center assembly rod withdrawal eigenvalue and pin power differences for subray recombination parameter sensitivity.  A * indicates that finite difference was used axially instead of P$_3$}\label{t:c5g7-2d-center-recomb}
     \resizebox{\textwidth}{!}{
         \begin{tabular}{l c c l l c l l c l l c l l}
             \toprule
             Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{Subray-1} & \multicolumn{3}{c}{Subray-2} & \multicolumn{3}{c}{Subray-3} \\
-            Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
+            Position & \keff{} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} \\
             &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
             \midrule
-            1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            1* & 1.06846 & -16 & 0.09\% & 0.24\% & -13 & 0.08\% & 0.20\% & -13 & 0.07\% & 0.18\% & -13 & 0.07\% & 0.18\% \\
 2 & 1.07746 & -65  & 0.37\% & 1.03\% & -38  & 0.22\% & 0.60\% & -35  & 0.18\% & 0.47\% & -34  & 0.17\% & 0.46\% \\
 3 & 1.08597 & 87   & 0.50\% & 1.46\% & 121  & 0.32\% & 0.91\% & 128  & 0.26\% & 0.73\% & 128  & 0.26\% & 0.72\% \\
 4 & 1.09919 & -114 & 0.58\% & 1.77\% & -76  & 0.39\% & 1.15\% & -68  & 0.33\% & 0.96\% & -67  & 0.32\% & 0.95\% \\
@@ -335,9 +352,9 @@ Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the su
 6 & 1.12495 & -132 & 0.59\% & 1.92\% & -103 & 0.46\% & 1.45\% & -92  & 0.40\% & 1.26\% & -91  & 0.39\% & 1.25\% \\
 7 & 1.13925 & -128 & 0.53\% & 1.78\% & -110 & 0.46\% & 1.48\% & -100 & 0.41\% & 1.33\% & -99  & 0.40\% & 1.32\% \\
 8 & 1.15469 & -117 & 0.45\% & 1.53\% & -113 & 0.44\% & 1.45\% & -105 & 0.40\% & 1.34\% & -104 & 0.39\% & 1.33\% \\
-            9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            9* & 1.17431 & -36  & 0.13\% & 0.44\% & -40  & 0.14\% & 0.46\% & -40  & 0.14\% & 0.46\% & -40  & 0.14\% & 0.46\% \\
             \midrule
-            Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            Average & -- & 91 & 0.43\% & 1.34\% & 78 & 0.33\% & 1.00\% & 73 & 0.28\% & 0.88\% & 73 & 0.28\% & 0.87\% \\
             \bottomrule
         \end{tabular}
     }
@@ -345,15 +362,15 @@ Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the su
 
 \begin{table}[h]
     \centering
-    \caption{2D C5G7 center assembly rod withdrawal eigenvalue and pin power differences for each decusping method}\label{t:c5g7-2d-center-methods}
+    \caption{2D C5G7 center assembly rod withdrawal eigenvalue and pin power differences for each decusping method.  A * indicates that finite difference was used axially instead of P$_3$}\label{t:c5g7-2d-center-methods}
     \resizebox{\textwidth}{!}{
         \begin{tabular}{l c c l l c l l c l l c l l}
             \toprule
             Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{None} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} \\
-            Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
+            Position & \keff{} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} \\
             &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
             \midrule
-            1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            1* & 1.06846 & -16 & 0.09\% & 0.24\% & -294 & 1.76\% & 4.53\% & -90 & 0.53\% & 1.38\% & -171 & 1.01\% & 2.50\% \\
 2 & 1.07746 & -65  & 0.37\% & 1.03\% & -811  & 4.75 \% & 12.70\% & -348 & 2.01\% & 5.46\% & -174 & 0.97\% & 2.57\% \\
 3 & 1.08597 & 87   & 0.50\% & 1.46\% & -1189 & 7.71 \% & 21.30\% & -318 & 2.73\% & 7.70\% & -1   & 0.97\% & 2.70\% \\
 4 & 1.09919 & -114 & 0.58\% & 1.77\% & -1918 & 10.33\% & 29.42\% & -603 & 3.12\% & 9.12\% & -185 & 0.94\% & 2.75\% \\
@@ -361,17 +378,17 @@ Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the su
 6 & 1.12495 & -132 & 0.59\% & 1.92\% & -2738 & 13.12\% & 39.83\% & -674 & 3.04\% & 9.49\% & -174 & 0.78\% & 2.47\% \\
 7 & 1.13925 & -128 & 0.53\% & 1.78\% & -2820 & 12.55\% & 39.38\% & -631 & 2.64\% & 8.48\% & -155 & 0.65\% & 2.11\% \\
 8 & 1.15469 & -117 & 0.45\% & 1.53\% & -2478 & 10.08\% & 32.80\% & -535 & 2.06\% & 6.83\% & -124 & 0.48\% & 1.62\% \\
-            9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            9* & 1.17431 & -36  & 0.13\% & 0.44\% & -1702 & 6.13\% & 20.82\% & -239 & 0.83\% & 2.81\% & -65  & 0.23\% & 0.79\% \\
             \midrule
-            Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            Average & -- & 91 & 0.43\% & 1.34\% & 1817 & 8.74\% & 26.31\% & 456 & 2.24\% & 6.78\% & 137 & 0.77\% & 2.24\% \\
             \bottomrule
         \end{tabular}
     }
 \end{table}
 
-The second problem uses the full radial core layout from Figures \ref{f:c5g7-core} and \ref{f:c5g7-assemblies}.  A control rod was added to the northwest UO$_2$ assembly, and the same procedure was followed as for the 2D assembly.  Table \ref{t:c5g7-2d-center-recomb} shows the results for subray MOC as a function of recombination value. \hl{Discussion}
+The second problem uses the full radial core layout from Figures \ref{f:c5g7-core} and \ref{f:c5g7-assemblies}.  A control rod was added to the northwest UO$_2$ assembly, and the same procedure was followed as for the 2D assembly.  Table \ref{t:c5g7-2d-center-recomb} shows the results for subray MOC as a function of recombination value.  The trends observed in these results match more closely with expectations.  As the recombination factor is increased from 0 to 3, the errors monotically decrease.  The largest jump occurs from Subray-0 to Subray-1, and the smallest from Subray-2 to Subray-3.  This matches both physical intuition about the local effects of each control rodlet as well as the results of the 1D prototype subray MOC calculations.  The decrease in error from Subray-2 to Subray-3 might be slightly larger if the recombination were not restricted to the rodded assembly, as described by Figure \ref{f:recombination}.  However, the additional benefits from Subray-3 are likely insignificant when compared with the time to implement that logic and increased runtime of subray MOC.
 
-Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. \hl{Discussion}
+Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. The same observations can be made for these calculations as for the 2D assembly calculations.  The subplaned decusping is much better with CP than without, and subray MOC is better still, reducing the maximum power differences from around 25\% to less than 2\% for every rod position.  Furthermore, the \keff{} differences are reduced from almost around 2\% with no treatment and around 150 pcm with Subplane + CP to less than 100 pcm on average with Subray-0.
 
 \begin{table}[h]
     \centering
@@ -403,21 +420,21 @@ Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. \
     \end{tabular}
 \end{table}
 
-\hl{Discussion}
+As with the single assembly, the long ray data can again be used to make some predictions about performance.  Because this problem has multiple assemblies and only one is partially rodded, the Subray-3 option is expected to improve on the 2-plane reference calculation by abotu 33\% per sweep.  Subray-0 should improve on the reference by closer to 40\% per sweep.  \hl{Discussion}
 
 \subsubsection{2D Core -- Rodded Corner Assembly}
 
 \begin{table}[h]
     \centering
-    \caption{2D C5G7 corner assembly rod withdrawal eigenvalue and pin power differences for subray recombination parameter sensitivity}\label{t:c5g7-2d-corner-recomb}
+    \caption{2D C5G7 corner assembly rod withdrawal eigenvalue and pin power differences for subray recombination parameter sensitivity.  A * indicates that finite difference was used axially instead of P$_3$}\label{t:c5g7-2d-corner-recomb}
     \resizebox{\textwidth}{!}{
         \begin{tabular}{l c c l l c l l c l l c l l}
             \toprule
             Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{Subray-1} & \multicolumn{3}{c}{Subray-2} & \multicolumn{3}{c}{Subray-3} \\
-            Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
+            Position & \keff{} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} \\
             &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
             \midrule
-            1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            1* & 1.18889 & -2   & 0.02\% & 0.08\% & -1   & 0.02\% & 0.06\% & -1   & 0.02\% & 0.06\% & -1 & 0.02\% & 0.06\% \\
 2 & 1.18966 & -6  & 0.09\% & 0.28\%  & -4 & 0.05\% & 0.14\% & -3 & 0.05\% & 0.13\% & -3 & 0.04\% & 0.13\% \\
 3 & 1.19048 & -9  & 0.12\% & 0.37\%  & -5 & 0.07\% & 0.20\% & -5 & 0.06\% & 0.18\% & -4 & 0.06\% & 0.18\% \\
 4 & 1.19135 & -10 & 0.14\% & 0.43\%  & -6 & 0.09\% & 0.24\% & -5 & 0.08\% & 0.22\% & -5 & 0.08\% & 0.22\% \\
@@ -425,9 +442,9 @@ Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. \
 6 & 1.19324 & -11 & 0.16\% & 0.46\%  & -8 & 0.12\% & 0.31\% & -7 & 0.10\% & 0.28\% & -7 & 0.10\% & 0.28\% \\
 7 & 1.19427 & -11 & 0.15\% & 0.43\%  & -9 & 0.12\% & 0.33\% & -8 & 0.11\% & 0.30\% & -8 & 0.11\% & 0.30\% \\
 8 & 1.19538 & -10 & 0.14\% & 0.38\%  & -9 & 0.13\% & 0.34\% & -8 & 0.12\% & 0.32\% & -8 & 0.12\% & 0.32\% \\
-            9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            9* & 1.19684 & -3   & 0.04\% & 0.12\% & -3   & 0.05\% & 0.12\% & -3   & 0.05\% & 0.12\% & -3   & 0.05\% & 0.12\% \\
             \midrule
-            Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            Average & -- & 8 & 0.11\% & 0.33\% & 6 & 0.08\% & 0.22\% & 5 & 0.08\% & 0.21\% & 5 & 0.07\% & 0.21\% \\
             \bottomrule
         \end{tabular}
     }
@@ -435,15 +452,15 @@ Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. \
 
 \begin{table}[h]
     \centering
-    \caption{2D C5G7 corner assembly rod withdrawal eigenvalue and pin power differences for each decusping method}\label{t:c5g7-2d-corner-methods}
+    \caption{2D C5G7 corner assembly rod withdrawal eigenvalue and pin power differences for each decusping method.  A * indicates that finite difference was used axially instead of P$_3$}\label{t:c5g7-2d-corner-methods}
     \resizebox{\textwidth}{!}{
         \begin{tabular}{l c c l l c l l c l l c l l}
             \toprule
             Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{None} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} \\
-            Position & k-eff & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} & k-eff & \multicolumn{2}{c}{Pin Powers} \\
+            Position & \keff{} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} & \keff{} & \multicolumn{2}{c}{Pin Powers} \\
             &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
             \midrule
-            1 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            1* & 1.18889 & -2   & 0.02\% & 0.08\% & -27  & 0.44\% & 1.39\% & -8   & 0.13\% & 0.43\% & -16  & 0.25\% & 0.74\% \\
 2 & 1.18966 & -6  & 0.09\% & 0.28\% & -71  & 1.16\% & 3.57\% & -31 & 0.49\% & 1.52\% & -16 & 0.24\% & 0.74\% \\
 3 & 1.19048 & -9  & 0.12\% & 0.37\% & -114 & 1.86\% & 5.67\% & -42 & 0.66\% & 2.01\% & -16 & 0.24\% & 0.74\% \\
 4 & 1.19135 & -10 & 0.14\% & 0.43\% & -153 & 2.50\% & 7.48\% & -48 & 0.76\% & 2.27\% & -17 & 0.24\% & 0.73\% \\
@@ -451,17 +468,15 @@ Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. \
 6 & 1.19324 & -11 & 0.16\% & 0.46\% & -205 & 3.32\% & 9.58\% & -52 & 0.80\% & 2.28\% & -15 & 0.22\% & 0.64\% \\
 7 & 1.19427 & -11 & 0.15\% & 0.43\% & -207 & 3.33\% & 9.43\% & -48 & 0.74\% & 2.05\% & -13 & 0.19\% & 0.55\% \\
 8 & 1.19538 & -10 & 0.14\% & 0.38\% & -182 & 2.89\% & 7.98\% & -41 & 0.63\% & 1.70\% & -11 & 0.15\% & 0.43\% \\
-            9 &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            9* & 1.19684 & -3   & 0.04\% & 0.12\% & -128  & 2.00\% & 5.41\% & -19   & 0.28\% & 0.74\% & -5   & 0.08\% & 0.21\% \\
             \midrule
-            Average &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+            Average & -- & 8 & 0.11\% & 0.33\% & 141 & 2.28\% & 6.59\% & 38 & 0.59\% & 1.70\% & 14 & 0.20\% & 0.61\% \\
             \bottomrule
         \end{tabular}
     }
 \end{table}
 
-The final 2D problem is the same as the previous one, except that the southeast corner UO$_2$ assembly is rodded instead of the northwest assembly.  Tables \ref{t:c5g7-2d-corner-recomb} and \ref{t:c5g7-2d-corner-methods} show similar results to the previous two problems.  The primary reason to show this problem is that because the rods are in the center of the model, the long rays duplicated for the subray MOC calculation are longer for some angles, especially those between the northeast and southwest corners of the model.  Thus, while the total number of rays duplicated \hl{is the same} for each of the 2 full core problems, the amount of work done for the duplicated rays is different.  This can help to provide an estimate of how well the subray MOC method scales as more regions require the subray treatment.
-
-\hl{Discussion}
+The final 2D problem is the same as the previous one, except that the southeast corner UO$_2$ assembly is rodded instead of the northwest assembly.  Tables \ref{t:c5g7-2d-corner-recomb} and \ref{t:c5g7-2d-corner-methods} show similar results to the previous two problems.  For all methods, the errors are lower for this problem than for the first multi-assembly problem.  There are two reasons for this.  First, the control rods for this problem are in a lower power region than for the previous one, so the absolute differences in power are sure to be smaller for any decusping method.  Second, the rodded assembly is not next to reflecting boundary conditions.  In the previous problem, if the reflecting boundary conditions are accounted for, there are effectively 4 rodded assemblies in a cluster in the center of the core.  However, all subrays are forced to recombine at the problem boundary, a decision which is not necessary but was made for the sake of code simplicity and time.  This likely has at least some negative impact on the results of the previous problem.  The rodded assembly in this problem is surrounded by unrodded assemblies that do not require subray MOC, removing one approximation that was forced by the other problem.
 
 \begin{table}[h]
     \centering
@@ -479,15 +494,32 @@ The final 2D problem is the same as the previous one, except that the southeast 
     \end{tabular}
 \end{table}
 
-\hl{Discussion}
+The primary reason to show this problem is that because the rods are in the center of the model, the long rays duplicated for the subray MOC calculation are longer for some angles, especially those between the northeast and southwest corners of the model.  Thus, while the total number of rays duplicated is the same as for the previous problem (Table \ref{t:subray-data-2dcore}), the amount of work done for the duplicated rays is different.  This will show what, if any, impact the position of the control rods in the core could have on the efficiency of the subray MOC calculations.
+
+Table \ref{t:subray-performance-2dcoreSE} shows the convergence and runtime data for this problem.  \hl{Discussion}
 
 \subsection{3D C5G7 UO\texorpdfstring{$_2$}{2} Assembly}
 
 One 3D problem was also used to test subray MOC.  This problem consists of the NW UO$_2$ assembly.  As shown in figure \ref{f:c5g7-core}, this assembly has a 42.84 cm active fuel height with a 21.42 cm axial reflector on top.  The control rods at full insertion extend from the bottom of the active fuel all the way to the top of the reflector.  In MPACT, this was modeled using 4 MOC planes: 3 in the active fuel region and 1 for the axial refelctor.  The rod was withdrawn from the bottom of the fuel to the top in 30 steps of 1.428 cm.  At each position, a reference solution was generated using the same method as the 2D calculations by adding an extra MOC plane boundary that aligned with the rod position to eliminate all cusping effects.
 
-\hl{Tables for results}
+\begin{table}
+    \centering
+    \caption{3D C5G7 UO$_2$ assembly rod withdrawal eigenvalue and pin power difference summary}\label{t:c5g7-3d-assembly}
+    \begin{tabular}{l l l l}\toprule
+        \multirow{2}{*}{Method} & \keff{} & \multicolumn{2}{c}{Pin Powers} \\
+         & Diff. & RMS & Max \\\midrule
+         None & 2283 & 5.49\% & 10.86\% \\
+         Subplane & 538 & 2.14\% & 4.09\% \\
+         Subplane+CP & 118 & 0.47\% & 0.86\% \\
+         Subray-0 & 170 & 0.82\% & 1.58\% \\
+         Subray-1 & 151 & 0.8\%9 & 1.77\% \\
+         Subray-2 & 131 & 0.92\% & 2.41\% \\
+         Subray-3 & 128 & 0.95\% & 2.93\% \\
+         \bottomrule
+    \end{tabular}
+\end{table}
 
-\hl{Discussion}
+Table \ref{t:c5g7-3d-assembly} shows the average errors for each method for the 3D assembly.  For this problem, the trends from the 2D calculations are not observed.  The subray MOC results are consistently better than the subplane method without CP.  However, with CP, the subplane method is signficantly better than subray MOC.  Furthermore, the \keff{} errors decrease with increasing recombination factor, but the power distribution errors increase.  While the results with subray MOC are still fairly good compared with no treatment, the Subplane + CP are clearly the most effective at this point.  It is expected that this error comes from interactions between subray MOC and the 1D P$_3$ solver that are not an issue in the 2D calculations, making it likely that some improvements could be made to this iteration scheme improve the subray MOC results.
 
 \begin{table}[h]
     \centering
@@ -505,4 +537,4 @@ One 3D problem was also used to test subray MOC.  This problem consists of the N
     \end{tabular}
 \end{table}
 
-\hl{Discussion}
+The 3D assembly has the same long ray parameters as those shown in Table \ref{t:subray-data-2dassembly} for the 2D assembly.  For the plane with the rod, the number of long rays matches with the subray entries of the table, while for the remaining planes the number of long rays matches the reference entry.  Because of this, the subray MOC calculation runtimes should be closer to the subplane calculation times than to the reference calculation, since 3 of the 4 planes are the same as the reference case.  Table \ref{t:subray-performance-3Dassembly} shows the convergence and runtime results for each of the methods.  \hl{Discussion}

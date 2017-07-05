@@ -84,6 +84,12 @@
 \showabstract
 \showlistofappendices
 
+%\newcommand{\keff}{k_\text{eff}}
+\newif\ifstartedinmathmode
+\newcommand{\keff}[0]{\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+  {\ifstartedinmathmode{k_{eff}}\else{$k_{eff}$}\fi}}
+\newcommand{\bfc}[0]{B$_4$C}
+
 \begin{document}
 
 \pagenumbering{arabic}

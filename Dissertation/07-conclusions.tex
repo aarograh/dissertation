@@ -5,14 +5,30 @@
 \section{Future Work}
 
 \begin{itemize}
-    \item Parallelism - radial decomp, threading
-    \item Efficiency - Algorithms/data structures should be redesigned to expect subrays
-    \item RTL - tally currents/surface fluxes on subsurfaces to improve the dhats/RTL
-    \item Pn Scattering
-    \item Shielding - Implemenation and research questions
-    \item Axial TL? - Mike's results seem to say it's not that important but it seems like it should be (maybe for non-LWR)
-    \item Better understanding/implementation of how long to track separate rays
-    \item Nodal doesn't work at the moment
+    \item Subplane/CP
+    \begin{itemize}
+        \item Apply it to other heterogeneities, such as subplane temperature/density distributions, end caps, etc.
+        \item More advanced solver: 2D R/Z CP, 2D MOC in each level, etc.
+    \end{itemize}
+    \item Subray MOC
+    \begin{itemize}
+        \item Incorporate other things MPACT can already do with regular MOC:
+        \begin{itemize}
+            \item Parallelism
+            \item Pn Scattering
+            \item Subgroup - Somewhat more interesting with subray, but probably pretty easy still
+        \end{itemize}
+        \item Imrpove algorithms and data structures
+        \begin{itemize}
+            \item Incorporate concept of subregions directly into storage and ray tracing so we don't have to duplicate long rays to do subray MOC
+            \item Logic to determine how long the subrays should remain separate after the control rod (based on mean free path or something) instead of doing it by pin cells.  This could be interesting since it could be different from each ray, angle, and energy group
+        \end{itemize}
+        \item Radial TL - Tally currents/surface fluxes directly onto subplane mesh.  Tried it and it seemed unstable, but maybe there's a way to do it
+        \item Axial TL - Spatially flat in each pin cell right now.  Mike's results seem to indicate it's not that important, but that's kind of hard to believe.  Would be cool to improve on this approximation while using subray MOC
+        \item Improvements to nodal solver
+        \begin{itemize}
+            \item Stability (currently under way by Shane)
+            \item Accuracy for subray
+        \end{itemize}
+    \end{itemize}
 \end{itemize}
-
-\hl{Discussion}
