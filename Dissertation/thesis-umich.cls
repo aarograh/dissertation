@@ -351,7 +351,7 @@
  % Use single-spaced lines for the title page.
  \begin{singlespace} %
   % Move down the page slightly.
-  \hbox{\vspace{0.3in}} %
+  \hbox{\vspace{1.13in}} %
   % Center the title page as well.
   \begin{center} %
    % Put the title itself in 1.5-spaced format.
@@ -504,7 +504,7 @@
      \onehalfspacing %
     \fi %
     % Heading
-    \begin{center}\textbf{\textit{#3}}\end{center} %
+    \begin{center}\textbf{#3}\end{center} %
     % Insert the text.
     \sloppy #1 %
    \end{minipage} %
