@@ -313,6 +313,8 @@
 % The fields to be used for the title page
 \renewcommand{\@title}{Subgrid Methods for Resolving Axial Heterogeneity in Planar Synthesis Solutions for the Boltzmann Transport Equation}
 \renewcommand{\@author}{Aaron M. Graham}
+\newcommand{\@email}[0]{aarograh@umich.edu}
+\newcommand{\@orcid}[0]{ORCID iD: 0000-0002-3245-8441}
 \newcommand{\@degree}{Doctor of Philosophy}
 \newcommand{\@department}{Nuclear Engineering and Radiological Sciences and Scientific Computing}
 \newcommand{\@committee}{Adjunct Assistant Professor Benjamin S. Collins, Co-Chair\\
@@ -393,7 +395,10 @@
 
 %% ---- FRONTISPIECE ---------------------------------------------------
 % Command for the frontispiece
-\newcommand{\@frontispiece}{\@empty}
+\newcommand{\@frontispiece}{\begin{quote}For by Him all things were created, both in the heavens and on earth, visible and invisible, whether thrones or dominions or rulers or authorities -- all things have been created through Him and for Him.  He is before all things, and in Him all things hold together.\end{quote}
+\hfill -- Colossians 1:16-17\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \\
+\vspace{\baselineskip}
+...all of this through the Creator, Lord and Savior Christ Jesus}
 
 % Command to set the frontispiece
 \newcommand{\frontispiece}[1]{
@@ -439,12 +444,16 @@
  \begin{center} %
   % Vertical rubber space
   \ \vfill %
-  % Insert the frontispiece.
-  \copyright \insertcopyrightholder \\[1ex] %
+  % Insert Author
+  \@author \\[1ex] %
+  % Insert Email
+  \@email{} \\[1ex] %
+  % Insert ORC ID
+  \@orcid{} \\[1ex] %
   % Horizontal line
   \rule[0.5ex]{5in}{1pt} \\[1ex] %
   % The year of publication
-  \number\year %
+  \copyright\ \insertcopyrightholder\ \number\year %
   % Vertical rubber space
   \vfill %
  \end{center} %
@@ -619,6 +628,7 @@
 
 %% ---- COMMANDS TO HIDE/SHOW FRONT PAGES ------------------------------
 % Commands to show front pages
+\newcommand{\showfrontispiece}{\@umich@frontispiecetrue}
 \newcommand{\showcopyright}{\@umich@copyrighttrue}
 \newcommand{\showdedication}{\@umich@dedicationtrue}
 \newcommand{\showacknowledgments}{\@umich@acknowledgmentstrue}
@@ -629,6 +639,7 @@
 \newcommand{\showabstract}{\@umich@abstracttrue}
 
 % Commands to hide front pages
+\newcommand{\hidefrontispiece}{\@umich@frontispiecefalse}
 \newcommand{\hidecopyright}{\@umich@copyrightfalse}
 \newcommand{\hidededication}{\@umich@dedicationfalse}
 \newcommand{\hideacknowledgments}{\@umich@acknowledgmentsfalse}
@@ -642,8 +653,8 @@
 %% ---- DEDICATION PAGE ------------------------------------------------
 % Command that holds the value text of the dedication
 \newcommand{\@dedication}{
-Dedication Stuff
-}
+\begin{center}For my late father Marc\\
+Thank you for your love and sacrifice for me for 25 years\end{center}}
 % Command that sets the dedication style
 \newcommand{\@dedicationstyle}{\@frontpagestyle}
 % Command that sets the width of the dedication text area
@@ -673,19 +684,29 @@ Dedication Stuff
  \phantomsection\addcontentsline{toc}{part}{Dedication}
  % Insert the text and formatting.
  \insertfront{\@dedication %
-  }{\@dedicationstyle}{Dedication}{\@dedication@width}
+  }{\@dedicationstyle}{}{\@dedication@width}
+%\insertfront{\@dedication %
+%}{\@dedicationstyle}{Dedication}{\@dedication@width}
 }
 
 
 %% ---- ACKNOWLEDGMENTS PAGE -------------------------------------------
 % Command that holds the value text of the acknowledgments
 \newcommand{\@acknowledgments}{
-Acknowledgments Stuff
+Many people have beem instrumental both academically and personally to me during this process, so I would like to thank those who have helped me reach this goal.
+
+First, I want to thank my co-advisors, Dr. Benjamin Collins and Prof. Thomas Downar.  Your guidance and teaching these last four years have been invaluable.  Working and learning under both of you has been an amazing opportunity for which I will always be grateful.  I would also like to thank the other members of my committe: Prof. Brian Kiedrowski, Prof. William Martin, and Prof. Shravan Veerapaneni.  I appreciate your participation in this process and value the feedback I have received from each of you.
+
+Next, I would like to thank the MPACT development team.  Since joining the team, I have learned a great deal working with each of you and have been fortunate to be part of what has become a world-class project.  I would like to thank the Department of Energy Office of Nuclear Energy for supporting this work under an Integrated University Program Graduate Fellowship, as well as members of the Consortium for Advanced Simulation of Light Water Reactors, who have supported parts of this work under U.S. Department of Energy contract number DE-AC05-00OR22725.
+
+My officemates at both the University of Michigan and Oak Ridge National Laboratory (ORNL) have also been of great help throughout this process.  I would like to express gratitude to all of you for help in the office and your friendship outside of it.  I would also specifically like to thank Andrew Godfrey at ORNL for his assistance in generating reference solutions with KENO-VI.
+
+Finally, I would like to thank my churches (in both Michigan and Tennessee) and my family for their support, encouragement, and prayers throughout these last four years.  I want to express my great appreciation to my parents, who have guided and taught me not only throughout this process, but for the last 26 years.  Thank you for everything; this would not have been possible without you.  Most importantly, I want to thank my Lord and Savior Jesus Christ, who created this marvelous world and enabled me to study it in this way.  All glory for these efforts goes to Him.
 }
 % Command that sets the acknowledgments style
 \newcommand{\@acknowledgmentsstyle}{\@frontpagestyle}
 % Command that sets the width of the acknowledgments text area
-\newcommand{\@acknowledgments@width}{0.66}
+\newcommand{\@acknowledgments@width}{1.0}
 
 % Command to change it from the default
 \newcommand{\acknowledgments}[2][]{ %
@@ -714,7 +735,7 @@ Acknowledgments Stuff
  \phantomsection\addcontentsline{toc}{part}{Acknowledgments}
  % Insert the text and formatting.
  \insertfront{\@acknowledgments %
-  }{\@acknowledgmentsstyle}{Acknowledgments}{\@acknowledgments@width}
+  }{\@acknowledgmentsstyle}{\large\bfseries Acknowledgments}{\@acknowledgments@width}
 }
 
 
@@ -1320,21 +1341,15 @@ Acknowledgments Stuff
 %% ---- ABSTRACT -------------------------------------------------------
 % Command to hold the text of the abstract.
 \newcommand{\@abstract}{
-Abstract Stuff
+As computing power has increased in recent years, there has been a strong interest in using direct whole-core transport calculations for reactor analysis to improve on the traditional nodal methods used by industry.  Because 3D transport is still prohibitively expensive for practical calculations, a new class of methods known as planar synthesis methods has been developed.  These methods decompose the reactor into a stack of 2D planes, performing high-fidelity transport on each 2D plane before using a lower order method to couple the planes.  These methods are faster than 3D transport and more accurate than nodal methods.  Despite the more palatable runtimes compared with 3D transport, these methods are still much slower than nodal methods, making it important to improve efficiency whenever possible.
 
-Abstract Stuff
+One meahs of doing this is to reduce the number of 2D planes used in the transport calculations, since these are the most expensive part of the calculations.  Doing this improves the efficiency of the calculation, but also increases the likelihood of subgrid heterogeneity within a 2D plane, introducing error into the solution.  To eliminate this error while maintaining the efficiency improvements from the coarse axial mesh, a subgrid method must be employed to resolve the subgrid information.
 
-Abstract Stuff
+In this work, three new subgrid methods are presented in context of the 2D/1D method, a type of planar synthesis method.  The polynomial method uses pregenerated sixth-order polynomials to correct the homogenization of the subgrid heterogeneity.  The subplane collision probabilities method uses 1D collision probabilities calculations to capture the radial effects of the subgrid heterogeneity, then uses subplane coarse mesh finite difference and 1D spherical harmonics to capture the axial effects of the heterogeneity.  Finally, the subray method of characteristics (MOC) performs a modified transport sweep of each of the 2D planes to directly resolve the subgrid flux shape during the transport calculations.
 
-Abstract Stuff
+Each of these methods was applied to the rod cusping problem, the most severe axial heterogeneity observed in planar synthesis methods.  Two problems were used to test the polynomial and subplane collision probabilities methods.  The results of these tests indicated that both were effective in reducing the effects of rod cusping.  The polynomial method was applicable only to certain control rod materials and provided mediocre results.  The subplane collision probabilities method was shown to be more general, resolving the control rods in a wider range of scenarios, and more accurate for nearly every calculation.
 
-Abstract Stuff
-
-Abstract Stuff
-
-Abstract Stuff
-
-Abstract Stuff
+Finally, the C5G7 Benchmark problems were used to test subray MOC.  Results were shown for a 1D prototype code, as well as 2D and 3D calculations using a 2D/1D code.  The 1D and 2D results using subray MOC were excellent, surpassing the subplane collision probabilities results and reducing the errors in power distributions to less than 0.5\% in some cases.  However, the 3D calculations were not as good, with maximum errors between 2\% and 3\% for many cases.  These results are worse than the subplane collision probabilities results for the same 3D calculations, indicating that there are remaining improvements to be made to the 2D/1D method when using subray MOC as the 2D transport solver.
 }
 
 % Command to set it.
@@ -1373,7 +1388,7 @@ Abstract Stuff
  % Add this page to the table of contents.
  \phantomsection\addcontentsline{toc}{part}{Abstract} %
  % Extra vertical space
- \begin{minipage}{0.8\textwidth} \vspace{1in} \end{minipage} \\ %
+ \begin{minipage}{\textwidth} \vspace{1in} \end{minipage} \\ %
  % Center the title area.
  \begin{center} %
   % Formatting
@@ -1400,14 +1415,14 @@ Abstract Stuff
  % Vertical rubber space
  \vspace*{\stretch{2}} %
  % Insert the text as a quotation
- \begin{quotation} %
+% \begin{quotation} %
   % Double-spaced lines required by Rackham
-  \doublespacing %
+  \linespread{1.3} %
   % Don't go past the margin.
   \sloppy %
   % Insert the text.
   \insertabstract %
- \end{quotation} %
+% \end{quotation} %
  % Vertical rubber space
  \vspace*{\stretch{1}} %
 }

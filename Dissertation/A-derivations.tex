@@ -7,7 +7,7 @@ To begin, we start with the mono-energetic planar geometry transport equation wi
 \mu\frac{\partial \psi}{\partial x} + \Sigma_{t}\left(x\right) \psi\left(x,\mu\right) = \intop_{-1}^1 \Sigma_{s}\left(x,\mu,\mu'\right) \psi\left(x,\mu'\right) d\mu' + \frac{Q\left(x\right)}{2}\ .
 \end{equation}
 
-Now we assume that the angular flux and scattering cross-sections are both expanded in terms of Legendre polynomials, with these expansions truncated at the $N$th term as follows:
+Now we assume that the angular flux and scattering cross sections are both expanded in terms of Legendre polynomials, with these expansions truncated at the $N$th term as follows:
 \begin{subequations}
 \begin{equation}
 \psi\left(x,\mu\right) \approx \sum_{n=0}^N \frac{2n+1}{2} \psi_{n}\left(x\right) P_n\left(\mu\right)\ ,
@@ -126,7 +126,7 @@ p_{ij}\left(\alpha\right) &= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\
 &= \frac{1}{\Sigma_i V_i} \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy\ .
 \end{align}
 
-Finally, we obtain element $ij$ of the transport matrix by multiplying by the volume and cross-section.  When multiplied by $\phi_i$, this gives the total contribution to $\phi_j$ from region $i$:
+Finally, we obtain element $ij$ of the transport matrix by multiplying by the volume and cross section.  When multiplied by $\phi_i$, this gives the total contribution to $\phi_j$ from region $i$:
 \begin{align}\label{e:CPPij}
 P_{ij}\left(\alpha\right) &= \Sigma_i V_i p_{ij}\left(\alpha\right) \nonumber \\
 &= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\left(Ki_3\left(\tau_{ij}\right) + Ki_3\left(\tau_{ij} + \tau_i + \tau_j\right)\right) - \left(Ki_3\left(\tau_{ij} + \tau_i\right) + \left(Ki_3\left(\tau_{ij} + \tau_j\right)\right)\right)\right] dy\ .

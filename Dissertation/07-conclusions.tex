@@ -17,7 +17,9 @@ Several conclusions can be reached about the methods presented in this research:
     
     \item Subplane-based methods introduce some changes in the convergence and runtime behavior of the 2D/1D calculations.  Subplane collision probabilities consistently saw an increase in the number of CMFD iterations required for each 2D/1D iteration.  The issue of load balance in parallel can also be important when using the subplane scheme with large radial partitions.
     
-    \item It is possible to nearly eliminate the effects of rod cusping.  The 1D and 2D assembly results showed almost negligible error between subray MOC and the reference solution.
+    \item It is possible to nearly eliminate the effects of rod cusping without the expense of multiple MOC planes.  The 1D and 2D assembly results showed almost negligible error between subray MOC and the reference solution with good speedup.
+    
+    \item Recombination factors greater than 1 are likely not worth the increased computational expense when using subray MOC.  The improvement from 0 to 1 is significant in some cases, but further improvements are generally much smaller.
     
     \item Subray MOC needs further development to achieve results matching expectations.  When used on 3D problems or larger 2D problems, the results began to suffer compared with the 2D assembly calculations.
 \end{itemize}

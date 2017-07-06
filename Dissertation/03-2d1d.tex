@@ -7,7 +7,7 @@ The first of these methods was the ``2D/1D Fusion'' technique, developed by rese
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{2d1d-subplane.png}
-    \caption[2D/1D Illustration]{The 2D/1D Method illustrated with the sub-plane scheme for the axial and CMFD calculations}
+    \caption[2D/1D Illustration]{The 2D/1D Method illustrated with the subplane scheme for the axial and CMFD calculations}
     \label{f:2d1dsubpalne}
 \end{figure}
 
@@ -19,25 +19,25 @@ After some development, the DeCART code was forked into several different versio
 
 \subsection{Radial Equations}\label{ss:2d1dradialEq}
 
-To derive the radial equations, we begin with the multigroup approximation in Equation \ref{e:multigroupboltzmann}  and integrate in the $z$-direction over some range $\Delta z_i = z_{k+\frac{1}{2}} - z_{k-\frac{1}{2}}$.  To do this, we assume the cross-sections are all constant in the interval $z \in \left[z_{k-\frac{1}{2}},z_{k+\frac{1}{2}}\right]$.  With this assumption, we obtain the following equation:
+To derive the radial equations, we begin with the multigroup approximation in Equation \ref{e:multigroupboltzmann}  and integrate in the $z$-direction over some range $\Delta z_i = z_{k+\frac{1}{2}} - z_{k-\frac{1}{2}}$.  To do this, we assume the cross sections are all constant in the interval $z \in \left[z_{k-\frac{1}{2}},z_{k+\frac{1}{2}}\right]$.  With this assumption, we obtain the following equation:
 \begin{subequations}
 \begin{dmath}\label{e:2D1DradialEq}
-{\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + \Omega_y\frac{\partial \psi_{g}^Z}{\partial y} + \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k+\frac{1}{2}}} - \psi_{g,z_{k-\frac{1}{2}}}\right)} + {\Sigma_{t,g}\left(x,y\right)\psi_{g}^Z\left(x,y,\bm\Omega\right)} = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g'}^Z\left(x,y\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^Z\left(x,y\right)}{4\pi}}\ ,
+{\Omega_x\frac{\partial \varphi_{g}^Z}{\partial x} + \Omega_y\frac{\partial \varphi_{g}^Z}{\partial y} + \frac{\Omega_z}{\Delta z_k}\left(\varphi_{g,z_{k+\frac{1}{2}}} - \varphi_{g,z_{k-\frac{1}{2}}}\right)} + {\Sigma_{t,g}\left(x,y\right)\varphi_{g}^Z\left(x,y,\bm\Omega\right)} = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\varphi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g'}^Z\left(x,y\right)\varphi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'}\ ,
 \end{dmath}
 \begin{equation}
-\psi_g^Z\left(x,y,\bm{\Omega}\right) = \frac{1}{\Delta z_k} \intop_{z_{k-\frac{1}{2}}}^{z_{k+\frac{1}{2}}} \psi_g^Z\left(x,y,z,\bm{\Omega}\right) dz\ .
+\varphi_g^Z\left(x,y,\bm{\Omega}\right) = \frac{1}{\Delta z_k} \intop_{z_{k-\frac{1}{2}}}^{z_{k+\frac{1}{2}}} \varphi_g^Z\left(x,y,z,\bm{\Omega}\right) dz\ .
 \end{equation}
 \end{subequations}
 where a superscript $Z$ indicates the average of a quantity over a given plane.  The $z$-component of the streaming can now be moved to the right-hand side of the equation and treated as a source term, giving a 2D transport problem which could be solved with a variety of methods:
 \begin{subequations}
 \begin{dmath}
-{\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + \Omega_y\frac{\partial \psi_{g}^Z}{\partial y}} + {\Sigma_{t,g}\left(x,y\right)\psi_{g}^Z\left(x,y,\bm\Omega\right)} = {q_{g}^Z\left(x,y\right) + L_{g}^Z\left(x,y,\Omega_z\right)}\ ,
+{\Omega_x\frac{\partial \varphi_{g}^Z}{\partial x} + \Omega_y\frac{\partial \varphi_{g}^Z}{\partial y}} + {\Sigma_{t,g}\left(x,y\right)\varphi_{g}^Z\left(x,y,\bm\Omega\right)} = {q_{g}^Z\left(x,y\right) + L_{g}^Z\left(x,y,\Omega_z\right)}\ ,
 \end{dmath}
 \begin{dmath}
-q_{g}^Z\left(x,y\right) = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g'}^Z\left(x,y\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^Z\left(x,y\right)}{4\pi}}\ ,
+q_{g}^Z\left(x,y\right) = {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\varphi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \nu\Sigma_{f,g'}^Z\left(x,y\right)\varphi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'}\ ,
 \end{dmath}
 \begin{equation}
-L_{g}^Z\left(x,y,\Omega_z\right) = \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k-\frac{1}{2}}} - \psi_{g,z_{k+\frac{1}{2}}}\right)\ ,
+L_{g}^Z\left(x,y,\Omega_z\right) = \frac{\Omega_z}{\Delta z_k}\left(\varphi_{g,z_{k-\frac{1}{2}}} - \varphi_{g,z_{k+\frac{1}{2}}}\right)\ ,
 \end{equation}
 \end{subequations}
 where $L_{g}^Z\left(x,y,\Omega_z\right)$ is the axial transverse leakage source term for plane $z$.  To simplify the source term, the axial transverse leakage term is often handled isotropically.  This is done by averaging over angle:
@@ -51,19 +51,19 @@ where $J_{z_{i\pm \frac{1}{2}}}$ is the current at the top ($+$) or bottom ($-$)
 The axial equations can be derived in a manner similar to the radial equations.  Again, we begin with the multi-group approximation shown in Equation \ref{e:multigroupboltzmann}.  This time, we integrate in both the x and y directions over intervals $x \in \left[x_{i-\frac{1}{2}},x_{i+\frac{1}{2}}\right]$ and $y \in \left[y_{j-\frac{1}{2}},y_{j+\frac{1}{2}}\right]$, giving the following equations in the axial direction, which are analogous to the radial equations in the previous section:
 \begin{subequations}\label{e:2D1DaxialEq}
 \begin{dmath}
-{\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + {\Sigma_{t,g}^{XY}\left(z\right)\psi_{g}^{XY}\left(z,\bm\Omega\right)} = q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) + {L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)}\ ,
+{\Omega_z \frac{\partial \varphi_{g}^{XY}}{\partial z}} + {\Sigma_{t,g}^{XY}\left(z\right)\varphi_{g}^{XY}\left(z,\bm\Omega\right)} = q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) + {L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)}\ ,
 \end{dmath}
 \begin{dmath}
-q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = {\frac{1}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \Sigma_{s,g'\rightarrow g}^{XY}\left(z,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^{XY}}{4\pi}\sum_{g'=1}^G\intop_{4\pi}\nu\Sigma_{f,g'}^{XY}\left(z\right)\psi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{Q_{g}^{XY}\left(z\right)}{4\pi}}\ ,
+q_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = {\frac{1}{4\pi}\sum_{g'=1}^G\intop_{4\pi} \Sigma_{s,g'\rightarrow g}^{XY}\left(z,\bm\Omega'\cdot\bm\Omega\right)\varphi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega'} + {\frac{1}{k_{eff}}\frac{\chi_{g}^{XY}}{4\pi}\sum_{g'=1}^G\intop_{4\pi}\nu\Sigma_{f,g'}^{XY}\left(z\right)\varphi_{g'}^{XY}\left(z,\bm\Omega'\right)d\Omega'}\ ,
 \end{dmath}
 \begin{dmath}
-L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = {\frac{\Omega_x}{\Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}} \left(\psi_{g,x_{i-\frac{1}{2}}}\left(y\right) - \psi_{g,x_{i+\frac{1}{2}}}\left(y\right) dy\right)} + {\frac{\Omega_y}{\Delta x_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \left(\psi_{g,y_{i-\frac{1}{2}}}\left(x\right) - \psi_{g,y_{i+\frac{1}{2}}}\left(x\right) dx\right)}\ ,
+L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) = {\frac{\Omega_x}{\Delta y_i}\intop_{y_{i-\frac{1}{2}}}^{y_{i+\frac{1}{2}}} \left(\varphi_{g,x_{i-\frac{1}{2}}}\left(y\right) - \varphi_{g,x_{i+\frac{1}{2}}}\left(y\right) dy\right)} + {\frac{\Omega_y}{\Delta x_i}\intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \left(\varphi_{g,y_{i-\frac{1}{2}}}\left(x\right) - \varphi_{g,y_{i+\frac{1}{2}}}\left(x\right) dx\right)}\ ,
 \end{dmath}
 \begin{equation}\label{e:2D1DaxFluxDef}
-\psi_g^{XY} = \frac{1}{\Delta_i \Delta_j} \intop_{y_{j-\frac{1}{2}}}^{y_{j+\frac{1}{2}}} \intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \psi_g\left(x,y,z,\bm{\Omega}\right) dx dy\ ,
+\varphi_g^{XY} = \frac{1}{\Delta_i \Delta_j} \intop_{y_{j-\frac{1}{2}}}^{y_{j+\frac{1}{2}}} \intop_{x_{i-\frac{1}{2}}}^{x_{i+\frac{1}{2}}} \varphi_g\left(x,y,z,\bm{\Omega}\right) dx dy\ ,
 \end{equation}
 \end{subequations}
-where a superscript $XY$ now corresponds to a particular x- and y-region which extends the full height of the problem in the z-direction.  Again, it is assumed that the cross-sections are constant in the x- and y-directions inside the region of integration.  How this is accomplished will be discussed in more detail when discussing MPACT's implementation of P$_3$ and CMFD.
+where a superscript $XY$ now corresponds to a particular x- and y-region which extends the full height of the problem in the z-direction.  Again, it is assumed that the cross sections are constant in the x- and y-directions inside the region of integration.  How this is accomplished will be discussed in more detail when discussing MPACT's implementation of P$_3$ and CMFD.
 
 As with the radial equations, we can treat the transverse leakage source isotropically by averaging over angle:
 \begin{dmath}
@@ -85,36 +85,36 @@ Again, methods have been developed to angle the angle-dependence of the radial t
 
 Now that the general 2D/1D scheme has been described, some attention should be given to the details of its implementation in MPACT.  Figure \ref{f:2d1d-flowchart} shows the calculation flow used by MPACT.  The first step is to perform a global 3D CMFD calculation to obtain pin-averaged flux and interface currents between each cell.  Next, the axial solver uses the radial currents calculated by CMFD as a radial transverse leakage source to obtain an axial transverse leakage source for the radial solver.  Finally, 2D MOC is used as the radial solver to obtain a solution with sub-pin resolution in each plane.
 
-\subsection{3D Sub-plane CMFD}\label{ss:2d1d-3dcmfd}
+\subsection{3D Subplane CMFD}\label{ss:2d1d-3dcmfd}
 
-The CMFD method was originally implemented in MPACT just as described in section \ref{ss:CMFD}.  To do this, each pin cell is homogenized using the quantities defined in Equation \ref{e:CMFDhomogTerms} in every plane in the model.  The radial coupling coefficients defined in Equation \ref{e:CMFDcouplingCoeffs} are obtained by calculating the current at the interface between each pair of pin cells using the 2D MOC sweeper, while the axial coupling coefficients are obtained from the axial currents calculated by the axial solve during the previous iteration.  The matrix for the 3D multi-group system can then be set up and solved, typically using the generalized Davidson eigenvalue solver.
+The CMFD method was originally implemented in MPACT just as described in Section \ref{ss:CMFD}.  To do this, each pin cell is homogenized using the quantities defined in Equation \ref{e:CMFDhomogTerms} in every plane in the model.  The radial coupling coefficients defined in Equation \ref{e:CMFDcouplingCoeffs} are obtained by calculating the current at the interface between each pair of pin cells using the 2D MOC sweeper, while the axial coupling coefficients are obtained from the axial currents calculated by the axial solve during the previous iteration.  The matrix for the 3D multi-group system can then be set up and solved, typically using the generalized Davidson eigenvalue solver.
 
-As part of this work, the traditional CMFD capability was extended to use the sub-plane scheme, first developed by Cho et al. for the DeCART code \cite{DeCARTsubplane} and later used in the nTRACER code \cite{RyuBEAVRSnTRACER2015}.  Thin MOC planes are capable of causing instability in the 2D/1D scheme, but are sometimes required to maintain accuracy.  The sub-plane scheme allows users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  While DeCART used the sub-plane scheme primarily to allow for thicker MOC planes, nTRACER also uses the sub-plane scheme as part of its rod decusping methods \cite{ICAPPcontrolRodDecuspingNTRACER}.  This section will focus only on the sub-plane scheme as a means of using fewer MOC planes, while chapter \ref{chap:cusping} will discuss how the sub-plane scheme has been modified to be used in decusping methods.
+As part of this work, the traditional CMFD capability was extended to use the subplane scheme, first developed by Cho et al. for the DeCART code \cite{DeCARTsubplane} and later used in the nTRACER code \cite{RyuBEAVRSnTRACER2015}.  Thin MOC planes are capable of causing instability in the 2D/1D scheme, but are sometimes required to maintain accuracy.  The subplane scheme allows users to increase the thickness of the 2D planes while still maintaining the accuracy of a fine axial mesh.  While DeCART used the subplane scheme primarily to allow for thicker MOC planes, nTRACER also uses the subplane scheme as part of its rod decusping methods \cite{ICAPPcontrolRodDecuspingNTRACER}.  This section will focus only on the subplane scheme as a means of using fewer MOC planes, while Chapter \ref{chap:cusping} will discuss how the subplane scheme has been modified to be used in decusping methods.
 
 \begin{figure}[h]
   \centering
   \input{../figs/CMFD-flowchart.tex}
-  \caption{Calculation flow for 3D sub-plane CMFD}\label{f:CMFD-flowchart}
+  \caption{Calculation flow for 3D subplane CMFD}\label{f:CMFD-flowchart}
 \end{figure}
 
 \subsubsection{Homogenization}
 
-For the traditional CMFD calculations, each pin cell in an MOC plane is homogenized into a single CMFD cell.  When using the sub-plane scheme, the homogenized pin cell is divided axially into a stack of cells.  This causes the CMFD system to have multiple planes per MOC plane, allowing CMFD to capture sub-plane axial flux shapes that would otherwise be ignored.  To do this, a sub-plane scaling factor is introduced which will be used to provide an axial shape within a 2D plane:
+For the traditional CMFD calculations, each pin cell in an MOC plane is homogenized into a single CMFD cell.  When using the subplane scheme, the homogenized pin cell is divided axially into a stack of cells.  This causes the CMFD system to have multiple planes per MOC plane, allowing CMFD to capture subplane axial flux shapes that would otherwise be ignored.  To do this, a subplane scaling factor is introduced which will be used to provide an axial shape within a 2D plane:
 \begin{align}
 c_{g,i}^k &= \frac{\phi_{g,i}^{k-1}}{\overline{\phi}_{g,i}^{k-1}} \nonumber\\
  &= \frac{\phi_{g,i}^{k-1} \sum_{i'=1}^{N_{sp}} V_{i'}}{\sum_{i'=1}^{N_{sp}} \phi_{g,i'}^{k-1} V_{i'}}\ ,
 \end{align}
-where superscripts indicate which iteration the values are taken from and $N_{sp}$ is the number of sub-planes for the pin cell of interest.  Now when the homogenized values are calculated from the 2D transport solution using Equation \ref{e:CMFDhomogTerms}, the fine mesh flux is multiplied by this sub-plane scaling factor everywhere it appears.  Because the 2D/1D scheme assumes a constant material axially in each plane, this sub-plane factor has no impact on the homogenized cross-sections.  However, the homogenized flux $\phi_{g,i}$ and fission source distribution $\chi_{g,i}$ will be changed, providing an axial shape for the source term in the eigenvalue calculation.
+where superscripts indicate which iteration the values are taken from and $N_{sp}$ is the number of subplanes for the pin cell of interest.  Now when the homogenized values are calculated from the 2D transport solution using Equation \ref{e:CMFDhomogTerms}, the fine mesh flux is multiplied by this subplane scaling factor everywhere it appears.  Because the 2D/1D scheme assumes a constant material axially in each plane, this subplane factor has no impact on the homogenized cross sections.  However, the homogenized flux $\phi_{g,i}$ and fission source distribution $\chi_{g,i}$ will be changed, providing an axial shape for the source term in the eigenvalue calculation.
 
 \subsubsection{Coupling Coefficients}
 
-In addition to the homogenized cell terms, the coupling coefficients described by Equations \ref{e:CMFDinterface} and \ref{e:CMFDcouplingCoeffs} must be calculated for each sub-plane.  To maintain consistency, the area-averaged current calculated by the radial sweeper must be preserved across the sub-surfaces used by the sub-plane scheme.  Thus, the current calculated by the radial sweeper at an interface is used at the corresponding interfaces for all sub-planes in that plane.  Additionally, to maintain consistency, this requires that the cell-homogenized flux used in the calculation of the diffusion coefficients be defined for the entire MOC plane as in Equation \ref{e:CMFDhomogFlux} rather than using the sub-plane scaling factor for each sub-plane.
+In addition to the homogenized cell terms, the coupling coefficients described by Equations \ref{e:CMFDinterface} and \ref{e:CMFDcouplingCoeffs} must be calculated for each subplane.  To maintain consistency, the area-averaged current calculated by the radial sweeper must be preserved across the sub-surfaces used by the subplane scheme.  Thus, the current calculated by the radial sweeper at an interface is used at the corresponding interfaces for all subplanes in that plane.  Additionally, to maintain consistency, this requires that the cell-homogenized flux used in the calculation of the diffusion coefficients be defined for the entire MOC plane as in Equation \ref{e:CMFDhomogFlux} rather than using the subplane scaling factor for each subplane.
 
-The axial coupling coefficient can be treated in a more straightforward manner.  Because the 1D axial solvers use the same pin-homogenized mesh as the CMFD solver, axial currents are naturally calculated at the top and bottom of each of the sub-planes.  Thus, these currents can be used together with the sub-planes fluxes to calculate sub-plane--dependent axial coupling coefficients.
+The axial coupling coefficient can be treated in a more straightforward manner.  Because the 1D axial solvers use the same pin-homogenized mesh as the CMFD solver, axial currents are naturally calculated at the top and bottom of each of the subplanes.  Thus, these currents can be used together with the subplanes fluxes to calculate subplane-dependent axial coupling coefficients.
 
 \subsubsection{Projection}\label{sss:cmfdProj}
 
-The projection of the CMFD flux back to the 2D planes must also account for the presence of the sub-planes.  To do this, the solution is volume-averaged over all sub-planes for each pin cell, resulting in an equation similar to \ref{e:CMFDscaling}:
+The projection of the CMFD flux back to the 2D planes must also account for the presence of the subplanes.  To do this, the solution is volume-averaged over all subplanes for each pin cell, resulting in an equation similar to \ref{e:CMFDscaling}:
 \begin{equation}
 \phi_{trans,g,j}^k = \frac{\sum_{i'=1}^{N_{sp}} \phi_{CMFD,g,i'}^k V_i}{\sum_{i'=1}^{N_{sp}} \phi_{CMFD,g,i'}^k V_i} \phi_{trans,g,j}^{k-1}\ .
 \end{equation}
@@ -146,7 +146,7 @@ For the radial calculations, 2D MOC is used.  This allows MPACT to easily calcul
     \caption[Modular Ray Tracing]{Modular ray tracing depiction \cite{MPACTTheoryManual}}\label{e:ModRays}
 \end{figure}
 
-One of the key features of MPACT's MOC implementation is that of modular ray tracing.  Ray tracing is performed once at the beginning of a calculation and stored for the remainder of the calculation.  Doing this greatly reduces the runtime of the MOC sweeps since the length of each ray segment and the region it is crossing are already known ahead of time.  Furthermore, MPACT takes advantage of the repeatable nature of a reactor's geometry.  Because reactor geometry is repetitive, small portions of the geometry which repeat frequently can be ray-traced separately instead of tracing the entire core.  These smaller units of geometry are known as ray tracing modules, and in MPACT can be a full fuel assembly, a quarter fuel assembly, or a single fuel pin.  After the unique modules are identified, each of them is ray-traced in such a way that the endpoints of a ray in each module will line up with the beginning of a ray in the neighboring module.  This significantly reduces the storage requirements for the ray data since a small number of ray tracing modules can represent a full core problem.
+One of the key features of MPACT's MOC implementation is that of modular ray tracing.  Ray tracing is performed once at the beginning of a calculation and stored for the remainder of the calculation.  Doing this greatly reduces the runtime of the MOC sweeps since the length of each ray segment and the region it is crossing are already known ahead of time.  Furthermore, MPACT takes advantage of the repeatable nature of a reactor's geometry.  Because reactor geometry is repetitive, small portions of the geometry which repeat frequently can be ray-traced separately instead of tracing the entire core.  These smaller units of geometry are known as ray tracing modules, and in MPACT can be a full fuel assembly, a quarter fuel assembly, or a single fuel pin.  After the unique modules are identified, each of them is ray-traced in such a way that the endpoints of a ray in each module will line up with the beginning of a ray in the neighboring module.  This significantly reduces the storage requirements for the ray data since a small number of ray tracing modules can represent a full core problem.  During each sweep, the long rays which traverse the entire model are reconstructed from the modular rays then swept.  This adds a small amount of extra time to the sweep in exchange for significant memory savings.
 
 As a result of the modular ray tracing, several corrections are required.  First, to successfully perform the ray tracing the angles of the rays had to be adjusted slightly to line up.  However, because a quadrature is used to integrate the angular flux, this angle modification requires a correction to the quadrature weights as well to maintain accuracy.  Second, the spacing between the rays must also be adjusted slightly to ensure that all rays align.  Along with these corrections, there are other MOC concepts such as volume corrections, cyclic rays, and others which are important to be aware of but will be deferred to the MPACT theory manual for details \cite{MPACTTheoryManual}.
 
@@ -158,9 +158,9 @@ As a result of the modular ray tracing, several corrections are required.  First
   \caption{Calculation flow for 2D MOC calculation in MPACT}\label{f:MOC-flowchart}
 \end{figure}
 
-To perform the MOC sweeps, MPACT uses a multi-group sweeping method.  To do this, multi-group sources and cross-sections are prepared for each of the fine mesh regions in each plane.  There are then four total loops for the sweeping algorithm.  From outermost to innermost, these loops are over azimuthal angle, ray (across the entire domain), polar angle, and energy group.  Each ray is divided into many segments that the MOC steps its way along as described in section \ref{ss:MOCtheory}.  As these sweeps are performed, scalar flux is tallied in each fine mesh region, and, assuming CMFD is being used, currents are tallied at the interfaces between each pin cell.  Normally only one inner MOC iteration is required per 2D/1D iteration.  This algorithm is shown in Figure \ref{f:MOC-flowchart}.
+To perform the MOC sweeps, MPACT uses a multi-group sweeping method.  To do this, multi-group sources and cross sections are prepared for each of the fine mesh regions in each plane.  There are then four total loops for the sweeping algorithm.  From outermost to innermost, these loops are over azimuthal angle, ray (across the entire domain), polar angle, and energy group.  Each ray is divided into many segments that the MOC steps its way along as described in Section \ref{ss:MOCtheory}.  As these sweeps are performed, scalar flux is tallied in each fine mesh region, and, assuming CMFD is being used, currents are tallied at the interfaces between each pin cell.  Normally only one inner MOC iteration is required per 2D/1D iteration.  This algorithm is shown in Figure \ref{f:MOC-flowchart}.
 
-MPACT also has the capability of performing the MOC sweeps with the energy loop as the outermost.  This has two advantages.  First, the previous group is used to construct the scattering source for the current group.  This means that the iteration scheme is a Gauss-Seidel iteration instead of a Jacobi iteration, which can speed up the convergence of the problem.  Secondly, the cross-sections and sources only need to be stored for one group at a time, minimizing the storage requirements for the calculations.  However, when using transport-corrected cross-sections, some instabilities have been observed in this iteration scheme when using only a single inner iteration.  Further more, having the energy loop on the inside results in some improved cache efficiency when it comes to traversing the rays, reducing the runtime for a single MOC sweep \cite{JacobiInscatterTechReport}.  For these two reasons, MPACT defaults to the Jacobi-style iteration scheme described first.
+MPACT also has the capability of performing the MOC sweeps with the energy loop as the outermost.  This has two advantages.  First, the previous group is used to construct the scattering source for the current group.  This means that the iteration scheme is a Gauss-Seidel iteration instead of a Jacobi iteration, which can speed up the convergence of the problem.  Secondly, the cross sections and sources only need to be stored for one group at a time, minimizing the storage requirements for the calculations.  However, when using transport-corrected cross sections, some instabilities have been observed in this iteration scheme when using only a single inner iteration.  Further more, having the energy loop on the inside results in some improved cache efficiency when it comes to traversing the rays, reducing the runtime for a single MOC sweep \cite{JacobiInscatterTechReport}.  For these two reasons, MPACT defaults to the Jacobi-style iteration scheme described first.
 
 \section{Parallel Decomposition}
 
@@ -192,17 +192,17 @@ The 2D/1D approximation has several sources of error.  Some of these are address
 
 \subsection{Axial Homogenization}
 
-When deriving the radial equations in section \ref{ss:2d1dradialEq}, it was assumed that the cross-sections were constant in the axial direction for each of the planes.  While this is often the case if an appropriate axial mesh is selected, sometimes it is impractical to mesh the problem finely enough to ensure this.  When an axial material heterogeneity is present in a plane, 2D MOC requires that these materials be homogenized.  In some cases, a simple volume-averaging is sufficient, but if a material with a large cross-section is being homogenized with a material that has a significantly different cross-section, significant errors can result.  To prevent this without refining the axial mesh, some modification to the 2D/1D scheme is required to improve the homogenization.  This will be addressed in chapter \ref{chap:cusping}.
+When deriving the radial equations in Section \ref{ss:2d1dradialEq}, it was assumed that the cross sections were constant in the axial direction for each of the planes.  While this is often the case if an appropriate axial mesh is selected, sometimes it is impractical to mesh the problem finely enough to ensure this.  When an axial material heterogeneity is present in a plane, 2D MOC requires that these materials be homogenized.  In some cases, a simple volume-averaging is sufficient, but if a material with a large cross section is being homogenized with a material that has a significantly different cross section, significant errors can result.  To prevent this without refining the axial mesh, some modification to the 2D/1D scheme is required to improve the homogenization.  This will be addressed in Chapter \ref{chap:cusping}.
 
 \subsection{Axial Transverse Leakage Source}
 
-Another approximation relates to the assumptions made while deriving the axial equations in section \ref{ss:2d1daxialEq}.  The P$_3$ calculations are performed on a pin-homogenized mesh.  Because of this, the axial currents used in the axial TL source are assumed to be flat across the entire pin cell.  However, the currents will obviously be quite different in the fuel and moderator regions.  Furthermore, the axial TL is treated isotropically.  While this simplifies the axial calculations and MOC storage requirements, it does not perfectly reflect reality.  Both these spatial and angular assumptions introduce some error into the axial TL source used by MOC.
+Another approximation relates to the assumptions made while deriving the axial equations in Section \ref{ss:2d1daxialEq}.  The P$_3$ calculations are performed on a pin-homogenized mesh.  Because of this, the axial currents used in the axial TL source are assumed to be flat across the entire pin cell.  However, the currents will obviously be quite different in the fuel and moderator regions.  Furthermore, the axial TL is treated isotropically.  While this simplifies the axial calculations and MOC storage requirements, it does not perfectly reflect reality.  Both these spatial and angular assumptions introduce some error into the axial TL source used by MOC.
 
 \subsection{Radial Currents}
 
 The radial TL source used by the axial P$_3$ solver has the same two approximations as the axial TL source did.  Radial currents are used to generate the source, which assumes isotropy.  Additionally, the spatial shape is flat across each pin cell.  This is corrected to some extent since the axial solver produces a quadratic source shape using the neighboring nodes, but this is not a perfect solution.
 
-Additionally, when using the sub-plane method, the $\hat{D}$ correction terms used by CMFD are assumed to be axially flat within each MOC plane.  While this assumption improves the stability of the calculations, it forces CMFD to capture any axial shape the current has within an MOC plane.  For most problems, this error is probably negligible, but for cases such as a partially inserted rod or other strong absorber, it would be beneficial to be able to have sub-plane--dependent $\hat{D}$ terms to more accurately calculate the radial currents.  Doing this would improve the radial TL source in the P$_3$ solver, and the the overall 2D/1D results.
+Additionally, when using the subplane method, the $\hat{D}$ correction terms used by CMFD are assumed to be axially flat within each MOC plane.  While this assumption improves the stability of the calculations, it forces CMFD to capture any axial shape the current has within an MOC plane.  For most problems, this error is probably negligible, but for cases such as a partially inserted rod or other strong absorber, it would be beneficial to be able to have subplane-dependent $\hat{D}$ terms to more accurately calculate the radial currents.  Doing this would improve the radial TL source in the P$_3$ solver, and the the overall 2D/1D results.
 
 \subsection{Other Sources of Error}
 
@@ -219,17 +219,17 @@ Several other sources of error in the 2D/1D method will be briefly mentioned her
   
   \item \textbf{Axial Meshing}
   
-  The axial mesh must be refined enough to capture the axial shape of the solution.  Usually MOC planes of about 8 cm thick are used for a typical PWR calculation, which some thinner planes to resolve spacer grids, burnable poison inserts, or other components.  Using thicker planes could decrease accuracy and worsen the convergence of the CMFD calculations.  This effect can be minimized for thick MOC planes by using the sub-plane method.
+  The axial mesh must be refined enough to capture the axial shape of the solution.  Usually MOC planes of about 8 cm thick are used for a typical PWR calculation, which some thinner planes to resolve spacer grids, burnable poison inserts, or other components.  Using thicker planes could decrease accuracy and worsen the convergence of the CMFD calculations.  This effect can be minimized for thick MOC planes by using the subplane method.
   
   \item \textbf{Scattering Treatment}
   
   Scattering in a reactor, especially off the hydrogen atoms in the moderator, is anisotropic.  To resolve this, a sufficiently high-order scattering treatment must be used in the MOC calculations.  For PWRs, $P_1$ to $P_3$ is a typical range.  MPACT is capable of going up to P$_5$ scattering treatment for libraries which have the required data.
   
-  An alternative is to use transport-correction P$_0$ scattering.  This can capture the anisotropy without increasing the runtime of the calculations.  However, there are several methods of calculating the transport cross-sections, and none of them are perfect.  Thus, using the TCP$_0$ option in MPACT also has some non-trivial error associated with it.
+  An alternative is to use transport-correction P$_0$ scattering.  This can capture the anisotropy without increasing the runtime of the calculations.  However, there are several methods of calculating the transport cross sections, and none of them are perfect.  Thus, using the TCP$_0$ option in MPACT also has some non-trivial error associated with it.
   
   \item \textbf{Cross-Section Library}
   
-  To perform any calculations using the 2D/1D method, a multi-group cross-section library must be available.  While this is not technically a source of error in the 2D/1D method itself, the cross-section library can be difficult to generate correctly.  Any error in any isotope in the library will cause error in the 2D/1D calculations if the isotope is used in the model.  Thus, the 2D/1D method is useless if the a bad cross-section library is being used.
+  To perform any calculations using the 2D/1D method, a multi-group cross section library must be available.  While this is not technically a source of error in the 2D/1D method itself, the cross section library can be difficult to generate correctly.  Any error in any isotope in the library will cause error in the 2D/1D calculations if the isotope is used in the model.  Thus, the 2D/1D method is useless if the a bad cross section library is being used.
   
   \item \textbf{Self-Shielding}
   
