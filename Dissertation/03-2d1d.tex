@@ -100,7 +100,7 @@ As part of this work, the traditional CMFD capability was extended to use the su
 \subsubsection{Homogenization}
 
 For the traditional CMFD calculations, each pin cell in an MOC plane is homogenized into a single CMFD cell.  When using the subplane scheme, the homogenized pin cell is divided axially into a stack of cells.  This causes the CMFD system to have multiple planes per MOC plane, allowing CMFD to capture subplane axial flux shapes that would otherwise be ignored.  To do this, a subplane scaling factor is introduced which will be used to provide an axial shape within a 2D plane:
-\begin{align}
+\begin{align}\label{e:subplaneScalingFactor}
 c_{g,i}^k &= \frac{\phi_{g,i}^{k-1}}{\overline{\phi}_{g,i}^{k-1}} \nonumber\\
  &= \frac{\phi_{g,i}^{k-1} \sum_{i'=1}^{N_{sp}} V_{i'}}{\sum_{i'=1}^{N_{sp}} \phi_{g,i'}^{k-1} V_{i'}}\ ,
 \end{align}
