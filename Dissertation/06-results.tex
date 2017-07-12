@@ -262,7 +262,7 @@ All calculations in this section used 0.03 cm ray spacing with 16 azmiuthal angl
 
 \begin{table}[h]
 \centering
-\caption[2D C5G7 UO$_2$ Assembly Results]{2D C5G7 UO$_2$ eigenvalue and power distribution differences for each decusping method.  A * indicates that finite difference was used axially instead of P$_3$}\label{t:c5g7-2d-asy-methods}
+\caption[2D C5G7 UO$_2$ Assembly Results]{2D C5G7 UO$_2$ assembly eigenvalue and power distribution differences for each decusping method.  A * indicates that finite difference was used axially instead of P$_3$}\label{t:c5g7-2d-asy-methods}
 \resizebox{\textwidth}{!}{
     \begin{tabular}{l l l l l l l l l l l l l l}
     \toprule
@@ -292,11 +292,11 @@ Table \ref{t:c5g7-2d-asy-recomb} shows the results for the 2D assembly case for 
 
 Table \ref{t:c5g7-2d-asy-methods} compares the results of subray MOC with the sublpane-based decusping methods described earlier.  The polynomial method is not compared because the data required to use them fo C5G7 has not been generated.  The subplane decusping method performs better with CP than without, as expected.  Overall, its performance is good, reducing the maximum power error to around 0.5\% on average and reducing the \keff{} error from an average of almost 5\% to under 500 pcm.  However, the Subray-0 treatment performs better than the Subplane + CP method, \hl{Discussion}
 
-This relationship between Subplane + CP and Subray-0 is expected.  Both of them are improving the solution in a single pin cell by solving the rodded and unrodded levels separately.  However, Subplane + CP does this after the MOC calculation, only improving the CMFD and 1D P$_3$ cross sections.  The Subray-0 calculation uses 2D MOC, which should provide a solution superior to 1D CP.  It also calculates improved radial currents, and improves the solution in pins neighboring the control rodlets by improving the angular flux exiting the rodded pin cells.  Thus, it is expected that Subray-0 would consistently provide a better solution than the Subplane + CP decusing method.
+This relationship between Subplane + CP and Subray-0 is expected.  Both of them are improving the solution in individual rodded pin cells by solving the rodded and unrodded levels separately.  However, Subplane + CP does this after the MOC calculation, only improving the CMFD and 1D P$_3$ cross sections.  The Subray-0 calculation uses 2D MOC, which should provide a solution superior to 1D CP.  It also calculates improved radial currents, and improves the solution in pins neighboring the control rodlets by improving the angular flux exiting the rodded pin cells.  Thus, it is expected that Subray-0 would consistently provide a better solution than the Subplane + CP decusing method.
 
 It should be noted at this point that certain calculations whose results are shown in these and following tables failed to converge using the axial P$_3$ solver.  This occurred for all calculations that had multiple planes or used the subplane scheme.  This is a known issue with the axial solvers caused by the interpolation of the radial TL source.  Whenever a thin plane is next to a thick plane and a very large change in the radial TL occurs from the thin plane to the thick plane, the quadratic interpolation of the radial TL can cause shapes that make the P$_3$ solver unstable.  This can be shown to be the source of the instability by limiting the magnitude of the linear and quadratic components of the shape.
 
-One of the other MPACT developers is currently implementing a new solver that employs a different technique to solve the P$_3$ equations, and is expected to resolve this instability.  Since that solver is not yet ready for use and limiting the linear and/or quadratic moments of the radial TL interpolation can have significant effects on accuracy, the cases which did not converge for either the reference or decusping method calculations simply used diffusion-based NEM solver instead of the P$_3$ solver.  This provides a less accurate solution, but using it in cases with and without cusping allows for a fair assessment of methods being tested here without abandoning the axial solve altogether.  The results that used diffusion instead of P$_3$ will be denoted with an asterisk (*) in all tables in this section.
+One of the other MPACT developers is currently implementing a new solver that employs a different technique to solve the P$_3$ equations, and is expected to resolve this instability.  Since that solver is not yet ready for use and limiting the linear and/or quadratic moments of the radial TL interpolation can have significant effects on accuracy, the cases which did not converge for either the reference or decusping method calculations simply used diffusion-based NEM solver instead of the P$_3$ solver.  The diffusion-based solver uses a two-node iteration scheme as opposed to the one-node approach used by the P$_3$ solver, making it more stable in some cases.  The diffusion solver is not as accurate as P$_3$, but using it in cases with and without cusping allows for a fair assessment of methods being tested here without abandoning the axial solve altogether.  The results that used diffusion instead of P$_3$ will be denoted with an asterisk (*) in all tables in this section.
 
 \begin{table}[h]
     \centering
@@ -331,7 +331,7 @@ Subray-3      & 15.3 & 107 & 1.11 \\
 
 While the subray MOC method is more accurate than the previous decusping methods, it is also more expensive.  Table \ref{t:subray-data-2dassembly} shows the long ray data for the reference case and each variation of the subray MOC calculations.  The first column is the total number of long rays including those duplicated for subray MOC.  The second column shows the percent increase in the number of long rays.  This value can be used to approximate the savings obtained by using subray MOC to resolve partially inserted rods instead of 2 separate MOC planes.  For the single assembly case, it is expected that Subray-3 and the reference case would take about the same amount of time for each MOC sweep since every long ray was duplicated for Subray-3.
 
-Table \ref{t:subray-performance-2dassembly} shows the convergence and runtime data for each decusping method averaged over all 9 rod positions. The speedup of each case is defined as the reference runtime divided by the comparison runtime.  Using Table \ref{t:subray-data-2dassembly}, we can approximate an expected speedup for each case by taking the number of long rays in the reference (2 MOC planes) and dividing by the number in the comparison case (1 MOC plane).  Doing this, we get expected speedups of 1.22, 1.12, 1.05, and 1.0 for Subray-0, Subray-1, Subray-2, and Subray-3, respectively.  The observed speedups are similar to, but consistently a little better than predicted.  Subray MOC takes between 1 and 1.5 iterations fewer, on average, than the reference case.  Furthermore, there is some small gain in efficiency from having all the long rays in a single sweep instead of two separate sweeps, though this is a smaller effect.  Thus, subray MOC performs about as well as expected for this implementation.  The other methods all see a speedup around 2.0, which is expected since the amount of time spent in MOC is exactly half that of the reference.  The differences in the CMFD solve and number of iterations introduce some variation in the speedup, which is to be expected.
+Table \ref{t:subray-performance-2dassembly} shows the convergence and runtime data for each decusping method averaged over all 9 rod positions.  Each of these calculations was conducted on a development cluster with 4 AMD Opteron\texttrademark 6376 processors clocked at 2.3 GHz. The speedup of each case is defined as the reference runtime divided by the comparison runtime.  Using Table \ref{t:subray-data-2dassembly}, we can approximate an expected speedup for each case by taking the number of long rays in the reference (2 MOC planes) and dividing by the number in the comparison case (1 MOC plane).  Doing this, we get expected speedups of 1.22, 1.12, 1.05, and 1.0 for Subray-0, Subray-1, Subray-2, and Subray-3, respectively.  The observed speedups are similar to, but consistently a little better than predicted.  On average, subray MOC takes between 1 and 1.5 iterations fewer than the reference case, which can account for some of the difference.  The other methods all see a speedup around 2.0, which is expected since the amount of time spent in MOC is exactly half that of the reference.  The differences in the CMFD solve and number of iterations introduce some variation in the speedup, which is to be expected.
 
 \subsubsection{2D Core -- Rodded Center Assembly}
 
@@ -387,9 +387,9 @@ Table \ref{t:subray-performance-2dassembly} shows the convergence and runtime da
     }
 \end{table}
 
-The second problem uses the full radial core layout from Figures \ref{f:c5g7-core} and \ref{f:c5g7-assemblies}.  A control rod was added to the northwest UO$_2$ assembly, and the same procedure was followed as for the 2D assembly.  Table \ref{t:c5g7-2d-center-recomb} shows the results for subray MOC as a function of recombination value.  The trends observed in these results match more closely with expectations.  As the recombination factor is increased from 0 to 3, the errors monotically decrease.  The largest jump occurs from Subray-0 to Subray-1, and the smallest from Subray-2 to Subray-3.  This matches both physical intuition about the local effects of each control rodlet as well as the results of the 1D prototype subray MOC calculations.  The decrease in error from Subray-2 to Subray-3 might be slightly larger if the recombination were not restricted to the rodded assembly, as described by Figure \ref{f:recombination}.  However, the additional benefits from Subray-3 are likely insignificant when compared with the time to implement that logic and increased runtime of subray MOC.
+The second problem uses the full radial core layout from Figures \ref{f:c5g7-core} and \ref{f:c5g7-assemblies}.  A control rod was added to the northwest UO$_2$ assembly, and the same procedure was followed as for the 2D assembly.  Table \ref{t:c5g7-2d-center-recomb} shows the results for subray MOC as a function of recombination value.  \hl{Discussion}
 
-Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. The same observations can be made for these calculations as for the 2D assembly calculations.  The subplaned decusping is much better with CP than without, and subray MOC is better still, reducing the maximum power differences from around 25\% to less than 2\% for every rod position.  Furthermore, the \keff{} differences are reduced from almost around 2\% with no treatment and around 150 pcm with Subplane + CP to less than 100 pcm on average with Subray-0.
+Table \ref{t:c5g7-2d-center-methods} compares subray MOC to the other methods. The same observations can be made for these calculations as for the 2D assembly calculations.  The subplane decusping is much better with CP than without, and subray MOC is better still, reducing the maximum power differences from around 25\% to less than 1.5\% for every rod position.  Furthermore, the \keff{} differences are reduced from almost around 2\% with no treatment and around 150 pcm with Subplane + CP to less than 100 pcm on average with Subray-0.
 
 \begin{table}[h]
     \centering
@@ -478,7 +478,7 @@ As with the single assembly, the long ray data can again be used to make some pr
     }
 \end{table}
 
-The final 2D problem is the same as the previous one, except that the southeast corner UO$_2$ assembly is rodded instead of the northwest assembly.  Tables \ref{t:c5g7-2d-corner-recomb} and \ref{t:c5g7-2d-corner-methods} show similar results to the previous two problems.  For all methods, the errors are lower for this problem than for the first multi-assembly problem.  There are two reasons for this.  First, the control rods for this problem are in a lower power region than for the previous one, so the absolute differences in power are sure to be smaller for any decusping method.  Second, the rodded assembly is not next to reflecting boundary conditions.  In the previous problem, if the reflecting boundary conditions are accounted for, there are effectively 4 rodded assemblies in a cluster in the center of the core.  However, all subrays are forced to recombine at the problem boundary, a decision which is not necessary but was made for the sake of code simplicity and time.  This likely has at least some negative impact on the results of the previous problem.  The rodded assembly in this problem is surrounded by unrodded assemblies that do not require subray MOC, removing one approximation that was forced by the other problem.
+The final 2D problem is the same as the previous one, except that the southeast corner UO$_2$ assembly is rodded instead of the northwest assembly.  Tables \ref{t:c5g7-2d-corner-recomb} and \ref{t:c5g7-2d-corner-methods} show similar results to the previous two problems.  For all methods, the errors are lower for this problem than for the first multi-assembly problem, but this is because the control rods for this problem are in a lower power region than for the previous one, so the absolute differences in power are sure to be smaller for any decusping method.  This is seen clearly in the fact that the other methods also show much small errors than for the previous problem.  Thus, subray MOC performs the same on this problem as before.
 
 \begin{table}[h]
     \centering
@@ -499,7 +499,7 @@ Subray-3      & 25.0 & 878 & 1.15 \\
 
 The primary reason to show this problem is that because the rods are in the center of the model, the long rays duplicated for the subray MOC calculation are longer for some angles, especially those between the northeast and southwest corners of the model.  Thus, while the total number of rays duplicated is the same as for the previous problem (Table \ref{t:subray-data-2dcore}), the amount of work done for the duplicated rays is different.  This will show what, if any, impact the position of the control rods in the core could have on the efficiency of the subray MOC calculations.
 
-Table \ref{t:subray-performance-2dcoreSE} shows the convergence and runtime data for this problem.  Compared with the previous 2D core problem, the speedups are similar, but lower by about 0.03 for each subray MOC calculation.  The convergence behavior of this problem is similar to the previous one, so this small decrease in speedup is likely due to duplicating longer core rays.  Overall, the impact of the control rod locations has a negligible impact on the speedups observed by using subray MOC or the other decusping methods.
+Table \ref{t:subray-performance-2dcoreSE} shows the convergence and runtime data for this problem.  Compared with the previous 2D core problem, the speedups are similar, but lower by about 0.03 for each subray MOC calculation.  The convergence behavior of this problem is similar to the previous one, so this small decrease in speedup is likely due to duplicating longer core rays.  Considerable fluctuation can occur from one calculation to the next when using a development machine shared by other users, but the consistency in these calculations indicates that there will not be any major performance penalties based on the position of the rods in the core.  Performance will be based primarily on the number of pins requiring subray treatment.
 
 \subsection{3D C5G7}
 
@@ -524,26 +524,26 @@ Subray-3    & 56   & 0.25\% &  0.54\% \\
     \end{tabular}
 \end{table}
 
-Table \ref{t:c5g7-3d-assembly} shows the average errors for each method for the 3D assembly.  For this problem, the trends from the 2D calculations are not observed.  The subray MOC results are consistently better than the subplane method without CP.  However, with CP, the subplane method is signficantly better than subray MOC.  Furthermore, the \keff{} errors decrease with increasing recombination factor, but the power distribution errors increase.  While the results with subray MOC are still fairly good compared with no treatment, the Subplane + CP method is clearly the most effective for this problem.  It is expected that this error comes from interactions between subray MOC and the 1D P$_3$ solver that are not an issue in the 2D calculations, making it likely that some improvements could be made to this iteration scheme improve the subray MOC results.
+Table \ref{t:c5g7-3d-assembly} shows the average errors for each method for the 3D assembly.  \hl{Disucssion}
 
 \begin{table}[h]
     \centering
     \caption[3D C5G7 UO$_2$ Assembly Performance]{Average Performance and Convergence Data for 3D C5G7 Rodded UO$_2$ Assembly}\label{t:subray-performance-3Dassembly}
     \begin{tabular}{l l l l}\toprule
         Method & Iterations & Runtime (s) & Speedup \\\midrule
-Reference     & 27.7 & 610 & --   \\
-None          & 31.7 & 574 & 1.14 \\
-Subplane      & 29.0 & 430 & 1.45 \\
-Subplane + CP & 28.7 & 411 & 1.52 \\
-Subray-0      & 28.1 & 526 & 1.19 \\
-Subray-1      & 33.0 & 633 & 1.00 \\
-Subray-2      & 30.4 & 599 & 1.04 \\
-Subray-3      & 32.6 & 619 & 1.03 \\
+Reference     & 27.8 & 3256 & --   \\
+None          & 28.2 & 2581 & 1.25 \\
+Subplane      & 29.1 & 2454 & 1.32 \\
+Subplane + CP & 28.9 & 2454 & 1.32 \\
+Subray-0      & 28.8 & 2851 & 1.13 \\
+Subray-1      & 28.9 & 2920 & 1.11 \\
+Subray-2      & 29.1 & 2963 & 1.09 \\
+Subray-3      & 29.2 & 3009 & 1.08 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-The 3D assembly has the same long ray parameters as those shown in Table \ref{t:subray-data-2dassembly} for the 2D assembly.  For the plane with the rod, the number of long rays matches with the subray entries of the table, while for the remaining planes the number of long rays matches the reference entry.  Because of this, the subray MOC calculation runtimes should be closer to the subplane calculation times than to the reference calculation, since 3 of the 4 planes are the same as the reference case.  Table \ref{t:subray-performance-3Dassembly} shows the convergence and runtime results for each of the methods.  The speedup for subray MOC is good compared to the reference for Subray-0.  Subray-3 shows virtually no speedup, which is expected since all long rays are duplicated in this problem.  However, Subray-1 and Subray-2 show little to no speedup.  This is due primarily to the increase in the number of iterations.  Many of the rod positions were difficult to converge, compared with the 2D calculations, reducing the speedup observed in this problem.
+The 3D assembly has the same long ray parameters as those shown in Table \ref{t:subray-data-2dassembly} for the 2D assembly.  For the plane with the rod, the number of long rays matches with the subray entries of the table, while for the remaining planes the number of long rays matches the reference entry.  Because of this, the subray MOC calculation runtimes should be closer to the subplane calculation times than to the reference calculation, since 3 of the 4 planes are the same as the reference case.  Table \ref{t:subray-performance-3Dassembly} shows the convergence and runtime results for each of the methods.  \hl{discussion}
 
 \subsubsection{3D Core -- Rodded Center Assembly}
 
