@@ -485,7 +485,7 @@ The final 2D problem is the same as the previous one, except that the southeast 
     \caption[2D C5G7 Core Performance Data, Corner Assembly]{Average Performance and Convergence Data for 2D C5G7 Core with Rodded SE Assembly}\label{t:subray-performance-2dcoreSE}
     \begin{tabular}{l l l l}\toprule
         Method & Iterations & Runtime (s) & Speedup \\\midrule
-Reference     & 24.4 & 1006 &     \\
+Reference     & 24.4 & 1006 & --  \\
 None          & 24.0 & 657 & 1.54 \\
 Subplane      & 25.3 & 636 & 1.59 \\
 Subplane + CP & 25.3 & 629 & 1.60 \\
@@ -531,7 +531,7 @@ Table \ref{t:c5g7-3d-assembly} shows the average errors for each method for the 
     \caption[3D C5G7 UO$_2$ Assembly Performance]{Average Performance and Convergence Data for 3D C5G7 Rodded UO$_2$ Assembly}\label{t:subray-performance-3Dassembly}
     \begin{tabular}{l l l l}\toprule
         Method & Iterations & Runtime (s) & Speedup \\\midrule
-Reference     & 27.7 & 610 &      \\
+Reference     & 27.7 & 610 & --   \\
 None          & 31.7 & 574 & 1.14 \\
 Subplane      & 29.0 & 430 & 1.45 \\
 Subplane + CP & 28.7 & 411 & 1.52 \\
@@ -549,7 +549,7 @@ The 3D assembly has the same long ray parameters as those shown in Table \ref{t:
 
 \begin{table}
     \centering
-    \caption[3D C5G7 Core with Rodded Center Assembly]{3D C5G7 core with rodded center assembly rod withdrawal eigenvalue and pin power difference summary}\label{t:c5g7-3d-core-center}
+    \caption[3D C5G7 Core with Rodded Center Assembly Results]{3D C5G7 core with rodded center assembly rod withdrawal eigenvalue and pin power difference summary}\label{t:c5g7-3d-core-center}
     \begin{tabular}{l l l l}\toprule
         \multirow{2}{*}{Method} & \keff{} & \multicolumn{2}{l}{Pin Powers} \\
         & Diff. & RMS & Max \\\midrule
@@ -563,6 +563,27 @@ Subray-3    & 21 & 0.20\% & 1.11 \% \\
         \bottomrule
     \end{tabular}
 \end{table}
+
+\hl{discussion}
+
+\begin{table}[h]
+    \centering
+    \caption[3D C5G7 Core with Rodded Center Assembly Performance]{Average Performance and Convergence Data for 3D C5G7 Core with Rodded Center  Assembly}\label{t:subray-performance-3Dcore-center}
+    \begin{tabular}{l l l l}\toprule
+        Method & Iterations & Runtime (s) & Speedup \\\midrule
+        Reference     & 27.8 & 3156 & -- \\
+        None          & 28.2 & 2936 & 1.34 \\
+        Subplane      & 29.1 & 2363 & 1.34 \\
+        Subplane + CP & 28.9 & 2814 & 1.13 \\
+        Subray-0      & 28.8 & 3251 & 0.98 \\
+        Subray-1      & 28.9 & 3204 & 0.99 \\
+        Subray-2      & 29.1 & 3320 & 0.96 \\
+        Subray-3      & 29.2 & 3352 & 0.94 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\hl{discussion}
 
 \subsubsection{3D Core -- Rodded Corner Assembly}
 
@@ -582,3 +603,24 @@ Subray-3    & 2  & 0.06\% & 0.37\% \\
     \bottomrule
 \end{tabular}
 \end{table}
+
+\hl{discussion}
+
+\begin{table}[h]
+    \centering
+    \caption[3D C5G7 Core with Rodded Corner Assembly Performance]{Average Performance and Convergence Data for 3D C5G7 Core with Rodded Corner  Assembly}\label{t:subray-performance-3Dcore-corner}
+    \begin{tabular}{l l l l}\toprule
+        Method & Iterations & Runtime (s) & Speedup \\\midrule
+        Reference     & 27.2 & 3346 & --   \\
+        None          & 27.0 & 2751 & 1.22 \\
+        Subplane      & 28.2 & 2716 & 1.18 \\
+        Subplane + CP & 28.2 & 2751 & 1.17 \\
+        Subray-0      & 27.9 & 3115 & 1.08 \\
+        Subray-1      & 28.1 & 3099 & 1.08 \\
+        Subray-2      & 28.1 & 3132 & 1.07 \\
+        Subray-3      & 28.2 & 3155 & 1.06 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\hl{discussion}
