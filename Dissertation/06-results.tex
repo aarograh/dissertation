@@ -367,23 +367,23 @@ Table \ref{t:subray-performance-2dassembly} shows the convergence and runtime da
     \centering
     \caption[2D C5G7 Core Results, Center Assembly]{2D C5G7 center assembly rod withdrawal eigenvalue and pin power differences for each decusping method.  A * indicates that finite difference was used axially instead of P$_3$}\label{t:c5g7-2d-center-methods}
     \resizebox{\textwidth}{!}{
-        \begin{tabular}{l l l l l l l l l l l l l l}
+        \begin{tabular}{l l l l l l S[table-format=2.2,table-number-alignment=left] S[table-format=2.2,table-number-alignment=left] l l l l l l}
             \toprule
-            Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{None} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} \\
-            Position & \keff{} & \keff{} & \multicolumn{2}{l}{Pin Powers} & \keff{} & \multicolumn{2}{l}{Pin Powers} & \keff{} & \multicolumn{2}{l}{Pin Powers} & \keff{} & \multicolumn{2}{l}{Pin Powers} \\
-            &  &  & RMS & Max &  & RMS & Max &  & RMS & Max &  & RMS & Max \\
+            Rod & Reference & \multicolumn{3}{c}{Subray-0} & \multicolumn{3}{c}{{None}} & \multicolumn{3}{c}{Subplane} & \multicolumn{3}{c}{Subplane + CP} \\
+            Position & \keff{} & \keff{} & \multicolumn{2}{l}{Pin Powers} & {\keff{}} & \multicolumn{2}{l}{{Pin Powers}} & \keff{} & \multicolumn{2}{l}{Pin Powers} & \keff{} & \multicolumn{2}{l}{Pin Powers} \\
+            &  &  & RMS & Max &  & {RMS} & {Max} &  & RMS & Max &  & RMS & Max \\
             \midrule
-1* & 1.06839 & -15  & 0.10\% & 0.29\% & -286  & 1.73 \% & 12.70\% & -87  & 0.52\% & 1.35\% & -169 & 0.99\% & 2.46\% \\
-2 & 1.07746 & -33  & 0.22\% & 0.67\% & -811  & 4.75 \% & 21.30\% & -198 & 1.13\% & 3.06\% & -174 & 0.97\% & 2.57\% \\
-3 & 1.08777 & -53  & 0.32\% & 1.03\% & -1369 & 7.71 \% & 29.42\% & -290 & 1.56\% & 4.42\% & -181 & 0.97\% & 2.70\% \\
-4 & 1.09919 & -72  & 0.41\% & 1.34\% & -1918 & 10.33\% & 36.00\% & -360 & 1.83\% & 5.35\% & -185 & 0.94\% & 2.75\% \\
-5 & 1.11160 & -89  & 0.46\% & 1.53\% & -2400 & 12.25\% & 39.83\% & -405 & 1.93\% & 5.84\% & -184 & 0.88\% & 2.68\% \\
-6 & 1.12495 & -102 & 0.49\% & 1.66\% & -2738 & 13.12\% & 39.38\% & -424 & 1.89\% & 5.89\% & -174 & 0.78\% & 2.47\% \\
-7 & 1.13925 & -112 & 0.49\% & 1.70\% & -2820 & 12.55\% & 32.80\% & -416 & 1.72\% & 5.52\% & -155 & 0.65\% & 2.11\% \\
-8 & 1.15469 & -117 & 0.47\% & 1.65\% & -2478 & 10.08\% & 18.00\% & -377 & 1.44\% & 4.76\% & -124 & 0.48\% & 1.62\% \\
-9* & 1.17190 & -117 & 0.43\% & 1.50\% & -1461 & 5.31 \% & 0.00 \% & -300 & 1.06\% & 3.60\% & -80  & 0.29\% & 1.00\% \\
+1* & 1.06839 & -15  & 0.10\% & 0.29\% & -286  & 1.73 \% & 4.47 \% & -87  & 0.52\% & 1.35\% & -169 & 0.99\% & 2.46\% \\
+2  & 1.07746 & -33  & 0.22\% & 0.67\% & -811  & 4.75 \% & 12.70\% & -198 & 1.13\% & 3.06\% & -174 & 0.97\% & 2.57\% \\
+3  & 1.08777 & -53  & 0.32\% & 1.03\% & -1369 & 7.71 \% & 21.30\% & -290 & 1.56\% & 4.42\% & -181 & 0.97\% & 2.70\% \\
+4  & 1.09919 & -72  & 0.41\% & 1.34\% & -1918 & 10.33\% & 29.42\% & -360 & 1.83\% & 5.35\% & -185 & 0.94\% & 2.75\% \\
+5  & 1.11160 & -89  & 0.46\% & 1.53\% & -2400 & 12.25\% & 36.00\% & -405 & 1.93\% & 5.84\% & -184 & 0.88\% & 2.68\% \\
+6  & 1.12495 & -102 & 0.49\% & 1.66\% & -2738 & 13.12\% & 39.83\% & -424 & 1.89\% & 5.89\% & -174 & 0.78\% & 2.47\% \\
+7  & 1.13925 & -112 & 0.49\% & 1.70\% & -2820 & 12.55\% & 39.38\% & -416 & 1.72\% & 5.52\% & -155 & 0.65\% & 2.11\% \\
+8  & 1.15469 & -117 & 0.47\% & 1.65\% & -2478 & 10.08\% & 32.80\% & -377 & 1.44\% & 4.76\% & -124 & 0.48\% & 1.62\% \\
+9* & 1.17190 & -117 & 0.43\% & 1.50\% & -1461 & 5.31 \% & 18.00\% & -300 & 1.06\% & 3.60\% & -80  & 0.29\% & 1.00\% \\
             \midrule
-            Average & -- & 79 & 0.38\% & 1.26\% & 1809 & 8.65\% & 25.49\% & 317 & 1.45\% & 4.42\% & 158 & 0.77\% & 2.26\% \\
+            Average & -- & 79 & 0.38\% & 1.26\% & 1809 & 8.65\% & 25.99\% & 317 & 1.45\% & 4.42\% & 158 & 0.77\% & 2.26\% \\
             \bottomrule
         \end{tabular}
     }
@@ -510,9 +510,9 @@ In addition to the single-plane problems in the previous section, 3D problems we
 \begin{table}[h]
     \centering
     \caption[3D C5G7 UO$_2$ Assembly Recombination Sensitivity]{3D C5G7 UO$_2$ assembly rod withdrawal eigenvalue and pin power difference summary}\label{t:c5g7-3d-assembly}
-    \begin{tabular}{l l l l l}\toprule
-        \multirow{2}{*}{Case} & \multirow{2}{*}{Method} & \keff{} & \multicolumn{2}{l}{Pin Powers} \\
-        &  & Diff. & RMS & Max \\\midrule
+    \begin{tabular}{l l l l S[table-format=2.2,table-number-alignment=left]}\toprule
+        \multirow{2}{*}{Case} & \multirow{2}{*}{Method} & \keff{} & \multicolumn{2}{l}{{Pin Powers}} \\
+        &  & Diff. & RMS & {Max} \\\midrule
         \multirow{7}{*}{Average} & None        & 2193 & 6.05\% & 10.95\% \\
         & Subplane    & 222  & 0.88\% &  1.64\% \\
         & Subplane+CP & 114  & 0.45\% &  0.84\% \\
@@ -560,9 +560,9 @@ The 3D assembly has the same long ray parameters as those shown in Table \ref{t:
 \begin{table}[h]
     \centering
     \caption[3D C5G7 Core with Rodded Center Assembly Results]{3D C5G7 core with rodded center assembly rod withdrawal eigenvalue and pin power difference summary}\label{t:c5g7-3d-core-center}
-    \begin{tabular}{l l l l l}\toprule
-        \multirow{2}{*}{Case} & \multirow{2}{*}{Method} & \keff{} & \multicolumn{2}{l}{Pin Powers} \\
-        & & Diff. & RMS & Max \\\midrule
+    \begin{tabular}{l l l S[table-format=2.2,table-number-alignment=left] S[table-format=2.2,table-number-alignment=left]}\toprule
+        \multirow{2}{*}{Case} & \multirow{2}{*}{Method} & \keff{} & \multicolumn{2}{l}{{Pin Powers}} \\
+        & & Diff. & {RMS} & {Max} \\\midrule
         \multirow{7}{*}{Average} & None        & 21 & 6.62\% & 29.30\% \\
         & Subplane    & 21 & 0.69\% & 3.47 \% \\
         & Subplane+CP & 21 & 0.34\% & 1.69 \% \\
@@ -610,9 +610,9 @@ For the 3D core, speedup is also seen for each of the decusping methods in Table
 \begin{table}[h]
     \centering
     \caption[3D C5G7 Core with Rodded Corner Assembly]{3D C5G7 core with rodded corner assembly rod withdrawal eigenvalue and pin power difference summary}\label{t:c5g7-3d-core-corner}
-    \begin{tabular}{l l l l l}\toprule
-        \multirow{2}{*}{Case} & \multirow{2}{*}{Method} & \keff{} & \multicolumn{2}{l}{Pin Powers} \\
-        & & Diff. & RMS & Max \\\midrule
+    \begin{tabular}{l l l l S[table-format=2.2,table-number-alignment=left]}\toprule
+        \multirow{2}{*}{Case} & \multirow{2}{*}{Method} & \keff{} & \multicolumn{2}{l}{{Pin Powers}} \\
+        & & Diff. & RMS & {Max} \\\midrule
         \multirow{7}{*}{Average} & None        & 72 & 1.53\% & 7.01\% \\
         & Subplane    & 8  & 0.18\% & 1.08\% \\
         & Subplane+CP & 4  & 0.09\% & 0.56\% \\
