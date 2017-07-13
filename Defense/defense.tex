@@ -1,0 +1,87 @@
+\documentclass{beamer}
+
+\usepackage{beamerthemesplit}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{appendix}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{multirow}
+\usepackage{todonotes}
+\usepackage{breqn}
+\usepackage{subfigure}
+%\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{color}
+\usepackage{float}
+\usepackage{cancel}
+\usepackage{appendixnumberbeamer}
+\usetikzlibrary{shapes,arrows}
+
+% Set up flowchart stuff
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=2cm, minimum height=1cm, text centered, text width=2cm, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+% Set up graphics path
+\graphicspath{{../figs/}}
+
+\setbeamertemplate{navigation symbols}{}
+\usetheme{Darmstadt}
+\useoutertheme{infolines}
+\setbeamerfont{headline}{size=\fontsize{10}{11}}
+% \usecolortheme{wolverine}
+\newcommand*{\bfrac}[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
+
+\title[Planar Synthesis Subgrid Methods]{Subgrid Methods for Resolving Axial Heterogeneity in Planar Synthesis Solutions for the Boltzmann Transport Equation}
+\subtitle{Ph.D. Defense}
+\author{Aaron M. Graham}
+\date{July 20, 2017}
+
+\begin{document}
+
+\begin{frame}[t]
+    \titlepage
+\end{frame}
+
+\begin{frame}[t]
+    \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Introduction}
+\input{01-introduction.tex}
+
+\section{Theory}
+\subsection{Transport Theory}
+\input{02-transport-theory.tex}
+
+\subsection{2D/1D Method}
+\input{03-2d1d.tex}
+
+\section{Rod Cusping}
+\input{04-rod-cusping.tex}
+
+\section{Subgrid Methods}
+\input{05-methods}
+
+\section{Results}
+\input{06-results.tex}
+
+\section{Conclusions}
+\input{07-conclusions.tex}
+
+\appendix
+
+\section*{Backup slides}
+\input{08-backup-slides.tex}
+
+\section*{References}
+\renewcommand{\bibname}{References}
+\bibliographystyle{../bibliography}
+\bibliography{../bibliography}
+
+\end{document}
