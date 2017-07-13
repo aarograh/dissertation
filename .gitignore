@@ -9,6 +9,9 @@ Prospectus_Presentation/prospectus-presentation.synctex.gz
 Dissertation/build
 Dissertation/dissertation.synctex.gz
 Dissertation/dissertation.pdf
+Defense/build
+Defense/defense.synctex.gz
+Defense/defense.pdf
 sublime2matlab
 *.sublime-project
 *.sublime-workspace
