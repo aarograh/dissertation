@@ -1,32 +1,26 @@
 \begin{frame}[t]{Background}
     
 \begin{itemize}
-  \item Direct 3D calculations are still usually too slow for most practical 
-  calculations
+\begin{columns}
+ \begin{column}{0.35\textwidth}
   \item 2D/1D method was developed by researchers at Korea Atomic Energy 
-  Research Institute (KAERI) and implemented in DeCART 
-  \cite{3DHetWholeCoreTransPlanarMOC,DeCARTTheoryManual,MethodsAndPerformanceOfDecart}
+  Research Institute (KAERI) \cite{3DHetWholeCoreTransPlanarMOC,DeCARTTheoryManual,MethodsAndPerformanceOfDecart}
   \begin{itemize}
-    \item Decomposes problem into a stack of 2D planes
-    \item High-fidelity transport calculations used to solve 2D planes
-    \item Fast 1D calculations couple 2D planes together axially
-    \item Reactor geometry has most of its heterogeneity in the radial 
-    direction, so lower order calculations are acceptable in axial direction
+      \item Takes advantage of reactor geometry
+      \item High fidelity transport radially with faster, lower order method axially
   \end{itemize}
-  \item University of Michigan (UM) developed DeCART for awhile, but decided to 
-  do a new 2D/1D implementation in MPACT \cite{MPACTTheoryManual}
+\end{column}
+\begin{column}{0.55\textwidth}
+\includegraphics[width=\columnwidth]{../figs/2d1d-subplane.png}
+\vfill  
+\end{column}
+\end{columns}
+\begin{columns}
+\begin{column}{0.95\textwidth}
+\item Newer 2D/1D code MPACT, jointly developed by University of Michigan and Oak Ridge National Laboratory, is used for this work
+\end{column}
+\end{columns}
 \end{itemize} 
-    
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}[t]{Background}
-  
-  \begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{../figs/2d1d-subplane.png}
-  \end{figure}    
   
 \end{frame}
 
@@ -37,7 +31,7 @@
     \begin{itemize}
       \item Average transport equation axially from $z_{k-\frac{1}{2}}$ to 
       $z_{k+\frac{1}{2}}$
-      \item Assume cross-sections are axially constant in region of integration
+      \item Assume cross sections are axially constant in region of integration
     \end{itemize}
     \begin{dmath*}
         {\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + 
@@ -67,7 +61,7 @@
 \begin{itemize}
   \item Average transport equation over x from $x_{i-\frac{1}{2}}$ to 
   $x_{i+\frac{1}{2}}$ and over y from $y_{j-\frac{1}{2}}$ to $y_{j+\frac{1}{2}}$
-  \item Assume cross-sections are radially constant in region of integration
+  \item Assume cross sections are radially constant in region of integration
 \end{itemize}
 \begin{dmath*}
 {\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + 
@@ -122,65 +116,22 @@ y_j}
 
 \begin{frame}[t]{3D CMFD}
     
-    \begin{columns}
-      \begin{column}{0.6\textwidth}
         \begin{itemize}
-          \item Diffusion-based acceleration
-          \item Homogenize fine mesh flux, cross-sections, $\chi$ into coarse 
-          mesh cells
-          \item Calculate $\hat{D}$ coupling coefficients
+          \item Diffusion-based acceleration performed on coarse mesh
+          \item $\hat{D}$ coupling coefficients enforce consistency between diffusion and transport solutions
           \begin{equation*}\scriptstyle
-          \hat{D}_{g,s} = \frac{J_{g,s}^{MOC,k-1} + 
-            \tilde{D}_{g,s}\left(\phi_{g,p}^{CMFD,k} - 
-            \phi_{g,m}^{CMFD,k}\right)}{\left(\phi_{g,p}^{CMFD,k} + 
-            \phi_{g,m}^{CMFD,k}\right)}
+          \hat{D}_{g,s} = \frac{J_{g,s}^{trans,k-1} + 
+            \tilde{D}_{g,s}\left(\phi_{g,p}^{diff,k} - 
+            \phi_{g,m}^{diff,k}\right)}{\left(\phi_{g,p}^{trans,k} + 
+            \phi_{g,m}^{diff,k}\right)}
           \end{equation*}
-          \item Project coarse mesh solution to fine mesh
+          \item Coarse mesh solution projected to fine mesh solution, preserving MOC radial shape and CMFD volume-averaged flux
           \begin{equation*}\scriptstyle
-          \phi_{g,j}^{MOC,k} = c_{g,i}^k \phi_{g,j}^{MOC,k-1}
+          \phi_{g,j}^{MOC,k} = \frac{\phi_{g,i}^{CMFD,k}}{\phi_{g,i}^{CMFD,k-1}} \phi_{g,j}^{MOC,k-1}
           \end{equation*}
-          \begin{equation*}\scriptstyle
-          c_{g,i}^k = \frac{\phi_{g,i}^{CMFD,k}}{\phi_{g,i}^{CMFD,k-1}}
-          \end{equation*}
+          \item Subplane scheme is used to capture subplane axial flux shapes
         \end{itemize}
-      \end{column}
-    \begin{column}{0.4\textwidth}
-      \begin{figure}[h]
-        \centering
-        \resizebox{!}{0.7\textheight}{\input{../figs/CMFD-flowchart.tex}}
-      \end{figure}
-  \end{column}
-  \end{columns}
     
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}[t]{3D CMFD -- Sub-Plane Scheme}
-
-\begin{columns}
-  \begin{column}{0.6\textwidth}
-    \begin{itemize}
-      \item Split CMFD cells axially into multiple cells
-      \begin{itemize}
-        \item Calculate shaping factor for each sub-plane cell based on 
-        previous solution
-        \item Apply shaping factor to fine mesh fluxes during homogenization
-        \item $\phi$ and $\chi$ have axial shape; cross-sections are axially 
-        constant
-      \end{itemize}
-      \item Calculate $\hat{D}$ for entire MOC plane; apply to all sub-planes
-      \item Modify projection to fine mesh to account for sub-planes
-    \end{itemize}
-  \end{column}
-  \begin{column}{0.4\textwidth}
-    \begin{figure}[h]
-      \centering
-      \resizebox{!}{0.7\textheight}{\input{../figs/CMFD-flowchart.tex}}
-    \end{figure}
-  \end{column}
-\end{columns}
-
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -240,16 +191,8 @@ y_j}
 
 \begin{frame}[t]{2D MOC}
 
-\begin{columns}
-  \begin{column}{0.6\textwidth}
     \begin{itemize}
-      \item Solve along a specific direction $\Omega_n$
-      \begin{equation*}\scriptstyle
-      \bm r = \bm {r_0} + s \bm \Omega_n \Rightarrow \begin{cases} 
-      x\left(s\right) = x_0 + s\Omega_{n,x} \\ y\left(s\right) = y_0 + 
-      s\Omega_{n,y} \\ z\left(s\right) = z_0 + s\Omega_{n,z} \end{cases}
-      \end{equation*}
-      \item Problem reduces from PDE to ODE that can be solved analytically
+      \item Solve along a specific direction $\Omega_n$ to reduce the problem from a PDE to an ODE that can be solved analytically
       \begin{equation*}\scriptstyle
       \frac{\partial \psi_{g,n}}{\partial s} + \Sigma_{t,g}\left(\bm r_0 + 
       s\bm\Omega_n\right)\psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) = 
@@ -262,46 +205,19 @@ y_j}
         s'\bm\Omega_n\right)\exp{\left(-\intop_0^{s'} \Sigma_{t,g}\left(\bm r_0 
         + s''\bm\Omega_n\right)ds''\right)}ds'}
       \end{dmath*}
-    \end{itemize}
-  \end{column}
-  \begin{column}{0.4\textwidth}
-      \includegraphics[width=\textwidth]{modular_rays.png}
-  \end{column}
-\end{columns}
-
-\end{frame} 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}[t]{2D MOC}
-
-    \begin{itemize}
-      \item Assume flat source, cross-section along track with 
-      length $L_j$ and spacing $\delta x$
-      \begin{columns}
-        \begin{column}{0.6\textwidth}
-      \begin{align*}\scriptstyle
-      \psi^{out}_{g,i,n,j} &\scriptstyle = \psi^{in}_{g,i,n,j}e^{-\Sigma_{t,g,i} 
-      L_j} 
-      \\\scriptstyle
-      &\scriptstyle + \frac{q_{g,i,n}}{\Sigma_{t,g,i}}\left(1 - 
-      e^{-\Sigma_{t,g,i}L_j}\right) \\\scriptstyle
-      \overline{\psi}_{g,i,n,j} &\scriptstyle = 
-      \frac{q_{g,n,i}}{\Sigma_{t,g,i}} 
-      \\\scriptstyle
-      &\scriptstyle + \frac{1 - e^{-\Sigma_{t,g,i} 
-          L_j}}{L_j\Sigma_{t,g,i}}\left(\psi^{in}_{g,i,n,j} - 
-      \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right) \\\scriptstyle
-      \overline{\psi}_{g,i,n} &\scriptstyle = \frac{\sum_j 
-      \overline{\psi}_{g,i,n,j} \delta x L_j}{\sum_j \delta x L_j}
-      \end{align*}
-    \end{column}
-  \begin{column}{0.4\textwidth}
-  \includegraphics[width=\textwidth]{modular_rays.png}
-\end{column}
-\end{columns}
-      \item Modular ray tracing can be used to minimize storage requirements by 
-      tracing only portions of problem geometry
+  \item Assume flat source, cross section along track with 
+length $L_j$ and spacing $\delta x$
+\begin{align*}\scriptstyle
+\psi^{out}_{g,i,n,j} &\scriptstyle = \psi^{in}_{g,i,n,j}e^{-\Sigma_{t,g,i} 
+    L_j} + \frac{q_{g,i,n}}{\Sigma_{t,g,i}}\left(1 - 
+e^{-\Sigma_{t,g,i}L_j}\right) \\\scriptstyle
+\overline{\psi}_{g,i,n,j} &\scriptstyle = 
+\frac{q_{g,n,i}}{\Sigma_{t,g,i}} + \frac{1 - e^{-\Sigma_{t,g,i} 
+        L_j}}{L_j\Sigma_{t,g,i}}\left(\psi^{in}_{g,i,n,j} - 
+\frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right) \\\scriptstyle
+\overline{\psi}_{g,i,n} &\scriptstyle = \frac{\sum_j 
+    \overline{\psi}_{g,i,n,j} \delta x L_j}{\sum_j \delta x L_j}
+\end{align*}
     \end{itemize}
 
 \end{frame} 
@@ -328,10 +244,7 @@ y_j}
       \end{itemize}
     \end{column}
     \begin{column}{0.45\textwidth}
-      \begin{figure}[h]
-        \centering
-        \resizebox{!}{0.7\textheight}{\input{../figs/MOC-flowchart.tex}}
-      \end{figure}
+      \includegraphics[width=\columnwidth]{modular_rays.png}
     \end{column}
   \end{columns}
 

@@ -1,50 +1,79 @@
-\begin{frame}[t]{Motivation}
+\subsection{Background}
+\begin{frame}
 
-\begin{itemize}
-  \item The 2D/1D Method solves the transport equation for 3D problems
-  \begin{itemize}
-    \item Faster than direct 3D transport calculations
-    \item More accurate than traditional nodal methods
-  \end{itemize}
-  \item Control rod cusping can occur in 2D/1D
-  \begin{itemize}
-    \item Occurs when control rods are partially inserted in a 2D plane
-    \item Causes large errors due to volume homogenization
-    \item Current decusping methods have trade-off between speed and accuracy
-  \end{itemize}
-  \item New decusping methods are needed for 2D/1D
-  \begin{itemize}
-    \item Transport-based methods that are efficient and accurate
-    \item New methods can reduce the computing resources required for 2D/1D
-    \item Other axial components (spacer grids, burnable poison inserts, axial fuel blankets, etc.) could also be simulated more efficiently using advanced decusping methods
-  \end{itemize}
-\end{itemize}
-
+\begin{columns}
+    \begin{column}{0.6\textwidth}
+        \begin{itemize}
+            \item Predicting the neutron flux distribution is crucial for reactor analysis
+            \item The flux distribution determines the power distribution, which has important ramifications for design and operation
+            \begin{itemize}
+                \item Economically, efficient fuel loading patterns and prevention of fuel failures are determined largely by the power distribution
+                \item The power distribution also drives safety constraints for both steady-state and transient operation, including accident scenarios
+            \end{itemize}
+            \item These requirements demand a high degree of accuracy from the codes used in reactor analysis
+        \end{itemize}
+    \end{column}
+\begin{column}{0.4\textwidth}
+\vfill
+\includegraphics[width=\columnwidth]{reactor-geometry.png}
+\vfil
+\end{column}
+\end{columns}
+    
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[t]{Overview}
-  
-  \begin{itemize}
-    \item Implementation of sub-plane scheme
-    \begin{itemize}
-      \item Captures sub-plane axial information for each 2D plane
-      \item Allows coarsening of axial mesh without runtime increase
-    \end{itemize}
-    \item New decusping methods
-    \begin{itemize}
-      \item Sub-plane scheme modified to use heterogeneous rodded/unrodded cross-sections
-      \item 1D Collision probabilities introduced to improve sub-plane cross-sections
-    \end{itemize}
-    \item Proposed work - ``sub-ray'' Method of Characteristics
-    \begin{itemize}
-      \item Modification to 2D MOC to resolve axial heterogeneities
-      \item Should resolve transport effects caused by partially inserted rods
-      \item Minimal runtime increase
-    \end{itemize}
-  \end{itemize}
+\begin{frame}
+    
+\begin{columns}
+    \begin{column}{0.5\textwidth}
+        \begin{itemize}
+            \item Reactor analysis has traditionally used a two-step approach
+            \begin{itemize}
+                \item Lattice calculations to generate homogenized cross sections
+                \item Nodal diffusion methods to solve global problem with homogenized cross sections
+            \end{itemize}
+            \item Recent increases in computing power have generated interest in direct, whole-core transport calculations
+            \begin{itemize}
+                \item Monte Carlo
+                \item Deterministic 3D transport
+                \item Planar Synthesis Methods: 2D/1D and 2D/3D
+            \end{itemize}
+        \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+        \vfill
+        \includegraphics[width=\columnwidth]{top500-performance.jpg}
+        \vfill
+    \end{column}
+\end{columns}
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Motivation}
+\begin{frame}
+    
+    \begin{itemize}
+        \item Planar synthesis methods are faster than 3D transport, but still computationally expensive
+        \item To make these methods useful practically, runtimes need to be decreased
+        \begin{itemize}
+            \item Algorithm and methods improvements
+            \item Reduction in number of planes
+        \end{itemize}
+        \item Subgrid methods can be used to maintain accuracy with fewer planes
+        \begin{itemize}
+            \item Needs to be able to capture local effects of various reactor components
+            \item Should be able to be applied to a variety of situations
+            \item Cheaper than using more planes
+        \end{itemize}
+        \item Three new methods developed to accomplish two goals:
+        \begin{itemize}
+            \item Significant reduction in errors caused by control rod cusping, the most severe axial heterogeneity for planar synthesis methods
+            \item Reduce the runtime of the 2D/1D code MPACT for cases with rod cusping
+        \end{itemize}
+    \end{itemize}
+
+\end{frame}

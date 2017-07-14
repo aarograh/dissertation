@@ -37,6 +37,12 @@
 % \usecolortheme{wolverine}
 \newcommand*{\bfrac}[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
 
+% Macros
+\newif\ifstartedinmathmode
+\newcommand{\keff}[0]{\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+    {\ifstartedinmathmode{k_{eff}}\else{$k_{eff}$}\fi}}
+\newcommand{\bfc}[0]{B$_4$C}
+
 \title[Planar Synthesis Subgrid Methods]{Subgrid Methods for Resolving Axial Heterogeneity in Planar Synthesis Solutions for the Boltzmann Transport Equation}
 \subtitle{Ph.D. Defense}
 \author{Aaron M. Graham}
@@ -64,8 +70,6 @@
 
 \section{Rod Cusping}
 \input{04-rod-cusping.tex}
-
-\section{Subgrid Methods}
 \input{05-methods}
 
 \section{Results}
