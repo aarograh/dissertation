@@ -91,7 +91,7 @@ y_j}
         \item Determines global flux shape to scale fine mesh solution
         \item Calculates radial currents for 1D axial solver
       \end{itemize}
-      \item 1D NEM-SP$_3$ \cite{SPnEquations,finnemann1977RodCuspingOrigMention}
+      \item 1D NEM-P$_3$ \cite{SPnEquations,finnemann1977RodCuspingOrigMention}
       \begin{itemize}
         \item Calculates improved axial currents for 2D solver
       \end{itemize}
@@ -136,12 +136,10 @@ y_j}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[t]{1D SP$_3$-NEM}
+\begin{frame}[t]{1D NEM-P$_3$}
     
-    \begin{columns}
-      \begin{column}{0.6\textwidth}
         \begin{itemize}
-          \item SP$_3$ \cite{SPnEquations} used to handle angular shape 
+          \item P$_3$ \cite{SPnEquations} used to handle angular shape 
           \begin{dmath*}\scriptstyle
             {-\bm{\nabla} \cdot D_{0,g} \left(\bm x\right) \bm \nabla 
             \Phi_{0,g}\left(\bm x\right) + \left[\Sigma_{tr,g}\left(\bm 
@@ -176,14 +174,6 @@ y_j}
           J_L\left(1\right) = J_R\left(-1\right)
           \end{equation*}
         \end{itemize}
-      \end{column}
-    \begin{column}{0.4\textwidth}
-      \begin{figure}[h]
-        \centering
-        \resizebox{!}{0.5\textheight}{\input{../figs/Axial-flowchart.tex}}
-      \end{figure}
-    \end{column}
-    \end{columns}
     
 \end{frame}
 

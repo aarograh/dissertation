@@ -2,7 +2,14 @@
 \begin{frame}[t]{Description}
 
 \begin{itemize}
-    \item Describe the method
+    \item Rodded 3$\times$3 assembly case used to plot generate correction factors based on rod position
+    \begin{itemize}
+        \item One set of calculations performed with refined mesh to eliminate cusping effects
+        \item Second set done with coarse mesh
+        \item Percent change in \keff{} plotted against percent change in volume fraction for each set of calculations
+        \item Difference in curves used to reduce volume fraction during rod homogenization to reduce cusping effects
+    \end{itemize}
+    \item Sixth order polynomial curves generated for AIC, \bfc{}, and tungsten rods
 \end{itemize}
 
 \end{frame}
@@ -11,7 +18,9 @@
 
 \begin{frame}[t]{Polynomials}
     
-    show equations and pictures
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{polynomial_curves.png}
+\end{center}
     
 \end{frame}
 
@@ -53,7 +62,7 @@
                 \begin{itemize}
                     \item Generates radial flux profile for rodded and unrodded region
                     \item Radial profiles used in CMFD homogenization
-                    \item Very efficient calculation
+                    \item Fast calculation
                 \end{itemize}
             \end{itemize}
         \end{column}
@@ -73,8 +82,14 @@
 \begin{frame}[t]{Description}
 
 \begin{itemize}
-    \item Motivate it
-    \item Describe it
+    \item Other methods do not correctly address the MOC calculation
+    \begin{itemize}
+        \item Homogenized cross sections are still used for 2D MOC
+        \item Flux shape from MOC does not accurately represent rodded or unrodded flux
+    \end{itemize}
+    \item To improve MOC solutions, heterogeneous cross sections and sources must be accounted for
+    \item MOC rays can be split into subrays in the vicinity of partially rodded regions
+    \item Because of exponentials in MOC solution, rays can be recombined after rod
 \end{itemize}
 
 \end{frame}
@@ -83,7 +98,9 @@
 
 \begin{frame}
     
+\begin{center}
 \includegraphics[width=0.8\textwidth]{sub-ray_illustration.png}
+\end{center}
 
 \end{frame}
 
@@ -92,7 +109,21 @@
 \begin{frame}[t]{2D/1D Modifications}
     
     \begin{itemize}
-        \item Describe mods
+        \item New MOC sweeper that duplicates long rays using axial volume fractions to average rays together
+        \item Fluxes, cross sections, and sources stored for subregions that subrays pass through
+        \item CMFD projection used to calculate subregion fluxes and generate subregion sources
+        \item Subplane CMFD/P$_3$ results used to calculate axial TL sources in subregions
+        \item Option added to control how far away from rod subray continues to be used
     \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{Recombination}
+
+\begin{center}
+\includegraphics[width=0.5\textwidth]{recombination.png}
+\end{center}
 
 \end{frame}

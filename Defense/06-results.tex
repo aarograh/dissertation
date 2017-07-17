@@ -2,7 +2,8 @@
 \begin{frame}
     
     \begin{itemize}
-        \item Describe problems on high level
+        \item Say some stuff about Watts Bar
+        \item Say some stuff about c5g7
     \end{itemize}
 
 \end{frame}
@@ -38,33 +39,16 @@
 \begin{frame}[t]{Test Procedures}
     
     \begin{itemize}
-        \item Stuff
+        \item Differential rod worth curves were generated with fine mesh, coarse mesh, and each decusping method
+        \item Comparison of curves shows effectiveness of decusping methods as rod is withdrawn through core
+        \item KENO-VI was used to calculate reference solutions at 10\% intervals
+        \begin{itemize}
+            \item 500 inactive generations (Need to update keno comparisons)
+            \item 10,000 active generations
+            \item $5\times 10^6$ particles per generation
+        \end{itemize}
     \end{itemize}
 
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}[t]{Results}
-    
-    \begin{table}[h]
-      \centering
-      \resizebox{\textwidth}{!}{
-        \begin{tabular}{|c|c|c|c|c|c|c|}\hline
-          \multirow{2}{*}{Case} & k-eff & \multicolumn{2}{|c|}{Pin Power Differences} & \multicolumn{2}{|c|}{Iterations} & Runtime\\\cline{3-6}
-          & Difference (pcm) & RMS & Max & 2D/1D & CMFD & (Core-Hours) \\\hline
-          Reference        & -- & --     & --      & 12 & 364 & 8.59 \\\hline
-          No Treatment     & -30 & 3.84\% & 21.81\% & 12 & 352 & 9.23 \\\hline
-          Polynomial       & -8  & 1.03\% &  6.58\% & 12 & 360 & 9.50 \\\hline
-          Sub-plane         & -7  & 1.13\% &  7.11\% & 12 & 409 & 9.26 \\\hline
-          Sub-plane + 1D-CP & -2  & 0.54\% &  4.94\% & 12 & 364 & 9.45 \\\hline
-        \end{tabular}
-      }
-    \end{table}
-    \begin{itemize}
-        \item Maximum error for all cases occurs in pins neighboring the partially rodded pin cell
-    \end{itemize}
-    
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -179,7 +163,9 @@
 \begin{frame}[t]{Test Procedure}
     
     \begin{itemize}
-        \item Explain
+        \item Three different C5G7 problems were simulated: 2D core, 3D assembly, and 3D core
+        \item Rod was withdrawn through each problem in 1 cm increments for subray MOC and subplane methods
+        \item \keff{} and 3D pin power comparisons were made against a fine mesh reference solution at each position
     \end{itemize}
     
 \end{frame}
@@ -211,6 +197,7 @@
         \end{tabular}
     }
 \end{table}
+\vfill
 
 \end{frame}
 
@@ -242,6 +229,7 @@
         \end{tabular}
     }
 \end{table}
+\vfill
 
 \end{frame}
 
@@ -291,16 +279,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{3D C5G7}
-\begin{frame}[t]{Problem and Procedure Description}
-    
-    \begin{itemize}
-        \item Stuff
-    \end{itemize}
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \begin{frame}[t]{3D Assembly Results}
 
 \begin{table}[h]
