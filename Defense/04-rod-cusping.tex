@@ -1,33 +1,4 @@
-\subsection{Rod Cusping Description}
-\begin{frame}
-
-\begin{columns}
-\begin{column}{0.6\textwidth}
-    \begin{itemize}
-        \item Nodes must be axially homogeneous
-        \item Control rod positions often do not align with node boundaries, 
-        requiring homogenization of control rod and moderator
-        \item Volume homogenization preserves material volume/mass, but not 
-        reaction rates
-        \item Two approaches to prevent rod cusping:
-        \begin{itemize}
-          \item Refine mesh to align with all control rod positions
-          \item Decusping method to improve homogenization
-        \end{itemize}
-    \end{itemize}
-\end{column}
-\begin{column}{0.4\textwidth}
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{cusping_effect_Joo.png}
-\end{figure} 
-\end{column}
-\end{columns}
-    
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\subsection{Demonstration}
 \begin{frame}
     
 \begin{center}
@@ -35,6 +6,40 @@
 \end{center}
 \vfill
     
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Previous Decusping Methods}
+\begin{frame}[t]{2D/1D Decusping Methods}
+
+\begin{itemize}
+\item Neighbor Spectral Index Method - CRX-2K 
+\cite{cho2015CRX2d1dFusionDecusping}
+\begin{itemize}
+    \item Spectral index is defined as the ratio of the fast flux to the 
+    thermal flux
+    \item Spectral index is used in top and bottom neighbor nodes to 
+    estimate partially rodded node flux profile
+    \item This estimate is used to update cross sections 
+    each iteration
+\end{itemize}
+\item nTRACER Method \cite{ICAPPcontrolRodDecuspingNTRACER}
+\begin{itemize}
+    \item Solves local problem to generate CMFD constants
+    \item Performs CMFD calculations on fine mesh to obtain axial flux 
+    profiles
+    \item Uses axial flux profiles during full core calculation to 
+    homogenize cross sections
+\end{itemize}
+\item Approximate Flux Weighting Method \cite{gehinThesis1992quasi}
+\begin{itemize}
+    \item Originally developed for nodal methods, but also implemented in nTRACER \cite{Ryu2017nTRACERWholeCoreTransportSolutionstoC5G7-TDBenchmark}
+    \item Assumes that in partially rodded node, rodded flux is similar to node above and unrodded flux is similar to node below
+    \item Assumption allows the partially rodded node cross section to be updated easily during iteration
+\end{itemize}
+\end{itemize}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

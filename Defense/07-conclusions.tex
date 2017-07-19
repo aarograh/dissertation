@@ -7,12 +7,35 @@
         \item Three new methods developed to address this problem:
         \begin{itemize}
             \item Polynomial decusping: Fast and simple to implement, limited accuracy
-            \item Subplane collision probabilities: minimal runtime increases, good accuracy
+            \item Subplane collision probabilities: small runtime increases, good accuracy
             \item Subray MOC: complicated to implement efficiently, very good acccuracy
         \end{itemize}
-        \item Give some more details, but this is the general idea
     \end{itemize}
     
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{Limitations}
+
+\begin{itemize}
+    \item Polynomial decusping:
+    \begin{itemize}
+        \item Accuracy depends heavily on rod position and material
+        \item Generating new data for new rods can be cumbersome
+    \end{itemize}
+    \item Subplane Collision Probabilities
+    \begin{itemize}
+        \item Does not improve the MOC solution significantly
+        \item Assumes isotropic scattering
+        \item Neglects corner effects
+    \end{itemize}
+    \item Subray MOC
+    \begin{itemize}
+        \item Currently unoptimized
+        \item Approximations in CMFD projection/homogenization limit accuracy of source terms
+    \end{itemize}
+\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -21,9 +44,23 @@
 \begin{frame}[t]{Methods Improvements}
     
     \begin{itemize}
-        \item Polynomials: more rod materials
-        \item Subplane collision probabilites: other solvers (2D r-z CP, 2D MOC pin cell solver, 3D MOC, etc.)
-        \item Subray MOC: optimization, shielding, other stuff MPACT does already (Pn/parallelism), improvements to a couple approximations (constant radial shape for source calculations, radial current tallying on subplane mesh)
+        \item Polynomials
+        \begin{itemize}
+            \item Generate data for wider variety of materials
+            \item Allow user input coefficients for polynomials
+        \end{itemize}
+        \item Subplane collision probabilites
+        \begin{itemize}
+            \item Other auxiliary solvers (2D R-Z CP, 2D or 3D MOC)
+        \end{itemize}
+        \item Subray MOC
+        \begin{itemize}
+            \item Optimization
+            \item Cross Section Shielding
+            \item Pn scattering
+            \item Parallelism
+            \item Improvements to CMFD homogenization and projection to use subregions data
+        \end{itemize}
     \end{itemize}
     
 \end{frame}
@@ -33,9 +70,13 @@
 \begin{frame}[t]{Applications}
     
     \begin{itemize}
-        \item 2D/3D
-        \item Other Heterogeneities
-        \item More problems
+        \item All methods could be applied to 2D/3D in addition to 2D/1D
+        \item Apply subray MOC and subplane CP to other axial heterogeneities
+        \begin{itemize}
+            \item Subplane temperature and density distributions for thermal hydraulic feedback
+            \item Fuel end caps, spacer grids, etc.
+        \end{itemize}
+        \item Apply all methods, especially subray MOC, to a wider range of reactors
     \end{itemize}
 
 \end{frame}
@@ -47,22 +88,14 @@
 
 \footnotesize
 \begin{itemize}
-    \item \input{../Acknowledgements/acknowledge_neup.tex}
-    \item \input{../Acknowledgements/acknowledge_casl.tex}
-    \item \input{../Acknowledgements/acknowledge_olcf.tex}
-    \item \input{../Acknowledgements/acknowledge_falcon.tex}
+    \item This material is based upon work supported under an Integrated University Program Graduate Fellowship.  This research was also supported by the Consortium for Advanced Simulation of Light Water Reactors under U.S. Department of Energy (DOE) contract number DE-AC05-00OR22725.
+    \item This research made use of resources of the Oak Ridge Leadership Computing Facility, supported by the U.S. DOE under contract number DE-AC05-00OR22725; this research also made use of resources of the High Performance Computing Center at Idaho National Laboratory, supported by the U.S. DOE under contract number DE-AC07-05ID14517.
+    \item Dr. Downar and Dr. Collins
+    \item Committee
+    \item MPACT/CASL team at UM and ORNL
+    \item Family
 \end{itemize}
 
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-    
-    \begin{itemize}
-        \item Others
-    \end{itemize}
-    
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

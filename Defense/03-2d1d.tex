@@ -1,26 +1,14 @@
 \begin{frame}[t]{Background}
-    
+
+\vspace{-10pt}
 \begin{itemize}
-\begin{columns}
- \begin{column}{0.35\textwidth}
   \item 2D/1D method was developed by researchers at Korea Atomic Energy 
   Research Institute (KAERI) \cite{3DHetWholeCoreTransPlanarMOC,DeCARTTheoryManual,MethodsAndPerformanceOfDecart}
-  \begin{itemize}
-      \item Takes advantage of reactor geometry
-      \item High fidelity transport radially with faster, lower order method axially
-  \end{itemize}
-\end{column}
-\begin{column}{0.55\textwidth}
-\includegraphics[width=\columnwidth]{../figs/2d1d-subplane.png}
-\vfill  
-\end{column}
-\end{columns}
-\begin{columns}
-\begin{column}{0.95\textwidth}
-\item Newer 2D/1D code MPACT, jointly developed by University of Michigan and Oak Ridge National Laboratory, is used for this work
-\end{column}
-\end{columns}
+  \item Newer 2D/1D code MPACT, jointly developed by University of Michigan and Oak Ridge National Laboratory, is used for this work \cite{MPACTTheoryManual}
 \end{itemize} 
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figs/2d1d-subplane.png}
+\end{center}
   
 \end{frame}
 
@@ -37,11 +25,11 @@
         {\Omega_x\frac{\partial \psi_{g}^Z}{\partial x} + 
         \Omega_y\frac{\partial \psi_{g}^Z}{\partial y}} + 
         {\Sigma_{tr,g}\left(x,y\right)\psi_{g}^Z\left(x,y,\bm\Omega\right)} = 
-        {q_{g}^Z\left(x,y,\bm \Omega\right)} + 
-        {L_{g}^Z\left(x,y,\Omega_z\right)}
+        {\textcolor{red}{q_{g}^Z}\left(x,y,\bm \Omega\right)} + 
+        {\textcolor{blue}{L_{g}^Z}\left(x,y,\Omega_z\right)}
     \end{dmath*}
     \begin{dmath*}
-        {q_{g}^Z\left(x,y,\bm \Omega\right)} = 
+        {\textcolor{red}{q_{g}^Z}\left(x,y,\bm \Omega\right)} = 
         {\frac{1}{4\pi}\sum_{g'=1}^{G}\intop_{4\pi}\Sigma_{s,g'\rightarrow 
         g}^Z\left(x,y,\bm\Omega'\cdot\bm\Omega\right)\psi_{g'}^Z\left(x,y,\bm\Omega'\right)d\Omega'}
          + {\frac{1}{k_{eff}}\frac{\chi_{g}^Z}{4\pi}\sum_{g'=1}^G\intop_{4\pi} 
@@ -49,7 +37,7 @@
          + {\frac{Q_{g}^Z\left(x,y\right)}{4\pi}}
     \end{dmath*}
     \begin{align*}
-    L_{g}^Z\left(x,y,\Omega_z\right) &= \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k-\frac{1}{2}}} - \psi_{g,z_{k+\frac{1}{2}}}\right) \approx \frac{J_{g,z_{k-\frac{1}{2}}} - J_{g,z_{k+\frac{1}{2}}}}{4\pi\Delta z_k}
+    \textcolor{blue}{L_{g}^Z}\left(x,y,\Omega_z\right) &= \frac{\Omega_z}{\Delta z_k}\left(\psi_{g,z_{k-\frac{1}{2}}} - \psi_{g,z_{k+\frac{1}{2}}}\right) \approx \frac{J_{g,z_{k-\frac{1}{2}}} - J_{g,z_{k+\frac{1}{2}}}}{4\pi\Delta z_k}
     \end{align*}
     
 \end{frame}
@@ -67,10 +55,10 @@
 {\Omega_z \frac{\partial \psi_{g}^{XY}}{\partial z}} + 
 {\Sigma_{tr,g}^{XY}\left(z\right)\psi_{g}^{XY}\left(z,\bm\Omega\right)} = 
 q_{g}^{XY}\left(z,\bm\Omega\right) + 
-{L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right)}
+{\textcolor{blue}{L_{g}^{XY}}\left(z,\Omega_x,\Omega_y\right)}
 \end{dmath*}
 \begin{equation*}
-L_{g}^{XY}\left(z,\Omega_x,\Omega_y\right) \approx 
+\textcolor{blue}{L_{g}^{XY}}\left(z,\Omega_x,\Omega_y\right) \approx 
 {\frac{J_{g,x_{i-\frac{1}{2}},y_j} - 
   J_{g,x_{i+\frac{1}{2}},y_j}}{4\pi\Delta x_i}} +
 \frac{J_{g,x_i,y_{j-\frac{1}{2}}} - J_{g,x_i,y_{j+\frac{1}{2}}}}{4\pi\Delta 
@@ -127,7 +115,7 @@ y_j}
           \end{equation*}
           \item Coarse mesh solution projected to fine mesh solution, preserving MOC radial shape and CMFD volume-averaged flux
           \begin{equation*}\scriptstyle
-          \phi_{g,j}^{MOC,k} = \frac{\phi_{g,i}^{CMFD,k}}{\phi_{g,i}^{CMFD,k-1}} \phi_{g,j}^{MOC,k-1}
+          \phi_{g,j}^{trans,k} = \frac{\phi_{g,i}^{diff,k}}{\phi_{g,i}^{diff,k-1}} \phi_{g,j}^{trans,k-1}
           \end{equation*}
           \item Subplane scheme is used to capture subplane axial flux shapes
         \end{itemize}
@@ -138,9 +126,18 @@ y_j}
 
 \begin{frame}[t]{1D NEM-P$_3$}
     
-        \begin{itemize}
-          \item P$_3$ \cite{SPnEquations} used to handle angular shape 
-          \begin{dmath*}\scriptstyle
+\begin{itemize}
+    \item P$_3$ \cite{SPnEquations} used to handle angular shape 
+    \begin{itemize}
+        \item Angular flux expanded in terms of Legendre polynomials:
+            \begin{equation*}\scriptstyle
+            \varphi\left(x,\mu\right) \approxeq \sum_{n=0}^N \frac{2n+1}{2}\varphi_n\left(x\right) P_n\left(\mu\right)
+            \end{equation*}
+            \begin{equation*}\scriptstyle
+            \Sigma_s\left(x,\mu,\mu'\right) = \sum_{n=0}^N \frac{2n+1}{2} P_n\left(\mu\right) P_n\left(\mu'\right)\Sigma_{s,n}\left(x\right)
+            \end{equation*}
+        \item Two diffusion-like equations
+            \begin{equation*}\scriptstyle
             {-\bm{\nabla} \cdot D_{0,g} \left(\bm x\right) \bm \nabla 
             \Phi_{0,g}\left(\bm x\right) + \left[\Sigma_{tr,g}\left(\bm 
             x\right) - \Sigma_{s0,g}\left(\bm 
@@ -148,8 +145,8 @@ y_j}
             x\right) + 2\left[\Sigma_{tr,g}\left(\bm x\right) - 
             \Sigma_{s0,g}\left(\bm x\right)\right]\Phi_{2,g}\left(\bm 
             x\right)}
-          \end{dmath*}
-          \begin{dmath*}\scriptstyle
+            \end{equation*}
+            \begin{dmath*}\scriptstyle
             {-\bm{\nabla} \cdot D_{2,g} \left(\bm x\right) \bm \nabla 
             \Phi_{2,g}\left(\bm x\right) + \left[\Sigma_{tr,g}\left(\bm 
             x\right) - \Sigma_{s2,g}\left(\bm 
@@ -158,21 +155,40 @@ y_j}
             \Sigma_{s0,g}\left(\bm x\right)\right]\left[\Phi_{0,g}\left(\bm 
             x\right) - 2\Phi_{2,g}\left(\bm x\right)\right] - Q_g\left(\bm 
             x\right) \right\rbrace}
-          \end{dmath*}
+            \end{dmath*}
+        \item Iterating between these equations gives solution for $\Phi_0$ and $\Phi_2$, which can be used to solve for $\varphi_0$ and $\varphi_2$:
+            \begin{equation*}\scriptstyle
+            \varphi_0\left(x\right)= \Phi_0\left(x\right)- 2\Phi_2\left(x\right)\ , \quad \varphi_2\left(x\right) = \Phi_2\left(x\right)
+            \end{equation*}
+    \end{itemize}
+\end{itemize}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{1D NEM-P$_3$}
+
+        \begin{itemize}
           \item NEM \cite{finnemann1977RodCuspingOrigMention} used to handle spatial shape
-          \begin{equation*}\scriptstyle
-          Q\left(\xi\right) = \sum_{i=0}^2 q_i P_i\left(\xi\right)\ , \quad 
-          \phi\left(\xi\right) = \sum_{i=0}^4 \phi_i P_i\left(\xi\right)
-          \end{equation*}
-          \begin{equation*}\scriptstyle
-          \intop_{-1}^1 P_n\left(\xi\right) 
-          \left(-\frac{D}{h^2}\frac{d^2}{d\xi^2}\phi\left(\xi\right) + \Sigma_r 
-          \phi\left(\xi\right) - Q\left(\xi\right)\right)d\xi = 0,\ n=0,1,2
-          \end{equation*}
-          \begin{equation*}\scriptstyle
-          \phi_L\left(1\right) = \phi_R\left(-1\right)\ , \quad 
-          J_L\left(1\right) = J_R\left(-1\right)
-          \end{equation*}
+          \begin{itemize}
+              \item Expand source and flux as quadratic and quartic polynomials:
+                  \begin{equation*}\scriptstyle
+                  Q\left(\xi\right) = \sum_{i=0}^2 q_i P_i\left(\xi\right)\ , \quad 
+                  \phi\left(\xi\right) = \sum_{i=0}^4 \phi_i P_i\left(\xi\right)
+                  \end{equation*}
+              \item 3 moment-balance and 2 continuity equations to solve for 5 flux coefficients:
+                  \begin{equation*}\scriptstyle
+                  \intop_{-1}^1 P_n\left(\xi\right) 
+                  \left(-\frac{D}{h^2}\frac{d^2}{d\xi^2}\phi\left(\xi\right) + \Sigma_r 
+                  \phi\left(\xi\right) - Q\left(\xi\right)\right)d\xi = 0,\ n=0,1,2
+                  \end{equation*}
+                  \begin{equation*}\scriptstyle
+                  \phi_L\left(1\right) = \phi_R\left(-1\right)\ , \quad 
+                  J_L\left(1\right) = J_R\left(-1\right)
+                  \end{equation*}
+              \item Applying this method to both P$_3$ equations gives a system of 10 equations for each group and each node
+          \end{itemize}
         \end{itemize}
     
 \end{frame}
@@ -216,8 +232,7 @@ e^{-\Sigma_{t,g,i}L_j}\right) \\\scriptstyle
 
 \begin{frame}[t]{2D MOC}
   
-  \begin{columns}
-    \begin{column}{0.55\textwidth}
+    \vspace{-10pt}
       \begin{itemize}
         \item Perform ray tracing and store segment information up front
         \item Set up scattering, fission, and axial transverse leakage sources
@@ -232,10 +247,8 @@ e^{-\Sigma_{t,g,i}L_j}\right) \\\scriptstyle
           \item Ray - OpenMP
         \end{itemize}
       \end{itemize}
-    \end{column}
-    \begin{column}{0.45\textwidth}
-      \includegraphics[width=\columnwidth]{modular_rays.png}
-    \end{column}
-  \end{columns}
+  \begin{center}
+      \includegraphics[width=0.4\textwidth]{moc-raytrace.png}
+  \end{center}
 
 \end{frame}

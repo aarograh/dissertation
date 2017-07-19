@@ -1,5 +1,5 @@
-\subsection{Polynomial Decusping}
-\begin{frame}[t]{Description}
+\subsection{New Subgrid Methods}
+\begin{frame}[t]{Polynomial Decusping}
 
 \begin{itemize}
     \item Rodded 3$\times$3 assembly case used to plot generate correction factors based on rod position
@@ -16,7 +16,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[t]{Polynomials}
+\begin{frame}[t]{Polynomial Decusping}
     
 \begin{center}
     \includegraphics[width=0.8\textwidth]{polynomial_curves.png}
@@ -26,9 +26,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Subplane Collision Probabilities}
-
-\begin{frame}[t]{Subplane Decusping}
+\begin{frame}[t]{Subplane Collision Probabilities}
     
     \begin{itemize}
         \item Modifications made to subplane scheme \cite{Graham2017Improvementofthe2D/1DMethodUsingtheSub-PlaneScheme,Graham2017RodDecuspingTechniquesforthe2D/1DMethod} to treat axial effects of rod cusping
@@ -47,7 +45,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[t]{Collision Probabilities Decusping}
+\begin{frame}[t]{Subplane Collision Probabilities}
     
     \begin{columns}
         \begin{column}{0.45\textwidth}
@@ -78,8 +76,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Subray Method of Characteristics}
-\begin{frame}[t]{Description}
+\begin{frame}[t]{Subray Method of Characteristics}
 
 \begin{itemize}
     \item Other methods do not correctly address the MOC calculation
@@ -89,14 +86,14 @@
     \end{itemize}
     \item To improve MOC solutions, heterogeneous cross sections and sources must be accounted for
     \item MOC rays can be split into subrays in the vicinity of partially rodded regions
-    \item Because of exponentials in MOC solution, rays can be recombined after rod
+    \item MOC solution along subrays exponentially converges to $\frac{q}{\Sigma_t}$, allowing subrays to be recombined once axial shape of $q$ flattens sufficiently
 \end{itemize}
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
+\begin{frame}[t]{Subray Method of Characteristics}
     
 \begin{center}
 \includegraphics[width=0.8\textwidth]{sub-ray_illustration.png}
@@ -106,24 +103,44 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[t]{2D/1D Modifications}
+\begin{frame}[t]{Subray Method of Characteristics}
     
     \begin{itemize}
-        \item New MOC sweeper that duplicates long rays using axial volume fractions to average rays together
-        \item Fluxes, cross sections, and sources stored for subregions that subrays pass through
-        \item CMFD projection used to calculate subregion fluxes and generate subregion sources
-        \item Subplane CMFD/P$_3$ results used to calculate axial TL sources in subregions
-        \item Option added to control how far away from rod subray continues to be used
+        \item Many modifications were required to enable subray MOC in MPACT:
+        \begin{itemize}
+            \item Fluxes, cross sections, and sources are stored for subregions that subrays pass through
+            \item New MOC sweeper was developed that duplicates long rays using axial volume fractions to average rays together
+            \item CMFD projection is used to calculate subregion fluxes and generate subregion sources
+            \item Subplane CMFD/P$_3$ results are used to calculate axial TL sources in subregions
+            \item Option was added to control how far away from rod subray continues to be used
+        \end{itemize}
     \end{itemize}
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[t]{Recombination}
+\begin{frame}[t]{Subray Method of Characteristics}
 
-\begin{center}
-\includegraphics[width=0.5\textwidth]{recombination.png}
-\end{center}
+\begin{columns}
+    \begin{column}{0.5\textwidth}
+        \begin{itemize}
+            \item Subray is used in the entire pin cell with the partially inserted control rod
+            \item To capture farther reaching effects of the rod, subray can also be used in neighboring pin cells:
+            \begin{itemize}
+                \item Subray-0 (Red)
+                \item Subray-1 (Blue)
+                \item Subray-2 (Green)
+                \item Subray-3 (White)
+            \end{itemize}
+            \item Calculations become more expensive as more subrays are used, but accuracy should improve
+        \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\columnwidth]{recombination.png}
+        \end{center}
+    \end{column}
+\end{columns}
 
 \end{frame}
