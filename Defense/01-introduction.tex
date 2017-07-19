@@ -70,7 +70,7 @@
     \end{itemize}
     \item Planar Synthesis Methods
     \begin{itemize}
-        \item Problem is decomposed into stack of 2D planes, each assumed to be axially constant
+        \item Problem is decomposed into a stack of 2D planes, each assumed to be axially constant
         \item 2D transport equation is solved for each 2D plane, then coupled using a fast 1D solver (2D/1D) or 3D solver (2D/3D)
         \item Preserves much of the accuracy of 3D transport, but runs much faster
     \end{itemize}
@@ -87,16 +87,10 @@
     \begin{column}{0.6\textwidth}
         \begin{itemize}
             \item Planar synthesis methods require planes to be axially homogeneous
-            \item Control rods often do not align with plane boundaries, 
-            requiring rod and moderator to be homogenized
-            \item Volume homogenization preserves material volume/mass, but not 
-            reaction rates; solution is unknown, but required for proper homogenization
-            \item Two approaches to prevent rod cusping:
-            \vspace{-8pt}
-            \begin{itemize}
-                \item Refine mesh to align with all control rod positions
-                \item Decusping method to improve homogenization
-            \end{itemize}
+            \item If any axial heterogeneities are present in the plane, they must be homogenized axially
+            \item Volume homogenization is used since flux distribution is not yet known
+            \item Control rods are strong neutron absorbers, causing the most severe homogenization errors
+            \item Errors caused by rods partially inserted in a plane are called ``rod cusping''
         \end{itemize}
     \end{column}
     \begin{column}{0.4\textwidth}
@@ -120,7 +114,7 @@
             \item Algorithm and methods improvements
             \item Reduction in number of planes
         \end{itemize}
-        \item Subgrid methods can be used to maintain accuracy with fewer planes by loosening requirement that planes be axially constant
+        \item Subgrid methods can be used to maintain accuracy with fewer planes by loosening requirement that planes be axially homogeneous
         \begin{itemize}
             \item Needs to be able to capture local effects of various reactor components
             \item Should be able to be applied to a variety of situations

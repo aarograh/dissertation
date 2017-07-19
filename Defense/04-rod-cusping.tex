@@ -1,10 +1,53 @@
-\subsection{Demonstration}
+\subsection{Description}
+
+\begin{frame}[t]{Rod Cusping}
+
+\begin{columns}
+    \begin{column}{0.6\textwidth}
+        \begin{itemize}
+            \item Planar synthesis methods require planes to be axially homogeneous
+            \item Control rods often do not align with plane boundaries, 
+            requiring rod and moderator to be homogenized
+            \item Volume homogenization preserves material volume/mass, but not 
+            reaction rates; solution is unknown, but required for proper homogenization
+            \item Two approaches to prevent rod cusping:
+            \vspace{-8pt}
+            \begin{itemize}
+                \item Refine mesh to align with all control rod positions
+                \item Decusping method to improve homogenization
+            \end{itemize}
+        \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=\textwidth]{cusping_effect_Joo.png}
+        \end{figure} 
+    \end{column}
+\end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
     
+\begin{columns}
+    \begin{column}{0.8\textwidth}
 \begin{center}
-    \includegraphics[width=0.8\textwidth]{p4cuspingEffects.png}
+    \includegraphics[width=\columnwidth]{p4cuspingEffects.png}
 \end{center}
 \vfill
+\end{column}
+\begin{column}{0.2\textwidth}
+    \begin{center}
+    \includegraphics[width=0.75\columnwidth]{wb_3d_assembly.png}
+    
+    \includegraphics[width=0.75\columnwidth]{p4a_layout.png}
+    \end{center}
+\vfill
+\end{column}
+\end{columns}
     
 \end{frame}
 

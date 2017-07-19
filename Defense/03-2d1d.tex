@@ -74,7 +74,7 @@ y_j}
 \begin{columns}
   \begin{column}{0.6\textwidth}
     \begin{itemize}
-      \item 3D CMFD \cite{SmithCMFDOrig}
+      \item 3D Coarse Mesh Finite Difference (CMFD) \cite{SmithCMFDOrig}
       \begin{itemize}
         \item Determines global flux shape to scale fine mesh solution
         \item Calculates radial currents for 1D axial solver
@@ -83,7 +83,7 @@ y_j}
       \begin{itemize}
         \item Calculates improved axial currents for 2D solver
       \end{itemize}
-      \item 2D MOC \cite{AskerMOCOrig1972,HalsallMOCOrigCACTUS1980}
+      \item 2D Method of Characteristics (MOC) \cite{AskerMOCOrig1972,HalsallMOCOrigCACTUS1980}
       \begin{itemize}
         \item Solves for fine mesh scalar flux
         \item Calculates updated radial currents for CMFD calculation
@@ -113,7 +113,7 @@ y_j}
             \phi_{g,m}^{diff,k}\right)}{\left(\phi_{g,p}^{trans,k} + 
             \phi_{g,m}^{diff,k}\right)}
           \end{equation*}
-          \item Coarse mesh solution projected to fine mesh solution, preserving MOC radial shape and CMFD volume-averaged flux
+          \item Coarse mesh solution projected onto the fine mesh, preserving MOC radial shape and CMFD volume-averaged flux
           \begin{equation*}\scriptstyle
           \phi_{g,j}^{trans,k} = \frac{\phi_{g,i}^{diff,k}}{\phi_{g,i}^{diff,k-1}} \phi_{g,j}^{trans,k-1}
           \end{equation*}
@@ -170,7 +170,7 @@ y_j}
 \begin{frame}[t]{1D NEM-P$_3$}
 
         \begin{itemize}
-          \item NEM \cite{finnemann1977RodCuspingOrigMention} used to handle spatial shape
+          \item The Nodal Expansion Method (NEM) \cite{finnemann1977RodCuspingOrigMention} used to handle spatial shape
           \begin{itemize}
               \item Expand source and flux as quadratic and quartic polynomials:
                   \begin{equation*}\scriptstyle
@@ -236,15 +236,11 @@ e^{-\Sigma_{t,g,i}L_j}\right) \\\scriptstyle
       \begin{itemize}
         \item Perform ray tracing and store segment information up front
         \item Set up scattering, fission, and axial transverse leakage sources
+        \item Solve each long ray one at a time
         \begin{itemize}
-            \item Multi-group sweeping
-          \item 1-group sweeping
-        \end{itemize}
-        \item Parallel Decomposition
-        \begin{itemize}
-          \item Spatial (Planar and Radial)- MPI
-          \item Angle - MPI
-          \item Ray - OpenMP
+            \item Incoming angular flux at each end of long ray is known from boundary conditions
+            \item Outgoing angular flux for each segment is used as incoming for subsequent segments
+            \item Region-wise scalar flux and surface currents are tallied as each long ray is swept
         \end{itemize}
       \end{itemize}
   \begin{center}
