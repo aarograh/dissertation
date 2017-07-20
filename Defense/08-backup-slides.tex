@@ -1,126 +1,252 @@
+\begin{frame}[t]{Multigroup Approximation}
+
+
+\begin{itemize}
+    \item Define multigroup flux and cross sections:
+\begin{subequations}
+    \begin{equation*}\scriptstyle
+    \varphi_g\left(\bm x,\bm \Omega\right)= \intop_{E_n}^{E_{n-1}} \varphi\left(\bm x,E,\bm\Omega\right) dE\ ,
+    \end{equation*}
+    \begin{equation*}\scriptstyle
+    \Sigma_{x,g} \varphi_g =  \intop_{E_n}^{E_{n-1}} \varphi\left(E\right) \Sigma_x\left(E\right) dE \Rightarrow \Sigma_x,g = \frac{\intop_{E_n}^{E_{n-1}} \varphi\left(E\right) \Sigma_x\left(E\right)\ . dE}{\intop_{E_n}^{E_{n-1}} \varphi\left(E\right) dE}
+    \end{equation*}
+\end{subequations}
+\item Operate on steady-state transport equation by $\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE$
+\end{itemize}
+
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{MGillustration.png}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{Angle Discretization}
+
+\begin{itemize}
+    \item Select a set of azimuthal and polar angles $\alpha$ and $\mu$
+\begin{align*}\scriptstyle
+\bm\Omega &= \cos\left(\alpha\right)\sqrt{1-\mu^2}\bm i + \sin\left(\alpha\right)\sqrt{1-\mu^2}\bm j + \mu\bm k \\
+\Rightarrow \bm\Omega_n &= \cos\left(\alpha_n\right)\sqrt{1-\mu_n^2}\bm i + \sin\left(\alpha_n\right)\sqrt{1-\mu_n^2}\bm j + \mu_n\bm k\ .
+\end{align*}
+\item A quadrature can be used with weights $w_n$ associated with each angle $\Omega_n$
+\begin{subequations}
+    \begin{equation*}\scriptstyle
+    \intop d\Omega = \sum_{n=1}^N w_n = 4\pi\ ,
+    \end{equation*}
+    \begin{equation*}\scriptstyle
+    \intop \bm\Omega d\Omega = \sum_{n=1}^N \bm\Omega_n w_n = 0\ ,
+    \end{equation*}
+    \begin{equation*}\scriptstyle
+    \intop_{4\pi} f\left(\bm\Omega\right)d\Omega \approx \sum_{n=1}^N f_n w_n\ .
+    \end{equation*}
+\end{subequations}
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}[t]{Transport-Corrected Scattering Approximation}
-    
+
+\begin{itemize}
+\item Modifies self-scatter and total cross-sections to account for 
+anisotropy while performing isotropic calculations
+\item Neutron Leakage Conservation (NLC) Method: H-1
+\begin{equation*}
+\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} + \frac{1}{3D_g} 
+- \Sigma_{t,g}
+\end{equation*}
+\item In-Scatter Method: B-11, C-12, O-16
+\begin{equation*}
+\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - 
+\frac{1}{\phi_{1,g}}\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\phi_{1,g'}
+\end{equation*}
+\item Out-Scatter Method: All other isotopes
+\begin{equation*}
+\Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - \sum_{g'=1}^G 
+\Sigma_{s1,g\rightarrow g'}
+\end{equation*}
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{Collision Probabilities}
+
+\begin{itemize}
+    \item Used to calculate flux spectra in a pin cell
+    \item Transport equation written so right-hand side is a single source term
     \begin{itemize}
-        \item Modifies self-scatter and total cross-sections to account for 
-        anisotropy while performing isotropic calculations
-        \item Neutron Leakage Conservation (NLC) Method: H-1
-        \begin{equation*}
-        \Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} + \frac{1}{3D_g} 
-        - \Sigma_{t,g}
-        \end{equation*}
-        \item In-Scatter Method: B-11, C-12, O-16
-        \begin{equation*}
-        \Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - 
-        \frac{1}{\phi_{1,g}}\sum_{g'=1}^G \Sigma_{s1,g'\rightarrow g}\phi_{1,g'}
-        \end{equation*}
-        \item Out-Scatter Method: All other isotopes
-        \begin{equation*}
-        \Sigma_{s0,g\rightarrow g} = \Sigma_{s0,g\rightarrow g} - \sum_{g'=1}^G 
-        \Sigma_{s1,g\rightarrow g'}
-        \end{equation*}
+        \item Assumes only scattering and fission sources
+        \item Assumes isotropic scattering
     \end{itemize}
-    
+    \item For 1D, pin cell is discretized into $R$ rings, assuing flat source, flux, and cross section in each ring
+    \item A matrix with elements $T_{g,r' \rightarrow r}$ can be determined
+    \begin{itemize}
+        \item Each element is probability of neutron born in group $g$ and region $r'$ reaching region $r$
+        \item These probabilities are geometry-dependent, but have a general form for 1D cylindrical geometry
+    \end{itemize}
+    \item Flux in each ring can be calculated from matrix $\bm T$, sources $q$, and volumes $V$
+\begin{equation*}\scriptstyle
+\phi_{g,r} = \sum_{r'=1}^R T_{g,r'\rightarrow r} q_{g,r'} V_{r'}
+\end{equation*}
+\end{itemize}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[t]{2D MOC}
-    
-    \begin{columns}
-        \begin{column}{0.6\textwidth}
-            \begin{itemize}
-                \item Solve along a specific direction $\Omega_n$
-                \begin{equation*}\scriptstyle
-                \bm r = \bm {r_0} + s \bm \Omega_n \Rightarrow \begin{cases} 
-                x\left(s\right) = x_0 + s\Omega_{n,x} \\ y\left(s\right) = y_0 + 
-                s\Omega_{n,y} \\ z\left(s\right) = z_0 + s\Omega_{n,z} \end{cases}
-                \end{equation*}
-                \item Problem reduces from PDE to ODE that can be solved analytically
-                \begin{equation*}\scriptstyle
-                \frac{\partial \psi_{g,n}}{\partial s} + \Sigma_{t,g}\left(\bm r_0 + 
-                s\bm\Omega_n\right)\psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) = 
-                q_{g,n}\left(\bm r_0 + s\bm\Omega_n\right)
-                \end{equation*}
-                \begin{dmath*}\scriptstyle
-                    {\psi_{g,n}\left(\bm r_0 + s\bm\Omega_n\right) = \psi_{g,n}\left(\bm 
-                        r_0\right)\exp{\left(-\intop_0^s \Sigma_{t,g}\left(\bm r_0 + 
-                            s'\bm\Omega_n\right)ds'\right)}} + {\intop_0^s q_{g,n}\left(\bm r_0 + 
-                        s'\bm\Omega_n\right)\exp{\left(-\intop_0^{s'} \Sigma_{t,g}\left(\bm r_0 
-                            + s''\bm\Omega_n\right)ds''\right)}ds'}
-                \end{dmath*}
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.4\textwidth}
-            \includegraphics[width=\textwidth]{modular_rays.png}
-        \end{column}
-    \end{columns}
-    
-\end{frame} 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}[t]{2D MOC}
-    
-    \begin{itemize}
-        \item Assume flat source, cross-section along track with 
-        length $L_j$ and spacing $\delta x$
-        \begin{columns}
-            \begin{column}{0.6\textwidth}
-                \begin{align*}\scriptstyle
-                \psi^{out}_{g,i,n,j} &\scriptstyle = \psi^{in}_{g,i,n,j}e^{-\Sigma_{t,g,i} 
-                    L_j} 
-                \\\scriptstyle
-                &\scriptstyle + \frac{q_{g,i,n}}{\Sigma_{t,g,i}}\left(1 - 
-                e^{-\Sigma_{t,g,i}L_j}\right) \\\scriptstyle
-                \overline{\psi}_{g,i,n,j} &\scriptstyle = 
-                \frac{q_{g,n,i}}{\Sigma_{t,g,i}} 
-                \\\scriptstyle
-                &\scriptstyle + \frac{1 - e^{-\Sigma_{t,g,i} 
-                        L_j}}{L_j\Sigma_{t,g,i}}\left(\psi^{in}_{g,i,n,j} - 
-                \frac{q_{g,n,i}}{\Sigma_{t,g,i}}\right) \\\scriptstyle
-                \overline{\psi}_{g,i,n} &\scriptstyle = \frac{\sum_j 
-                    \overline{\psi}_{g,i,n,j} \delta x L_j}{\sum_j \delta x L_j}
-                \end{align*}
-            \end{column}
-            \begin{column}{0.4\textwidth}
-                \includegraphics[width=\textwidth]{modular_rays.png}
-            \end{column}
-        \end{columns}
-        \item Modular ray tracing can be used to minimize storage requirements by 
-        tracing only portions of problem geometry
-    \end{itemize}
-    
-\end{frame} 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}[t]{2D MOC}
-    
-    \begin{columns}
-        \begin{column}{0.55\textwidth}
-            \begin{itemize}
-                \item Perform ray tracing and store segment information up front
-                \item Set up scattering, fission, and axial transverse leakage sources
-                \begin{itemize}
-                    \item Multi-group sweeping
-                    \item 1-group sweeping
-                \end{itemize}
-                \item Parallel Decomposition
-                \begin{itemize}
-                    \item Spatial (Planar and Radial)- MPI
-                    \item Angle - MPI
-                    \item Ray - OpenMP
-                \end{itemize}
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.45\textwidth}
-            \begin{figure}[h]
-                \centering
-                \resizebox{!}{0.7\textheight}{\input{../figs/MOC-flowchart.tex}}
-            \end{figure}
-        \end{column}
-    \end{columns}
-    
+\begin{frame}
+\begin{center}
+\resizebox{0.5\textwidth}{!}{\input{../figs/CMFD-flowchart.tex}}
+\end{center}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\begin{center}
+\resizebox{0.6\textwidth}{!}{\input{../figs/Axial-flowchart.tex}}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\begin{center}
+\resizebox{0.5\textwidth}{!}{\input{../figs/MOC-flowchart.tex}}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\vspace{-10pt}
+\begin{center}
+\resizebox{0.4\textwidth}{!}{\input{../figs/1DCPM-flowchart.tex}}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{2D/3D}
+
+\begin{itemize}
+    \item 2D MOC is used to generate homogenized cross sections
+    \item MOC planes are homogenized onto Cartesian grid
+    \item 3D S$_N$ is used to solve the 3D transport equation on the homogenized coarse mesh
+\end{itemize}
+\begin{center}
+    \includegraphics[width=0.7\textwidth]{2d-3d.png}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{1D MOC}
+
+\begin{itemize}
+    \item 1D MOC code developed that uses MOC cross sections and slab geometry
+    \item Fixed source and eigenvalue calculations both supported
+    \item Analysis of angular flux behavior for cross section mixtures could be performed
+\end{itemize}
+\begin{center}
+    \includegraphics[width=0.6\textwidth]{1dmoc-3x17-geom.png}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{1D MOC -- Fixed Total Source}
+
+\begin{itemize}
+    \item Scalar flux, group 7
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{1dmoc-50mix-fixedscat-scalflux7.png}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{1D MOC -- Fixed Total Source}
+
+\begin{itemize}
+    \item Rightgoing angular flux, group 1 (left) and 7 (right)
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=0.45\textwidth]{1dmoc-50mix-fixedscat-angflux1.png} \includegraphics[width=0.45\textwidth]{1dmoc-50mix-fixedscat-angflux7.png}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{1D MOC -- Fixed Fission Source}
+
+\begin{itemize}
+    \item Rightgoing angular flux, group 1 (left) and 7 (right)
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.45\textwidth]{1dmoc-50mix-angflux1.png} \includegraphics[width=0.45\textwidth]{1dmoc-50mix-angflux7.png}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{1D Subray MOC}
+
+\begin{itemize}
+    \item 1D MOC code developed that uses MOC cross sections and slab geometry
+    \item Fixed source and eigenvalue calculations both supported
+    \item Allowed for a prototype of subray MOC concept
+\end{itemize}
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{10pin-slab-geometry.png}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{1D Subray MOC}
+
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{keff_subray.png}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{1D Subray MOC}
+
+\begin{itemize}
+    \item 50\% rodded, scalar flux, group 1
+\end{itemize}
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{scalflux1.png}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[t]{1D Subray MOC}
+
+\begin{itemize}
+\item 50\% rodded, scalar flux, group 7
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{scalflux7.png}
+\end{center}
+
+\end{frame}

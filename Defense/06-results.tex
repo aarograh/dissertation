@@ -27,10 +27,7 @@
     \begin{column}{0.5\textwidth}
         \begin{itemize}
             \item Center 3x3 assembly cluster in Watts Bar Unit 1
-            \item AIC control rod in center assembly placed at 257.9 cm
-            \item Test cases used 57 planes, with rod inserted 50\% into a plane
-            \item Reference used 58 planes, with extra plane boundary aligned 
-            with rod tip
+            \item Heterogeneous AIC control rod with stainless steel tip and \bfc{} follower
             \item All simulations used 1 core per plane
         \end{itemize}
     \end{column}
@@ -49,7 +46,7 @@
 \begin{frame}[t]{Test Procedures}
     
     \begin{itemize}
-        \item Differential rod worth curves were generated with fine mesh, coarse mesh, and each decusping method
+        \item Differential rod worth curves were generated with coarse mesh using each decusping method
         \item Comparison of curves shows effectiveness of decusping methods as rod is withdrawn through core
         \item KENO-VI was used to calculate reference solutions at 10\% intervals
         \begin{itemize}
@@ -135,14 +132,14 @@
     \begin{table}[h]
       \centering
       \resizebox{\textwidth}{!}{
-        \begin{tabular}{l c c S[table-format=2.2,table-number-alignment=left] c c c}\toprule
-        \multirow{2}{*}{Case} & \keff{} & \multicolumn{2}{c}{{Pin Power Differences}} & \multicolumn{2}{c}{Iterations} & Runtime\\
-        & Difference (pcm) & RMS & {Max} & 2D/1D & CMFD & (Core-Hours) \\\midrule
-        Reference        &  -- & --     & {--}      & 13 & 481 & 361.7 \\
-        No Treatment     & -22 & 6.90\% & 30.55\% & 13 & 523 & 410.7 \\
-        Polynomial       &  -5 & 1.15\% &  4.85\% & 13 & 463 & 373.7 \\
-        Subplane         &  -5 & 2.09\% & 10.20\% & 13 & 499 & 399.0 \\
-        Subplane + CP    &  -1 & 0.50\% &  2.74\% & 13 & 529 & 425.6 \\
+        \begin{tabular}{l c c S[table-format=2.2,table-number-alignment=left] c c}\toprule
+        \multirow{2}{*}{Case} & \keff{} & \multicolumn{2}{c}{{Pin Power Differences}} & 2D/1D & Runtime\\
+        & Difference (pcm) & RMS & {Max} & Iterations & (Core-Hours) \\\midrule
+        Reference        &  -- & --     & {--}      & 13 & 361.7 \\
+        No Treatment     & -22 & 6.90\% & 30.55\% & 13   & 410.7 \\
+        Polynomial       &  -5 & 1.15\% &  4.85\% & 13   & 373.7 \\
+        Subplane         &  -5 & 2.09\% & 10.20\% & 13   & 399.0 \\
+        Subplane + CP    &  -1 & 0.50\% &  2.74\% & 13   & 425.6 \\
         \bottomrule
     \end{tabular}
       }
@@ -182,7 +179,7 @@
     
     \begin{itemize}
         \item Three different C5G7 problems were simulated: 2D core, 3D assembly, and 3D core
-        \item Rod was withdrawn through each problem in 1 cm increments for subray MOC and subplane methods
+        \item Rod was withdrawn through each problem in 1.428 cm increments for subray MOC and subplane methods
         \item \keff{} and 3D pin power comparisons were made against a fine mesh reference solution at each position
     \end{itemize}
     

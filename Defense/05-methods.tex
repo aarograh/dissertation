@@ -18,9 +18,22 @@
 
 \begin{frame}[t]{Polynomial Decusping}
     
+\begin{columns}
+\begin{column}{0.8\textwidth}
 \begin{center}
-    \includegraphics[width=0.8\textwidth]{polynomial_curves.png}
+    \includegraphics[width=\columnwidth]{polynomial_curves.png}
 \end{center}
+\vfill
+\end{column}
+\begin{column}{0.2\textwidth}
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{wb_3d_assembly.png}
+
+\includegraphics[width=0.75\columnwidth]{p4a_layout.png}
+\end{center}
+\vfill
+\end{column}
+\end{columns}
     
 \end{frame}
 
@@ -31,7 +44,7 @@
     \begin{itemize}
         \item Modifications made to subplane scheme \cite{Graham2017Improvementofthe2D/1DMethodUsingtheSub-PlaneScheme,Graham2017RodDecuspingTechniquesforthe2D/1DMethod} to treat axial effects of rod cusping
         \begin{itemize}
-            \item Homogenization still uses MOC flux with axial shape factor, but 
+            \item Homogenization still uses MOC flux, but 
             with heterogeneous rodded or unrodded cross sections
             \item Projection rehomogenizes cross sections in partially rodded nodes 
             after CMFD calculation
