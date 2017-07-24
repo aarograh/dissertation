@@ -319,7 +319,7 @@
 \newcommand{\@department}{Nuclear Engineering and Radiological Sciences and Scientific Computing}
 \newcommand{\@committee}{Adjunct Assistant Professor Benjamin S. Collins, Co-Chair\\
     Professor Thomas J. Downar, Co-Chair\\
-    Professor Brian C. Kiedrowski\\
+    Assistant Professor Brian C. Kiedrowski\\
     Professor William R. Martin\\
     Assistant Professor Shravan Veerapaneni}
 \newcommand{\@cochair}{Thomas J. Downar, Benjamin S. Collins}

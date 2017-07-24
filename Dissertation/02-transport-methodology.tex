@@ -83,9 +83,9 @@ We first define the multi-group flux, cross sections, and chi distribution in Eq
 \begin{equation}\label{e:multigroupangflux}
 \varphi_g\left(\bm x,\bm \Omega\right)= \intop_{E_n}^{E_{n-1}} \varphi\left(\bm x,E,\bm\Omega\right) dE\ ,
 \end{equation}
-\begin{equation}\label{e:multigroupXS}
-\Sigma_{x,g} \varphi_g =  \intop_{E_n}^{E_{n-1}} \varphi\left(E\right) \Sigma_x\left(E\right) dE \Rightarrow \Sigma_x,g = \frac{\intop_{E_n}^{E_{n-1}} \varphi\left(E\right) \Sigma_x\left(E\right)\ . dE}{\intop_{E_n}^{E_{n-1}} \varphi\left(E\right) dE}
-\end{equation}
+\begin{dmath}\label{e:multigroupXS}
+{\Sigma_{x,g}\left(\bm x,\bm \Omega\right) \varphi_g\left(\bm x,\bm \Omega\right) =  \intop_{E_n}^{E_{n-1}} \varphi\left(\bm x, E, \bm \Omega\right) \Sigma_x\left(\bm x, E, \bm \Omega\right) dE} \Rightarrow {\Sigma_x,g\left(\bm x, \bm \Omega\right) = \frac{\intop_{E_n}^{E_{n-1}} \varphi\left(\bm x, E, \bm \Omega\right) \Sigma_x\left(\bm x, E, \bm \Omega\right) dE}{\intop_{E_n}^{E_{n-1}} \varphi\left(\bm x, E, \bm \Omega\right) dE}}\ .
+\end{dmath}
 \end{subequations}
 Using the definitions above, Equation \ref{e:ssboltzmann} can be operated on by 
 $\intop_{E_n}^{E_{n-1}}\left(\cdot\right)dE$ to obtain the multi-group 
@@ -101,11 +101,11 @@ transport Equation \ref{e:multigroupboltzmann}.
 
 \subsection{Discrete Ordinates Approximation}
 
-In addition to energy discretization, it is also useful to discretize the transport equation in angle.  The angular variable $\bm\Omega$ is made up of a polar angle ($\mu_s$) and an azimuthal angle ($\alpha$), both of which can be discretized:
+In addition to energy discretization, it is also useful to discretize the transport equation in angle.  The angular variable $\bm\Omega$ is made up of a polar angle ($\mu$) and an azimuthal angle ($\alpha$), where the polar angle is defined with respect to the z-axis and the azimuthal angle is defined with respect to the x-axis in the x-y plane.  Both angles can be discretized as follows:
 \begin{subequations}
 \begin{align}
-\bm\Omega &= \cos\left(\alpha\right)\sqrt{1-\mu_s^2}\bm i + \sin\left(\alpha\right)\sqrt{1-\mu_s^2}\bm j + \mu_s\bm k \\
-\Rightarrow \bm\Omega_n &= \cos\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm i + \sin\left(\alpha_n\right)\sqrt{1-\mu_{s,n}^2}\bm j + \mu_{s,n}\bm k\ .
+\bm\Omega &= \cos\left(\alpha\right)\sqrt{1-\mu^2}\bm i + \sin\left(\alpha\right)\sqrt{1-\mu^2}\bm j + \mu\bm k \\
+\Rightarrow \bm\Omega_n &= \cos\left(\alpha_n\right)\sqrt{1-\mu_n^2}\bm i + \sin\left(\alpha_n\right)\sqrt{1-\mu_n^2}\bm j + \mu_n\bm k\ .
 \end{align}
 \end{subequations}
 
@@ -223,7 +223,7 @@ Another approximation that can be made to the angular dependence of the transpor
 \intop_{4\pi} \Omega_i\Omega_j\Omega_k d\Omega = 0\ .
 \end{equation}
 \end{subequations}
-We must also assume that the angular flux is linearly anisotropic.  This leads to the following expression of the angular flux as a function of the scalar flux $\phi$ and current $J$:
+We must also assume that the angular flux is linearly anisotropic.  This leads to the following expression of the angular flux as a function of the scalar flux $\phi$ and current $\bm J$:
 \begin{subequations}
 \begin{equation}
 \varphi_g\left(\bm x,\bm\Omega\right) \approx \frac{1}{4\pi}\left(\phi_g\left(\bm x\right) + 3\bm\Omega \cdot \bm J\left(\bm x\right)\right)\ ,
@@ -297,7 +297,7 @@ To derive MOC, we make use of both the multi-group and discrete ordinates approx
 
 Now we introduce a characteristic direction $\bm r$ in the direction $\bm\Omega_n$
 \begin{equation}
-\bm r = \bm {r_0} + s \bm \Omega_n \Rightarrow \begin{cases} x\left(s\right) = x_0 + s\Omega_{n,x} \\ y\left(s\right) = y_0 + s\Omega_{n,y} \\ z\left(s\right) = z_0 + s\Omega_{n,z} \end{cases}\ .
+\bm r = \bm {r}_0 + s \bm \Omega_n \Rightarrow \begin{cases} x\left(s\right) = x_0 + s\Omega_{n,x} \\ y\left(s\right) = y_0 + s\Omega_{n,y} \\ z\left(s\right) = z_0 + s\Omega_{n,z} \end{cases}\ .
 \end{equation}
 Substituting this variable into Equation \ref{e:MOCqboltzmann} gives the characteristic form of this equation:
 \begin{subequations}\label{e:characteristicboltzmann}

@@ -138,11 +138,11 @@ We must also handle the self-transport case, where $i=j$.  Again we follow the s
   \begin{align}
   p_{ii}\left(t,\alpha,y\right) &= 1 - Ki_2\left(\tau\right)\ , \\
   p_{ii}\left(\alpha,y\right) &= \frac{1}{t_i} \intop_0^{t_i} p_{ii}\left(t,\alpha,y\right) dt \nonumber \\
-  &= 1- \frac{1}{\Sigma_i t_i} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right]\ , \\
+  &= 1- \frac{1}{\Sigma_i t_i} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] = 1 - \frac{1}{\Sigma_i t_i} \left[\frac{\pi}{4} - Ki_3\left(\tau_i\right)\right]\ , \\
   p_{ii}\left(\alpha\right) &= \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} p_{ii}\left(\alpha,y\right) \frac{t_i dy}{V_i} \nonumber\\
-  &= 1 - \frac{1}{\Sigma_i V_i} \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] dy\ , \\
+  &= 1 - \frac{1}{\Sigma_i V_i} \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\frac{\pi}{4} - Ki_3\left(\tau_i\right)\right] dy\ , \\
   P_{ii}\left(\alpha\right) &= \Sigma_i V_i p_{ii}\left(\alpha\right) \nonumber \\
-  &= \Sigma_i V_i - \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[Ki_3\left(0\right) - Ki_3\left(\tau_i\right)\right] dy\ .
+  &= \Sigma_i V_i - \intop_{y_{min}\left(\alpha\right)}^{y_{max}\left(\alpha\right)} \left[\frac{\pi}{4} - Ki_3\left(\tau_i\right)\right] dy\ .
   \end{align}
 \end{subequations}
 Now this self-transport kernel can be used with the kernel in \ref{e:CPPij} to set up the full transport matrix for a problem.  This matrix is dependent on the geometry of the problem, so it must be done for each unique problem being solved.  The following section discusses the details of this process for a cylindrical pin cell.
