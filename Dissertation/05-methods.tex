@@ -4,9 +4,37 @@ This chapter will describe three control rod decusping methods developed as part
 
 The polynomial decusping technique was developed to provide a fast, simple correction to the cusping problem in the MPACT code.  This technique assumes that the reactivity and power around the partially inserted rod have a predictable shape as functions of the rod position within the MOC plane.  Based on this assumption, correction factors were developed to reduce the volume fraction of control rod material and reduce the magnitude of the cusping effects.
 
-To do this, a 3$\times$3 assembly problem with a control rod in the center assembly was used (this problem is described in more detail in Section \ref{s:vera4}).  The problem was simulated with the control rod at several different locations in a particular MOC plane.  This process was then repeated using a refined mesh that eliminated the cusping errors.  Using these two solution sets, sixth-order polynomials were generated for the \keff{} error as a function of control rod volume fraction.  This was done for AIC, \bfc{}, and tungsten control rods.
+\subsection{Correction Data Generation}
 
-In MPACT, if the control rod is partially inserted into a plane then the rod material is volume-homogenized with the moderator material underneath.  To correct this homogenized cross section, the volume fraction of the control rod material is reduced by an amount determined by the polynomial associated with that rod material.  The expected percent reactivity can be determined from the fine mesh solution at the rodded volume fraction.  The rodded volume fraction that returns that percent reactivity is then used during the homogenization step.  This corrects the rod cusping errors efficiently for several rod types of interest.
+To generate this data, two different sets of calculations were required.  Both sets were done using a 3$\times$3 assembly case with a control rod in the center assembly.  The first set of calculations began with the control rod aligned with MOC plane boundaries.  The rod was then withdrawn upward through the MOC plane and simulated at different positions.  A total of 9 simulations were conducted: one with the rod aligned with the bottom of the plane, one with the rod aligned with the top of the plane, and 7 with the rod partially inserted to various depths in the plane.  The first and last calculations had no cusping effects because the rod was aligned with plane boundaries, but the remaining cases exhibited severe cusping effects.
+
+The second set of calculations used the same problem and rod positions as the first set.  However, for the 7 partially inserted calculations, an extra MOC plane boundary was added that aligned with the control rod tip.  This eliminated rod cusping effects for the second set of calculations.  These two sets can then be compared to determine the magnitude of the cusping effects for each rod position by plotting \keff{} against rod position.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{polynomial_curves.png}
+    \caption{Polynomial decusping example data generation}\label{f:polynomial}
+\end{figure}
+
+Since these data need to be used to correct rod cusping for different MOC planes and reactors, the data is best plotted as a percent change in \keff{} versus a percent rod withdrawal.  An example of this is shown in Figure \ref{f:polynomial}.  The data from these calculations was then used to generate a sixth-order polynomial that approximates the shape of the rod cusping effects.  Generating this polynomial in terms of percents allows the polynomial to approximate the response for any MOC plane in any reactor.  However, the response varies significantly for different rod materials, so this process should be repeated for each unique type of control rod.  For the work presented here, polynomials were generated for three different materials: silver-indium-cadmium alloy (AIC), \bfc{}, and tungsten.  The polynomials developed for each material are shown below:
+\begin{align}\label{e:polynomials}
+P_{AIC}\left(V_u\right) &= 38.348 V_u^6 - 95.832 V_u^5 + 90.477 V_u^4 - 39.326 V_u^3 + 7.8043 V_u^2 - 0.4708 V_u \ ,\\
+P_{B4C}\left(V_u\right) &= 46.843 V_u^6 - 117.14 V_u^5  + 109.78 V_u^4 - 47.104 V_u^3 + 9.1734 V_u^2 - 0.5527 V_u \ ,\\
+P_{TUN}\left(V_u\right) &= 4.7734 V_u^6 - 14.751 V_u^5 + 19.512 V_u^4 - 12.762 V_u^3 + 4.0769 V_u^2 - 0.1505 V_u \ ,
+\end{align}
+where $V_u$ is the unrodded volume fraction and $P_x\left(V_u\right)$ is the corresponding percent change in \keff{} for a given rod type, with $x$ being $AIC$, $B4C$, or $TUN$.
+
+\subsection{Correction Application}
+
+Following the procedure in the previous section gives polynomials to approximate the shape of the cusping effects for different rod materials.  To apply these polynomials to 2D/1D calculations, the volume fractions used in the homogenization prior to 2D/1D calculations can be modified.  This homogenization is done using a simple volume weighting in the partially rodded regions:
+\begin{equation}
+\Sigma_x = V_u \Sigma_x^U + V_r \Sigma_x^r\ ,
+\end{equation}
+where $\Sigma_x$ is the cross section being homogenized, $V$ is the volume fraction, $u$ and $r$ subscripts and superscripts denote rodded and unrodded quatities, respectively, and $V_u + V_r = 1$.  It is evident from Equation \ref{e:polynomials} that cusping always lowers the value of \keff{}, so if $V_u$ is increased and $V_r$ is decreased, the rod cusping errors should be reduced.
+
+At the beginning of the calculation, the volume fraction of the control rod is determined.  For example, if an AIC rod is 50\% inserted into a plane, the data from Figure \ref{f:polynomial} can be used to determine the expected percent change in \keff{}.  In MPACT, the approximation is made that the reference solution in Figure \ref{f:polynomial} is a straight line, resulting in a 50\% change in \keff{} from a 50\% inserted rod.  Next, the point along the polynomial which corresponds to 50\% change in \keff{} is identified.  Finally, the volume fraction which produces that value of the polynomial is used in the homogenization.  For this example, values of $V_u=0.5$ and $V_r=0.5$ would be used for a 50-50 mixture of moderator and AIC control rod without any decusping method.  To improve this solution, the model actually used would use values of approximately $V_u=0.93$ and $V_r=0.07$ to minimize the error in \keff{}.
+
+To find the volume fraction required for improved homogenization, a root-finding method must be applied.  For the example in the previous paragraph, MPACT does this by setting $P_{AIC}\left(V_u\right) = 0.5$ in Equation \ref{e:polynomials} and moving it to the right-hand side of the equation.  Because these polynomials are smooth, monotonically increasing on the interval [0,1], and have analytic derivatives that can be easily programmed in MPACT, Newton's method \cite{2006friendlyIntroductionToNumericalAnalysis} can be easily applied to obtain the root, though other methods could be used as well.  The search is performed until the value is within 0.001 of the actual root; usually this requires only 4-5 iterations, meaning that these calculations are trivially fast compared to 2D/1D.
 
 \section{Subplane Collision Probabilities}
 
