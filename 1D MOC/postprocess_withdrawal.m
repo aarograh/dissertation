@@ -45,8 +45,6 @@ for igroup=1:7
     grid on;
 end
 figure(8)
-% plot(vfrac,keffs(1,:),'k',vfrac,keffs(4,:),'r--s',vfrac,keffs(5,:),'b:*')
-% legend('Volume-Homogenized XS','Volume-Homogenized Flux','Subray Calculation')
 plot(vfrac,keffs(1,:),'k',vfrac,keffs(4,:),'r-s',vfrac,keffs(5,:),'b:*',...
     vfrac,keffs(6,:),'g-.+',vfrac,keffs(7,:),'k--o','linewidth',2)
     legend('Volume Homog.','Subray w/o Recomb.','Subray w/ Recomb. - 0','Subray w/ Recomb. - 1',...
