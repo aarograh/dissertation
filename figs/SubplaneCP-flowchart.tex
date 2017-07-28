@@ -1,0 +1,37 @@
+\begin{tikzpicture}[node distance=2cm]
+
+% Begin
+\node (start) [startstop] {MOC Calculation};
+
+% Pre-solve
+\node (radial) [decision, right of=start, xshift=2cm] {Using 1D CP?};
+\node (shape) [process, right of=radial, yshift=2.5cm, xshift=2cm] {Determine axial shape functions from previous iteration};
+\node (cpm) [process, right of=radial, yshift=-2.5cm, xshift=2cm] {Perform 1D CP calculations};
+\node (homogenize) [process, right of=shape, xshift=2cm,yshift=-2.5cm] {Homogenize with axially heterogeneous cross sections and flux profiles};
+\node (dhats) [process, below of=homogenize,yshift=-0.5cm] {Calculate $\hat{D}$};
+
+% Solve
+\node (solve) [process, below of=dhats] {Perform CMFD eigenvalue calculation};
+
+% Post-solve
+\node (projection) [process, left of=solve, xshift=-2.5cm] {Project subplane flux to fine mesh};
+\node (xs) [process, left of=projection,xshift=-2.5cm] {Rehomogenize fine mesh cross sections};
+
+% Finish
+\node (stop) [startstop, below of=xs] {Continue to 1D P$_3$ and 2D MOC};
+
+% Basic Arrows
+\draw [arrow] (start) -- (radial);
+\draw [arrow] (homogenize) -- (dhats);
+\draw [arrow] (dhats) -- (solve);
+\draw [arrow] (solve) -- (projection);
+\draw [arrow] (projection) -- (xs);
+\draw [arrow] (xs) -- (stop);
+
+% Fancy Arrows
+\draw [arrow] (radial) |- node[anchor=east] {no} (shape);
+\draw [arrow] (radial) |- node[anchor=east] {yes} (cpm);
+\draw [arrow] (shape) |- (homogenize);
+\draw [arrow] (cpm) |- (homogenize);
+
+\end{tikzpicture}

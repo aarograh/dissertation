@@ -37,7 +37,7 @@
 \definecolor{lgrey}{RGB}{245,245,245}
 \lstset{ 
 %  title=\lstname,                    % show the filename of files included with \lstinputlisting;
-  language=Fortran,
+  language=Matlab,
   upquote=true,
   basicstyle=\ttfamily\scriptsize, % the size of the fonts that are used for the code
   backgroundcolor=\color{lgrey},     % choose the background color. You must add \usepackage{color}
@@ -71,6 +71,7 @@
 \setcounter{tocdepth}{4}
 \setcounter{secnumdepth}{4}
 
+\newcommand{\?}{\stackrel{?}{=}}
 \newcommand*{\bfrac}[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
 \dottedcontents{subsection}[6.0em]{}{2.8em}{1pc}
 \dottedcontents{subsubsection}[9.0em]{}{3.5em}{1pc}
@@ -123,6 +124,9 @@
 
 \chapter{C5G7 Cross-Sections}\label{app:c5g7xs}
 \input{B-c5g7.tex}
+
+\chapter{1D MOC Code}\label{app:1dmoc-code}
+\input{C-1dmoc-code.tex}
 
 % bibliography
 \bibliographystyle{../bibliography}

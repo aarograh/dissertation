@@ -1,0 +1,57 @@
+This appendix will show the full source code for the prototype 1D subray MOC code used to investigate the subray MOC method.  Example scripts and inputs will then be given to show how the code can be used to generate subray MOC comparison data.  The code was written using Matlab 2016 \cite{MATLAB:2016} and can be downloaded from \url{https://github.com/aarograh/dissertation}
+
+\section{Source Code}
+
+This section will provide the full source code used for all 1D MOC calculations presented in this dissertation.  Each subsection will be titled with the name of the source file and include the text of the source.
+
+\subsection{inputClass.m}
+
+\lstinputlisting{"../1D MOC/inputClass.m"}
+
+\subsection{eigensolverClass.m}
+
+\lstinputlisting{"../1D MOC/eigensolverClass.m"}
+
+\subsection{FixedSourceSolverClass.m}
+
+\lstinputlisting{"../1D MOC/FixedSourceSolverClass.m"}
+
+\subsection{meshClass.m}
+
+\lstinputlisting{"../1D MOC/meshClass.m"}
+
+\subsection{quadratureClass.m}
+
+\lstinputlisting{"../1D MOC/quadratureClass.m"}
+
+\subsection{solutionClass.m}
+
+\lstinputlisting{"../1D MOC/solutionClass.m"}
+
+\subsection{xsLibraryClass.m}
+
+\lstinputlisting{"../1D MOC/xsLibraryClass.m"}
+
+\subsection{xsClass.m}
+
+\lstinputlisting{"../1D MOC/xsClass.m"}
+
+\section{Scripts}
+
+This section will provide a collection of scripts and an example input that will generate rod withdrawal comparisons for subray MOC.  The withdrawal.m script is the top-level script and calls the other ones.
+
+\subsection{withdrawal.m}
+
+\lstinputlisting{"../1D MOC/withdrawal.m"}
+
+\subsection{p4a\_centerAssem.m}
+
+\lstinputlisting{"../1D MOC/p4a_centerAssem.m"}
+
+\subsection{compare\_subrayES.m}
+
+\lstinputlisting{"../1D MOC/compare_subrayES.m"}
+
+\subsection{postprocess\_withdrawal.m}
+
+\lstinputlisting{"../1D MOC/postprocess_withdrawal.m"}

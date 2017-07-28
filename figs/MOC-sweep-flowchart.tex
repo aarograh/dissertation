@@ -1,0 +1,29 @@
+\begin{tikzpicture}[node distance=2cm]
+
+% Begin
+\node (start) [startstop] {Calculate sources, set $n=0$};
+
+% Solve
+\node (longrays) [process, below of=start] {Loop over long rays; $n=n+1$};
+\node (construct) [process, right of=longrays, xshift=2.5cm] {Construct long ray $n$, store $q$ and $\Sigma_t$ for each segment};
+\node (expTable) [process, right of=construct, xshift=2.5cm] {Calculate exponential for each segment, polar angle, energy group};
+\node (sweep) [process, below of=expTable, yshift=-2cm] {Loop over polar angles, segments, energy groups};
+\node (track) [process, left of=sweep, xshift=-2.5cm] {For each polar, segment, and group: calculate average/outgoing angular flux, tally scalar flux and surface currents};
+\node (endRay) [decision, below of=track, yshift=-3cm] {$n \? N_{rays}$};
+
+% Finish
+\node (stop) [startstop, right of=endRay, xshift=2.5cm] {End planar sweep};
+
+% Basic Arrows
+\draw [arrow] (start) -- (longrays);
+\draw [arrow] (longrays) -- (construct);
+\draw [arrow] (construct) -- (expTable);
+\draw [arrow] (expTable) -- (sweep);
+\draw [arrow] (sweep) -- (track);
+\draw [arrow] (track) -- (endRay);
+
+% Fancy Arrows
+\draw [arrow] (endRay) -| node[anchor=north] {no} (longrays);
+\draw [arrow] (endRay) -- node[anchor=north] {yes} (stop);
+
+\end{tikzpicture}

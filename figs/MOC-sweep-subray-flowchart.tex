@@ -1,0 +1,36 @@
+\begin{tikzpicture}[node distance=2cm]
+
+% Begin
+\node (start) [startstop] {Calculate sources, set $n=0$};
+
+% Solve
+\node (longrays) [process, below of=start, yshift=-1cm] {Loop over long rays; $n=n+1$; $z=0$};
+\node (subrays) [process, right of=longrays, xshift=2.5cm] {Loop over long rays; $z=z+1$};
+\node (construct) [process, above of=subrays, yshift=0.5cm] {Construct long ray $n$, store $q$ and $\Sigma_t$ for each segment};
+\node (expTable) [process, right of=construct, xshift=2.5cm] {Calculate exponential for each segment, polar angle, energy group};
+\node (sweep) [process, below of=expTable, yshift=-1cm] {Loop over polar angles, segments, energy groups};
+\node (track) [process, below of=sweep, yshift=-1.5cm] {For each polar, segment, and group: calculate average/outgoing angular flux, tally scalar flux and surface currents};
+\node (endSubray) [decision, left of=track, xshift=-2.5cm] {$z \? N_{subrays}\left(n\right)$};
+\node (endRay) [decision, left of=endSubray, xshift=-2.5cm] {$n \? N_{rays}$};
+\node (postprocess) [process, below of=endRay, yshift=-2cm] {For partially rodded regions, apply Equation \ref{e:subrayPostProcess}};
+
+% Finish
+\node (stop) [startstop, right of=postprocess, xshift=2.5cm] {End planar sweep};
+
+% Basic Arrows
+\draw [arrow] (start) -- (longrays);
+\draw [arrow] (longrays) -- (subrays);
+\draw [arrow] (subrays) -- (construct);
+\draw [arrow] (construct) -- (expTable);
+\draw [arrow] (expTable) -- (sweep);
+\draw [arrow] (sweep) -- (track);
+\draw [arrow] (track) -- (endSubray);
+\draw [arrow] (postprocess) -- (stop);
+
+% Fancy Arrows
+\draw [arrow] (endSubray) -- node[anchor=east] {no} (subrays);
+\draw [arrow] (endSubray) -- node[anchor=south] {yes} (endRay);
+\draw [arrow] (endRay) -- node[anchor=west] {no} (longrays);
+\draw [arrow] (endRay) -- node[anchor=west] {yes} (postprocess);
+
+\end{tikzpicture}
