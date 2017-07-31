@@ -38,13 +38,13 @@ To find the volume fraction required for improved homogenization, a root-finding
 
 \section{Subplane Collision Probabilities}
 
+The subplane scheme as it was originally conceived was used primarily to address stability issues caused by thin MOC planes in early 2D/1D codes.  While other improvements to the 2D/1D method have largely eliminated these problems, the idea of capturing subplane information using the subplane scheme can be useful for addressing partially inserted rods without substantially increasing the computational cost.  To do this, three changes were made to the basic subplane scheme: an axial correction performed during CMFD homogenization, an optional radial correction to generate improved flux profiles, and an MOC cross section correction.  A flow chart of this process is shown in Figure \ref{f:SubplaneCP-flowchart}
+
 \begin{figure}[h]
     \centering
     \input{../figs/SubplaneCP-flowchart.tex}
     \caption{Calculation flow for 2D/1D with subplane collision probabilities}\label{f:SubplaneCP-flowchart}
 \end{figure}
-
-The subplane scheme as it was originally conceived was used primarily to address stability issues caused by thin MOC planes in early 2D/1D codes.  While other improvements to the 2D/1D method have largely eliminated these problems, the idea of capturing subplane information using the subplane scheme can be useful for addressing partially inserted rods without substantially increasing the computational cost.  To do this, three changes were made to the basic subplane scheme: an axial correction performed during CMFD homogenization, an optional radial correction to generate improved flux profiles, and an MOC cross section correction.  A flow chart of this process is shown in Figure \ref{f:SubplaneCP-flowchart}
 
 \subsection{Axial Correction}
 
@@ -110,7 +110,7 @@ The most important inaccuracy in the subplane CP method is the final point.  To 
 
 \subsection{1D MOC Code and Problem Description}\label{ss:1dcode}
 
-To develop this new method, a 1D MOC code was developed to investigate the behavior of angular and scalar flux near a partially inserted control rod.  This code was written in Matlab \cite{MATLAB:2016} and is set up to take in a description of pins and materials to be used for the calculations.  For the geometry, a pin pitch is specified which is used for all pins.  Each pin consists of a list of radii.  Assuming a square pin cell, these pins are then transformed from cylindrical geometry to slab geometry while preserving the volume fraction of each material:
+To develop this new method, a 1D MOC code was developed to investigate the behavior of angular and scalar flux near a partially inserted control rod.  This code was written in Matlab \cite{MATLAB:2016} (full source and examples scripts and inputs are included in Appendix \ref{app:1dmoc-code}) and is set up to take in a description of pins and materials to be used for the calculations.  For the geometry, a pin pitch is specified which is used for all pins.  Each pin consists of a list of radii.  Assuming a square pin cell, these pins are then transformed from cylindrical geometry to slab geometry while preserving the volume fraction of each material:
 \begin{equation}\label{e:cyl2slab}
 w = \frac{\pi \left(R_N^2 - R_{N-1}^2\right)}{2 L}\ .
 \end{equation}
@@ -148,13 +148,13 @@ Figure \ref{f:1dmoc-fixed-50-angflux} shows the right-going angular flux in grou
     \centering
     \subfigure[Group 1]{
         \centering
-        \includegraphics[width=0.45\textwidth]{1dmoc-50mix-fixedscat-angflux1.png}
+        \includegraphics[width=0.48\textwidth]{1dmoc-50mix-fixedscat-angflux1.png}
         \label{f:1dmoc-fixed-50-angflux1}
     }
     \hfill
     \subfigure[Group 7]{
         \centering
-        \includegraphics[width=0.45\textwidth]{1dmoc-50mix-fixedscat-angflux7.png}
+        \includegraphics[width=0.48\textwidth]{1dmoc-50mix-fixedscat-angflux7.png}
         \label{f:1dmoc-fixed-50-angflux7}
     }
     \caption{Angular flux comparisons for a fixed fission and scattering source calculation}\label{f:1dmoc-fixed-50-angflux}
@@ -164,54 +164,54 @@ The same cannot be said for the fast flux.  The mean free path of the fast flux 
 
 \subsubsection{Fixed Fission Source}
 
-\begin{figure}[H]
+The second set of calculations that was performed used a fixed fission source, but allowed the scattering source to fully converge for each calculation.  As in the previous section, an eigenvalue calculation was completed using partially rodded cross sections.  This was done for 25\%, 50\%, and 75\% rodded cases.  For each case, a fixed fission source calculation was done with the fully rodded and fully unrodded cross sections.  This time, multiple iterations were allowed for each material to converge the scattering source.  This allows us to see the effects of the rod on the scattering source distribution without worrying about changes in the eigenvalue and fission source distribution.
+
+\begin{figure}[h]
     \centering
     \subfigure[25\% Mixture]{
         \centering
-        \includegraphics[width=0.45\textwidth]{1dmoc-25mix-angflux7.png}
+        \includegraphics[width=0.48\textwidth]{1dmoc-25mix-angflux7.png}
         \label{f:1dmoc-25-angflux7}
     }
     \hfill
     \subfigure[50\% Mixture]{
         \centering
-        \includegraphics[width=0.45\textwidth]{1dmoc-50mix-angflux7.png}
+        \includegraphics[width=0.48\textwidth]{1dmoc-50mix-angflux7.png}
         \label{f:1dmoc-50-angflux7}
     }
     ~
     \subfigure[75\% Mixture]{
         \centering
-        \includegraphics[width=0.45\textwidth]{1dmoc-75mix-angflux7.png}
+        \includegraphics[width=0.48\textwidth]{1dmoc-75mix-angflux7.png}
         \label{f:1dmoc-75-angflux7}
     }
     \caption{Group 7 angular flux comparisons for 25\% and 75\% mixtures}\label{f:1dmoc-angflux7}
 \end{figure}
 
-The second set of calculations that was performed used a fixed fission source, but allowed the scattering source to fully converge for each calculation.  As in the previous section, an eigenvalue calculation was completed using partially rodded cross sections.  This was done for 25\%, 50\%, and 75\% rodded cases.  For each case, a fixed fission source calculation was done with the fully rodded and fully unrodded cross sections.  This time, multiple iterations were allowed for each material to converge the scattering source.  This allows us to see the effects of the rod on the scattering source distribution without worrying about changes in the eigenvalue and fission source distribution.
+
+Figure \ref{f:1dmoc-angflux7} shows the right-going group 7 angular flux comparisons for each of the three mixtures, again for the flattest value of $\mu$.  We immediately see that for each of them, the angular flux for the mixture is skewed toward the rodded result instead of being a volume-fraction--weighted average of the rodded and unrodded solutions.  For example, comparing Figures \ref{f:1dmoc-50-angflux7} and \ref{f:1dmoc-fixed-50-angflux7} shows that the angular flux is much closer to the rodded solution than when the scattering source was fixed, despite the small mean free path of thermal neutrons.  Figure \ref{f:1dmoc-angflux1} shows the same comparison for the fast flux and provides some insight into the differences in the thermal flux solutions.  The difference between the rodded, unrodded, and mixed fast fluxes are small for this calculation, similarly to the fixed total source calculations in the previous section.  However, these small differences have the effect of spreading the scattering source across the problem due to the long mean free path.  Thus, the small differences in the fast flux cause large differences in the thermal flux scattering source, which in turns effects the fission source throughout the problem.
 
 \begin{figure}[H]
     \centering
     \subfigure[25\% Mixture]{
         \centering
-        \includegraphics[width=0.45\textwidth]{1dmoc-25mix-angflux1.png}
+        \includegraphics[width=0.48\textwidth]{1dmoc-25mix-angflux1.png}
         \label{f:1dmoc-25-angflux1}
     }
     \hfill
     \subfigure[50\% Mixture]{
         \centering
-        \includegraphics[width=0.45\textwidth]{1dmoc-50mix-angflux1.png}
+        \includegraphics[width=0.48\textwidth]{1dmoc-50mix-angflux1.png}
         \label{f:1dmoc-50-angflux1}
     }
     ~
     \subfigure[75\% Mixture]{
         \centering
-        \includegraphics[width=0.45\textwidth]{1dmoc-75mix-angflux1.png}
+        \includegraphics[width=0.48\textwidth]{1dmoc-75mix-angflux1.png}
         \label{f:1dmoc-75-angflux1}
     }
     \caption{Group 1 angular flux comparisons for 25\% and 75\% mixtures}\label{f:1dmoc-angflux1}
 \end{figure}
-
-
-Figure \ref{f:1dmoc-angflux7} shows the right-going group 7 angular flux comparisons for each of the three mixtures, again for the flattest value of $\mu$.  We immediately see that for each of them, the angular flux for the mixture is skewed toward the rodded result instead of being a volume-fraction--weighted average of the rodded and unrodded solutions.  For example, comparing Figures \ref{f:1dmoc-50-angflux7} and \ref{f:1dmoc-fixed-50-angflux7} shows that the angular flux is much closer to the rodded solution than when the scattering source was fixed, despite the small mean free path of thermal neutrons.  Figure \ref{f:1dmoc-angflux1} shows the same comparison for the fast flux and provides some insight into the differences in the thermal flux solutions.  The difference between the rodded, unrodded, and mixed fast fluxes are small for this calculation, similarly to the fixed total source calculations in the previous section.  However, these small differences have the effect of spreading the scattering source across the problem due to the long mean free path.  Thus, the small differences in the fast flux cause large differences in the thermal flux scattering source, which in turns effects the fission source throughout the problem.
 
 \subsubsection{Summary}
 
@@ -275,7 +275,7 @@ This approach has the drawback of duplicating several of the long rays.  For pro
 
 Before performing the subray MOC sweeps, it must be determined which long rays will be duplicated.  This is done by examining the mesh for partially rodded regions.  Due to the source effects described previously, whenever a partially rodded region is identified, all other regions in that pin cell are also flagged as partially rodded.  This allows the axial shape of the source in the surrounding moderator region to also be resolved.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{recombination.png}
     \caption{Pin cells in 17$\times$17 assembly using subray MOC for recombination flags of 0 (red), 1 (blue), 2 (green), and 3 (white).}\label{f:recombination}
