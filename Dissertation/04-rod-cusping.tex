@@ -20,7 +20,7 @@ In some cases, this is easily handled by setting up an appropriate axial mesh wh
 
 \section{Decusping Methods History}
 
-Before discussing the recent and proposed methods to address the rod cusping problem, it is useful to provide an overview of past methods.  These will then be used as a comparison for recent work and justification for the proposed work.  First, we will look at some of the ways rod cusping was address in older nodal codes.  Then we will look at the effects in 2D/1D codes and recent work to address them.
+Before discussing the recent and proposed methods to address the rod cusping problem, it is useful to provide an overview of past methods.  These will then be used as a comparison for recent work and justification for the proposed work.  First, we will look at some of the ways rod cusping was addressed in older nodal codes.  Then we will look at the effects in 2D/1D codes and recent work to address them.
 
 \subsection{Nodal Codes}
 
@@ -55,7 +55,7 @@ Another method which calculates axial flux profiles to improve homogenization is
 
 \subsubsection{Equivalent-Node Method}
 
-The Equivalent-Node Method \cite{dall2002nodeEquivalenceDecusping} attempts to calculate the PRN cross sections as if the PRN were modeled as two separate nodes: one fully rodded and one fully unrodded.  This method sets up two different diffusion problems for the PRN: on with a single region and one with two regions.  This is done in combination with NEM for each of the spatial moments being calculated.  The cross sections in the case of the single region (homogenized cross sections) are formulated in terms weighting factors multiplied by the heterogeneous cross sections.  It is then enforced that the integral of the reaction rates for the one- and two-region problems are equal.  This preserves the reaction rates of the two-node problem in the homogenized problem and provides correction factors for the higher-order spatial moments.  Solving these equations produces accurate, smoothly varying homogenized cross sections.
+The Equivalent-Node Method \cite{dall2002nodeEquivalenceDecusping} attempts to calculate the PRN cross sections as if the PRN were modeled as two separate nodes: one fully rodded and one fully unrodded.  This method sets up two different diffusion problems for the PRN: one with a single region and one with two regions.  This is done in combination with NEM for each of the spatial moments being calculated.  The cross sections in the case of the single region (homogenized cross sections) are formulated in terms weighting factors multiplied by the heterogeneous cross sections.  It is then enforced that the integral of the reaction rates for the one- and two-region problems are equal.  This preserves the reaction rates of the two-node problem in the homogenized problem and provides correction factors for the higher-order spatial moments.  Solving these equations produces accurate, smoothly varying homogenized cross sections.
 
 \subsubsection{Inverse Spectral Index Method}
 

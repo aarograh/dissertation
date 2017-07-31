@@ -9,7 +9,7 @@ The time-dependent Boltzmann equation for neutron transport is shown below:
 \bm \Omega \cdot \bm \nabla \varphi + \Sigma_t\left(\bm x,E,t\right)\varphi\left(\bm x,E,\bm \Omega,t\right)} = {\frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \varphi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{\chi_p\left(\bm x,E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \left(1 - \beta\left(\bm x,E'\right)\right) \nu \Sigma_f\left(\bm x,E',t\right) \varphi\left(\bm x,E',\bm \Omega',t\right) d\Omega' dE'} + {\sum_{j=1}^{N_d} \frac{\chi_{d,j}\left(\bm x,E\right)}{4\pi} \lambda_j C_j\left(\bm x,t\right)} + {Q\left(\bm x,E,\bm \Omega,t\right)}\ ,
 \end{dmath}
 \begin{equation}\label{e:boltzmannBC}
-\varphi\left(\bm x_b, E, \bm{\Omega},t\right) = \varphi^b\left(\bm x_b, E, \bm{\Omega},t\right)\ ,\quad \bm{\Omega}\cdot \bm n < 0\ .
+\varphi\left(\bm x_b, E, \bm{\Omega},t\right) = \varphi^b\left(\bm x_b, E, \bm{\Omega},t\right)\ ,\quad \bm{\Omega}\cdot \bm n_b < 0\ .
 \end{equation}
 \end{subequations}
 
@@ -55,7 +55,7 @@ Equation \ref{e:BTEtermsExtSource} shows external source term.  This term accoun
 Q\left(\bm x,E,\bm\Omega\right)\ .
 \end{equation}
 
-Finally, Equation \ref{e:boltzmannBC} shows the boundary condition for the transport equation.  The dot product $\bm \Omega \cdot \bm n$ is between the direction of flight and the outward normal vector on the boundary of the problem.  The angular flux boundary condition defines the angular flux entering the problem domain. for the entire surface $\bm x_b$, all energies, and all times.
+Finally, Equation \ref{e:boltzmannBC} shows the boundary condition for the transport equation.  The dot product $\bm \Omega \cdot \bm n_b$ is between the direction of flight and the outward normal vector on the boundary of the problem.  The angular flux boundary condition defines the angular flux entering the problem domain. for the entire surface $\bm x_b$, all energies, and all times.
 
 Many problems of interest are steady-state, allowing Equation \ref{e:boltzmann} to be simplified significantly.  The time derivative becomes 0, eliminating the term in \ref{e:BTEtermsTimeDerivative}, and the precursor concentrations are unchanging in time, allowing the fission source terms in \ref{e:BTEtermsFissionSource} and \ref{e:BTEtermsDelayedSource} to be lumped into a single term.  To ensure balance between the loss and source terms without a time derivative, the equation is reformulated as an eigenvalue equation.  The fission source is multiplied by the eigenvalue $\lambda = \frac{1}{\keff{}}$, allowing the equation to be balanced.  The cross sections can then be adjusted until $\lambda = 1$ is achieved, providing a physically meaningful steady-state solution to the equation.  The steady-state form of the Boltzmann equation is shown below:
 
@@ -64,15 +64,15 @@ Many problems of interest are steady-state, allowing Equation \ref{e:boltzmann} 
 {\bm \Omega \cdot \bm \nabla \varphi + \Sigma_t\left(\bm x,E\right)\varphi\left(\bm x,E,\bm \Omega\right) = \frac{1}{4\pi}\intop_0^{\infty} \intop_{4\pi} \Sigma_s\left(\bm x,E' \rightarrow E, \bm \Omega' \rightarrow \bm \Omega\right) \varphi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'} + {\frac{1}{\keff{}}\frac{\chi\left(E\right)}{4\pi} \intop_0^{\infty} \intop_{4\pi} \nu \Sigma_f\left(\bm x,E'\right) \varphi\left(\bm x,E',\bm \Omega'\right) d\Omega' dE'}\ ,
 \end{dmath}
 \begin{equation}\label{e:ssboltzmannBC}
-\varphi\left(\bm x_b, E, \bm{\Omega}\right) = \varphi^b\left(\bm x_b, E, \bm{\Omega}\right)\ ,\quad \bm{\Omega}\cdot \bm n < 0\ .
+\varphi\left(\bm x_b, E, \bm{\Omega}\right) = \varphi^b\left(\bm x_b, E, \bm{\Omega}\right)\ ,\quad \bm{\Omega}\cdot \bm n_b < 0\ .
 \end{equation}
 \end{subequations}
 
 \subsection{Multigroup Approximation}
 
-One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  This energy range is divided up into $N$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.
+One important approximation that is commonly made to the transport equation is the multi-group approximation.  To make this approximation, an appropriate energy range for the problem of interest is selected.  As illustrated in Figure \ref{f:multigroup}, this energy range is divided up into $G$ energy groups, with each group going from $E_g$ up to $E_{g-1}$.  For light-water reactor problems, it is common to select 0 eV for $E_N$ and 20 MeV for $E_0$.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{MGillustration.png}
     \caption{Illustration of the multigroup discretization scheme}\label{f:multigroup}
@@ -95,7 +95,7 @@ transport Equation \ref{e:multigroupboltzmann}.
 {\bm \Omega \cdot \bm \nabla \varphi_g + \Sigma_{t,g}\left(\bm x\right)\varphi_g\left(\bm x,\bm \Omega\right) = \frac{1}{4\pi}\sum_{g'=1}^G \intop_{4\pi} \Sigma_{s,g'\rightarrow g}\left(\bm x,\bm \Omega' \rightarrow \bm \Omega\right) \varphi_{g'}\left(\bm x,\bm \Omega'\right) d\Omega'} + {\frac{1}{\keff{}}\frac{\chi_g}{4\pi} \sum_{g'=1}^{G} \intop_{4\pi} \nu \Sigma_{f,g'}\left(\bm x\right) \varphi_{g'}\left(\bm x,\bm \Omega'\right)d\Omega'}\ ,
 \end{dmath}
 \begin{equation}\label{e:multigroupboltzmannBC}
-\varphi_g\left(\bm x_b, \bm{\Omega}\right) = \intop_{E_n}^{E_{n-1}} \varphi^b\left(\bm x_b, E, \bm{\Omega}\right)dE\ ,\quad \bm{\Omega}\cdot \bm n < 0\ .
+\varphi_g\left(\bm x_b, \bm{\Omega}\right) = \intop_{E_n}^{E_{n-1}} \varphi^b\left(\bm x_b, E, \bm{\Omega}\right)dE\ ,\quad \bm{\Omega}\cdot \bm n_b < 0\ .
 \end{equation}
 \end{subequations}
 
@@ -127,7 +127,7 @@ Applying this discretization to the multi-group transport Equation \ref{e:multig
 \bm\Omega_n\cdot\bm\nabla\varphi_{g,n} + \Sigma_{t,g}\left(\bm x\right)\varphi_{g,n}\left(\bm x\right) = {\frac{1}{4\pi}\sum_{g'=1}^G \sum_{n'=1}^N \Sigma_{g'\rightarrow g,n'\rightarrow n}\left(\bm x\right)\varphi_{g',n'}\left(\bm x\right) w_{n'}} + {\frac{1}{\keff{}}\frac{\chi_g}{4\pi} \sum_{g'=1}^G \sum_{n'=1}^N \nu\Sigma_{f,g'}\left(\bm x\right)\varphi_{g',n'}\left(\bm x\right) w_{n'}}\ ,
 \end{dmath}
 \begin{equation}
-\varphi_{g,n}\left(\bm x_b\right) = \varphi_{g}^b\left(\bm x_b,\bm{\Omega}_n\right)\ ,\quad \bm{\Omega}_n\cdot \bm n < 0\ .
+\varphi_{g,n}\left(\bm x_b\right) = \varphi_{g}^b\left(\bm x_b,\bm{\Omega}_n\right)\ ,\quad \bm{\Omega}_n\cdot \bm n_b < 0\ .
 \end{equation}
 \end{subequations}
 
@@ -226,7 +226,7 @@ Another approximation that can be made to the angular dependence of the transpor
 We must also assume that the angular flux is linearly anisotropic.  This leads to the following expression of the angular flux as a function of the scalar flux $\phi$ and current $\bm J$:
 \begin{subequations}
 \begin{equation}
-\varphi_g\left(\bm x,\bm\Omega\right) \approx \frac{1}{4\pi}\left(\phi_g\left(\bm x\right) + 3\bm\Omega \cdot \bm J\left(\bm x\right)\right)\ ,
+\varphi_g\left(\bm x,\bm\Omega\right) \approx \frac{1}{4\pi}\left(\phi_g\left(\bm x\right) + 3\bm\Omega \cdot \bm J_g\left(\bm x\right)\right)\ ,
 \end{equation}
 \begin{equation}
 \phi_g\left(\bm x\right) = \intop_{4\pi} \varphi_g\left(\bm x,\bm\Omega\right) d\Omega\ ,
@@ -267,10 +267,10 @@ Substituting \ref{e:FicksLawCurrent} into \ref{e:P1transport-0th} gives us the d
 
 To derive boundary conditions, Equation \ref{e:multigroupboltzmannBC} is used, making the same linear anisotropy assumption as in the derivation of the diffusion equation itself:
 \begin{align}
-\intop_{\bm \Omega \cdot \bm n < 0} \bigg|\bm \Omega \cdot \bm n\bigg|\varphi_g\left(\bm x_b, \bm \Omega\right) d\Omega &= \intop_{\bm \Omega \cdot \bm n < 0} \bigg|\bm \Omega \cdot \bm n\bigg|\varphi_g^b\left(\bm x_b, \bm \Omega\right) d\Omega \nonumber \\
-\intop_{\bm \Omega \cdot \bm n < 0} \bigg|\bm \Omega \cdot \bm n\bigg| \frac{1}{4\pi} \left[\phi_g\left(\bm x_b\right) + 3\bm \Omega \cdot \bm J_g\left(\bm x_b\right)\right] d\Omega &= J^-\left(\bm x_b\right) \nonumber \\
--\frac{1}{4\pi}\intop_{\bm \Omega \cdot \bm n < 0} \bm \Omega \cdot \bm n \left[\phi_g\left(\bm x_b\right) + 3\bm \Omega \cdot \bm J_g\left(\bm x_b\right)\right] d\Omega &= J^-\left(\bm x_b\right) \nonumber \\
-\frac{1}{4} \phi_g\left(\bm x_b\right) - \frac{1}{2} \bm n \cdot \bm J\left(\bm x_b\right) &= J^-\left(\bm x_b\right)\ .
+\intop_{\bm \Omega \cdot \bm n_b < 0} \bigg|\bm \Omega \cdot \bm n_b\bigg|\varphi_g\left(\bm x_b, \bm \Omega\right) d\Omega &= \intop_{\bm \Omega \cdot \bm n_b < 0} \bigg|\bm \Omega \cdot \bm n_b\bigg|\varphi_g^b\left(\bm x_b, \bm \Omega\right) d\Omega \nonumber \\
+\intop_{\bm \Omega \cdot \bm n_b < 0} \bigg|\bm \Omega \cdot \bm n_b\bigg| \frac{1}{4\pi} \left[\phi_g\left(\bm x_b\right) + 3\bm \Omega \cdot \bm J_g\left(\bm x_b\right)\right] d\Omega &= J^-\left(\bm x_b\right) \nonumber \\
+-\frac{1}{4\pi}\intop_{\bm \Omega \cdot \bm n_b < 0} \bm \Omega \cdot \bm n_b \left[\phi_g\left(\bm x_b\right) + 3\bm \Omega \cdot \bm J_g\left(\bm x_b\right)\right] d\Omega &= J^-\left(\bm x_b\right) \nonumber \\
+\frac{1}{4} \phi_g\left(\bm x_b\right) - \frac{1}{2} \bm n_b \cdot \bm J\left(\bm x_b\right) &= J^-\left(\bm x_b\right)\ .
 \end{align}
 This is the Marshak boundary condition, which preserves the total incident flux at every point on the boundary of the system while assuming linear anisotropy.  This boundary condition can be further simplified so that the only unknown is the scalar flux $\phi_g$ by substituting Equation \ref{e:FicksLawCurrent}:
 \begin{equation}\label{e:DiffusionEquationBC}
@@ -347,7 +347,7 @@ Typically multiple tracks are laid down across a region in each direction and in
 \end{equation}
 Using this, a quadrature can be used to integrate the average region angular flux for each angle to obtain a region-averaged angular flux.
 
-Using the outgoing flux in Equation \ref{e:MOCoutgoingFlux} along the edge of a region boundary as the incoming angle flux along a neighboring region allows MOC to be used to solve across entire domains regardless of geometry.  Doing this in many directions and applying Equations \ref{e:MOCavgFlux} and \ref{e:MOCareaAvgFlux}.
+Using the outgoing flux in Equation \ref{e:MOCoutgoingFlux} along the edge of a region boundary as the incoming angular flux along a neighboring region allows MOC to be used to solve across entire domains regardless of geometry.  Doing this in many directions and applying Equations \ref{e:MOCavgFlux} and \ref{e:MOCareaAvgFlux} gives average angular flux for every direction and region in the domain.  These values can then be integrated to obtain scalar flux or currents as needed.
 
 \subsection{Coarse Mesh Finite Difference}\label{ss:CMFD}
 
@@ -473,7 +473,7 @@ In this work, the SP$_N$ equations are used only for 1D calculations.  In 1D, SP
 
 \subsubsection{Nodal Expansion Method}
 
-While SP$_N$ can be used to capture angular moments of the flux, the Nodal Expansion Method (NEM) \cite{finnemann1977RodCuspingOrigMention} is used to capture intra-nodal flux shapes to calculate accurate currents at the interface between two nodes.  This is done by expanding the source and flux using quadratic and quartic Polynomials, respectively:
+While SP$_N$ can be used to capture angular moments of the flux, the Nodal Expansion Method (NEM) \cite{finnemann1977RodCuspingOrigMention} is used to capture intra-nodal flux shapes to calculate accurate currents at the interface between two nodes.  This is done by expanding the source and flux using quadratic and quartic polynomials, respectively:
 \begin{subequations}\label{e:NEMexpsansions}
     \begin{equation}
     Q\left(\xi\right) = \sum_{i=0}^2 q_i P_i\left(\xi\right)\ ,
@@ -510,8 +510,7 @@ To begin, the multi-group transport Equation \ref{e:multigroupboltzmann} can be 
 \end{dmath}
 \end{subequations}
 This form of the equation assumes no source of neutrons except scatter and 
-fission.  It also assumes isotropic (or transport-corrected) scattering, 
-implying that the CP method cannot resolve highly anisotropic scattering.  This 
+fission.  Furthermore, because an isotropic scattering transport kernel is used in the derivation, the CP method can only handle isotropic scattering.  This 
 gives way to a simplified isotropic source, shown in Equation 
 \ref{e:CPisoSource}:
 \begin{equation}\label{e:CPisoSource}
@@ -522,7 +521,7 @@ where $\phi_g$ is the scalar flux in group $g$.  At this point, we assume the pr
 q_{g,r} = \frac{1}{4\pi}\sum_{g'=1}^G \Sigma_{s,g'\rightarrow g,r}\phi_{g',r} + \frac{1}{\keff{}}\frac{\chi_{g,r}}{4\pi}\sum_{g'=1}^G \nu\Sigma_{f,g',r}\phi_{g'}\ .
 \end{equation}
 
-Now the total source of neutrons in each region $r$ can be calculated by multiplying by the region volume $V_r$.  If the probability $T_{g,r'\rightarrow r}$ of a neutron born in region $r'$ reaching region $r$ is known for all regions $r'$, then the scalar flux can be calculated as follows:
+Now the total source of neutrons in each region $r$ can be calculated by multiplying by the region volume $V_r$.  If the probability $T_{g,r'\rightarrow r}$ of a neutron born uniformly and isotropically in region $r'$ reaching region $r$ is known for all regions $r'$, then the scalar flux can be calculated as follows:
 \begin{equation}\label{e:CPflux}
 \phi_{g,r} = \sum_{r'=1}^R T_{g,r'\rightarrow r} q_{g,r'} V_{r'}\ .
 \end{equation}
@@ -533,7 +532,7 @@ common to use a buffer region in the calculation.  When applying the CP method
 to a fuel pin, the buffer region is not necessary because the fuel pin has its 
 own fission source to drive the problem.  However, when using this method on a 
 different pin cell such as a control rod, it is useful to place a homogenized 
-mixture of fuel and moderator around the outside of the pin cell.  This 
+mixture of fuel and moderator around the outside of the control cell.  This 
 provides a source to drive the problem.  Second, because the calculation is a 
 1D radial calculation, the moderator region in the rectangular pin cell must be 
 cylindricized.  This is done by transforming the moderator region into a ring 

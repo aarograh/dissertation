@@ -116,7 +116,7 @@ The axial coupling coefficient can be treated in a more straightforward manner. 
 
 The projection of the CMFD flux back to the 2D planes must also account for the presence of the subplanes.  To do this, the solution is volume-averaged over all subplanes for each pin cell, resulting in an equation similar to \ref{e:CMFDscaling}:
 \begin{equation}
-\phi_{trans,g,j}^k = \frac{\sum_{i'=1}^{N_{sp}} \phi_{CMFD,g,i'}^k V_i}{\sum_{i'=1}^{N_{sp}} \phi_{CMFD,g,i'}^k V_i} \phi_{trans,g,j}^{k-1}\ .
+\phi_{trans,g,j}^k = \frac{\sum_{i'=1}^{N_{sp}} \phi_{CMFD,g,i'}^k V_i}{\sum_{i'=1}^{N_{sp}} \phi_{CMFD,g,i'}^{k-1} V_i} \phi_{trans,g,j}^{k-1}\ .
 \end{equation}
 The calculation flow for 3D CMFD is shown in Figure \ref{f:CMFD-flowchart}.
 
@@ -208,7 +208,7 @@ Another approximation relates to the assumptions made while deriving the axial e
 
 The radial TL source used by the axial P$_3$ solver has the same two approximations as the axial TL source did.  Radial currents are used to generate the source, which assumes isotropy.  Additionally, the spatial shape is flat across each pin cell.  This is corrected to some extent since the axial solver produces a quadratic source shape using the neighboring nodes, but this is not a perfect solution.
 
-Additionally, when using the subplane method, the $\hat{D}$ correction terms used by CMFD are assumed to be axially flat within each MOC plane.  While this assumption improves the stability of the calculations, it forces CMFD to capture any axial shape the current has within an MOC plane.  For most problems, this error is probably negligible, but for cases such as a partially inserted rod or other strong absorber, it would be beneficial to be able to have subplane-dependent $\hat{D}$ terms to more accurately calculate the radial currents.  Doing this would improve the radial TL source in the P$_3$ solver, and the the overall 2D/1D results.
+Additionally, when using the subplane method, the $\hat{D}$ correction terms used by CMFD are assumed to be axially flat within each MOC plane.  While this assumption improves the stability of the calculations, it forces CMFD to capture any axial shape the current has within an MOC plane.  For most problems, this error is probably negligible, but for cases such as a partially inserted rod or other strong absorber, it would be beneficial to be able to have subplane-dependent $\hat{D}$ terms to more accurately calculate the radial currents.  Doing this would improve the radial TL source in the P$_3$ solver, and the overall 2D/1D results.
 
 \subsection{Other Sources of Error}
 
@@ -231,11 +231,11 @@ Several other sources of error in the 2D/1D method will be briefly mentioned her
   
   Scattering in a reactor, especially off the hydrogen atoms in the moderator, is anisotropic.  To resolve this, a sufficiently high-order scattering treatment must be used in the MOC calculations.  For PWRs, $P_1$ to $P_3$ is a typical range.  MPACT is capable of going up to P$_5$ scattering treatment for libraries which have the required data.
   
-  An alternative is to use transport-correction P$_0$ scattering.  This can capture the anisotropy without increasing the runtime of the calculations.  However, there are several methods of calculating the transport cross sections, and none of them are perfect.  Thus, using the TCP$_0$ option in MPACT also has some non-trivial error associated with it.
+  An alternative is to use transport-corrected P$_0$ scattering.  This can capture the anisotropy without increasing the runtime of the calculations.  However, there are several methods of calculating the transport cross sections, and none of them are perfect.  Thus, using the TCP$_0$ option in MPACT also has some non-trivial error associated with it.
   
   \item \textbf{Cross-Section Library}
   
-  To perform any calculations using the 2D/1D method, a multi-group cross section library must be available.  While this is not technically a source of error in the 2D/1D method itself, the cross section library can be difficult to generate correctly.  Any error in any isotope in the library will cause error in the 2D/1D calculations if the isotope is used in the model.  Thus, the 2D/1D method is useless if the a bad cross section library is being used.
+  To perform any calculations using the 2D/1D method, a multi-group cross section library must be available.  While this is not technically a source of error in the 2D/1D method itself, the cross section library can be difficult to generate correctly.  Any error in any isotope in the library will cause error in the 2D/1D calculations if the isotope is used in the model.  Thus, the 2D/1D method is useless if a bad cross section library is being used.
   
   \item \textbf{Self-Shielding}
   
